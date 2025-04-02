@@ -2,7 +2,18 @@
 title: "MatExp"
 permalink: /matexp/
 excerpt: ""
-layout: MatExp # Specifies the MatExp layout
+layout: default # Or your desired layout
 ---
 
-This is the content of my MatExp page. It will be rendered using the MatExp layout.
+<h1>Experimentos matemáticos</h1>
+
+<ul>
+  {% for post in site.MatExp %}
+    <li>
+      <a href="{{ post.url }}">{{ post.title }}</a>
+      {% if post.excerpt %}
+        <p>{{ post.excerpt }}</p>
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>
