@@ -2,7 +2,6 @@
 title: "MatExp"
 permalink: /matexp/
 excerpt: ""
-layout: default # Or your desired layout
 ---
 
 <h1>Experimentos matemáticos</h1>
