@@ -5,6 +5,7 @@ categories: experimento algoritmo
 taxonomy: experimento algoritmo cubo-Rubik
 permalink: "/MatExp/algebra/grupos/cuboRubik/"
 excerpt: Algoritmo para resolver el cubo de Rubik
+image: "/assets/MatExp/algebra/grupos/rubik/feature.png"
 ---
 
 <style type="text/css">
