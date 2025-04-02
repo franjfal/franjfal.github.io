@@ -3,5 +3,7 @@ main:
     url: /docencia/
   - title: "Investigación"
     url: /investigacion/
+  - title: "MatExp"
+    url: /matexp/
   - title: "Sobre mi"
     url: /sobre-mi/
