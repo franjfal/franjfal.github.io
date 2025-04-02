@@ -1,0 +1,50 @@
+---
+---
+
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.20.2 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="{{ site.locale | slice: 0,2 | default: "en" }}" class="no-js">
+
+<head>
+    {% include head.html %}
+    {% include head/custom.html %}
+    <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/assets/reveal.js-4.1.0/dist/reveal.css">
+    <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/assets/reveal.js-4.1.0/dist/theme/white.css">
+</head>
+
+<body>
+    {{ content | revealify }}
+
+    <script src="{{ site.baseurl }}/assets/reveal.js-4.1.0/dist/reveal.js"></script>
+    <script>
+        // this is the reveal config
+        Reveal.initialize({
+            center: false,
+            controls: true,
+            controlsTutorial: true,
+            progress: true,
+            slideNumber: true,
+            showSlideNumber: 'all',
+            transition: 'fade',
+            width: '100%',
+            height: '100%',
+            margin: 0,
+            history: true,
+            slideNumber: true,
+            keyboard: true,
+            touch: true,
+        });
+
+    </script>
+
+
+    {% include scripts.html %}
+
+</body>
+
+</html>

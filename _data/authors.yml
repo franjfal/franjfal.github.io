@@ -1,0 +1,14 @@
+Javier Falcó:
+  name        : "Javier Falcó"
+  bio         : "Profesor Titular de Universidad <br> Análisis Matemático <br> Universidad de Valencia"
+  avatar      : "/assets/images/Javier-Falco.png"
+  links:
+    - label: "Email"
+      icon: "fas fa-fw fa-envelope-square"
+      url: "mailto:francisco.j.falco@uv.es"
+    - label: "Website"
+      icon: "fas fa-fw fa-link"
+      url: " https://www.uv.es/falbe/"
+#    - label: "Twitter"
+#      icon: "fab fa-fw fa-twitter-square"
+#      url: "https://twitter.com/extravagantman"

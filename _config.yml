@@ -22,11 +22,12 @@ description: Página web personal de Javier Falcó
 #url: http://localhost:4000
 #twitter_username: jekyllrb
 #github_username:  jekyll
-minimal_mistakes_skin: default
-search: true
 
 # Build settings
-markdown: kramdown
+theme: minimal-mistakes-jekyll
+minimal_mistakes_skin: contrast #"default"  "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum" "sunrise"
+locale: es-ES
+search: true
 remote_theme: mmistakes/minimal-mistakes
 # Outputting
 permalink: /:categories/:title/
@@ -34,8 +35,9 @@ paginate: 5 # amount of posts to show
 paginate_path: /page:num/
 timezone: # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
-include:
-  - _pages
+#include:
+#  - _pages
+include: ["pages"]
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
@@ -57,36 +59,61 @@ plugins:
   - jekyll-feed
   - jemoji
   - jekyll-include-cache
+  - jekyll-relative-links
 
-author:
-  name: "First Lastname"
-  avatar: "/assets/images/bio-photo.jpg"
-  bio: "My awesome biography constrained to a sentence or two goes here."
-  links:
-    - label: "Website"
-      icon: "fas fa-fw fa-link"
-      url: "https://"
-    - label: "Twitter"
-      icon: "fab fa-fw fa-twitter-square"
-      url: "https://twitter.com/"
-    - label: "GitHub"
-      icon: "fab fa-fw fa-github"
-      url: "https://github.com/"
-    - label: "Instagram"
-      icon: "fab fa-fw fa-instagram"
-      url: "https://instagram.com/"
+# author:
+#   name: "Javier Falcó"
+#   avatar: "/assets/images/bio-photo.jpg"
+#   bio: "My awesome biography constrained to a sentence or two goes here."
+#   links:
+#     - label: "Website"
+#       icon: "fas fa-fw fa-link"
+#       url: "https://"
+#     - label: "Twitter"
+#       icon: "fab fa-fw fa-twitter-square"
+#       url: "https://twitter.com/"
+#     - label: "GitHub"
+#       icon: "fab fa-fw fa-github"
+#       url: "https://github.com/"
+#     - label: "Instagram"
+#       icon: "fab fa-fw fa-instagram"
+#       url: "https://instagram.com/"
 
-footer:
-  links:
-    - label: "Twitter"
-      icon: "fab fa-fw fa-twitter-square"
-      url: "https://twitter.com/"
-    - label: "GitHub"
-      icon: "fab fa-fw fa-github"
-      url: "https://github.com/"
-    - label: "Instagram"
-      icon: "fab fa-fw fa-instagram"
-      url: "https://instagram.com/"
+# footer:
+#   links:
+#     - label: "Twitter"
+#       icon: "fab fa-fw fa-twitter-square"
+#       url: "https://twitter.com/"
+#     - label: "GitHub"
+#       icon: "fab fa-fw fa-github"
+#       url: "https://github.com/"
+#     - label: "Instagram"
+#       icon: "fab fa-fw fa-instagram"
+#       url: "https://instagram.com/"
+
+collections:
+  MatExp:
+    output: true
+
+# defaults:
+#   # _posts
+#   - scope:
+#       path: ""
+#       type: posts
+#     values:
+#       layout: single
+#       author_profile: true
+#       read_time: true
+#       comments: true
+#       share: true
+#       related: true
+#   # _pages
+#   - scope:
+#       path: "_pages"
+#       type: pages
+#     values:
+#       layout: single
+#       author_profile: true
 
 defaults:
   # _posts
@@ -95,18 +122,52 @@ defaults:
       type: posts
     values:
       layout: single
+      classes: wide
       author_profile: true
-      read_time: true
-      comments: true
+      author: Javier Falcó
+      read_time: false
+      comments: false
       share: true
-      related: true
-  # _pages
+      related: false
+
+  # pages
   - scope:
-      path: "_pages"
-      type: pages
+      path: "pages"
     values:
       layout: single
+      classes: wide
       author_profile: true
+      author: Javier Falcó
+      read_time: false
+      comments: false
+      share: false
+      related: false
+
+  # _MatExp
+  - scope:
+      path: ""
+      type: MatExp
+    values:
+      layout: MatExp
+      classes: wide
+      author_profile: true
+      author: Javier Falcó
+      read_time: false
+      comments: false
+      share: true
+      related: false
+
+head_scripts:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js
+  - /assets/js/my-scripts-header.js
+  - /assets/js/videojs-ie8.min.js
+
+footer_scripts:
+  - /assets/js/video.js
+
+markdown: kramdown
+kramdown:
+  math_engine: mathjax
 
 category_archive:
   type: liquid
