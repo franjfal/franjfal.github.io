@@ -10,7 +10,7 @@ header:
   image: "/assets/MatExp/analisis/derivadas/trenes/header.jpg"
 excerpt: Experimento que muestra la derivada como un fenómeno natural que establece
   la dirección de los trenes en cada instante.
-image: "/assets/MatExp/analisis/derivadas/trenes/feature.jpg"
+feature: "/assets/MatExp/analisis/derivadas/trenes/feature.jpg"
 ---
 
 <div class="materials">
