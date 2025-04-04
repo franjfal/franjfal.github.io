@@ -4,7 +4,7 @@ date: '2024-01-15 10:30:00 +0100' # CHANGE THIS to your desired publication date
 categories:
   experimento optimización análisis hilbert audio proyección aplicaciones
 tags: [Hilbert, proyección ortogonal, DFT, transformada fourier, compresión audio, procesamiento señal,]
-permalink: "/MatExp/analisis/hilbert/"
+permalink: "/MatExp/analisis/hilbert/compresion-audio"
 header:
   image: "/assets/MatExp/analisis/hilbert/audio/header.jpg"
 excerpt: "Explora cómo se comprime el sonido con una demostración interactiva basada en la Transformada Discreta de Fourier (DFT). Sube o graba tu propio audio, observa cómo se transforma en frecuencias, elimina los componentes menos importantes y escucha cómo cambia el resultado. Una forma visual y práctica de entender la proyección ortonormal en espacios de Hilbert."
