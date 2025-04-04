@@ -16,8 +16,6 @@ excerpt: ""
 
 .matexp-card {
   perspective: 1000px;
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
 }
 
 .matexp-card-inner {
@@ -56,9 +54,9 @@ excerpt: ""
   background-color: #f0f0f0;
   color: black;
   transform: rotateY(180deg);
-  overflow: auto; /* Enable scroll if content overflows */
+  overflow: auto;
   padding: 15px;
-  box-sizing: border-box; /* Include padding in width/height calculations */
+  box-sizing: border-box;
 }
 
 .matexp-card img {
