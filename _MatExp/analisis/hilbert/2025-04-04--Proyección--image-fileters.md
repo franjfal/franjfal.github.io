@@ -26,18 +26,32 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
      .spectrum-explanation h4 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 8px; margin-bottom: 15px; }
      .matrix-display h4 { color: #555; font-size: 1em; margin-bottom: 5px;}
 
+    /* Section wrapper styles */
+     .content-section {
+        text-align: left;
+        margin: 25px auto; /* Center sections */
+        padding: 20px;
+        background: #f8f8f8;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e7e7e7;
+        max-width: 95%; /* Limit width */
+        margin-bottom: 30px;
+        padding-bottom: 20px; /* Ensure padding consistency */
+    }
+     .log-section { /* Remove bottom margin from last section */
+         margin-bottom: 0;
+     }
 
-    /* section { */ /* Section tags removed, styling applied to divs or handled by theme */
-        /* margin-bottom: 30px; */
-        /* padding-bottom: 20px; */
-        /* border-bottom: 1px solid #eee; */
-    /* } */
-     /* section:last-child { */
-         /* border-bottom: none; */
-         /* margin-bottom: 0; */
-         /* padding-bottom: 0; */
-     /* } */
-
+    /* Ensure headings inside sections are centered if desired */
+     .content-section > h2,
+     .content-section > h3 {
+         text-align: center;
+         margin-top: 0; /* Remove default top margin */
+         margin-bottom: 1em; /* Add space below heading */
+         padding-bottom: 0.5em; /* Add space below bottom border */
+         border-bottom: 1px solid #eee; /* Optional: Add a border */
+     }
 
     input[type="file"] {
         padding: 8px 12px;
@@ -53,12 +67,16 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
     /* button:hover { ... } */
     /* button:disabled { ... } */
 
-    select {
+    select, input[type="number"] { /* Style number input similar to select */
          padding: 8px 12px;
          border: 1px solid #ccc;
          border-radius: 4px;
-         min-width: 150px;
+         min-width: 80px; /* Adjust width for number input */
          margin: 10px;
+         vertical-align: middle; /* Align with labels/buttons */
+    }
+    input[type="number"] {
+         text-align: right;
     }
 
     input[type="range"] {
@@ -119,6 +137,8 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         max-width: 90%;
         text-align: center;
         /* H3 inside is handled by general H3 style */
+         margin-bottom: 30px; /* Add consistent bottom margin */
+         padding-bottom: 20px; /* Ensure padding consistency */
     }
 
     .filter-params {
@@ -157,12 +177,8 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
     /* Explanation blocks need to be divs for styling */
     .filter-explanation,
     .filter-types,
-    .fourier-coefficients,
-    .spectrum-explanation,
-    .results-section, /* Added class for results section */
-    .log-section, /* Added class for log section */
-    .input-section, /* Added class for input section */
-    .spectrum-section /* Added class for spectrum section */
+    .mathematical-note, /* Apply general section style */
+    .spectrum-explanation
     {
         text-align: left;
         margin: 25px auto; /* Center sections */
@@ -174,23 +190,6 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         max-width: 95%; /* Limit width */
          /* H3 inside these handled by general H3 */
     }
-     /* Add spacing similar to section */
-     .filter-explanation,
-     .filter-types,
-     .fourier-coefficients,
-     .spectrum-explanation,
-     .filter-controls, /* Apply to control block too */
-     .results-section,
-     .log-section,
-     .input-section,
-     .spectrum-section {
-         margin-bottom: 30px;
-         padding-bottom: 20px; /* Ensure padding consistency */
-     }
-     .log-section { /* Remove bottom margin from last section */
-         margin-bottom: 0;
-     }
-
 
     /* Specific filter type explanations */
     .filter-type-explanation {
@@ -217,6 +216,23 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         border: 1px solid #ddd;
          /* H4 handled above */
     }
+     /* Add spacing below matrix size control */
+     .matrix-size-control {
+         text-align: right;
+         margin: 5px 0 10px 0;
+         font-size: 0.9em;
+     }
+     .matrix-size-control label {
+         margin-right: 5px;
+         font-weight: bold;
+         color: #555;
+     }
+     .matrix-size-control input[type="number"] {
+         width: 60px; /* Smaller width for size input */
+         padding: 4px 6px;
+         margin: 0; /* Reset margin */
+     }
+
 
     .matrix-values { /* Target the <pre> tag */
         font-family: 'Courier New', Courier, monospace;
@@ -401,7 +417,7 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
 <h1>Filtrado de Imágenes con Transformada Discreta de Fourier (DFT)</h1>
 
 <!-- Section: Input -->
-<div class="input-section">
+<div class="content-section input-section">
     <h2>Selección de Imagen</h2>
     <!-- Raw HTML for file input -->
     <input type="file" id="imageFile" accept="image/*">
@@ -417,14 +433,18 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         <!-- Raw HTML for canvas and matrix -->
         <canvas id="originalCanvas"></canvas>
         <div class="matrix-display">
-            <h4>Valores de la Matriz (Primeros 10x10)</h4>
-            <pre id="imageMatrix" class="matrix-values"></pre>
+            <div class="matrix-size-control">
+                 <label for="numImageMatrixSizeInput">Mostrar (NxN):</label>
+                 <input type="number" id="numImageMatrixSizeInput" value="10" min="1" max="50">
+            </div>
+            <h4 id="imageMatrixInitialHeader">Valores de la Matriz (Primeros 10x10)</h4>
+            <pre id="imageMatrixInitialPre" class="matrix-values"></pre>
         </div>
     </div>
 </div>
 
 <!-- Section: Filters -->
-<div class="fourier-coefficients">
+<div class="content-section fourier-coefficients">
     <h2>Filtros y Coeficientes de Fourier</h2>
 
     <!-- Raw HTML for styled explanation block -->
@@ -534,7 +554,7 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
 
 
 <!-- Section: Spectrum -->
-<div class="spectrum-section">
+<div class="content-section spectrum-section">
     <h2>Espectro de Frecuencia (Magnitud DFT)</h2>
 
     <!-- Raw HTML for comparison container -->
@@ -542,12 +562,12 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         <!-- Raw HTML for image containers -->
         <div class="image-container">
             <!-- HTML H3 -->
-            <h3>Espectro Original </h3>
+            <h3>Espectro Original (Centrado, Log)</h3>
             <canvas id="originalSpectrumCanvas"></canvas>
         </div>
         <div class="image-container">
             <!-- HTML H3 -->
-            <h3>Espectro Filtrado </h3>
+            <h3>Espectro Filtrado (Centrado, Log)</h3>
             <canvas id="filteredSpectrumCanvas"></canvas>
         </div>
     </div>
@@ -590,15 +610,19 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
 
     <!-- Raw HTML for matrix display -->
     <div class="matrix-display">
+         <div class="matrix-size-control">
+             <label for="numDftMatrixSizeInput">Mostrar (NxN):</label>
+             <input type="number" id="numDftMatrixSizeInput" value="10" min="1" max="50">
+        </div>
         <!-- HTML H4 -->
-        <h4>Coeficientes DFT (Magnitud, Primeros 10x10, No Centrado)</h4>
-        <pre id="fourierMatrix" class="matrix-values"></pre>
+        <h4 id="fourierMatrixHeader">Coeficientes DFT (Magnitud, Primeros 10x10, No Centrado)</h4>
+        <pre id="fourierMatrixPre" class="matrix-values"></pre>
     </div>
 </div>
 
 
 <!-- Section: Results -->
-<div class="results-section">
+<div class="content-section results-section">
     <h2>Resultados del Filtrado</h2>
 
     <!-- Raw HTML for comparison container -->
@@ -609,9 +633,15 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
             <h3>Imagen Original (Gris)</h3>
             <canvas id="resultOriginalCanvas"></canvas>
             <div class="matrix-display">
-            <h4>Valores de la Matriz (Primeros 10x10)</h4>
-            <pre id="imageMatrix" class="matrix-values"></pre>
-        </div>
+                <!-- Size control reused from initial image -->
+                <div class="matrix-size-control">
+                    <label>Mostrar (NxN):</label>
+                    <!-- Linked via JS, not separate input -->
+                    <span id="resultImageMatrixSizeDisplay">10</span>
+                </div>
+                <h4 id="resultOriginalMatrixHeader">Valores de la Matriz (Primeros 10x10)</h4>
+                <pre id="resultOriginalMatrixPre" class="matrix-values"></pre>
+            </div>
         </div>
         <div class="image-container">
             <!-- HTML H3 -->
@@ -619,8 +649,12 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
             <canvas id="filteredCanvas"></canvas>
             <!-- Raw HTML for matrix display -->
             <div class="matrix-display">
-                <h4>Valores de la Matriz Filtrada (Primeros 10x10)</h4>
-                <pre id="filteredMatrix" class="matrix-values"></pre>
+                <div class="matrix-size-control">
+                     <label for="numFilteredMatrixSizeInput">Mostrar (NxN):</label>
+                     <input type="number" id="numFilteredMatrixSizeInput" value="10" min="1" max="50">
+                </div>
+                <h4 id="filteredMatrixHeader">Valores de la Matriz Filtrada (Primeros 10x10)</h4>
+                <pre id="filteredMatrixPre" class="matrix-values"></pre>
             </div>
         </div>
     </div>
@@ -628,7 +662,7 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
 
 
 <!-- Section: Log -->
-<div class="log-section">
+<div class="content-section log-section">
     <h2>Registro de Progreso</h2>
 
     <!-- Raw HTML for log display -->
@@ -658,27 +692,19 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         }
 
         magnitude() {
-            // Avoid potential overflow for large numbers? Maybe not needed here.
             return Math.sqrt(this.real * this.real + this.imag * this.imag);
         }
-        // magnitudeSquared() { // Sometimes useful, avoids sqrt
-        //     return this.real * this.real + this.imag * this.imag;
-        // }
-
         add(complex) {
             return new Complex(this.real + complex.real, this.imag + complex.imag);
         }
-
         subtract(complex) {
             return new Complex(this.real - complex.real, this.imag - complex.imag);
         }
-
         multiply(complex) {
             const realPart = (this.real * complex.real) - (this.imag * complex.imag);
             const imaginaryPart = (this.real * complex.imag) + (this.imag * complex.real);
             return new Complex(realPart, imaginaryPart);
         }
-         // For DFT calculation
          multiplyScalar(scalar) {
              return new Complex(this.real * scalar, this.imag * scalar);
          }
@@ -686,7 +712,8 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
 
     // --- Global State ---
     window.currentSpectrum = null;
-    window.currentImageData = null; // Store the grayscale, resized image data
+    window.currentImageData = null;
+    window.currentFilteredPixelData = null; // Store filtered pixel data globally
 
     // --- DOM Element References ---
     const imageFileInput = document.getElementById('imageFile');
@@ -696,9 +723,23 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
     const filteredCanvas = document.getElementById('filteredCanvas');
     const originalSpectrumCanvas = document.getElementById('originalSpectrumCanvas');
     const filteredSpectrumCanvas = document.getElementById('filteredSpectrumCanvas');
-    const imageMatrixDiv = document.getElementById('imageMatrix');
-    const fourierMatrixDiv = document.getElementById('fourierMatrix');
-    const filteredMatrixDiv = document.getElementById('filteredMatrix');
+
+    // Matrix Display Elements
+    const imageMatrixInitialPre = document.getElementById('imageMatrixInitialPre');
+    const fourierMatrixPre = document.getElementById('fourierMatrixPre');
+    const resultOriginalMatrixPre = document.getElementById('resultOriginalMatrixPre');
+    const filteredMatrixPre = document.getElementById('filteredMatrixPre');
+    const imageMatrixInitialHeader = document.getElementById('imageMatrixInitialHeader');
+    const fourierMatrixHeader = document.getElementById('fourierMatrixHeader');
+    const resultOriginalMatrixHeader = document.getElementById('resultOriginalMatrixHeader');
+    const filteredMatrixHeader = document.getElementById('filteredMatrixHeader');
+
+    // Matrix Size Controls
+    const numImageMatrixSizeInput = document.getElementById('numImageMatrixSizeInput');
+    const numDftMatrixSizeInput = document.getElementById('numDftMatrixSizeInput');
+    const numFilteredMatrixSizeInput = document.getElementById('numFilteredMatrixSizeInput');
+    const resultImageMatrixSizeDisplay = document.getElementById('resultImageMatrixSizeDisplay'); // Span to show linked size
+
     const progressLogDiv = document.getElementById('progressLog');
     const filterTypeSelect = document.getElementById('filterType');
     const cutoffFreqSlider = document.getElementById('cutoffFreq');
@@ -709,21 +750,19 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
     function logProgress(message) {
         if (progressLogDiv) {
             const timestamp = new Date().toLocaleTimeString();
-            progressLogDiv.innerHTML += `[${timestamp}] ${message}\n`; // Use innerHTML for newline
-            progressLogDiv.scrollTop = progressLogDiv.scrollHeight; // Auto-scroll
+            progressLogDiv.innerHTML += `[${timestamp}] ${message}\n`;
+            progressLogDiv.scrollTop = progressLogDiv.scrollHeight;
         } else {
-            console.log(`[Log] ${message}`); // Fallback
+            console.log(`[Log] ${message}`);
         }
     }
 
-    // Create loading overlay dynamically if it doesn't exist (though it's in HTML now)
     function createLoadingOverlay() {
         let overlay = document.getElementById('loadingOverlay');
         if (!overlay) {
              logProgress("Creating loading overlay dynamically.");
              overlay = document.createElement('div');
              overlay.id = 'loadingOverlay';
-             // Styles are applied via CSS now
              overlay.innerHTML = `
                 <div class="loading-content">
                     <div class="loading-message">Procesando...</div>
@@ -736,7 +775,7 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         }
         return overlay;
     }
-    const loadingOverlay = createLoadingOverlay(); // Ensure it exists
+    const loadingOverlay = createLoadingOverlay();
 
     function showLoadingOverlay(message = "Procesando...") {
          const msgElement = loadingOverlay.querySelector('.loading-message');
@@ -762,34 +801,27 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         }
     }
 
-    // Helper function for chunked processing to prevent UI freezing
     async function processInChunks(total, chunkSize, taskFunction) {
         const numChunks = Math.ceil(total / chunkSize);
         logProgress(`Starting task in ${numChunks} chunks (size: ${chunkSize})...`);
         for (let i = 0; i < numChunks; i++) {
             const start = i * chunkSize;
             const end = Math.min(start + chunkSize, total);
-            // Execute the task for the current chunk
             taskFunction(start, end);
-            // Update progress
             const progress = ((i + 1) / numChunks) * 100;
             updateProgress(progress);
-            // Yield control to the event loop briefly
             await new Promise(resolve => setTimeout(resolve, 0));
         }
          logProgress(`Task finished.`);
     }
 
-    // Center the spectrum (DC component at the center)
     function fftShift(spectrum) {
         const height = spectrum.length;
         if (height === 0) return [];
         const width = spectrum[0].length;
         const shiftedSpectrum = Array(height).fill(null).map(() => Array(width));
-
         const cy = Math.floor(height / 2);
         const cx = Math.floor(width / 2);
-
         for (let y = 0; y < height; y++) {
             for (let x = 0; x < width; x++) {
                 const ny = (y + cy) % height;
@@ -800,19 +832,15 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         return shiftedSpectrum;
     }
 
-    // Undo the centering
     function ifftShift(shiftedSpectrum) {
         const height = shiftedSpectrum.length;
          if (height === 0) return [];
         const width = shiftedSpectrum[0].length;
         const spectrum = Array(height).fill(null).map(() => Array(width));
-
         const cy = Math.floor(height / 2);
         const cx = Math.floor(width / 2);
-
         for (let y = 0; y < height; y++) {
             for (let x = 0; x < width; x++) {
-                // Calculate original coordinates *before* shift
                 const oy = (y - cy + height) % height;
                 const ox = (x - cx + width) % width;
                 spectrum[oy][ox] = shiftedSpectrum[y][x];
@@ -821,50 +849,36 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         return spectrum;
     }
 
-
-    // --- Core DFT/IDFT Functions ---
-
+    // --- Core DFT/IDFT Functions --- (Keep as is)
     async function calculate2DDFT(imageData) {
         const width = imageData.width;
         const height = imageData.height;
         logProgress(`Starting DFT for ${width}x${height} image... This may take a while.`);
         showLoadingOverlay(`Calculando DFT (${width}x${height})...`);
-
-        // Initialize spectrum with Complex zeros
         const spectrum = Array(height).fill(null).map(() =>
             Array(width).fill(null).map(() => new Complex(0, 0))
         );
-
-        const chunkSize = Math.max(1, Math.floor(height / 20)); // Smaller chunks for DFT
-
+        const chunkSize = Math.max(1, Math.floor(height / 20));
         await processInChunks(height, chunkSize, (startK, endK) => {
-            // Outer loops: iterate over frequency domain coordinates (k, l) or (v, u)
-            for (let k = startK; k < endK; k++) { // Frequency row (v)
-                for (let l = 0; l < width; l++) { // Frequency column (u)
-                    let realSum = 0;
-                    let imagSum = 0;
-                    // Inner loops: iterate over spatial domain coordinates (m, n) or (y, x)
-                    for (let m = 0; m < height; m++) { // Image row (y)
-                        for (let n = 0; n < width; n++) { // Image column (x)
+            for (let k = startK; k < endK; k++) {
+                for (let l = 0; l < width; l++) {
+                    let realSum = 0; let imagSum = 0;
+                    for (let m = 0; m < height; m++) {
+                        for (let n = 0; n < width; n++) {
                             const pixelIndex = (m * width + n) * 4;
-                            const pixelValue = imageData.data[pixelIndex]; // Use Red channel (grayscale)
+                            const pixelValue = imageData.data[pixelIndex];
                             const angle = 2 * Math.PI * ((k * m / height) + (l * n / width));
                             const cosAngle = Math.cos(angle);
                             const sinAngle = Math.sin(angle);
-
                             realSum += pixelValue * cosAngle;
-                            imagSum -= pixelValue * sinAngle; // Standard DFT definition
+                            imagSum -= pixelValue * sinAngle;
                         }
                     }
                     spectrum[k][l] = new Complex(realSum, imagSum);
                 }
              }
-             // Log progress within the chunk processing if needed
-             // logProgress(`DFT: Processed frequency rows ${startK} to ${endK-1}`);
         });
-
         logProgress("DFT calculation finished.");
-        // hideLoadingOverlay(); // Keep overlay for potential subsequent steps
         return spectrum;
     }
 
@@ -874,135 +888,84 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
          const width = spectrum[0].length;
          logProgress(`Starting IDFT for ${width}x${height} spectrum...`);
          showLoadingOverlay(`Calculando IDFT (${width}x${height})...`);
-
          const resultData = new Uint8ClampedArray(width * height * 4);
-         const spatialDomainValues = Array(height).fill(null).map(() => Array(width).fill(0)); // Store real part temporarily
-         const N = width * height; // Normalization factor
-
-         let minVal = Infinity;
-         let maxVal = -Infinity;
-
-         const chunkSize = Math.max(1, Math.floor(height / 15)); // Adjust chunk size as needed
-
+         const spatialDomainValues = Array(height).fill(null).map(() => Array(width).fill(0));
+         const N = width * height;
+         let minVal = Infinity; let maxVal = -Infinity;
+         const chunkSize = Math.max(1, Math.floor(height / 15));
          await processInChunks(height, chunkSize, (startX, endX) => {
-             // Outer loops: iterate over spatial domain coordinates (x, y)
-             for (let x = startX; x < endX; x++) { // Image row (y in math)
-                 for (let y = 0; y < width; y++) { // Image column (x in math)
+             for (let x = startX; x < endX; x++) {
+                 for (let y = 0; y < width; y++) {
                      let sumReal = 0;
-                     let sumImag = 0; // We only need the real part for intensity
-
-                     // Inner loops: iterate over frequency domain coordinates (k, l)
-                     for (let k = 0; k < height; k++) { // Frequency row (v)
-                         for (let l = 0; l < width; l++) { // Frequency column (u)
+                     for (let k = 0; k < height; k++) {
+                         for (let l = 0; l < width; l++) {
                              const angle = 2 * Math.PI * ((k * x / height) + (l * y / width));
                              const cosAngle = Math.cos(angle);
                              const sinAngle = Math.sin(angle);
                              const specVal = spectrum[k][l];
-
-                             // Complex multiplication: (spec.real + i*spec.imag) * (cos + i*sin)
                              sumReal += (specVal.real * cosAngle - specVal.imag * sinAngle);
-                             // sumImag += (specVal.real * sinAngle + specVal.imag * cosAngle); // Imaginary part not usually needed for display
                          }
                      }
-                     const realValue = sumReal / N; // Normalize
+                     const realValue = sumReal / N;
                      spatialDomainValues[x][y] = realValue;
-
-                     // Track min/max for normalization later
                      if (realValue < minVal) minVal = realValue;
                      if (realValue > maxVal) maxVal = realValue;
                  }
              }
-            // logProgress(`IDFT: Processed spatial rows ${startX} to ${endX-1}`);
          });
-
          logProgress(`IDFT calculation finished. Normalizing values (Min: ${minVal.toFixed(2)}, Max: ${maxVal.toFixed(2)})...`);
-         updateProgress(95); // Indicate near completion before normalization loop
-
-         // --- Normalization and Pixel Assignment ---
+         updateProgress(95);
          const range = maxVal - minVal;
-         const hasRange = range > 1e-6; // Check if range is significant to avoid division by zero
-
+         const hasRange = range > 1e-6;
          for (let x = 0; x < height; x++) {
              for (let y = 0; y < width; y++) {
                  const value = spatialDomainValues[x][y];
-                 let normalizedValue = 0;
-
-                 if (hasRange) {
-                     normalizedValue = Math.round(255 * (value - minVal) / range);
-                 } else {
-                     // Handle case of uniform image (range is near zero)
-                     normalizedValue = Math.round(minVal); // Or maxVal, should be the same
-                 }
-
-                 // Clamp to [0, 255]
+                 let normalizedValue = hasRange ? Math.round(255 * (value - minVal) / range) : Math.round(minVal);
                  const clampedValue = Math.max(0, Math.min(255, normalizedValue));
-
                  const pixelIndex = (x * width + y) * 4;
-                 resultData[pixelIndex] = clampedValue;     // R
-                 resultData[pixelIndex + 1] = clampedValue; // G (grayscale)
-                 resultData[pixelIndex + 2] = clampedValue; // B (grayscale)
-                 resultData[pixelIndex + 3] = 255;           // Alpha (fully opaque)
+                 resultData[pixelIndex] = clampedValue;
+                 resultData[pixelIndex + 1] = clampedValue;
+                 resultData[pixelIndex + 2] = clampedValue;
+                 resultData[pixelIndex + 3] = 255;
              }
          }
          updateProgress(100);
          logProgress("Normalization and pixel assignment finished.");
-         hideLoadingOverlay(); // Hide after IDFT and normalization
+         hideLoadingOverlay();
          return resultData;
     }
 
-
-    // --- Filtering Logic ---
-
+    // --- Filtering Logic --- (Keep as is)
     function applyFilter(spectrum, type, cutoffRatio) {
          const height = spectrum.length;
          if (height === 0) return [];
          const width = spectrum[0].length;
          logProgress(`Applying ${type} filter with cutoff ${cutoffRatio.toFixed(2)}...`);
-
-         const shiftedSpectrum = fftShift(spectrum); // Work with centered spectrum
+         const shiftedSpectrum = fftShift(spectrum);
          const filteredShiftedSpectrum = Array(height).fill(null).map(() => Array(width));
-
          const centerY = Math.floor(height / 2);
          const centerX = Math.floor(width / 2);
-         // Use the distance to the furthest corner as max distance for normalization
          const maxDist = Math.sqrt(centerY * centerY + centerX * centerX);
-         const cutoffDist = cutoffRatio * maxDist; // Absolute distance cutoff
-
+         const cutoffDist = cutoffRatio * maxDist;
          for (let y = 0; y < height; y++) {
              for (let x = 0; x < width; x++) {
                  const distance = Math.sqrt(Math.pow(y - centerY, 2) + Math.pow(x - centerX, 2));
-                 let filterMaskValue = 0; // 0 = block, 1 = pass
-
+                 let filterMaskValue = 0;
                  switch (type) {
-                     case 'lowpass':
-                         filterMaskValue = (distance <= cutoffDist) ? 1 : 0;
-                         break;
-                     case 'highpass':
-                         filterMaskValue = (distance >= cutoffDist) ? 1 : 0;
-                          // Optional: Ensure DC is always blocked in HPF? Sometimes done.
-                          // if (y === centerY && x === centerX) filterMaskValue = 0;
-                         break;
+                     case 'lowpass': filterMaskValue = (distance <= cutoffDist) ? 1 : 0; break;
+                     case 'highpass': filterMaskValue = (distance >= cutoffDist) ? 1 : 0; break;
                      case 'bandpass':
-                         const bandWidthRatio = 0.15; // Relative width (e.g., 15% of maxDist)
-                         const bandWidth = bandWidthRatio * maxDist;
+                         const bandWidth = (0.15 * maxDist);
                          const lowerBound = cutoffDist - bandWidth / 2;
                          const upperBound = cutoffDist + bandWidth / 2;
                          filterMaskValue = (distance >= lowerBound && distance <= upperBound) ? 1 : 0;
                          break;
-                     default:
-                         filterMaskValue = 1; // Pass all if unknown filter
+                     default: filterMaskValue = 1;
                  }
-
-                 // Apply the mask (multiply by 0 or 1)
-                 if (filterMaskValue === 1) {
-                     filteredShiftedSpectrum[y][x] = shiftedSpectrum[y][x]; // Keep original value
-                 } else {
-                     filteredShiftedSpectrum[y][x] = new Complex(0, 0); // Zero out
-                 }
+                 filteredShiftedSpectrum[y][x] = filterMaskValue === 1 ? shiftedSpectrum[y][x] : new Complex(0, 0);
              }
          }
-
-         const filteredSpectrum = ifftShift(filteredShiftedSpectrum); // Shift back to original format
+         const filteredSpectrum = ifftShift(filteredShiftedSpectrum);
          logProgress("Filter mask applied to spectrum.");
          return filteredSpectrum;
     }
@@ -1023,101 +986,88 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         canvasElement.height = height;
         const ctx = canvasElement.getContext('2d');
         const imageData = ctx.createImageData(width, height);
-        imageData.data.set(pixelData); // Assumes pixelData is Uint8ClampedArray RGBA
+        imageData.data.set(pixelData);
         ctx.putImageData(imageData, 0, 0);
     }
 
+    // --- Updated displayMatrixValues Function ---
+    function displayMatrixValues(preElementId, headerElementId, data, width, height, baseLabel, isComplex = false, maxSize = 10) {
+        const preElement = document.getElementById(preElementId);
+        const headerElement = document.getElementById(headerElementId);
 
-    function displayMatrixValues(element, data, width, height, label, isComplex = false) {
-        if (!element) {
-            console.error("Matrix display element not found for:", label);
-            return;
-        }
-        const displayRows = Math.min(10, height);
-        const displayCols = Math.min(10, width);
-        if(displayRows <= 0 || displayCols <= 0) {
-            element.textContent = `${label}: No data to display.`;
+        if (!preElement || !headerElement) {
+            console.error("Matrix display element or header not found for:", baseLabel, preElementId);
             return;
         }
 
-        let matrixText = ''; // Start with empty, header is now H4
-        const colWidth = isComplex ? 10 : 5; // Adjust padding width
-        // matrixText += '-'.repeat(displayCols * colWidth) + '\n'; // Header is H4 now
+        const displaySize = Math.max(1, Math.min(maxSize, width, height)); // Ensure valid size
+        headerElement.textContent = `${baseLabel} (Primeros ${displaySize}x${displaySize})`; // Update header text
 
-        for (let y = 0; y < displayRows; y++) {
+        if (!data || height === 0 || width === 0) {
+            preElement.textContent = `No hay datos para mostrar.`;
+            return;
+        }
+
+        let matrixText = '';
+        const colWidth = isComplex ? 10 : 5;
+
+        for (let y = 0; y < displaySize; y++) {
             let rowText = '';
-            for (let x = 0; x < displayCols; x++) {
+            for (let x = 0; x < displaySize; x++) {
                 let valueStr = '';
                 if (isComplex) {
-                    // Ensure data[y] exists and data[y][x] is a Complex object
-                    const complexVal = (data && data[y] && data[y][x] instanceof Complex) ? data[y][x] : new Complex(0,0);
-                    const magnitude = complexVal.magnitude();
-                    valueStr = magnitude.toFixed(2).padStart(colWidth -1); // Display magnitude
+                    const complexVal = (data[y] && data[y][x] instanceof Complex) ? data[y][x] : new Complex(0, 0);
+                    valueStr = complexVal.magnitude().toFixed(2).padStart(colWidth - 1);
                 } else {
-                     // Ensure data exists and index is valid
                     const pixelIndex = (y * width + x) * 4;
-                    const value = (data && data.length > pixelIndex) ? data[pixelIndex] : 0; // Grayscale value from R channel
+                    const value = (data.length > pixelIndex) ? data[pixelIndex] : 0;
                     valueStr = String(value).padStart(colWidth - 1);
                 }
                 rowText += valueStr + ' ';
             }
             matrixText += rowText.trim() + '\n';
         }
-        // matrixText += '-'.repeat(displayCols * colWidth); // Remove footer line
-        element.textContent = matrixText.trim(); // Set text content of the <pre> tag
+        preElement.textContent = matrixText.trim();
     }
+
 
     function displaySpectrum(canvasElement, spectrum) {
          if (!canvasElement || !spectrum || spectrum.length === 0 || !spectrum[0] || spectrum[0].length === 0) {
              logProgress("Cannot display spectrum: Invalid canvas or spectrum data.");
-             // Optionally clear the canvas
               if(canvasElement) {
                    const ctx = canvasElement.getContext('2d');
-                    if(ctx) {
-                        ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-                    }
-                   canvasElement.width = 1; // Reset size to indicate cleared state
-                   canvasElement.height = 1;
+                    if(ctx) { ctx.clearRect(0, 0, canvasElement.width, canvasElement.height); }
+                   canvasElement.width = 1; canvasElement.height = 1;
               }
              return;
          }
-
          const height = spectrum.length;
          const width = spectrum[0].length;
          canvasElement.width = width;
          canvasElement.height = height;
          const ctx = canvasElement.getContext('2d');
-          if (!ctx) {
-             logProgress(`Failed to get 2D context for canvas ${canvasElement.id}`);
-             return;
-         }
+          if (!ctx) { logProgress(`Failed to get 2D context for canvas ${canvasElement.id}`); return; }
          const imageData = ctx.createImageData(width, height);
-
-         const shiftedSpectrum = fftShift(spectrum); // Center for visualization
-
-         // Find max log magnitude for normalization
+         const shiftedSpectrum = fftShift(spectrum);
          let maxLogMag = 0;
          for (let y = 0; y < height; y++) {
              for (let x = 0; x < width; x++) {
-                  // Ensure shiftedSpectrum[y][x] is a Complex object before calling magnitude
                  const magVal = (shiftedSpectrum[y] && shiftedSpectrum[y][x] instanceof Complex) ? shiftedSpectrum[y][x].magnitude() : 0;
                  const logMag = Math.log(1 + magVal);
                  if (logMag > maxLogMag) maxLogMag = logMag;
              }
          }
-         const normalizationFactor = maxLogMag > 1e-6 ? 255 / maxLogMag : 255; // Avoid div by zero
-
-         // Draw pixels
+         const normalizationFactor = maxLogMag > 1e-6 ? 255 / maxLogMag : 255;
          for (let y = 0; y < height; y++) {
              for (let x = 0; x < width; x++) {
                  const magVal = (shiftedSpectrum[y] && shiftedSpectrum[y][x] instanceof Complex) ? shiftedSpectrum[y][x].magnitude() : 0;
                  const logMag = Math.log(1 + magVal);
                  const pixelValue = Math.min(255, Math.round(logMag * normalizationFactor));
                  const idx = (y * width + x) * 4;
-                 imageData.data[idx] = pixelValue;     // R
-                 imageData.data[idx + 1] = pixelValue; // G
-                 imageData.data[idx + 2] = pixelValue; // B
-                 imageData.data[idx + 3] = 255;        // Alpha
+                 imageData.data[idx] = pixelValue;
+                 imageData.data[idx + 1] = pixelValue;
+                 imageData.data[idx + 2] = pixelValue;
+                 imageData.data[idx + 3] = 255;
              }
          }
          ctx.putImageData(imageData, 0, 0);
@@ -1129,21 +1079,10 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         const cutoffPercent = (cutoffRatio * 100).toFixed(1);
         explanation += `Tipo: ${filterType}, Corte: ${cutoffPercent}% de frec. máx.\n`;
         switch (filterType) {
-            case 'lowpass':
-                explanation += "Acción: Atenúa/elimina frecuencias ALTAS (bordes del espectro centrado).\n";
-                explanation += "Efecto Esperado: Espectro más oscuro hacia los bordes.\n";
-                break;
-            case 'highpass':
-                 explanation += "Acción: Atenúa/elimina frecuencias BAJAS (centro del espectro centrado).\n";
-                 explanation += "Efecto Esperado: Espectro más oscuro en el centro (excepto quizás DC si no se bloquea).\n";
-                break;
-            case 'bandpass':
-                 const bandWidthPercent = (0.15 * 100).toFixed(1); // Match applyFilter width
-                 explanation += `Acción: Conserva un anillo de frecuencias (ancho ~${bandWidthPercent}%).\n`;
-                 explanation += "Efecto Esperado: Solo un anillo brillante visible en el espectro.\n";
-                break;
-            default:
-                 explanation += "Acción: Desconocida.\n"; break;
+            case 'lowpass': explanation += "Acción: Atenúa/elimina frecuencias ALTAS (bordes del espectro centrado).\nEfecto Esperado: Espectro más oscuro hacia los bordes.\n"; break;
+            case 'highpass': explanation += "Acción: Atenúa/elimina frecuencias BAJAS (centro del espectro centrado).\nEfecto Esperado: Espectro más oscuro en el centro (excepto quizás DC si no se bloquea).\n"; break;
+            case 'bandpass': const bandWidthPercent = (0.15 * 100).toFixed(1); explanation += `Acción: Conserva un anillo de frecuencias (ancho ~${bandWidthPercent}%).\nEfecto Esperado: Solo un anillo brillante visible en el espectro.\n`; break;
+            default: explanation += "Acción: Desconocida.\n"; break;
         }
         explanation += "-------------------------------------\n";
         logProgress(explanation);
@@ -1154,168 +1093,118 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         [resultOriginalCanvas, filteredCanvas, originalSpectrumCanvas, filteredSpectrumCanvas].forEach(canvas => {
             if(canvas) {
                 const ctx = canvas.getContext('2d');
-                 if(ctx) {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                 }
-                // Resetting dimensions can visually confirm clearing
-                canvas.width = 1; canvas.height = 1; // Minimal size
+                 if(ctx) { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+                canvas.width = 1; canvas.height = 1;
             }
          });
-         if(filteredMatrixDiv) filteredMatrixDiv.textContent = 'N/A';
-         // Keep original spectrum matrix? Maybe clear it too.
-         if(fourierMatrixDiv) fourierMatrixDiv.textContent = 'N/A';
-          logProgress("Output areas cleared.");
+         // Clear matrix displays
+        if(imageMatrixInitialPre) displayMatrixValues('imageMatrixInitialPre', 'imageMatrixInitialHeader', null, 0, 0, 'Valores de la Matriz', false, 10);
+        if(fourierMatrixPre) displayMatrixValues('fourierMatrixPre', 'fourierMatrixHeader', null, 0, 0, 'Coeficientes DFT', true, 10);
+        if(resultOriginalMatrixPre) displayMatrixValues('resultOriginalMatrixPre', 'resultOriginalMatrixHeader', null, 0, 0, 'Valores de la Matriz', false, 10);
+        if(filteredMatrixPre) displayMatrixValues('filteredMatrixPre', 'filteredMatrixHeader', null, 0, 0, 'Valores de la Matriz Filtrada', false, 10);
+
+         // Reset size inputs
+         if (numImageMatrixSizeInput) numImageMatrixSizeInput.value = 10;
+         if (numDftMatrixSizeInput) numDftMatrixSizeInput.value = 10;
+         if (numFilteredMatrixSizeInput) numFilteredMatrixSizeInput.value = 10;
+         if (resultImageMatrixSizeDisplay) resultImageMatrixSizeDisplay.textContent = 10;
+
+
+         logProgress("Output areas cleared.");
     }
 
     // --- Event Handlers ---
 
     async function handleImageUpload(event) {
         const file = event.target.files[0];
-        if (!file) {
-            logProgress("No file selected.");
-            return;
-        }
+        if (!file) { logProgress("No file selected."); return; }
          if (!file.type.startsWith('image/')) {
               logProgress(`Error: Selected file (${file.name}) is not an image.`);
               alert("Por favor, seleccione un archivo de imagen válido.");
-              imageFileInput.value = ''; // Reset file input
-              return;
+              imageFileInput.value = ''; return;
          }
 
         logProgress(`File selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`);
         showLoadingOverlay("Cargando y procesando imagen...");
-        clearOutputAreas(); // Clear previous results on new upload
-        window.currentSpectrum = null; // Reset spectrum state
+        clearOutputAreas();
+        window.currentSpectrum = null;
         window.currentImageData = null;
-        applyFilterButton.disabled = true; // Disable button during load
+        window.currentFilteredPixelData = null; // Clear filtered data too
+        applyFilterButton.disabled = true;
 
         const reader = new FileReader();
-
         reader.onload = function (e) {
             const img = new Image();
-            img.onload = async function () { // Needs to be async for DFT
+            img.onload = async function () {
                 logProgress("Image loaded into memory. Resizing and converting...");
-
-                // Use temporary canvas for processing to avoid altering display canvas prematurely
                 const tempCanvas = document.createElement('canvas');
                 const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
-                 if(!tempCtx) {
-                     logProgress("Failed to create temporary canvas context.");
-                     hideLoadingOverlay();
-                     return;
-                 }
+                 if(!tempCtx) { logProgress("Failed to create temporary canvas context."); hideLoadingOverlay(); return; }
 
-                // --- Image Resizing ---
-                const originalWidth = img.width;
-                const originalHeight = img.height;
-                const maxSize = 250;
-                let newWidth = originalWidth;
-                let newHeight = originalHeight;
-
+                const originalWidth = img.width; const originalHeight = img.height; const maxSize = 250;
+                let newWidth = originalWidth; let newHeight = originalHeight;
                 if (originalWidth > maxSize || originalHeight > maxSize) {
                      logProgress(`Resizing from ${originalWidth}x${originalHeight} to max ${maxSize}px.`);
-                    if (originalWidth > originalHeight) {
-                        newWidth = maxSize;
-                        newHeight = Math.round((originalHeight * maxSize) / originalWidth);
-                    } else {
-                        newHeight = maxSize;
-                        newWidth = Math.round((originalWidth * maxSize) / originalHeight);
-                    }
+                    if (originalWidth > originalHeight) { newWidth = maxSize; newHeight = Math.round((originalHeight * maxSize) / originalWidth); }
+                    else { newHeight = maxSize; newWidth = Math.round((originalWidth * maxSize) / originalHeight); }
                     logProgress(`New dimensions: ${newWidth}x${newHeight}.`);
-                } else {
-                    logProgress(`Dimensions ${originalWidth}x${originalHeight} within limit.`);
-                }
+                } else { logProgress(`Dimensions ${originalWidth}x${originalHeight} within limit.`); }
 
-                // Set temporary canvas size and draw scaled image
-                tempCanvas.width = newWidth;
-                tempCanvas.height = newHeight;
+                tempCanvas.width = newWidth; tempCanvas.height = newHeight;
                 tempCtx.drawImage(img, 0, 0, newWidth, newHeight);
 
-                // --- Grayscale Conversion ---
                  let imageData;
-                 try {
-                    imageData = tempCtx.getImageData(0, 0, newWidth, newHeight);
-                 } catch (error) {
-                     logProgress(`Error getting image data: ${error}. Tainted canvas?`);
-                     alert("Error processing image. It might be from a different origin or corrupted.");
-                     hideLoadingOverlay();
-                     return;
-                 }
+                 try { imageData = tempCtx.getImageData(0, 0, newWidth, newHeight); }
+                 catch (error) { logProgress(`Error getting image data: ${error}. Tainted canvas?`); alert("Error processing image."); hideLoadingOverlay(); return; }
 
                 const data = imageData.data;
                 for (let i = 0; i < data.length; i += 4) {
-                    // Using luminance-preserving coefficients (more accurate than simple average)
                      const avg = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-                    // const avg = (data[i] + data[i + 1] + data[i + 2]) / 3; // Simple average
-                    data[i] = avg;     // Red
-                    data[i + 1] = avg; // Green
-                    data[i + 2] = avg; // Blue
-                    // Alpha (data[i + 3]) remains unchanged (usually 255)
+                    data[i] = avg; data[i + 1] = avg; data[i + 2] = avg;
                 }
                 logProgress("Image resized and converted to grayscale.");
 
-                // Display the processed image on the main original canvas
                 displayImageOnCanvas(originalCanvas, imageData);
-                window.currentImageData = imageData; // Store for later use
+                window.currentImageData = imageData;
 
-                // Display matrix for the processed image
-                displayMatrixValues(imageMatrixDiv, imageData.data, newWidth, newHeight, 'Imagen Original (Gris)');
+                // Display initial image matrix
+                const imageMatrixSize = parseInt(numImageMatrixSizeInput.value, 10) || 10;
+                displayMatrixValues('imageMatrixInitialPre', 'imageMatrixInitialHeader', imageData.data, newWidth, newHeight, 'Valores de la Matriz', false, imageMatrixSize);
+                if (resultImageMatrixSizeDisplay) resultImageMatrixSizeDisplay.textContent = imageMatrixSize;
+
 
                 try {
-                     // --- Calculate DFT ---
                      const spectrum = await calculate2DDFT(imageData);
-                     window.currentSpectrum = spectrum; // Store globally
+                     window.currentSpectrum = spectrum;
 
-                     // Display original spectrum and its matrix
                      displaySpectrum(originalSpectrumCanvas, spectrum);
-                     displayMatrixValues(fourierMatrixDiv, spectrum, newWidth, newHeight, 'Magnitud DFT', true);
+                     const dftMatrixSize = parseInt(numDftMatrixSizeInput.value, 10) || 10;
+                     displayMatrixValues('fourierMatrixPre', 'fourierMatrixHeader', spectrum, newWidth, newHeight, 'Coeficientes DFT', true, dftMatrixSize);
 
-                     applyFilterButton.disabled = false; // Enable filter button
+                     applyFilterButton.disabled = false;
                      logProgress("DFT calculado. Listo para aplicar filtros.");
 
                 } catch (error) {
-                    logProgress("Error during DFT calculation: " + error);
-                    console.error("DFT Error:", error);
+                    logProgress("Error during DFT calculation: " + error); console.error("DFT Error:", error);
                     alert("Ocurrió un error calculando la DFT. Ver la consola para detalles.");
-                    // applyFilterButton is already disabled or stays disabled
                 } finally {
-                     hideLoadingOverlay(); // Hide after initial processing & DFT
+                     hideLoadingOverlay();
                 }
-            }; // img.onload end
-
-            img.onerror = function () {
-                logProgress("Error loading image data from source.");
-                alert("No se pudo cargar la imagen. Intente con otro archivo.");
-                hideLoadingOverlay();
-                imageFileInput.value = ''; // Reset file input
-                 applyFilterButton.disabled = true;
             };
-
-            img.src = e.target.result; // Trigger img.onload
-        }; // reader.onload end
-
-        reader.onerror = function () {
-            logProgress("Error reading file.");
-            alert("No se pudo leer el archivo seleccionado.");
-            hideLoadingOverlay();
-            imageFileInput.value = ''; // Reset file input
-             applyFilterButton.disabled = true;
+            img.onerror = function () { logProgress("Error loading image data."); alert("No se pudo cargar la imagen."); hideLoadingOverlay(); imageFileInput.value = ''; applyFilterButton.disabled = true; };
+            img.src = e.target.result;
         };
-
-        reader.readAsDataURL(file); // Start reading the file
+        reader.onerror = function () { logProgress("Error reading file."); alert("No se pudo leer el archivo."); hideLoadingOverlay(); imageFileInput.value = ''; applyFilterButton.disabled = true; };
+        reader.readAsDataURL(file);
     }
 
 
     async function handleFilter() {
-         if (!window.currentSpectrum || !window.currentImageData) {
-             logProgress("Error: Datos de imagen o espectro no disponibles. Cargue una imagen primero.");
-             alert("Por favor, cargue una imagen antes de aplicar un filtro.");
-             return;
-         }
+         if (!window.currentSpectrum || !window.currentImageData) { logProgress("Error: Datos no disponibles."); alert("Cargue una imagen primero."); return; }
 
          logProgress("--- Iniciando Proceso de Filtrado ---");
          showLoadingOverlay("Aplicando filtro y calculando IDFT...");
-         applyFilterButton.disabled = true; // Disable during processing
+         applyFilterButton.disabled = true;
 
          const spectrum = window.currentSpectrum;
          const originalImageData = window.currentImageData;
@@ -1324,45 +1213,39 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
 
          try {
              const filterType = filterTypeSelect.value;
-             const cutoffRatio = cutoffFreqSlider.value / 100; // Normalize 0-100 to 0-1
+             const cutoffRatio = cutoffFreqSlider.value / 100;
 
-             // --- Apply Filter ---
              const filteredSpectrum = applyFilter(spectrum, filterType, cutoffRatio);
-
-             // Display filtered spectrum
              displaySpectrum(filteredSpectrumCanvas, filteredSpectrum);
-             explainSpectrumChanges(filterType, cutoffRatio); // Log explanation
+             explainSpectrumChanges(filterType, cutoffRatio);
 
-             // --- Calculate Inverse DFT ---
              const filteredPixelData = await calculate2DIDFT(filteredSpectrum);
+             window.currentFilteredPixelData = filteredPixelData; // Store filtered data
 
-              // --- Display Results ---
-              // Verify filteredPixelData is valid before proceeding
-               if (!filteredPixelData || filteredPixelData.length !== width * height * 4) {
-                   throw new Error("IDFT did not return valid pixel data.");
-               }
+               if (!filteredPixelData || filteredPixelData.length !== width * height * 4) { throw new Error("IDFT did not return valid pixel data."); }
 
-             // Original (grayscale, resized) image for comparison
+             // Display original image in results section
              displayImageOnCanvas(resultOriginalCanvas, originalImageData);
+             // Display original image matrix in results section
+             const imageMatrixSize = parseInt(numImageMatrixSizeInput.value, 10) || 10;
+             displayMatrixValues('resultOriginalMatrixPre', 'resultOriginalMatrixHeader', originalImageData.data, width, height, 'Valores de la Matriz', false, imageMatrixSize);
 
-             // Filtered image
+             // Display filtered image
              displayGrayscaleImageOnCanvas(filteredCanvas, width, height, filteredPixelData);
-
-             // Filtered matrix values
-             displayMatrixValues(filteredMatrixDiv, filteredPixelData, width, height, 'Imagen Filtrada');
+             // Display filtered image matrix
+             const filteredMatrixSize = parseInt(numFilteredMatrixSizeInput.value, 10) || 10;
+             displayMatrixValues('filteredMatrixPre', 'filteredMatrixHeader', filteredPixelData, width, height, 'Valores de la Matriz Filtrada', false, filteredMatrixSize);
 
              logProgress("Filtro aplicado e IDFT calculada con éxito.");
 
          } catch (error) {
-             logProgress("Error durante el filtrado o IDFT: " + error.message);
-             console.error("Filter/IDFT Error:", error);
-             alert("Ocurrió un error durante el proceso de filtrado. Verifique el registro.");
-              // Optionally clear filter results if error occurred
+             logProgress("Error durante el filtrado o IDFT: " + error.message); console.error("Filter/IDFT Error:", error);
+             alert("Ocurrió un error durante el proceso de filtrado.");
               displayGrayscaleImageOnCanvas(filteredCanvas, 1, 1, new Uint8ClampedArray(4)); // Clear canvas
-              if(filteredMatrixDiv) filteredMatrixDiv.textContent = 'Error';
+              if(filteredMatrixPre) displayMatrixValues('filteredMatrixPre', 'filteredMatrixHeader', null, 0, 0, 'Valores de la Matriz Filtrada', false, 10);
          } finally {
-             hideLoadingOverlay(); // Hide overlay when done
-             applyFilterButton.disabled = false; // Re-enable button
+             hideLoadingOverlay();
+             applyFilterButton.disabled = false;
               logProgress("--- Proceso de Filtrado Terminado ---");
          }
     }
@@ -1370,36 +1253,61 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
 
     // --- Initial Setup ---
     function initializeApp() {
-        // Slider value display update
         if(cutoffFreqSlider && cutoffValueSpan) {
-            cutoffValueSpan.textContent = `${cutoffFreqSlider.value}%`; // Initial display
+            cutoffValueSpan.textContent = `${cutoffFreqSlider.value}%`;
             cutoffFreqSlider.addEventListener('input', () => {
                 cutoffValueSpan.textContent = `${cutoffFreqSlider.value}%`;
             });
-        } else {
-             console.error("Slider or value span not found.");
-        }
+        } else { console.error("Slider or value span not found."); }
 
-        // Main event listeners
-        if (imageFileInput) {
-             imageFileInput.addEventListener('change', handleImageUpload);
-        } else {
-            console.error("Image file input not found.");
-        }
+        if (imageFileInput) { imageFileInput.addEventListener('change', handleImageUpload); }
+        else { console.error("Image file input not found."); }
 
          if (applyFilterButton) {
             applyFilterButton.addEventListener('click', handleFilter);
-            applyFilterButton.disabled = true; // Disabled until image is loaded
-        } else {
-            console.error("Apply filter button not found.");
-        }
+            applyFilterButton.disabled = true;
+        } else { console.error("Apply filter button not found."); }
+
+        // --- Add listeners for matrix size inputs ---
+        if (numImageMatrixSizeInput) {
+            numImageMatrixSizeInput.addEventListener('input', () => {
+                const size = parseInt(numImageMatrixSizeInput.value, 10) || 10;
+                if (window.currentImageData) {
+                     displayMatrixValues('imageMatrixInitialPre', 'imageMatrixInitialHeader', window.currentImageData.data, window.currentImageData.width, window.currentImageData.height, 'Valores de la Matriz', false, size);
+                     // Also update the one in the results section if data exists
+                     displayMatrixValues('resultOriginalMatrixPre', 'resultOriginalMatrixHeader', window.currentImageData.data, window.currentImageData.width, window.currentImageData.height, 'Valores de la Matriz', false, size);
+                }
+                if (resultImageMatrixSizeDisplay) resultImageMatrixSizeDisplay.textContent = size; // Update the span display
+                 logProgress(`Tamaño de visualización de matriz de imagen cambiado a ${size}x${size}.`);
+            });
+        } else { console.error("Image matrix size input not found."); }
+
+        if (numDftMatrixSizeInput) {
+            numDftMatrixSizeInput.addEventListener('input', () => {
+                const size = parseInt(numDftMatrixSizeInput.value, 10) || 10;
+                 if (window.currentSpectrum && window.currentImageData) {
+                    displayMatrixValues('fourierMatrixPre', 'fourierMatrixHeader', window.currentSpectrum, window.currentImageData.width, window.currentImageData.height, 'Coeficientes DFT', true, size);
+                 }
+                 logProgress(`Tamaño de visualización de matriz DFT cambiado a ${size}x${size}.`);
+            });
+        } else { console.error("DFT matrix size input not found."); }
+
+        if (numFilteredMatrixSizeInput) {
+            numFilteredMatrixSizeInput.addEventListener('input', () => {
+                 const size = parseInt(numFilteredMatrixSizeInput.value, 10) || 10;
+                 if (window.currentFilteredPixelData && window.currentImageData) {
+                     displayMatrixValues('filteredMatrixPre', 'filteredMatrixHeader', window.currentFilteredPixelData, window.currentImageData.width, window.currentImageData.height, 'Valores de la Matriz Filtrada', false, size);
+                 }
+                 logProgress(`Tamaño de visualización de matriz filtrada cambiado a ${size}x${size}.`);
+            });
+        } else { console.error("Filtered matrix size input not found."); }
+
 
         logProgress("Aplicación inicializada. Esperando carga de imagen.");
         logProgress("Nota: La imagen se redimensionará a máx 250px y se convertirá a escala de grises.");
-        clearOutputAreas(); // Ensure clean state on load
+        clearOutputAreas();
     }
 
-     // Wait for the DOM to be fully loaded before initializing
      document.addEventListener('DOMContentLoaded', initializeApp);
 
 </script>
