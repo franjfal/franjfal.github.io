@@ -1,6 +1,6 @@
 ---
 title: "MatExp"
-permalink: /matexp/
+permalink: /MatExp/
 excerpt: ""
 ---
 
@@ -19,9 +19,9 @@ excerpt: ""
 .flip-card {
   background-color: transparent;
   width: 100%;
-  height: 300px; /* Adjust height as needed */
-  perspective: 1000px; /* This gives the 3D effect */
-  text-decoration: none;
+  height: 300px; /* Fixed height for consistency */
+  perspective: 1000px; /* Provides the 3D effect */
+  position: relative; /* Ensures child absolute positioning is relative to this container */
 }
 
 /* Inner container that will be rotated */
@@ -31,9 +31,6 @@ excerpt: ""
   height: 100%;
   transition: transform 0.6s;
   transform-style: preserve-3d;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* Flip the card on hover */
@@ -47,8 +44,9 @@ excerpt: ""
   position: absolute;
   width: 100%;
   height: 100%;
-  border-radius: 8px;
+  -webkit-backface-visibility: hidden; /* Safari */
   backface-visibility: hidden;
+  border-radius: 8px;
   overflow: hidden;
 }
 
