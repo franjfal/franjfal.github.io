@@ -1,5 +1,5 @@
 ---
-title: "Interactive Image Filtering with Discrete Fourier Transform (DFT)"
+title: "Filtración de imágenes interactivas con la tranformada de Fourier discreta (DFT)"
 date: '2024-01-15 10:30:00 +0100' # CHANGE THIS to your desired publication date/time/zone
 categories:   experimento optimización análisis hilbert imagen proyección aplicaciones
 tags: [Hilbert, proyección ortogonal, DFT, transformada fourier, filtro, imagen, procesamiento señal,]

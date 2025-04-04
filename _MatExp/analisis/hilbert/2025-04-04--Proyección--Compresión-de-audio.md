@@ -17,7 +17,7 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
 
     /* Base styles needed if layout doesn't provide them well */
     .dft-app-container { /* Using a specific wrapper class */
-        font-family: Arial, sans-serif;
+        /* font-family: Arial, sans-serif; */ /* Handled by theme */
         background: #fff;
         padding: 20px;
         border-radius: 8px;
@@ -29,15 +29,15 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
     }
 
     /* Style inputs and buttons specifically within this container */
-    .dft-app-container input,
-    .dft-app-container button {
-        margin: 10px;
-    }
+    /* .dft-app-container input, */ /* Handled by theme */
+    /* .dft-app-container button { */ /* Handled by theme / specific button classes below */
+        /* margin: 10px; */ /* General margin removed */
+    /* } */
 
     .dft-app-container #progressLog {
         background: #222;
         color: #0f0;
-        font-family: monospace;
+        font-family: monospace; /* Keep for specific code look */
         font-size: 0.9em;
         text-align: left;
         padding: 10px;
@@ -61,7 +61,7 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
     .dft-app-container #audioValuesList,
     .dft-app-container #reconstructedAudioValuesList,
     .dft-app-container #dftCoefficientsList {
-        font-family: monospace;
+        /* font-family: monospace; */ /* Theme might handle pre/code */
         font-size: 0.8em;
         text-align: left;
         padding: 10px;
@@ -79,60 +79,76 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
     }
 
     /* Sections within the app */
-     .dft-app-container section {
-        margin-bottom: 25px;
-        padding: 20px;
-        border-radius: 8px;
-        background-color: #ffffff;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        border: 1px solid #eee;
-        text-align: left; /* Default text align for sections */
-    }
-     .dft-app-container section h2,
-     .dft-app-container section h3 {
-        margin-top: 0;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #eee;
-        color: #333;
-        font-size: 1.4em;
-        text-align: center; /* Center section titles */
-     }
-      .dft-app-container section h3 {
-         font-size: 1.2em;
-         border-bottom-style: dashed;
-         margin-bottom: 15px;
-     }
-     .dft-app-container section p {
-         font-size: 0.95em;
-         line-height: 1.6;
-         color: #333;
-         margin-bottom: 12px;
-     }
-      .dft-app-container section strong {
-         font-weight: 600;
-     }
-     .dft-app-container section ol {
-        margin-left: 20px;
-        margin-bottom: 15px;
-        padding-left: 15px;
-     }
-    .dft-app-container section li {
-        margin-bottom: 8px;
-        line-height: 1.6;
-     }
+     /* .dft-app-container section { */ /* Handled by theme */
+        /* margin-bottom: 25px; */
+        /* padding: 20px; */
+        /* border-radius: 8px; */
+        /* background-color: #ffffff; */
+        /* box-shadow: 0 1px 3px rgba(0,0,0,0.05); */
+        /* border: 1px solid #eee; */
+        /* text-align: left; */ /* Default text align for sections */
+    /* } */
+     /* .dft-app-container section h2, */ /* Handled by theme */
+     /* .dft-app-container section h3 { */ /* Handled by theme */
+        /* margin-top: 0; */
+        /* padding-bottom: 10px; */
+        /* border-bottom: 1px solid #eee; */
+        /* color: #333; */
+        /* font-size: 1.4em; */
+        /* text-align: center; */ /* Center section titles */
+     /* } */
+      /* .dft-app-container section h3 { */ /* Handled by theme */
+         /* font-size: 1.2em; */
+         /* border-bottom-style: dashed; */
+         /* margin-bottom: 15px; */
+     /* } */
+     /* .dft-app-container section p { */ /* Handled by theme */
+         /* font-size: 0.95em; */
+         /* line-height: 1.6; */
+         /* color: #333; */
+         /* margin-bottom: 12px; */
+     /* } */
+      /* .dft-app-container section strong { */ /* Handled by theme */
+         /* font-weight: 600; */
+     /* } */
+     /* .dft-app-container section ol { */ /* Handled by theme */
+        /* margin-left: 20px; */
+        /* margin-bottom: 15px; */
+        /* padding-left: 15px; */
+     /* } */
+    /* .dft-app-container section li { */ /* Handled by theme */
+        /* margin-bottom: 8px; */
+        /* line-height: 1.6; */
+     /* } */
 
     /* Introduction & Context Specific Styles */
     .dft-app-container .intro-section {
-        border-color: #d1ecf1; background-color: #f0f8ff;
+        border: 1px solid #d1ecf1; /* Keep border color */
+        background-color: #f0f8ff; /* Keep background color */
     }
-    .dft-app-container .intro-section h2 { color: #0c5460; border-color: #bee5eb; }
-    .dft-app-container .intro-section .intro-content { color: #0c5460; }
+    .dft-app-container .intro-section h2 {
+        color: #0c5460; /* Keep specific color */
+        border-bottom: 1px solid #bee5eb; /* Keep specific border */
+        /* Base H2 styles handled by theme */
+    }
+    .dft-app-container .intro-section .intro-content {
+        color: #0c5460; /* Keep specific color */
+        /* Base P styles handled by theme */
+     }
 
     .dft-app-container .context-section {
-        border-color: #d4edda; background-color: #f8fff9;
+        border: 1px solid #d4edda; /* Keep border color */
+        background-color: #f8fff9; /* Keep background color */
     }
-     .dft-app-container .context-section h3 { color: #155724; border-color: #c3e6cb; }
-    .dft-app-container .context-section .context-content { color: #155724; }
+     .dft-app-container .context-section h3 {
+        color: #155724; /* Keep specific color */
+        border-bottom: 1px dashed #c3e6cb; /* Keep specific border */
+        /* Base H3 styles handled by theme */
+     }
+    .dft-app-container .context-section .context-content {
+        color: #155724; /* Keep specific color */
+         /* Base P, OL, LI styles handled by theme */
+    }
 
 
     /* --- Styles for Notification Area --- */
@@ -143,7 +159,7 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         padding: 12px 20px;
         margin: 0 auto 20px auto; /* Centered margin */
         border-radius: 8px;
-        font-size: 0.95em;
+        font-size: 0.95em; /* Keep specific size */
         text-align: center;
         max-width: 90%; /* Limit width */
         animation: dftFadeIn 0.5s ease-in; /* Prefixed animation name */
@@ -194,38 +210,39 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
     }
     .dft-app-container .quick-nav li { margin: 5px 10px; }
     .dft-app-container .quick-nav a {
-        color: #3498db;
-        text-decoration: none;
+        /* color: #3498db; */ /* Handled by theme */
+        /* text-decoration: none; */ /* Handled by theme */
         padding: 5px 10px;
         border-radius: 5px;
-        transition: all 0.3s ease;
-        font-size: 0.9em;
+        transition: all 0.3s ease; /* Keep transition */
+        font-size: 0.9em; /* Keep specific size */
         display: inline-block;
     }
     .dft-app-container .quick-nav a:hover {
-        background-color: #f0f0f0;
-        color: #2980b9;
+        background-color: #f0f0f0; /* Keep specific hover */
+        color: #2980b9; /* Keep specific hover color */
     }
 
 
     /* --- Consolidated Button Styles --- */
-    .dft-app-container button {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        padding: 10px 16px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 0.95em;
-        font-weight: 500;
-        margin: 6px;
-        transition: all 0.2s ease;
-        color: white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-        border-bottom-width: 3px;
-        border-bottom-style: solid;
-    }
-    .dft-app-container button:hover:not(:disabled) {
+    /* General button styling handled by theme */
+    /* .dft-app-container button { ... } */
+    /* .dft-app-container button:hover:not(:disabled) { ... } */
+    /* .dft-app-container button:active:not(:disabled) { ... } */
+    /* .dft-app-container button:disabled { ... } */
+
+    /* Keep specific button type colors */
+    .dft-app-container .primary-button { background-color: #2563eb; border-bottom-color: #1e40af; color: white; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); border-bottom-width: 3px; border-bottom-style: solid; }
+    .dft-app-container .primary-button:hover:not(:disabled) { background-color: #1d4ed8; }
+    .dft-app-container .secondary-button { background-color: #10b981; border-bottom-color: #059669; color: white; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); border-bottom-width: 3px; border-bottom-style: solid; }
+    .dft-app-container .secondary-button:hover:not(:disabled) { background-color: #059669; }
+    .dft-app-container .action-button { background-color: #f97316; border-bottom-color: #ea580c; color: white; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); border-bottom-width: 3px; border-bottom-style: solid; }
+    .dft-app-container .action-button:hover:not(:disabled) { background-color: #ea580c; }
+    .dft-app-container .reset-button { background-color: #dc3545; border-bottom-color: #a71d2a; color: white; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); border-bottom-width: 3px; border-bottom-style: solid; }
+    .dft-app-container .reset-button:hover:not(:disabled) { background-color: #c82333; }
+
+    /* Keep hover/active/disabled effects if they differ significantly from theme */
+     .dft-app-container button:hover:not(:disabled) {
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
@@ -233,9 +250,9 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         transform: translateY(0);
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         border-bottom-width: 2px;
-        margin-top: 7px;
+        margin-top: 7px; /* Adjust margin */
     }
-    .dft-app-container button:disabled {
+     .dft-app-container button:disabled {
         background-color: #b8b8b8;
         cursor: not-allowed;
         opacity: 0.7;
@@ -243,14 +260,7 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         box-shadow: none;
         border-bottom-color: #999;
     }
-    .dft-app-container .primary-button { background-color: #2563eb; border-bottom-color: #1e40af; }
-    .dft-app-container .primary-button:hover:not(:disabled) { background-color: #1d4ed8; }
-    .dft-app-container .secondary-button { background-color: #10b981; border-bottom-color: #059669; }
-    .dft-app-container .secondary-button:hover:not(:disabled) { background-color: #059669; }
-    .dft-app-container .action-button { background-color: #f97316; border-bottom-color: #ea580c; }
-    .dft-app-container .action-button:hover:not(:disabled) { background-color: #ea580c; }
-    .dft-app-container .reset-button { background-color: #dc3545; border-bottom-color: #a71d2a; }
-    .dft-app-container .reset-button:hover:not(:disabled) { background-color: #c82333; }
+
     .dft-app-container .button-container {
         display: flex;
         flex-wrap: wrap;
@@ -271,42 +281,59 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         margin: 15px 0;
         gap: 10px; /* Add gap between controls */
     }
+     /* .dft-app-container .controls label, */ /* Handled by theme */
+     /* .dft-app-container .inline-controls label { */ /* Handled by theme */
+        /* margin: 0 5px; */
+        /* font-size: 0.95em; */
+        /* color: #333; */
+        /* display: inline-flex; */ /* Keep for alignment */
+        /* align-items: center; */ /* Keep for alignment */
+    /* } */
      .dft-app-container .controls label,
      .dft-app-container .inline-controls label {
-        margin: 0 5px;
-        font-size: 0.95em;
-        color: #333;
-        display: inline-flex; /* Align items nicely */
-        align-items: center;
-    }
-     .dft-app-container .controls input[type="radio"] {
-        margin-right: 5px;
-    }
-     .dft-app-container .inline-controls input[type="number"] {
-        width: 80px;
-        padding: 6px 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        margin: 0 5px;
-        text-align: right;
-        font-size: 0.95em; /* Match label size */
-    }
-     .dft-app-container input[type="file"] {
-        display: block;
-        margin: 15px auto; /* Center file input */
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        max-width: 90%;
-    }
-
-     .dft-app-container #fileSection p,
-     .dft-app-container #liveSection p {
-         font-size: 0.8em;
-         color: #555;
-         text-align: center;
-         margin-top: 5px;
+         display: inline-flex; /* Keep for alignment */
+         align-items: center; /* Keep for alignment */
+         margin: 0 5px; /* Keep margin for spacing */
      }
+     .dft-app-container .controls input[type="radio"] {
+        margin-right: 5px; /* Keep specific margin */
+    }
+     /* .dft-app-container .inline-controls input[type="number"] { */ /* Handled by theme */
+        /* width: 80px; */
+        /* padding: 6px 10px; */
+        /* border: 1px solid #ccc; */
+        /* border-radius: 4px; */
+        /* margin: 0 5px; */
+        /* text-align: right; */
+        /* font-size: 0.95em; */
+    /* } */
+      .dft-app-container .inline-controls input[type="number"] {
+          width: 80px; /* Keep specific width */
+          text-align: right; /* Keep specific text align */
+          margin: 0 5px; /* Keep specific margin */
+          /* Other styles from theme */
+      }
+     /* .dft-app-container input[type="file"] { */ /* Handled by theme */
+        /* display: block; */
+        /* margin: 15px auto; */ /* Center file input */
+        /* padding: 10px; */
+        /* border: 1px solid #ccc; */
+        /* border-radius: 4px; */
+        /* max-width: 90%; */
+    /* } */
+      .dft-app-container input[type="file"] {
+         display: block; /* Keep display block */
+         margin: 15px auto; /* Keep centering margin */
+         max-width: 90%; /* Keep max-width */
+     }
+
+     /* .dft-app-container #fileSection p, */ /* Handled by theme */
+     /* .dft-app-container #liveSection p { */ /* Handled by theme */
+         /* font-size: 0.8em; */
+         /* color: #555; */
+         /* text-align: center; */
+         /* margin-top: 5px; */
+     /* } */
 
 
     /* --- Side-by-side values comparison --- */
@@ -322,10 +349,10 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
     }
     .dft-app-container .values-column h3 {
         margin-bottom: 10px;
-        font-size: 1.1em;
-        color: #2c3e50;
+        font-size: 1.1em; /* Keep specific size */
+        color: #2c3e50; /* Keep specific color */
         padding-bottom: 5px;
-        border-bottom: 1px dashed #ddd;
+        border-bottom: 1px dashed #ddd; /* Keep specific border */
         text-align: center;
     }
 
@@ -366,10 +393,10 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
 
     /* --- Responsive Media Queries (scoped to container) --- */
     @media (max-width: 768px) {
-         .dft-app-container { width: 100%; padding: 10px; margin: 10px auto; /* Adjust margin for smaller screens */ }
-         .dft-app-container h1 { font-size: 1.5em; }
-         .dft-app-container h2 { font-size: 1.3em; }
-         .dft-app-container section { padding: 15px; }
+         /* .dft-app-container { width: 100%; padding: 10px; margin: 10px auto; } */ /* Handled by theme */
+         /* .dft-app-container h1 { font-size: 1.5em; } */ /* Handled by theme */
+         /* .dft-app-container h2 { font-size: 1.3em; } */ /* Handled by theme */
+         /* .dft-app-container section { padding: 15px; } */ /* Handled by theme */
 
         .dft-app-container .button-container {
             flex-direction: column; align-items: stretch;
@@ -387,24 +414,24 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         .dft-app-container .values-column { min-width: 100%; margin-bottom: 10px; }
         .dft-app-container .values-list,
         .dft-app-container .coefficients-list,
-        .dft-app-container #progressLog { font-size: 0.75em; max-width: 100%; }
+        .dft-app-container #progressLog { font-size: 0.75em; max-width: 100%; } /* Keep specific font size */
         .dft-app-container #audioCanvas { height: 120px; } /* Smaller canvas */
     }
 
      @media (max-width: 480px) {
-         .dft-app-container { padding: 5px; margin: 5px auto; }
-         .dft-app-container h1 { font-size: 1.3em; }
-         .dft-app-container h2 { font-size: 1.1em; }
-         .dft-app-container section { padding: 10px; margin-bottom: 15px; }
+         /* .dft-app-container { padding: 5px; margin: 5px auto; } */ /* Handled by theme */
+         /* .dft-app-container h1 { font-size: 1.3em; } */ /* Handled by theme */
+         /* .dft-app-container h2 { font-size: 1.1em; } */ /* Handled by theme */
+         /* .dft-app-container section { padding: 10px; margin-bottom: 15px; } */ /* Handled by theme */
          .dft-app-container .values-list,
          .dft-app-container .coefficients-list,
-         .dft-app-container #progressLog { font-size: 0.7em; padding: 8px; }
-         .dft-app-container .quick-nav a { font-size: 0.85em; padding: 4px 8px;}
-         .dft-app-container button { font-size: 0.9em; padding: 8px 12px; }
+         .dft-app-container #progressLog { font-size: 0.7em; padding: 8px; } /* Keep specific size/padding */
+         .dft-app-container .quick-nav a { font-size: 0.85em; padding: 4px 8px;} /* Keep specific size/padding */
+         .dft-app-container button { font-size: 0.9em; padding: 8px 12px; } /* Keep specific size/padding */
          .dft-app-container .controls label,
-         .dft-app-container .inline-controls label { font-size: 0.9em; }
-         .dft-app-container .inline-controls input[type="number"] { width: 70px; font-size: 0.9em; }
-         .dft-app-container #audioCanvas { height: 100px; }
+         .dft-app-container .inline-controls label { font-size: 0.9em; } /* Keep specific size */
+         .dft-app-container .inline-controls input[type="number"] { width: 70px; font-size: 0.9em; } /* Keep specific size/width */
+         .dft-app-container #audioCanvas { height: 100px; } /* Keep specific height */
      }
 
     /* --- END OF EMBEDDED CSS --- */
@@ -484,14 +511,14 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         </div>
         <div id="fileSection">
             <input type="file" id="audioFile" accept="audio/wav,audio/wave,audio/x-wav,.wav">
-            <p>Nota: Audios largos (&gt; 2s) serán recortados para el análisis.</p>
+            <p>Nota: Audios largos (> 2s) serán recortados para el análisis.</p>
         </div>
         <div id="liveSection" style="display:none;">
             <div class="button-container">
                 <button id="startRec" class="action-button">Iniciar Grabación (máx ~10s)</button>
                 <button id="stopRec" class="action-button" disabled>Detener Grabación</button>
             </div>
-            <p>Nota: Grabaciones largas (&gt; 2s) serán recortadas para el análisis.</p>
+            <p>Nota: Grabaciones largas (> 2s) serán recortadas para el análisis.</p>
         </div>
     </section>
 
