@@ -52,6 +52,7 @@ layout: default
 <ul class="matexp-grid">
   {% for post in site.MatExp %}
     <li class="matexp-card">
+      <p>Image path: {{ post.image }}</p>
       {% if post.image %}
         <img src="{{ post.image | relative_url }}" alt="{{ post.title }}" class="matexp-image">
       {% endif %}
