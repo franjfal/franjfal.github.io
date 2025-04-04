@@ -6,6 +6,7 @@ categories: experimento modelización-matemática
 taxonomy: experimento modelización Covid-19
 permalink: /MatExp/aplicada/epidemiologia/portales-covid-19/
 excerpt: "Listado de portales con datos sobre la Covid-19."
+hidden: true
 ---
 
 
