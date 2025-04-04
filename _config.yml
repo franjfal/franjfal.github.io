@@ -60,35 +60,29 @@ plugins:
   - jemoji
   - jekyll-include-cache
 
-author:
-  name: "First Lastname"
-  avatar: "/assets/images/bio-photo.jpg"
-  bio: "My awesome biography constrained to a sentence or two goes here."
-  links:
-    - label: "Website"
-      icon: "fas fa-fw fa-link"
-      url: "https://"
-    - label: "Twitter"
-      icon: "fab fa-fw fa-twitter-square"
-      url: "https://twitter.com/"
-    - label: "GitHub"
-      icon: "fab fa-fw fa-github"
-      url: "https://github.com/"
-    - label: "Instagram"
-      icon: "fab fa-fw fa-instagram"
-      url: "https://instagram.com/"
+collections:
+  MatExp:
+    output: true
 
-footer:
-  links:
-    - label: "Twitter"
-      icon: "fab fa-fw fa-twitter-square"
-      url: "https://twitter.com/"
-    - label: "GitHub"
-      icon: "fab fa-fw fa-github"
-      url: "https://github.com/"
-    - label: "Instagram"
-      icon: "fab fa-fw fa-instagram"
-      url: "https://instagram.com/"
+# defaults:
+#   # _posts
+#   - scope:
+#       path: ""
+#       type: posts
+#     values:
+#       layout: single
+#       author_profile: true
+#       read_time: true
+#       comments: true
+#       share: true
+#       related: true
+#   # _pages
+#   - scope:
+#       path: "_pages"
+#       type: pages
+#     values:
+#       layout: single
+#       author_profile: true
 
 defaults:
   # _posts
@@ -97,22 +91,37 @@ defaults:
       type: posts
     values:
       layout: single
+      classes: wide
       author_profile: true
-      read_time: true
-      comments: true
+      author: Javier Falcó
+      read_time: false
+      comments: false
       share: true
-      related: true
-  # _pages
+      related: false
+
+  # pages
   - scope:
-      path: "_pages"
-      type: pages
+      path: "pages"
     values:
       layout: single
+      classes: wide
       author_profile: true
+      author: Javier Falcó
+      read_time: false
+      comments: false
+      share: false
+      related: false
 
-category_archive:
-  type: liquid
-  path: /categories/
-tag_archive:
-  type: liquid
-  path: /tags/
+  # _MatExp
+  - scope:
+      path: ""
+      type: MatExp
+    values:
+      layout: MatExp
+      classes: wide
+      author_profile: true
+      author: Javier Falcó
+      read_time: false
+      comments: false
+      share: true
+      related: false
