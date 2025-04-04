@@ -7,22 +7,29 @@ layout: default
 <h1>Mathematical Experiments</h1>
 
 <style>
-.matexp-list {
+.matexp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+  gap: 20px;
   list-style: none;
   padding: 0;
 }
 
-.matexp-item {
-  position: relative;
-  overflow: hidden;
-  border-bottom: 1px solid #eee;
-  padding: 10px 0;
+.matexp-card {
+  border: 1px solid #eee;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.matexp-card:hover {
+  transform: translateY(-5px); /* Slight lift on hover */
 }
 
 .matexp-image {
-  float: left;
-  margin-right: 10px;
-  max-width: 150px;
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
 }
 
 .matexp-title {
@@ -37,14 +44,14 @@ layout: default
   transition: max-height 0.3s ease-out;
 }
 
-.matexp-item:hover .matexp-excerpt {
+.matexp-card:hover .matexp-excerpt {
   max-height: 200px; /* Adjust as needed */
 }
 </style>
 
-<ul class="matexp-list">
+<ul class="matexp-grid">
   {% for post in site.MatExp %}
-    <li class="matexp-item">
+    <li class="matexp-card">
       {% if post.image %}
         <img src="{{ post.image | relative_url }}" alt="{{ post.title }}" class="matexp-image">
       {% endif %}
