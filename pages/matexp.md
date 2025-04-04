@@ -8,7 +8,7 @@ excerpt: ""
 
 <ul>
   {% for post in site.MatExp %}
-      {% unless post.hidden %}
+    {% unless post.hidden %}
       <li>
         {% if post.feature %}
           <img src="{{ post.feature | relative_url }}" alt="{{ post.title }}" style="float: left; margin-right: 10px; max-width: 150px;">

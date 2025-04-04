@@ -2,6 +2,7 @@
 title: Cubo de Rubik
 permalink: "/otros/cuboRubik/"
 layout: reveal
+hidden: true
 ---
 
 <section>
