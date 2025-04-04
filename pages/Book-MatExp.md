@@ -89,8 +89,6 @@ A través de actividades manipulativas, visuales e interactivas, el libro ofrece
   </div>
   
 
----
-
 ## Material complementario
 
 ### 1. Secciones cónicas y órbitas planetarias
