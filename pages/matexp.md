@@ -27,7 +27,8 @@ excerpt: ""
 .flip-card-inner {
   position: relative;
   width: 100%;
-  min-height: 350px;
+  height: 100%;
+  min-height: 380px;
   transition: transform 0.6s;
   transform-style: preserve-3d;
 }
@@ -42,7 +43,8 @@ excerpt: ""
 .matexp-card-back {
   position: absolute;
   width: 100%;
-  min-height: 350px;
+  height: 100%;
+  min-height: 380px;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   border-radius: 12px;
@@ -52,7 +54,8 @@ excerpt: ""
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
+  overflow: hidden;
 }
 
 /* Front face */
@@ -61,8 +64,10 @@ excerpt: ""
 }
 
 .matexp-card-front img {
-  max-width: 100%;
+  width: 100%;
   height: auto;
+  max-height: 180px;
+  object-fit: contain;
   margin-bottom: 10px;
   border-radius: 6px;
 }
@@ -72,6 +77,7 @@ excerpt: ""
   margin: 0;
   text-align: center;
   color: #333;
+  flex-shrink: 0;
 }
 
 /* Back face */
@@ -97,6 +103,7 @@ excerpt: ""
   line-height: 1.5;
 }
 </style>
+
 
 <div class="matexp-grid">
   {% for post in site.MatExp %}
