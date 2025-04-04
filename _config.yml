@@ -125,3 +125,22 @@ defaults:
       comments: false
       share: true
       related: false
+
+head_scripts:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js
+  - /assets/js/my-scripts-header.js
+  - /assets/js/videojs-ie8.min.js
+
+footer_scripts:
+  - /assets/js/video.js
+
+markdown: kramdown
+kramdown:
+  math_engine: mathjax
+
+category_archive:
+  type: liquid
+  path: /categories/
+tag_archive:
+  type: liquid
+  path: /tags/
