@@ -62,27 +62,28 @@ A través de actividades manipulativas, visuales e interactivas, el libro ofrece
     <p><i class="fas fa-calendar-alt"></i><strong>Año:</strong> 2022</p>
     <p><i class="fas fa-barcode"></i><strong>ISBN:</strong> 9788413924641</p>
 
-    <p><strong>Resumen:</strong><br>
-    En las matemáticas elementales, las actividades manipulativas están fuertemente integradas en la enseñanza para facilitar la visualización y comprensión de los conceptos. Sin embargo, su presencia se reduce en la explicación de las matemáticas avanzadas.</p>
-
-    <p>En este libro redescubriremos cinco teorías matemáticas clave, cuyas definiciones y resultados se complementan con aplicaciones a situaciones cotidianas, propuestas didácticas que nos permitirán ver y tocar el mundo matemático.</p>
-
-    <p>Como dijo el matemático Stanley Gudder, “La esencia de las matemáticas no es hacer las cosas simples complicadas, sino hacer las cosas complicadas simples”. Con ese mismo espíritu, esta obra desea convertir complejas abstracciones en conocimientos accesibles.</p>
-
-    <p>
-      <a href="https://es.literaturasm.com/libro/matematicas-experimentales" target="_blank">
-        <i class="fas fa-globe"></i> Página oficial
-      </a><br>
-      <a href="https://www.amazon.com/-/es/MATEM%C3%81TICAS-EXPERIMENTALES-Actividades-manipulativas-visualizar/dp/8413924642" target="_blank">
-        <i class="fas fa-shopping-cart"></i> Comprar en Amazon
-      </a><br>
-      <a href="https://www.rsme.es/2022/06/matematicas-experimentales-nuevo-libro-de-la-biblioteca-estimulos-matematicos/" target="_blank">
-        <i class="fas fa-newspaper"></i> Nota en la RSME
-      </a>
-    </p>
+    
   </div>
 </div>
 
+**Resumen:**  
+En las matemáticas elementales, las actividades manipulativas están fuertemente integradas en la enseñanza para facilitar la visualización y comprensión de los conceptos. Sin embargo, su presencia se reduce en la explicación de las matemáticas avanzadas.
+
+En este libro redescubriremos cinco teorías matemáticas clave, cuyas definiciones y resultados se complementan con aplicaciones a situaciones cotidianas, propuestas didácticas que nos permitirán ver y tocar el mundo matemático.
+
+Como dijo el matemático Stanley Gudder, “La esencia de las matemáticas no es hacer las cosas simples complicadas, sino hacer las cosas complicadas simples”. Con ese mismo espíritu, esta obra desea convertir complejas abstracciones en conocimientos accesibles.
+
+<p>
+  <a href="https://es.literaturasm.com/libro/matematicas-experimentales" target="_blank">
+    <i class="fas fa-globe"></i> Página oficial
+  </a><br>
+  <a href="https://www.amazon.com/-/es/MATEM%C3%81TICAS-EXPERIMENTALES-Actividades-manipulativas-visualizar/dp/8413924642" target="_blank">
+    <i class="fas fa-shopping-cart"></i> Comprar en Amazon
+  </a><br>
+  <a href="https://www.rsme.es/2022/06/matematicas-experimentales-nuevo-libro-de-la-biblioteca-estimulos-matematicos/" target="_blank">
+    <i class="fas fa-newspaper"></i> Nota en la RSME
+  </a>
+</p>
 
 
 ## Material complementario
