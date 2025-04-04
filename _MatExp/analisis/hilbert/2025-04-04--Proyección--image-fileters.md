@@ -608,6 +608,8 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
             <!-- HTML H3 -->
             <h3>Imagen Original (Gris)</h3>
             <canvas id="resultOriginalCanvas"></canvas>
+            <h4>Valores de la Matriz original (Primeros 10x10)</h4>
+            <pre id="imageMatrix" class="matrix-values"></pre>
         </div>
         <div class="image-container">
             <!-- HTML H3 -->
