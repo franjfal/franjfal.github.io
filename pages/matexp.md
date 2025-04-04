@@ -1,59 +1,65 @@
 ---
-title: "Mathematical Experiments"
+title: "MatExp"
 permalink: /matexp/
-layout: default
+excerpt: ""
 ---
 
-<h1>Mathematical Experiments</h1>
+<h1>Experimentos matemáticos</h1>
 
 <style>
-.matexp-list {
-  list-style: none;
-  padding: 0;
-}
+  .matexp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 20px;
+    padding: 20px;
+  }
 
-.matexp-item {
-  position: relative;
-  overflow: hidden;
-  border-bottom: 1px solid #eee;
-  padding: 10px 0;
-}
+  .matexp-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+  }
 
-.matexp-image {
-  float: left;
-  margin-right: 10px;
-  max-width: 150px;
-}
+  .matexp-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
 
-.matexp-title {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
+  .matexp-card img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+  }
 
-.matexp-excerpt {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease-out;
-}
+  .matexp-card a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #333;
+    transition: color 0.3s ease;
+  }
 
-.matexp-item:hover .matexp-excerpt {
-  max-height: 200px; /* Adjust as needed */
-}
+  .matexp-card a:hover {
+    color: #007bff; /* Change color on hover */
+  }
+
+  .matexp-card p {
+    margin-top: 5px;
+  }
 </style>
 
-<ul class="matexp-list">
+<div class="matexp-grid">
   {% for post in site.MatExp %}
-    <li class="matexp-item">
-      {% if post.image %}
-        <img src="{{ post.image | relative_url }}" alt="{{ post.title }}" class="matexp-image">
-      {% endif %}
-      <a href="{{ post.url }}" class="matexp-title">{{ post.title }}</a>
-      {% if post.excerpt %}
-        <div class="matexp-excerpt">
+    {% if post.hidden != true %}
+      <div class="matexp-card">
+        {% if post.feature %}
+          <img src="{{ post.feature | relative_url }}" alt="{{ post.title }}">
+        {% endif %}
+        <a href="{{ post.url }}">{{ post.title }}</a>
+        {% if post.excerpt %}
           <p>{{ post.excerpt }}</p>
-        </div>
-      {% endif %}
-    </li>
+        {% endif %}
+      </div>
+    {% endif %}
   {% endfor %}
-</ul>
+</div>
