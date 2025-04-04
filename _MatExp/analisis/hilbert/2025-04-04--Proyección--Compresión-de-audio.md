@@ -1,16 +1,14 @@
 ---
 title: Demostración Interactiva - Compresión de Audio con DFT
-date: '2024-04-04 14:54:31 +0200'
+date: '2024-01-15 10:30:00 +0100' # CHANGE THIS to your desired publication date/time/zone
 categories:
-- experimento
-- Hilbert
-- aplicación
-taxonomy: experimento proyección hilbert análisis aplicación aplicaciones
-permalink: "/MatExp/analisis/derivadas/palomitas/"
+  experimento optimización análisis hilbert audio proyección aplicaciones
+tags: [Hilbert, proyección ortogonal, DFT, transformada fourier, compresión audio, procesamiento señal,]
+permalink: "/MatExp/analisis/hilbert/"
 header:
-  image: "/assets/MatExp/analisis/derivadas/palomitas/header.jpg"
-excerpt: 
-feature: "/assets/MatExp/analisis/derivadas/palomitas/feature.jpg"
+  image: "/assets/MatExp/analisis/hilbert/audio/header.jpg"
+excerpt: "Demostración interactiva que ilustra la compresión de audio usando la Transformada Discreta de Fourier (DFT). Carga/graba audio, calcula la DFT, trunca coeficientes y escucha el resultado."
+feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
 ---
 
 <!-- Embedded CSS -->

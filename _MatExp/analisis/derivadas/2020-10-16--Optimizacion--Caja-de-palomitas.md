@@ -1,21 +1,24 @@
 ---
-title: Demostración Interactiva - Compresión de Audio con DFT
-date: '2024-01-15 10:30:00 +0100' # CHANGE THIS to your desired publication date/time/zone
+title: La caja de palomitas del cine
+date: '2020-10-16 14:54:31 +0200'
 categories:
-  - demo                  # General category for demos/experiments
-  - audio                 # Category related to audio processing
-  - matemáticas           # Category related to the underlying math
-  - javascript            # Category related to the implementation technology
-# Use 'tags' (more standard) instead of 'taxonomy' unless your theme requires 'taxonomy'
-tags: [DFT, transformada fourier, compresión audio, procesamiento señal, javascript, web audio api, demostración interactiva, html5]
-permalink: "/demos/audio/dft-compression/" # CHANGE THIS to your desired URL path
+- experimento
+- Análisis-una-variable
+taxonomy: experimento optimización análisis derivadas aplicaciones
+permalink: "/MatExp/analisis/derivadas/palomitas/"
 header:
-  # CHANGE THIS path to an actual image if you have one, otherwise remove 'header' block
-  image: "/assets/images/demos/dft-audio/header_placeholder.jpg"
-excerpt: "Demostración interactiva que ilustra la compresión de audio usando la Transformada Discreta de Fourier (DFT). Carga/graba audio, calcula la DFT, trunca coeficientes y escucha el resultado."
-# gallery1: This doesn't seem applicable to an interactive demo, so it's omitted.
-# You could add a gallery of result screenshots if desired, following the same structure.
-feature: "/assets/images/demos/dft-audio/feature_placeholder.jpg" # CHANGE THIS path to an actual image for social/previews, otherwise remove this line
+  image: "/assets/MatExp/analisis/derivadas/palomitas/header.jpg"
+excerpt: Experimento que muestra las aplicaciones del cálculo diferencial a la búsqueda
+  de valores óptimos. Utilizando derivadas encontramos la mejor caja de palomitas
+  que podemos comprar en el cine.
+gallery1:
+- image_path: "/assets/MatExp/analisis/derivadas/palomitas/caja1.jpg"
+  alt: Ejemplo de caja
+- image_path: "/assets/MatExp/analisis/derivadas/palomitas/caja2.jpg"
+  alt: Ejemplo de caja
+- image_path: "/assets/MatExp/analisis/derivadas/palomitas/caja3.jpg"
+  alt: Ejemplo de caja
+feature: "/assets/MatExp/analisis/derivadas/palomitas/feature.jpg"
 ---
 
 <div class="materials">
