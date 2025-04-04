@@ -1,104 +1,59 @@
 ---
-title: "MatExp"
+title: "Mathematical Experiments"
 permalink: /matexp/
-excerpt: ""
+layout: default
 ---
 
-<h1>Experimentos matemáticos</h1>
+<h1>Mathematical Experiments</h1>
 
 <style>
-.matexp-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  padding: 20px;
+.matexp-list {
+  list-style: none;
+  padding: 0;
 }
 
-.matexp-card {
-  perspective: 1000px;
-}
-
-.matexp-card-inner {
+.matexp-item {
   position: relative;
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
+  overflow: hidden;
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
 }
 
-.matexp-card:hover .matexp-card-inner {
-  transform: rotateY(180deg);
+.matexp-image {
+  float: left;
+  margin-right: 10px;
+  max-width: 150px;
 }
 
-.matexp-front, .matexp-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border-radius: 8px;
-}
-
-.matexp-front {
-  background-color: white;
-  color: black;
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.matexp-back {
-  background-color: #f0f0f0;
-  color: black;
-  transform: rotateY(180deg);
-  overflow: auto;
-  padding: 15px;
-  box-sizing: border-box;
-}
-
-.matexp-card img {
-  max-width: 100%;
-  height: auto;
-  margin-bottom: 10px;
-}
-
-.matexp-card a {
-  text-decoration: none;
+.matexp-title {
+  display: block;
   font-weight: bold;
-  color: #333;
-  transition: color 0.3s ease;
+  margin-bottom: 5px;
 }
 
-.matexp-card a:hover {
-  color: #007bff;
+.matexp-excerpt {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
 }
 
-.matexp-card p {
-  margin-top: 10px;
+.matexp-item:hover .matexp-excerpt {
+  max-height: 200px; /* Adjust as needed */
 }
 </style>
 
-<div class="matexp-grid">
+<ul class="matexp-list">
   {% for post in site.MatExp %}
-    {% if post.hidden != true %}
-      <div class="matexp-card">
-        <div class="matexp-card-inner">
-          <div class="matexp-front">
-            {% if post.feature %}
-              <img src="{{ post.feature | relative_url }}" alt="{{ post.title }}">
-            {% endif %}
-            <a href="{{ post.url }}">{{ post.title }}</a>
-          </div>
-          <div class="matexp-back">
-            {% if post.excerpt %}
-              <p>{{ post.excerpt }}</p>
-            {% endif %}
-          </div>
+    <li class="matexp-item">
+      {% if post.image %}
+        <img src="{{ post.image | relative_url }}" alt="{{ post.title }}" class="matexp-image">
+      {% endif %}
+      <a href="{{ post.url }}" class="matexp-title">{{ post.title }}</a>
+      {% if post.excerpt %}
+        <div class="matexp-excerpt">
+          <p>{{ post.excerpt }}</p>
         </div>
-      </div>
-    {% endif %}
+      {% endif %}
+    </li>
   {% endfor %}
-</div>
+</ul>
