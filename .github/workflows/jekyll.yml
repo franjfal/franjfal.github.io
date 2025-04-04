@@ -34,14 +34,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@v1 # use v1 for better compatibility
+        uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1'
-          bundler-cache: true
-          cache-version: 1 # Increment this number if you need to re-download cached gems
+          ruby-version: '3.1.7' # use your desired ruby version.
+          # bundler-cache: true # Remove this line temporarily, to test without caching.
 
       - name: Remove Gemfile.lock
         run: rm Gemfile.lock
+
+      - name: Clean Gem Cache
+        run: bundle cache clean
 
       - name: Install dependencies
         run: bundle install
