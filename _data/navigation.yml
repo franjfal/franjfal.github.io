@@ -12,5 +12,7 @@ main:
         url: /MatExp/
       - title: "Relojes solares"
         url: /RelojesSolares.html
+      - title: "Recursos"
+        url: /material/bibliografia/
   - title: "Sobre mi"
     url: /sobre-mi/

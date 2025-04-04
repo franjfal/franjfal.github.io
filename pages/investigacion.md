@@ -53,4 +53,4 @@ permalink: "/investigacion/"
 1. Research in Pairs: [Algebrability in Linear Dynamics](https://conferences.cirm-math.fr/2094.html){:target="_blank"}, 22-26 enero 2018, [CIRM (Marseille)](https://www.cirm-math.com){:style="text-decoration:none;color:black;" target="_blank"}, número de proyecto 2094.
 
 
-[Organización de coferencias](/falbe/Conferences)
+[Organización de coferencias](/Conferences/)
