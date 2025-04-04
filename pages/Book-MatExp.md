@@ -52,7 +52,7 @@ A través de actividades manipulativas, visuales e interactivas, el libro ofrece
 
 <div class="book-container">
   <div class="book-cover">
-    <img src="assets/MatExp/libro/PortadaMatExp.jpg" alt="Portada del libro Matemáticas Experimentales" style="width:100%; height:auto;">
+    <img src="/assets/MatExp/libro/PortadaMatExp.jpg" alt="Portada del libro Matemáticas Experimentales" style="width:100%; height:auto;">
   </div>
   <div class="book-info">
     <h2><em>Matemáticas Experimentales</em></h2>
