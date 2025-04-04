@@ -7,10 +7,10 @@ main:
     url: /MatExp/
     sublinks:
       - title: "Libro: Matemáticas Experimentales"
-        url: "/Libros/MatExp/"
+        url: /Libros/MatExp/
       - title: "MatExp"
         url: /MatExp/
       - title: "Relojes solares"
-        url: RelojesSolares.html
+        url: /RelojesSolares.html
   - title: "Sobre mi"
     url: /sobre-mi/
