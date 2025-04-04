@@ -542,12 +542,12 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         <!-- Raw HTML for image containers -->
         <div class="image-container">
             <!-- HTML H3 -->
-            <h3>Espectro Original (Centrado, Log)</h3>
+            <h3>Espectro Original </h3>
             <canvas id="originalSpectrumCanvas"></canvas>
         </div>
         <div class="image-container">
             <!-- HTML H3 -->
-            <h3>Espectro Filtrado (Centrado, Log)</h3>
+            <h3>Espectro Filtrado </h3>
             <canvas id="filteredSpectrumCanvas"></canvas>
         </div>
     </div>

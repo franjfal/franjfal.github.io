@@ -8,5 +8,7 @@ main:
     sublinks:
       - title: "Libro: Matemáticas Experimentales"
         url: "/Libros/MatExp/"
+      - title: "MatExp"
+        url: /MatExp/
   - title: "Sobre mi"
     url: /sobre-mi/
