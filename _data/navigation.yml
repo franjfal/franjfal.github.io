@@ -5,7 +5,7 @@ main:
     url: /investigacion/
   - title: "MatExp"
     url: /MatExp/
-    children:
+    sublinks:
       - title: "Matemáticas Experimentales"
         url: "/Libros/MatExp/"
   - title: "Sobre mi"
