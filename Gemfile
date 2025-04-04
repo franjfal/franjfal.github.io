@@ -17,7 +17,7 @@ group :jekyll_plugins do
 end
 
 # Development/Testing Gems
-gem 'html-proofer'
+#gem 'html-proofer'
 
 # Platform-Specific Gems
 platforms :mingw, :x64_mingw, :mswin, :jruby do
