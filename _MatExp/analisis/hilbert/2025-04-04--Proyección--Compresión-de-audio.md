@@ -15,29 +15,23 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
 <style>
     /* --- START OF EMBEDDED CSS --- */
 
-    /* Base styles needed if layout doesn't provide them well */
-    .dft-app-container { /* Using a specific wrapper class */
-        /* font-family: Arial, sans-serif; */ /* Handled by theme */
-        background: #fff;
+    /* Specific container styles */
+    .dft-app-container {
+        background: #fff; /* Keep specific background */
         padding: 20px;
         border-radius: 8px;
         width: 95%;
-        max-width: 1200px;
-        margin: 20px auto; /* Add some margin */
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        text-align: center;
+        max-width: 1200px; /* Keep max-width for app constraint */
+        margin: 20px auto; /* Keep centering and spacing */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Keep specific shadow */
+        text-align: center; /* Keep centering for controls */
     }
 
-    /* Style inputs and buttons specifically within this container */
-    /* .dft-app-container input, */ /* Handled by theme */
-    /* .dft-app-container button { */ /* Handled by theme / specific button classes below */
-        /* margin: 10px; */ /* General margin removed */
-    /* } */
-
+    /* Specific log styles */
     .dft-app-container #progressLog {
         background: #222;
         color: #0f0;
-        font-family: monospace; /* Keep for specific code look */
+        font-family: monospace; /* Keep monospace for log */
         font-size: 0.9em;
         text-align: left;
         padding: 10px;
@@ -45,110 +39,73 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         overflow-y: auto;
         border: 1px solid #444;
         margin: 10px auto;
-        max-width: 95%; /* Relative to container */
+        max-width: 95%;
         white-space: pre-wrap;
     }
 
+    /* Specific canvas styles */
     .dft-app-container #audioCanvas {
         border: 1px solid #ccc;
-        width: 100%; /* Relative to container */
-        height: 150px; /* Explicit height */
+        width: 100%;
+        height: 150px; /* Keep explicit height */
         margin: 15px 0;
-        display: block; /* Ensure it behaves like a block */
-        background-color: #f9f9f9; /* Light background for canvas */
+        display: block;
+        background-color: #f9f9f9;
     }
 
+    /* Specific list display styles */
     .dft-app-container #audioValuesList,
     .dft-app-container #reconstructedAudioValuesList,
     .dft-app-container #dftCoefficientsList {
-        /* font-family: monospace; */ /* Theme might handle pre/code */
-        font-size: 0.8em;
+        /* font-family: monospace; */ /* Removed, theme likely handles pre/code */
+        font-size: 0.8em; /* Keep specific smaller size */
         text-align: left;
         padding: 10px;
         border: 1px solid #ccc;
         margin: 10px auto;
-        max-width: 95%; /* Relative to container */
+        max-width: 95%;
         overflow-x: auto;
         background-color: #f9f9f9;
         min-height: 40px;
-        white-space: pre-wrap; /* Wrap long lines */
+        white-space: pre-wrap;
     }
-
     .dft-app-container #dftCoefficientsList {
-        background-color: #f0f5fa; /* Slightly different background */
+        background-color: #f0f5fa; /* Keep distinct background */
     }
 
-    /* Sections within the app */
-     /* .dft-app-container section { */ /* Handled by theme */
-        /* margin-bottom: 25px; */
-        /* padding: 20px; */
-        /* border-radius: 8px; */
-        /* background-color: #ffffff; */
-        /* box-shadow: 0 1px 3px rgba(0,0,0,0.05); */
-        /* border: 1px solid #eee; */
-        /* text-align: left; */ /* Default text align for sections */
-    /* } */
-     /* .dft-app-container section h2, */ /* Handled by theme */
-     /* .dft-app-container section h3 { */ /* Handled by theme */
-        /* margin-top: 0; */
-        /* padding-bottom: 10px; */
-        /* border-bottom: 1px solid #eee; */
-        /* color: #333; */
-        /* font-size: 1.4em; */
-        /* text-align: center; */ /* Center section titles */
-     /* } */
-      /* .dft-app-container section h3 { */ /* Handled by theme */
-         /* font-size: 1.2em; */
-         /* border-bottom-style: dashed; */
-         /* margin-bottom: 15px; */
-     /* } */
-     /* .dft-app-container section p { */ /* Handled by theme */
-         /* font-size: 0.95em; */
-         /* line-height: 1.6; */
-         /* color: #333; */
-         /* margin-bottom: 12px; */
-     /* } */
-      /* .dft-app-container section strong { */ /* Handled by theme */
-         /* font-weight: 600; */
-     /* } */
-     /* .dft-app-container section ol { */ /* Handled by theme */
-        /* margin-left: 20px; */
-        /* margin-bottom: 15px; */
-        /* padding-left: 15px; */
-     /* } */
-    /* .dft-app-container section li { */ /* Handled by theme */
-        /* margin-bottom: 8px; */
-        /* line-height: 1.6; */
-     /* } */
+    /* Section basic structure handled by theme - removing generic section rules */
 
     /* Introduction & Context Specific Styles */
-    .dft-app-container .intro-section {
-        border: 1px solid #d1ecf1; /* Keep border color */
-        background-color: #f0f8ff; /* Keep background color */
-    }
-    .dft-app-container .intro-section h2 {
-        color: #0c5460; /* Keep specific color */
-        border-bottom: 1px solid #bee5eb; /* Keep specific border */
-        /* Base H2 styles handled by theme */
-    }
-    .dft-app-container .intro-section .intro-content {
-        color: #0c5460; /* Keep specific color */
-        /* Base P styles handled by theme */
-     }
-
+    .dft-app-container .intro-section,
     .dft-app-container .context-section {
-        border: 1px solid #d4edda; /* Keep border color */
-        background-color: #f8fff9; /* Keep background color */
+        /* Keep specific backgrounds and borders */
+        border: 1px solid #d1ecf1;
+        background-color: #f0f8ff;
+        padding: 20px; /* Add padding back as section styling was removed */
+        margin-bottom: 25px; /* Add margin back */
+        border-radius: 8px; /* Add radius back */
+        text-align: left; /* Add text-align back */
     }
+    .dft-app-container .context-section {
+        border-color: #d4edda;
+        background-color: #f8fff9;
+    }
+    /* Style headings within these specific sections if needed */
+    .dft-app-container .intro-section h2 {
+        color: #0c5460;
+        border-bottom: 1px solid #bee5eb;
+        text-align: center; /* Keep centering for these specific headings */
+        /* Let theme handle font-size, margin, padding */
+    }
+     .dft-app-container .intro-section .intro-content { color: #0c5460; } /* Keep text color */
+
      .dft-app-container .context-section h3 {
-        color: #155724; /* Keep specific color */
-        border-bottom: 1px dashed #c3e6cb; /* Keep specific border */
-        /* Base H3 styles handled by theme */
-     }
-    .dft-app-container .context-section .context-content {
-        color: #155724; /* Keep specific color */
-         /* Base P, OL, LI styles handled by theme */
+        color: #155724;
+        border-bottom: 1px dashed #c3e6cb;
+        text-align: center; /* Keep centering */
+        /* Let theme handle font-size, margin, padding */
     }
+    .dft-app-container .context-section .context-content { color: #155724; } /* Keep text color */
 
 
     /* --- Styles for Notification Area --- */
@@ -157,12 +114,12 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         color: #856404;
         border: 1px solid #ffeeba;
         padding: 12px 20px;
-        margin: 0 auto 20px auto; /* Centered margin */
+        margin: 0 auto 20px auto;
         border-radius: 8px;
-        font-size: 0.95em; /* Keep specific size */
+        font-size: 0.95em;
         text-align: center;
-        max-width: 90%; /* Limit width */
-        animation: dftFadeIn 0.5s ease-in; /* Prefixed animation name */
+        max-width: 90%;
+        animation: dftFadeIn 0.5s ease-in;
     }
     @keyframes dftFadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -174,7 +131,7 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         flex-wrap: wrap;
         margin-top: 10px;
         font-size: 0.9em;
-        text-align: center; /* Center text within legend */
+        text-align: center;
     }
     .dft-app-container .legend-item {
         display: flex;
@@ -210,38 +167,42 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
     }
     .dft-app-container .quick-nav li { margin: 5px 10px; }
     .dft-app-container .quick-nav a {
-        /* color: #3498db; */ /* Handled by theme */
-        /* text-decoration: none; */ /* Handled by theme */
+        /* color handled by theme */
+        /* text-decoration handled by theme */
         padding: 5px 10px;
         border-radius: 5px;
-        transition: all 0.3s ease; /* Keep transition */
-        font-size: 0.9em; /* Keep specific size */
+        transition: all 0.3s ease;
+        font-size: 0.9em;
         display: inline-block;
     }
     .dft-app-container .quick-nav a:hover {
-        background-color: #f0f0f0; /* Keep specific hover */
-        color: #2980b9; /* Keep specific hover color */
+        background-color: #f0f0f0; /* Keep specific hover background */
+        /* color: #2980b9; */ /* Keep specific hover color? Or let theme handle hover? Keeping for now */
+         color: #2980b9;
     }
 
 
     /* --- Consolidated Button Styles --- */
-    /* General button styling handled by theme */
-    /* .dft-app-container button { ... } */
-    /* .dft-app-container button:hover:not(:disabled) { ... } */
-    /* .dft-app-container button:active:not(:disabled) { ... } */
-    /* .dft-app-container button:disabled { ... } */
-
-    /* Keep specific button type colors */
-    .dft-app-container .primary-button { background-color: #2563eb; border-bottom-color: #1e40af; color: white; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); border-bottom-width: 3px; border-bottom-style: solid; }
+    /* Assume theme handles base button: font, padding, border, base margin */
+    .dft-app-container button {
+         margin: 6px; /* Keep margin for spacing in containers */
+         transition: all 0.2s ease; /* Keep transition */
+         border: none; /* Override theme border if necessary */
+         border-radius: 6px; /* Keep specific radius */
+         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); /* Keep shadow */
+         border-bottom-width: 3px; /* Keep border effect */
+         border-bottom-style: solid; /* Keep border effect */
+    }
+    /* Keep specific button type colors/styles */
+    .dft-app-container .primary-button { background-color: #2563eb; border-bottom-color: #1e40af; color: white; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); }
     .dft-app-container .primary-button:hover:not(:disabled) { background-color: #1d4ed8; }
-    .dft-app-container .secondary-button { background-color: #10b981; border-bottom-color: #059669; color: white; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); border-bottom-width: 3px; border-bottom-style: solid; }
+    .dft-app-container .secondary-button { background-color: #10b981; border-bottom-color: #059669; color: white; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); }
     .dft-app-container .secondary-button:hover:not(:disabled) { background-color: #059669; }
-    .dft-app-container .action-button { background-color: #f97316; border-bottom-color: #ea580c; color: white; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); border-bottom-width: 3px; border-bottom-style: solid; }
+    .dft-app-container .action-button { background-color: #f97316; border-bottom-color: #ea580c; color: white; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); }
     .dft-app-container .action-button:hover:not(:disabled) { background-color: #ea580c; }
-    .dft-app-container .reset-button { background-color: #dc3545; border-bottom-color: #a71d2a; color: white; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); border-bottom-width: 3px; border-bottom-style: solid; }
+    .dft-app-container .reset-button { background-color: #dc3545; border-bottom-color: #a71d2a; color: white; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); }
     .dft-app-container .reset-button:hover:not(:disabled) { background-color: #c82333; }
-
-    /* Keep hover/active/disabled effects if they differ significantly from theme */
+    /* Keep hover/active/disabled effects */
      .dft-app-container button:hover:not(:disabled) {
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -250,7 +211,7 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         transform: translateY(0);
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         border-bottom-width: 2px;
-        margin-top: 7px; /* Adjust margin */
+        margin-top: 7px; /* Adjust margin for active state */
     }
      .dft-app-container button:disabled {
         background-color: #b8b8b8;
@@ -260,14 +221,14 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         box-shadow: none;
         border-bottom-color: #999;
     }
-
+    /* Keep layout container */
     .dft-app-container .button-container {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
         gap: 10px;
         margin: 15px 0;
-        text-align: center; /* Ensure container is centered */
+        text-align: center;
     }
 
 
@@ -279,61 +240,31 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         justify-content: center;
         align-items: center;
         margin: 15px 0;
-        gap: 10px; /* Add gap between controls */
+        gap: 10px;
     }
-     /* .dft-app-container .controls label, */ /* Handled by theme */
-     /* .dft-app-container .inline-controls label { */ /* Handled by theme */
-        /* margin: 0 5px; */
-        /* font-size: 0.95em; */
-        /* color: #333; */
-        /* display: inline-flex; */ /* Keep for alignment */
-        /* align-items: center; */ /* Keep for alignment */
-    /* } */
      .dft-app-container .controls label,
      .dft-app-container .inline-controls label {
-         display: inline-flex; /* Keep for alignment */
-         align-items: center; /* Keep for alignment */
-         margin: 0 5px; /* Keep margin for spacing */
+         display: inline-flex; /* Keep alignment */
+         align-items: center; /* Keep alignment */
+         margin: 0 5px; /* Keep spacing */
+         /* font-size, color handled by theme */
      }
      .dft-app-container .controls input[type="radio"] {
-        margin-right: 5px; /* Keep specific margin */
+        margin-right: 5px; /* Keep spacing */
     }
-     /* .dft-app-container .inline-controls input[type="number"] { */ /* Handled by theme */
-        /* width: 80px; */
-        /* padding: 6px 10px; */
-        /* border: 1px solid #ccc; */
-        /* border-radius: 4px; */
-        /* margin: 0 5px; */
-        /* text-align: right; */
-        /* font-size: 0.95em; */
-    /* } */
       .dft-app-container .inline-controls input[type="number"] {
           width: 80px; /* Keep specific width */
-          text-align: right; /* Keep specific text align */
-          margin: 0 5px; /* Keep specific margin */
-          /* Other styles from theme */
+          text-align: right; /* Keep alignment */
+          margin: 0 5px; /* Keep spacing */
+          /* padding, border, radius, font-size handled by theme */
       }
-     /* .dft-app-container input[type="file"] { */ /* Handled by theme */
-        /* display: block; */
-        /* margin: 15px auto; */ /* Center file input */
-        /* padding: 10px; */
-        /* border: 1px solid #ccc; */
-        /* border-radius: 4px; */
-        /* max-width: 90%; */
-    /* } */
       .dft-app-container input[type="file"] {
-         display: block; /* Keep display block */
-         margin: 15px auto; /* Keep centering margin */
-         max-width: 90%; /* Keep max-width */
+         display: block; /* Keep block */
+         margin: 15px auto; /* Keep centering */
+         max-width: 90%; /* Keep max width */
+         /* padding, border, radius handled by theme */
      }
-
-     /* .dft-app-container #fileSection p, */ /* Handled by theme */
-     /* .dft-app-container #liveSection p { */ /* Handled by theme */
-         /* font-size: 0.8em; */
-         /* color: #555; */
-         /* text-align: center; */
-         /* margin-top: 5px; */
-     /* } */
+     /* Removed P styles for file/live sections */
 
 
     /* --- Side-by-side values comparison --- */
@@ -345,7 +276,7 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
     }
     .dft-app-container .values-column {
         flex: 1;
-        min-width: 280px; /* Adjust min-width */
+        min-width: 280px;
     }
     .dft-app-container .values-column h3 {
         margin-bottom: 10px;
@@ -356,48 +287,42 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         text-align: center;
     }
 
-    /* --- Progress Overlay Styles (relative to viewport) --- */
-    /* Prefix IDs/Classes if needed to avoid clashes with site layout */
+    /* --- Progress Overlay Styles --- */
     #dftProgressOverlay {
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
         background-color: rgba(0, 0, 0, 0.8);
-        z-index: 10000; /* High z-index */
-        display: none; /* Initially hidden - controlled by JS */
+        z-index: 10000;
+        display: none;
         justify-content: center; align-items: center;
         color: white; font-size: 1.5em; text-align: center;
         backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
     }
-    #dftProgressOverlay .dft-progress-content { /* Prefixed class */
+    #dftProgressOverlay .dft-progress-content {
         padding: 30px;
         background-color: rgba(44, 62, 80, 0.95);
         border-radius: 15px;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         max-width: 90%;
     }
-     #dftProgressOverlay .dft-loader { /* Prefixed class */
+     #dftProgressOverlay .dft-loader {
         border: 5px solid rgba(255, 255, 255, 0.3);
         border-top: 5px solid #3498db;
         border-radius: 50%;
         width: 50px; height: 50px;
-        animation: dftSpin 1.5s linear infinite; /* Prefixed animation */
+        animation: dftSpin 1.5s linear infinite;
         margin: 20px auto 10px;
     }
     @keyframes dftSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-    #dftProgressOverlay .dft-calculation-warning { /* Prefixed class */
+    #dftProgressOverlay .dft-calculation-warning {
         font-size: 0.7em; color: #ffcc80;
         margin-top: 10px; font-style: italic;
     }
 
 
-    /* --- Responsive Media Queries (scoped to container) --- */
+    /* --- Responsive Media Queries --- */
     @media (max-width: 768px) {
-         /* .dft-app-container { width: 100%; padding: 10px; margin: 10px auto; } */ /* Handled by theme */
-         /* .dft-app-container h1 { font-size: 1.5em; } */ /* Handled by theme */
-         /* .dft-app-container h2 { font-size: 1.3em; } */ /* Handled by theme */
-         /* .dft-app-container section { padding: 15px; } */ /* Handled by theme */
-
+         /* Removed redundant container/heading styles */
         .dft-app-container .button-container {
             flex-direction: column; align-items: stretch;
         }
@@ -414,15 +339,12 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         .dft-app-container .values-column { min-width: 100%; margin-bottom: 10px; }
         .dft-app-container .values-list,
         .dft-app-container .coefficients-list,
-        .dft-app-container #progressLog { font-size: 0.75em; max-width: 100%; } /* Keep specific font size */
-        .dft-app-container #audioCanvas { height: 120px; } /* Smaller canvas */
+        .dft-app-container #progressLog { font-size: 0.75em; max-width: 100%; } /* Keep specific size */
+        .dft-app-container #audioCanvas { height: 120px; } /* Keep specific height */
     }
 
      @media (max-width: 480px) {
-         /* .dft-app-container { padding: 5px; margin: 5px auto; } */ /* Handled by theme */
-         /* .dft-app-container h1 { font-size: 1.3em; } */ /* Handled by theme */
-         /* .dft-app-container h2 { font-size: 1.1em; } */ /* Handled by theme */
-         /* .dft-app-container section { padding: 10px; margin-bottom: 15px; } */ /* Handled by theme */
+         /* Removed redundant container/heading styles */
          .dft-app-container .values-list,
          .dft-app-container .coefficients-list,
          .dft-app-container #progressLog { font-size: 0.7em; padding: 8px; } /* Keep specific size/padding */
