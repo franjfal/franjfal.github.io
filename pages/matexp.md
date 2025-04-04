@@ -7,123 +7,121 @@ excerpt: ""
 <h1>Experimentos matemáticos</h1>
 
 <style>
-/* Grid layout for cards */
+/* Grid container */
 .matexp-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
   padding: 20px;
 }
 
-/* Container for each flip card */
+/* Flip card container */
 .flip-card {
   background-color: transparent;
   width: 100%;
-  height: 350px;                        /* Slightly taller for better layout */
-  perspective: 1200px;                  /* More pronounced 3D effect */
+  perspective: 1200px;
   position: relative;
-  border-radius: 12px;                  /* Softer corners */
-  overflow: hidden;                     /* Ensures no content overflows */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle outer shadow */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.flip-card:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
-}
-
-
-/* Inner container that will be rotated */
+/* Inner flip wrapper */
 .flip-card-inner {
   position: relative;
   width: 100%;
-  height: 100%;
+  min-height: 350px;
   transition: transform 0.6s;
   transform-style: preserve-3d;
 }
 
-/* Flip the card on hover */
+/* Flip on hover */
 .flip-card:hover .flip-card-inner {
   transform: rotateY(180deg);
 }
 
-/* Front and back sides of the card */
+/* Front and back faces */
 .matexp-card-front,
 .matexp-card-back {
   position: absolute;
   width: 100%;
-  height: 100%;
-  -webkit-backface-visibility: hidden; /* Safari */
+  min-height: 350px;
   backface-visibility: hidden;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-/* Front side styling */
-.matexp-card-front {
+  -webkit-backface-visibility: hidden;
+  border-radius: 12px;
   background-color: #fff;
-  padding: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease;
+}
+
+/* Front face */
+.matexp-card-front {
+  z-index: 2;
 }
 
 .matexp-card-front img {
   max-width: 100%;
   height: auto;
   margin-bottom: 10px;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 .matexp-card-front h2 {
-  margin: 10px 0 0;
-  font-size: 1.5em;
+  font-size: 1.4em;
+  margin: 0;
+  text-align: center;
   color: #333;
 }
 
-/* Back side styling */
+/* Back face */
 .matexp-card-back {
-  background-color: #fff;
-  color: #333;
   transform: rotateY(180deg);
-  padding: 15px;
-  overflow-y: auto; /* Makes the description scrollable if needed */
+  overflow: hidden;
+}
+
+.matexp-card-back-content {
+  overflow-y: auto;
+  max-height: 100%;
+  padding-right: 10px;
 }
 
 .matexp-card-back h2 {
   margin-top: 0;
-  font-size: 1.5em;
   color: #007bff;
+  font-size: 1.3em;
 }
 
 .matexp-card-back p {
-  margin-top: 10px;
+  margin: 10px 0 0;
+  line-height: 1.5;
 }
 </style>
 
 <div class="matexp-grid">
   {% for post in site.MatExp %}
-    {% if post.hidden != true %}
+    {% unless post.hidden %}
       <a href="{{ post.url }}" class="flip-card">
         <div class="flip-card-inner">
-          <!-- Front side of the card -->
+          <!-- Front -->
           <div class="matexp-card-front">
             {% if post.feature %}
               <img src="{{ post.feature | relative_url }}" alt="{{ post.title }}">
             {% endif %}
             <h2>{{ post.title }}</h2>
           </div>
-          <!-- Back side of the card with scrollable description -->
+
+          <!-- Back -->
           <div class="matexp-card-back">
-            <h2>{{ post.title }}</h2>
-            {% if post.excerpt %}
-              <p>{{ post.excerpt }}</p>
-            {% endif %}
+            <div class="matexp-card-back-content">
+              <h2>{{ post.title }}</h2>
+              {% if post.excerpt %}
+                <p>{{ post.excerpt }}</p>
+              {% endif %}
+            </div>
           </div>
         </div>
       </a>
-    {% endif %}
+    {% endunless %}
   {% endfor %}
 </div>
