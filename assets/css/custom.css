@@ -56,6 +56,91 @@
 
 
 /* Navigation top menu */
+/*
+    Priority plus navigation
+    ========================================================================== */
+
+.greedy-nav {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 50px;
+    /* Replace $nav-height with a value */
+    background: #ffffff;
+    /* Replace $background-color with a value */
+}
+
+.greedy-nav a {
+    display: block;
+    margin: 0 1rem;
+    color: #333333;
+    /* Replace $masthead-link-color with a value */
+    text-decoration: none;
+    transition: none;
+}
+
+.greedy-nav a:hover {
+    color: #007bff;
+    /* Replace $masthead-link-color-hover with a value */
+}
+
+.greedy-nav a.site-logo {
+    margin-left: 0;
+    margin-right: 0.5rem;
+}
+
+.greedy-nav a.site-title {
+    margin-left: 0;
+}
+
+.greedy-nav img {
+    transition: none;
+}
+
+.greedy-nav__toggle {
+    align-self: center;
+    height: 30px;
+    /* Replace $nav-toggle-height with a value */
+    border: 0;
+    outline: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.greedy-nav .visible-links {
+    display: flex;
+    justify-content: flex-end;
+    flex: 1;
+    overflow: hidden;
+}
+
+.greedy-nav .visible-links li {
+    flex: none;
+}
+
+.greedy-nav .visible-links a {
+    position: relative;
+}
+
+.greedy-nav .visible-links a:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 4px;
+    background: #007bff;
+    /* Replace $primary-color with a value */
+    width: 100%;
+    transition: 0.3s;
+    /* Replace $global-transition with a value */
+    transform: scaleX(0) translate3d(0, 0, 0);
+    /* hide */
+}
+
+.greedy-nav .visible-links a:hover:before {
+    transform: scaleX(1);
+    /* reveal */
+}
 
 .greedy-nav .visible-links .dropdown {
     float: left;
@@ -66,10 +151,10 @@
     display: none;
     position: absolute;
     background-color: #f0f0f0;
-    /* Replace darken($background-color, 3%) */
+    /* Replace darken($background-color, 3%) with a value */
     min-width: 160px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    /* Replace $box-shadow */
+    /* Replace $box-shadow with a value */
     z-index: 1;
 }
 
@@ -82,5 +167,76 @@
 }
 
 .greedy-nav .visible-links .dropdown-content a:not(:last-child) {
+    border-bottom: none;
+}
+
+.greedy-nav .hidden-links {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 15px;
+    padding: 5px;
+    border: 1px solid #cccccc;
+    /* Replace $border-color with a value */
+    border-radius: 4px;
+    /* Replace $border-radius with a value */
+    background: #ffffff;
+    /* Replace $background-color with a value */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.16), 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+.greedy-nav .hidden-links.hidden {
+    display: none;
+}
+
+.greedy-nav .hidden-links a {
+    margin: 0;
+    padding: 10px 20px;
+    font-size: 16px;
+    /* Replace $type-size-5 with a value */
+}
+
+.greedy-nav .hidden-links a:hover {
+    color: #007bff;
+    /* Replace $masthead-link-color-hover with a value */
+    background: #e9ecef;
+    /* Replace $navicon-link-color-hover with a value */
+}
+
+.greedy-nav .hidden-links:before {
+    content: "";
+    position: absolute;
+    top: -11px;
+    right: 10px;
+    width: 0;
+    border-style: solid;
+    border-width: 0 10px 10px;
+    border-color: #cccccc transparent;
+    /* Replace $border-color with a value */
+    display: block;
+    z-index: 0;
+}
+
+.greedy-nav .hidden-links:after {
+    content: "";
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    width: 0;
+    border-style: solid;
+    border-width: 0 10px 10px;
+    border-color: #ffffff transparent;
+    /* Replace $background-color with a value */
+    display: block;
+    z-index: 1;
+}
+
+.greedy-nav .hidden-links li {
+    display: block;
+    border-bottom: 1px solid #cccccc;
+    /* Replace $border-color with a value */
+}
+
+.greedy-nav .hidden-links li:last-child {
     border-bottom: none;
 }
