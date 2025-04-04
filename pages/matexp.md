@@ -1,65 +1,59 @@
 ---
-title: "MatExp"
+title: "Mathematical Experiments"
 permalink: /matexp/
-excerpt: ""
+layout: default
 ---
 
-<h1>Experimentos matemáticos</h1>
+<h1>Mathematical Experiments</h1>
 
 <style>
-  .matexp-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
-    gap: 20px;
-    padding: 20px;
-  }
+.matexp-list {
+  list-style: none;
+  padding: 0;
+}
 
-  .matexp-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease;
-  }
+.matexp-item {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
 
-  .matexp-card:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
+.matexp-image {
+  float: left;
+  margin-right: 10px;
+  max-width: 150px;
+}
 
-  .matexp-card img {
-    max-width: 100%;
-    height: auto;
-    margin-bottom: 10px;
-  }
+.matexp-title {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
 
-  .matexp-card a {
-    text-decoration: none;
-    font-weight: bold;
-    color: #333;
-    transition: color 0.3s ease;
-  }
+.matexp-excerpt {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
 
-  .matexp-card a:hover {
-    color: #007bff; /* Change color on hover */
-  }
-
-  .matexp-card p {
-    margin-top: 5px;
-  }
+.matexp-item:hover .matexp-excerpt {
+  max-height: 200px; /* Adjust as needed */
+}
 </style>
 
-<div class="matexp-grid">
+<ul class="matexp-list">
   {% for post in site.MatExp %}
-    {% if post.hidden != true %}
-      <div class="matexp-card">
-        {% if post.feature %}
-          <img src="{{ post.feature | relative_url }}" alt="{{ post.title }}">
-        {% endif %}
-        <a href="{{ post.url }}">{{ post.title }}</a>
-        {% if post.excerpt %}
+    <li class="matexp-item">
+      {% if post.image %}
+        <img src="{{ post.image | relative_url }}" alt="{{ post.title }}" class="matexp-image">
+      {% endif %}
+      <a href="{{ post.url }}" class="matexp-title">{{ post.title }}</a>
+      {% if post.excerpt %}
+        <div class="matexp-excerpt">
           <p>{{ post.excerpt }}</p>
-        {% endif %}
-      </div>
-    {% endif %}
+        </div>
+      {% endif %}
+    </li>
   {% endfor %}
-</div>
+</ul>
