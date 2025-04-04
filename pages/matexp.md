@@ -8,7 +8,7 @@ excerpt: ""
 
 <ul>
   {% for post in site.MatExp %}
-    {% unless post.hidden %}
+    {% if post.hidden != true %}
       <li>
         {% if post.feature %}
           <img src="{{ post.feature | relative_url }}" alt="{{ post.title }}" style="float: left; margin-right: 10px; max-width: 150px;">
@@ -19,6 +19,6 @@ excerpt: ""
         {% endif %}
         <div style="clear: both;"></div>
       </li>
-    {% endunless %}
+    {% endif %}
   {% endfor %}
 </ul>
