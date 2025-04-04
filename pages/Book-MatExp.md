@@ -1,32 +1,93 @@
 ---
 title: 'Libro: Matemáticas Experimentales'
 permalink: "/Libros/MatExp/"
-excerpt: Material complementario del libro "Matemáticas experimentales", publicado en la colección Estímulos Matemáticos que editan conjuntamente la RSME y SM.
+excerpt: Material complementario del libro "Matemáticas experimentales" publicado
+  en la colección Estímulos Matemáticos que editan conjuntamente la RSME y SM.
 ---
 
-# Matemáticas Experimentales
+<style>
+.book-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.book-cover {
+  max-width: 250px;
+  flex: 1 1 250px;
+}
+
+.book-info {
+  flex: 2 1 300px;
+  font-size: 1rem;
+}
+
+.book-info i {
+  color: #0077cc;
+  margin-right: 0.5rem;
+  width: 1.2em;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .book-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .book-info {
+    text-align: justify;
+  }
+}
+</style>
+
+El libro **Matemáticas experimentales** es una obra de divulgación matemática publicada en la colección *Estímulos Matemáticos*, editada conjuntamente por la Real Sociedad Matemática Española (RSME) y la Sociedad Matemática Española (SM).
+
+A través de actividades manipulativas, visuales e interactivas, el libro ofrece una manera diferente de acercarse a las matemáticas, conectando conceptos fundamentales con experiencias prácticas que fomentan la curiosidad, la exploración y el descubrimiento.
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-SOMEHASH" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<div class="book-container">
+  <div class="book-cover">
+    <img src="/assets/MatExp/portada-libro.jpg" alt="Portada del libro Matemáticas Experimentales" style="width:100%; height:auto;">
+  </div>
+  <div class="book-info">
+    <h2><em>Matemáticas Experimentales</em></h2>
+
+    <p><i class="fas fa-user"></i><strong>Autor:</strong> José María Beltrán del Río</p>
+    <p><i class="fas fa-building"></i><strong>Editorial:</strong> Ediciones SM / RSME · Colección Estímulos Matemáticos</p>
+    <p><i class="fas fa-calendar-alt"></i><strong>Año:</strong> 2022</p>
+    <p><i class="fas fa-barcode"></i><strong>ISBN:</strong> 9788413924641</p>
+
+    <p><strong>Resumen:</strong><br>
+    En las matemáticas elementales, las actividades manipulativas están fuertemente integradas en la enseñanza para facilitar la visualización y comprensión de los conceptos. Sin embargo, su presencia se reduce en la explicación de las matemáticas avanzadas.</p>
+
+    <p>En este libro redescubriremos cinco teorías matemáticas clave, cuyas definiciones y resultados se complementan con aplicaciones a situaciones cotidianas, propuestas didácticas que nos permitirán ver y tocar el mundo matemático.</p>
+
+    <p>Como dijo el matemático Stanley Gudder, “La esencia de las matemáticas no es hacer las cosas simples complicadas, sino hacer las cosas complicadas simples”. Con ese mismo espíritu, esta obra desea convertir complejas abstracciones en conocimientos accesibles.</p>
+
+    <p>
+      <a href="https://es.literaturasm.com/libro/matematicas-experimentales" target="_blank">
+        <i class="fas fa-globe"></i> Página oficial
+      </a><br>
+      <a href="https://www.amazon.com/-/es/MATEM%C3%81TICAS-EXPERIMENTALES-Actividades-manipulativas-visualizar/dp/8413924642" target="_blank">
+        <i class="fas fa-shopping-cart"></i> Comprar en Amazon
+      </a><br>
+      <a href="https://www.rsme.es/2022/06/matematicas-experimentales-nuevo-libro-de-la-biblioteca-estimulos-matematicos/" target="_blank">
+        <i class="fas fa-newspaper"></i> Nota en la RSME
+      </a>
+    </p>
+  </div>
+</div>
 
 <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 2em;">
   <div style="flex: 1 1 250px; max-width: 250px; margin-right: 2em;">
     ![Portada del libro](assets/MatExp/libro/PortadaMatExp.jpg){:style="width: 100%; border: 1px solid #ccc;"}
   </div>
-  <div style="flex: 3 1 300px;">
-    <p>
-      El libro <strong>Matemáticas experimentales</strong> es una obra de divulgación matemática publicada en la colección <em>Estímulos Matemáticos</em>, editada conjuntamente por la Real Sociedad Matemática Española (RSME) y la Sociedad Matemática Española (SM).
-    </p>
-    <p>
-      A través de actividades manipulativas, visuales e interactivas, el libro ofrece una manera diferente de acercarse a las matemáticas, conectando conceptos fundamentales con experiencias prácticas que fomentan la curiosidad, la exploración y el descubrimiento.
-    </p>
-    <p>
-      Puedes encontrar más información en los siguientes enlaces:
-    </p>
-    <ul>
-      <li><a href="https://es.literaturasm.com/libro/matematicas-experimentales" target="_blank">Página oficial del libro en Literatura SM</a></li>
-      <li><a href="https://www.amazon.com/-/es/MATEM%C3%81TICAS-EXPERIMENTALES-Actividades-manipulativas-visualizar/dp/8413924642" target="_blank">Disponible en Amazon</a></li>
-      <li><a href="https://www.rsme.es/2022/06/matematicas-experimentales-nuevo-libro-de-la-biblioteca-estimulos-matematicos/" target="_blank">Noticia sobre la publicación en la web de la RSME</a></li>
-    </ul>
-  </div>
-</div>
+  
 
 ---
 
