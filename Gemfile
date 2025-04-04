@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 # Jekyll and Related Gems
 #gem 'jekyll', '~> 4.3.0' # Or your desired Jekyll version
-gem 'minimal-mistakes-jekyll' # Your theme
+#gem 'minimal-mistakes-jekyll' # Your theme
 gem 'jekyll-paginate-v2'
 #gem 'jekyll-include-cache'
 gem 'jekyll-relative-links'
