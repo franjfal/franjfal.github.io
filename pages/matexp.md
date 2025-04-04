@@ -66,7 +66,7 @@ excerpt: ""
 .matexp-card-front img {
   width: 100%;
   height: auto;
-  max-height: 180px;
+  max-height: 220px;
   object-fit: contain;
   margin-bottom: 10px;
   border-radius: 6px;
