@@ -22,12 +22,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Ruby
+      - name: Setup Ruby (Ruby 3.1.6)
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1.7'
+          ruby-version: '3.1.6' # Try a different Ruby 3.1 version
 
-      - name: Install dependencies
+      - name: Install System Dependencies.
+        run: sudo apt-get update && sudo apt-get install libpq-dev
+
+      - name: Remove Gemfile.lock (again)
+        run: rm Gemfile.lock
+
+      - name: Install dependencies (force)
         run: bundle install --force
 
       - name: Setup Pages
