@@ -6,51 +6,12 @@ tags: [Hilbert, proyección ortogonal, DFT, transformada fourier, filtro, imagen
 permalink: "/MatExp/analisis/hilbert/filtro-imagen"
 header:
   image: "/assets/MatExp/analisis/hilbert/image/header.jpg"
-description: "Descubre cómo se pueden filtrar imágenes usando la Transformada Discreta de Fourier (DFT) con esta demostración interactiva. Sube una imagen, observa su transformación al dominio de las frecuencias, aplica distintos filtros (paso bajo, paso alto o de banda) y compara el espectro y la imagen resultante. Una forma visual de entender cómo funciona el procesamiento de imágenes y su relación con la proyección ortogonal en un espacio de Hilber."
+excerpt: "Descubre cómo se pueden filtrar imágenes usando la Transformada Discreta de Fourier (DFT) con esta demostración interactiva. Sube una imagen, observa su transformación al dominio de las frecuencias, aplica distintos filtros (paso bajo, paso alto o de banda) y compara el espectro y la imagen resultante. Una forma visual de entender cómo funciona el procesamiento de imágenes y su relación con la proyección ortogonal en un espacio de Hilber."
+feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
 ---
 
 <!-- Embedded CSS -->
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        text-align: center;
-        padding: 20px;
-        margin: 0; /* Ensure no default body margin */
-        line-height: 1.6; /* Improve readability */
-    }
-
-    .container {
-        background: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        max-width: 1200px;
-        margin: 20px auto; /* Add top/bottom margin */
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    }
-
-    h1, h2, h3, h4 {
-         color: #333;
-    }
-
-    h1 { /* Style for Markdown H1 */
-        margin-bottom: 30px;
-        border-bottom: 2px solid #eee;
-        padding-bottom: 10px;
-        text-align: center; /* Ensure H1 is centered */
-    }
-
-    h2 { /* Style for Markdown H2 */
-         margin-top: 30px;
-         margin-bottom: 15px;
-         text-align: center; /* Center section titles */
-    }
-
-    h3 { /* Style for Markdown H3 */
-        margin-top: 25px;
-        margin-bottom: 10px;
-        text-align: center; /* Center sub-section titles */
-    }
      /* Style for Markdown H4 inside specific divs */
     .filter-type-explanation h4,
     .mathematical-note h4,
@@ -86,41 +47,6 @@ description: "Descubre cómo se pueden filtrar imágenes usando la Transformada 
         display: block; /* Make it block level for centering */
         margin: 15px auto; /* Center the file input */
     }
-
-    button {
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 1em;
-        transition: background-color 0.2s ease;
-        margin: 10px; /* Add some margin */
-    }
-
-    button:hover {
-         background-color: #0056b3;
-    }
-
-    button:disabled {
-        background-color: #cccccc;
-        cursor: not-allowed;
-    }
-
-    select {
-         padding: 8px 12px;
-         border: 1px solid #ccc;
-         border-radius: 4px;
-         min-width: 150px;
-         margin: 10px;
-    }
-
-    input[type="range"] {
-        width: 200px; /* Adjust as needed */
-        vertical-align: middle;
-    }
-
 
     #progressLog {
         background: #282c34; /* Darker background */
@@ -235,28 +161,6 @@ description: "Descubre cómo se pueden filtrar imágenes usando la Transformada 
          /* H4 handled above */
          /* Markdown lists/paragraphs inside will inherit body styles */
     }
-
-
-    ul { /* Style for Markdown lists */
-         padding-left: 40px; /* Indent lists */
-         list-style: disc; /* Standard bullets */
-         margin: 1em 0; /* Add vertical space around lists */
-    }
-
-    li { /* Style for Markdown list items */
-        margin: 8px 0; /* Consistent spacing */
-        line-height: 1.5;
-    }
-
-    p { /* Style for Markdown paragraphs */
-       margin: 1em 0; /* Add vertical space */
-       text-align: left; /* Justify text left within containers */
-    }
-     /* Center paragraphs directly under body/container if needed */
-     .container > p {
-         text-align: center;
-     }
-
 
     /* Matrix display needs to be a div */
     .matrix-display {
@@ -397,9 +301,7 @@ description: "Descubre cómo se pueden filtrar imágenes usando la Transformada 
 
     /* Responsive Adjustments */
     @media (max-width: 768px) {
-        .container {
-            padding: 15px;
-        }
+        /* .container padding handled by theme */
         .comparison-container, .image-display {
             flex-direction: column; /* Stack items vertically */
             align-items: center; /* Center items when stacked */
@@ -415,28 +317,15 @@ description: "Descubre cómo se pueden filtrar imágenes usando la Transformada 
              align-items: center;
              gap: 5px;
          }
-        input[type="range"] {
-            width: 80%;
-        }
-        h1 {
-            font-size: 1.8em;
-        }
+        /* input[type="range"] width might be handled, keep if specific size needed */
+        /* h1 handled by theme */
     }
 
     @media (max-width: 480px) {
-         body {
-             padding: 10px;
-         }
-         .container {
-             padding: 10px;
-         }
-          h1 {
-             font-size: 1.5em;
-          }
-          button, select, input[type="file"] {
-              font-size: 0.9em;
-              padding: 8px 10px;
-          }
+         /* body padding handled by theme */
+         /* .container padding handled by theme */
+          /* h1 handled by theme */
+          /* button, select, input[type="file"] handled by theme */
           .loading-content {
               min-width: 90%;
               padding: 20px;
