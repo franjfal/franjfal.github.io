@@ -52,6 +52,7 @@ include: ["pages"]
 #   - vendor/ruby/
 
 # Plugins (previously gems:)
+
 # plugins:
 #   - jekyll-paginate
 #   - jekyll-sitemap
