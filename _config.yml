@@ -52,14 +52,14 @@ include: ["pages"]
 #   - vendor/ruby/
 
 # Plugins (previously gems:)
-plugins:
-  - jekyll-paginate
-  - jekyll-sitemap
-  - jekyll-gist
-  - jekyll-feed
-  - jemoji
-  - jekyll-include-cache
-  - jekyll-relative-links
+# plugins:
+#   - jekyll-paginate
+#   - jekyll-sitemap
+#   - jekyll-gist
+#   - jekyll-feed
+#   - jemoji
+#   - jekyll-include-cache
+#   - jekyll-relative-links
 
 # author:
 #   name: "Javier Falcó"
