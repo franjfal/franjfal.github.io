@@ -6,7 +6,7 @@ main:
   - title: "MatExp"
     url: /MatExp/
     sublinks:
-      - title: "Matemáticas Experimentales"
+      - title: "Libro: Matemáticas Experimentales"
         url: "/Libros/MatExp/"
   - title: "Sobre mi"
     url: /sobre-mi/

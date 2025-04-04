@@ -7,7 +7,7 @@ tags: [Hilbert, proyección ortogonal, DFT, transformada fourier, compresión au
 permalink: "/MatExp/analisis/hilbert/"
 header:
   image: "/assets/MatExp/analisis/hilbert/audio/header.jpg"
-excerpt: "Demostración interactiva que ilustra la compresión de audio usando la Transformada Discreta de Fourier (DFT). Carga/graba audio, calcula la DFT, trunca coeficientes y escucha el resultado."
+excerpt: "Explora cómo se comprime el sonido con una demostración interactiva basada en la Transformada Discreta de Fourier (DFT). Sube o graba tu propio audio, observa cómo se transforma en frecuencias, elimina los componentes menos importantes y escucha cómo cambia el resultado. Una forma visual y práctica de entender la proyección ortonormal en espacios de Hilbert."
 feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
 ---
 
