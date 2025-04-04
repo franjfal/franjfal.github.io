@@ -19,10 +19,19 @@ excerpt: ""
 .flip-card {
   background-color: transparent;
   width: 100%;
-  height: 300px; /* Fixed height for consistency */
-  perspective: 1000px; /* Provides the 3D effect */
-  position: relative; /* Ensures child absolute positioning is relative to this container */
+  height: 350px;                        /* Slightly taller for better layout */
+  perspective: 1200px;                  /* More pronounced 3D effect */
+  position: relative;
+  border-radius: 12px;                  /* Softer corners */
+  overflow: hidden;                     /* Ensures no content overflows */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle outer shadow */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
+.flip-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+}
+
 
 /* Inner container that will be rotated */
 .flip-card-inner {

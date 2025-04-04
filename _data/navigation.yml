@@ -4,6 +4,9 @@ main:
   - title: "Investigación"
     url: /investigacion/
   - title: "MatExp"
-    url: /matexp/
+    url: /MatExp/
+    children:
+      - title: "Matemáticas Experimentales"
+        url: "/Libros/MatExp/"
   - title: "Sobre mi"
     url: /sobre-mi/
