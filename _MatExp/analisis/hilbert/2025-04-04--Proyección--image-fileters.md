@@ -27,16 +27,16 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
      .matrix-display h4 { color: #555; font-size: 1em; margin-bottom: 5px;}
 
 
-    section { /* Add spacing below sections, which are now implicit in Markdown */
-        margin-bottom: 30px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #eee;
-    }
-     section:last-child { /* Remove border from last implicit section */
-         border-bottom: none;
-         margin-bottom: 0;
-         padding-bottom: 0;
-     }
+    /* section { */ /* Section tags removed, styling applied to divs or handled by theme */
+        /* margin-bottom: 30px; */
+        /* padding-bottom: 20px; */
+        /* border-bottom: 1px solid #eee; */
+    /* } */
+     /* section:last-child { */
+         /* border-bottom: none; */
+         /* margin-bottom: 0; */
+         /* padding-bottom: 0; */
+     /* } */
 
 
     input[type="file"] {
@@ -139,7 +139,10 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
     .filter-explanation,
     .filter-types,
     .fourier-coefficients,
-    .spectrum-explanation {
+    .spectrum-explanation,
+    .results-section, /* Added class for results section */
+    .log-section /* Added class for log section */
+    {
         text-align: left;
         margin: 25px auto; /* Center sections */
         padding: 20px;
@@ -150,6 +153,21 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         max-width: 95%; /* Limit width */
          /* H3 inside these handled by general H3 */
     }
+     /* Add spacing similar to section */
+     .filter-explanation,
+     .filter-types,
+     .fourier-coefficients,
+     .spectrum-explanation,
+     .filter-controls, /* Apply to control block too */
+     .results-section,
+     .log-section {
+         margin-bottom: 30px;
+         padding-bottom: 20px; /* Ensure padding consistency */
+     }
+     .log-section { /* Remove bottom margin from last section */
+         margin-bottom: 0;
+     }
+
 
     /* Specific filter type explanations */
     .filter-type-explanation {
@@ -193,7 +211,7 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         margin-top: 10px;
         font-size: 0.9em;
         border-radius: 0 4px 4px 0;
-         /* Markdown inside */
+         /* Content inside */
     }
      .fourier-interpretation p, .fourier-interpretation ul { margin: 0.5em 0; } /* Reduce margin inside */
 
@@ -204,7 +222,7 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         padding: 15px 15px 15px 20px;
         border-radius: 0 5px 5px 0;
          /* H4 handled above */
-         /* Markdown inside */
+         /* Content inside */
     }
      .mathematical-note p, .mathematical-note ul { margin: 0.5em 0;} /* Reduce margin inside */
 
@@ -280,7 +298,7 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         text-align: left;
         max-width: 95%; /* Limit width */
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-         /* Markdown H2 inside needs specific styling */
+         /* H2 inside already handled */
     }
      .warning-message h2 { /* Target H2 specifically inside this div */
         color: #856404; /* Match text color */
@@ -293,7 +311,7 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
         border-bottom: none; /* Override general H2 style */
         padding-bottom: 0;
     }
-     /* Keep list inside warning as HTML for simplicity or style Markdown list */
+     /* List inside warning */
      .warning-message ul { list-style: disc; padding-left: 25px; margin: 10px 0; }
      .warning-message li { margin: 8px 0; line-height: 1.5; }
      .warning-message strong { color: #665103; font-weight: bold; } /* Style strong tag */
@@ -352,21 +370,23 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
     </ul>
 </div>
 
-<!-- Markdown H1 -->
-# Filtrado de Imágenes con Transformada Discreta de Fourier (DFT)
+<!-- HTML H1 -->
+<h1>Filtrado de Imágenes con Transformada Discreta de Fourier (DFT)</h1>
 
 <!-- Section: Input -->
-## Selección de Imagen
-<!-- Raw HTML for file input -->
-<input type="file" id="imageFile" accept="image/*">
+<div class="input-section" style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #eee;">
+    <h2>Selección de Imagen</h2>
+    <!-- Raw HTML for file input -->
+    <input type="file" id="imageFile" accept="image/*">
+</div>
 
 <!-- Section: Image Display -->
 <!-- Raw HTML for layout container -->
 <div class="image-display">
     <!-- Raw HTML for image container -->
     <div class="image-container">
-        <!-- Markdown H3 -->
-        ### Imagen Original (Redimensionada y en Gris)
+        <!-- HTML H3 -->
+        <h3>Imagen Original (Redimensionada y en Gris)</h3>
         <!-- Raw HTML for canvas and matrix -->
         <canvas id="originalCanvas"></canvas>
         <div class="matrix-display">
@@ -377,96 +397,100 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
 </div>
 
 <!-- Section: Filters -->
-## Filtros y Coeficientes de Fourier
+<div class="fourier-coefficients">
+    <h2>Filtros y Coeficientes de Fourier</h2>
 
-<!-- Raw HTML for styled explanation block -->
-<div class="filter-explanation">
-    <!-- Markdown H3 -->
-    ### ¿Cómo funcionan los filtros en el dominio de la frecuencia?
+    <!-- Raw HTML for styled explanation block -->
+    <div class="filter-explanation">
+        <!-- HTML H3 -->
+        <h3>¿Cómo funcionan los filtros en el dominio de la frecuencia?</h3>
 
-    La Transformada de Fourier descompone una imagen en sus componentes de frecuencia. Cada punto en el espectro de Fourier representa una frecuencia específica (rapidez del cambio de intensidad) en una dirección particular:
+        <p>La Transformada de Fourier descompone una imagen en sus componentes de frecuencia. Cada punto en el espectro de Fourier representa una frecuencia específica (rapidez del cambio de intensidad) en una dirección particular:</p>
+        <ul>
+            <li><strong>Bajas frecuencias (cerca del centro del espectro):</strong> Representan cambios suaves y graduales en la imagen (áreas uniformes, brillo general).</li>
+            <li><strong>Altas frecuencias (lejos del centro del espectro):</strong> Representan cambios bruscos y detalles finos (bordes, texturas, ruido).</li>
+        </ul>
+        <p>El filtrado en el dominio de la frecuencia consiste en <strong>modificar (multiplicar) el espectro de Fourier</strong> de la imagen con una <strong>función de transferencia del filtro (máscara de filtro)</strong> y luego aplicar la Transformada Inversa de Fourier (IDFT) para obtener la imagen filtrada.</p>
+    </div>
 
-    *   **Bajas frecuencias (cerca del centro del espectro):** Representan cambios suaves y graduales en la imagen (áreas uniformes, brillo general).
-    *   **Altas frecuencias (lejos del centro del espectro):** Representan cambios bruscos y detalles finos (bordes, texturas, ruido).
+    <!-- Raw HTML for styled explanation block -->
+    <div class="filter-types">
+        <!-- HTML H3 -->
+        <h3>Tipos de Filtros Ideales:</h3>
 
-    El filtrado en el dominio de la frecuencia consiste en **modificar (multiplicar) el espectro de Fourier** de la imagen con una **función de transferencia del filtro (máscara de filtro)** y luego aplicar la Transformada Inversa de Fourier (IDFT) para obtener la imagen filtrada.
+        <p>(Estos son filtros ideales con cortes abruptos, usados aquí con fines demostrativos)</p>
+
+        <!-- Raw HTML for styled sub-block -->
+        <div class="filter-type-explanation">
+            <!-- HTML H4 -->
+            <h4>Filtro Paso Bajo (LPF)</h4>
+
+            <p>Conserva las frecuencias bajas y elimina (pone a cero) las altas frecuencias por encima de una frecuencia de corte (D₀).</p>
+            <ul>
+                <li>Suaviza la imagen (efecto de desenfoque).</li>
+                <li>Reduce el ruido de alta frecuencia.</li>
+                <li>Elimina detalles finos y texturas.</li>
+            </ul>
+            <!-- Raw HTML for styled interpretation block -->
+            <div class="fourier-interpretation">
+               <p><strong>Máscara de Filtro:</strong> Se crea una máscara circular en el espectro centrado. Los coeficientes dentro del círculo (distancia al centro ≤ D₀) se mantienen (multiplican por 1), y los de fuera se anulan (multiplican por 0).</p>
+            </div>
+        </div>
+
+        <!-- Raw HTML for styled sub-block -->
+        <div class="filter-type-explanation">
+            <!-- HTML H4 -->
+            <h4>Filtro Paso Alto (HPF)</h4>
+
+            <p>Conserva las frecuencias altas y elimina (pone a cero) las bajas frecuencias por debajo de una frecuencia de corte (D₀).</p>
+            <ul>
+                <li>Resalta los bordes y detalles finos.</li>
+                <li>Atenúa las variaciones suaves (componente de baja frecuencia).</li>
+                <li>Puede amplificar el ruido.</li>
+            </ul>
+            <!-- Raw HTML for styled interpretation block -->
+            <div class="fourier-interpretation">
+                <p><strong>Máscara de Filtro:</strong> Se crea una máscara circular en el espectro centrado. Los coeficientes dentro del círculo (distancia al centro < D₀) se anulan (multiplican por 0), y los de fuera se mantienen (multiplican por 1).</p>
+            </div>
+        </div>
+
+        <!-- Raw HTML for styled sub-block -->
+        <div class="filter-type-explanation">
+            <!-- HTML H4 -->
+            <h4>Filtro Paso Banda (BPF)</h4>
+
+            <p>Conserva un rango específico de frecuencias entre un límite inferior y superior (o centrado en D₀ con un cierto ancho).</p>
+            <ul>
+                <li>Permite aislar características o texturas de un tamaño específico.</li>
+                <li>Elimina tanto las frecuencias muy bajas como las muy altas.</li>
+            </ul>
+            <!-- Raw HTML for styled interpretation block -->
+            <div class="fourier-interpretation">
+                <p><strong>Máscara de Filtro:</strong> Se crea una máscara en forma de anillo en el espectro centrado. Los coeficientes dentro del anillo (distancia al centro entre D₁ y D₂) se mantienen (multiplican por 1), y los demás se anulan (multiplican por 0).</p>
+            </div>
+        </div>
+
+        <!-- Raw HTML for styled note block -->
+        <div class="mathematical-note">
+            <!-- HTML H4 -->
+            <h4>Nota sobre los Coeficientes DFT</h4>
+
+            <p>Cada punto (k, l) en el espectro DFT 2D, F(k, l), es un número complejo:</p>
+            <ul>
+                <li><strong>Magnitud |F(k, l)|:</strong> Indica la "cantidad" o importancia de la componente de frecuencia (k, l) en la imagen. El brillo en la visualización del espectro representa la magnitud (generalmente en escala logarítmica).</li>
+                <li><strong>Fase ∠F(k, l):</strong> Indica el desplazamiento espacial de esa componente de frecuencia. Es crucial para la reconstrucción correcta de la imagen.</li>
+                <li><strong>Distancia al centro:</strong> En el espectro <em>centrado</em>, la distancia desde el punto (k, l) al centro es proporcional a la frecuencia espacial radial.</li>
+                <li><strong>F(0, 0):</strong> El coeficiente en el origen (antes de centrar) representa la componente DC (frecuencia cero), relacionada con el brillo promedio de la imagen. Es el punto más brillante en el centro del espectro <em>centrado</em>.</li>
+            </ul>
+        </div>
+    </div>
 </div>
 
-<!-- Raw HTML for styled explanation block -->
-<div class="filter-types">
-    <!-- Markdown H3 -->
-    ### Tipos de Filtros Ideales:
-
-    (Estos son filtros ideales con cortes abruptos, usados aquí con fines demostrativos)
-
-    <!-- Raw HTML for styled sub-block -->
-    <div class="filter-type-explanation">
-        <!-- Markdown H4 -->
-        #### Filtro Paso Bajo (LPF)
-
-        Conserva las frecuencias bajas y elimina (pone a cero) las altas frecuencias por encima de una frecuencia de corte (D₀).
-
-        *   Suaviza la imagen (efecto de desenfoque).
-        *   Reduce el ruido de alta frecuencia.
-        *   Elimina detalles finos y texturas.
-
-        <!-- Raw HTML for styled interpretation block -->
-        <div class="fourier-interpretation">
-           **Máscara de Filtro:** Se crea una máscara circular en el espectro centrado. Los coeficientes dentro del círculo (distancia al centro ≤ D₀) se mantienen (multiplican por 1), y los de fuera se anulan (multiplican por 0).
-        </div>
-    </div>
-
-    <!-- Raw HTML for styled sub-block -->
-    <div class="filter-type-explanation">
-        <!-- Markdown H4 -->
-        #### Filtro Paso Alto (HPF)
-
-        Conserva las frecuencias altas y elimina (pone a cero) las bajas frecuencias por debajo de una frecuencia de corte (D₀).
-
-        *   Resalta los bordes y detalles finos.
-        *   Atenúa las variaciones suaves (componente de baja frecuencia).
-        *   Puede amplificar el ruido.
-
-        <!-- Raw HTML for styled interpretation block -->
-        <div class="fourier-interpretation">
-            **Máscara de Filtro:** Se crea una máscara circular en el espectro centrado. Los coeficientes dentro del círculo (distancia al centro < D₀) se anulan (multiplican por 0), y los de fuera se mantienen (multiplican por 1).
-        </div>
-    </div>
-
-    <!-- Raw HTML for styled sub-block -->
-    <div class="filter-type-explanation">
-        <!-- Markdown H4 -->
-        #### Filtro Paso Banda (BPF)
-
-        Conserva un rango específico de frecuencias entre un límite inferior y superior (o centrado en D₀ con un cierto ancho).
-
-        *   Permite aislar características o texturas de un tamaño específico.
-        *   Elimina tanto las frecuencias muy bajas como las muy altas.
-
-        <!-- Raw HTML for styled interpretation block -->
-        <div class="fourier-interpretation">
-            **Máscara de Filtro:** Se crea una máscara en forma de anillo en el espectro centrado. Los coeficientes dentro del anillo (distancia al centro entre D₁ y D₂) se mantienen (multiplican por 1), y los demás se anulan (multiplican por 0).
-        </div>
-    </div>
-
-    <!-- Raw HTML for styled note block -->
-    <div class="mathematical-note">
-        <!-- Markdown H4 -->
-        #### Nota sobre los Coeficientes DFT
-
-        Cada punto (k, l) en el espectro DFT 2D, F(k, l), es un número complejo:
-
-        *   **Magnitud |F(k, l)|:** Indica la "cantidad" o importancia de la componente de frecuencia (k, l) en la imagen. El brillo en la visualización del espectro representa la magnitud (generalmente en escala logarítmica).
-        *   **Fase ∠F(k, l):** Indica el desplazamiento espacial de esa componente de frecuencia. Es crucial para la reconstrucción correcta de la imagen.
-        *   **Distancia al centro:** En el espectro *centrado*, la distancia desde el punto (k, l) al centro es proporcional a la frecuencia espacial radial.
-        *   **F(0, 0):** El coeficiente en el origen (antes de centrar) representa la componente DC (frecuencia cero), relacionada con el brillo promedio de la imagen. Es el punto más brillante en el centro del espectro *centrado*.
-    </div>
-</div>
 
 <!-- Raw HTML for filter controls container -->
 <div class="filter-controls">
-    <!-- Markdown H3 -->
-    ### Controles del Filtro
+    <!-- HTML H3 -->
+    <h3>Controles del Filtro</h3>
     <!-- Raw HTML for select, range slider, span, and button -->
     <select id="filterType">
         <option value="lowpass">Paso Bajo</option>
@@ -483,83 +507,102 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
 
 
 <!-- Section: Spectrum -->
-## Espectro de Frecuencia (Magnitud DFT)
+<div class="spectrum-section" style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #eee;">
+    <h2>Espectro de Frecuencia (Magnitud DFT)</h2>
 
-<!-- Raw HTML for comparison container -->
-<div class="comparison-container">
-    <!-- Raw HTML for image containers -->
-    <div class="image-container">
-        <!-- Markdown H3 -->
-        ### Espectro Original (Centrado, Log)
-        <canvas id="originalSpectrumCanvas"></canvas>
+    <!-- Raw HTML for comparison container -->
+    <div class="comparison-container">
+        <!-- Raw HTML for image containers -->
+        <div class="image-container">
+            <!-- HTML H3 -->
+            <h3>Espectro Original (Centrado, Log)</h3>
+            <canvas id="originalSpectrumCanvas"></canvas>
+        </div>
+        <div class="image-container">
+            <!-- HTML H3 -->
+            <h3>Espectro Filtrado (Centrado, Log)</h3>
+            <canvas id="filteredSpectrumCanvas"></canvas>
+        </div>
     </div>
-    <div class="image-container">
-        <!-- Markdown H3 -->
-        ### Espectro Filtrado (Centrado, Log)
-        <canvas id="filteredSpectrumCanvas"></canvas>
+
+    <!-- Raw HTML for styled explanation block -->
+    <div class="spectrum-explanation">
+        <!-- HTML H4 -->
+        <h4>Interpretación del Espectro de Frecuencia (Visualización Centrada)</h4>
+
+        <p>El espectro mostrado es una representación visual de la <strong>magnitud</strong> de los coeficientes de la DFT, con la frecuencia cero (DC) desplazada al centro y usando una escala logarítmica para mejorar la visibilidad:</p>
+        <ul>
+            <li><strong>Centro del espectro (punto más brillante):</strong>
+                <ul>
+                    <li>Representa la componente DC (frecuencia cero), relacionada con el brillo promedio de la imagen.</li>
+                    <li>Las frecuencias <strong>más bajas</strong> (cambios lentos) están más cerca del centro.</li>
+                </ul>
+            </li>
+            <li><strong>Bordes del espectro:</strong>
+                <ul>
+                    <li>Representan las frecuencias <strong>más altas</strong> (cambios rápidos, detalles finos, bordes).</li>
+                </ul>
+            </li>
+            <li><strong>Dirección desde el centro:</strong>
+                <ul>
+                    <li>Indica la orientación de los patrones en la imagen.</li>
+                    <li>Puntos brillantes a lo largo del eje vertical indican patrones predominantemente horizontales en la imagen.</li>
+                    <li>Puntos brillantes a lo largo del eje horizontal indican patrones predominantemente verticales en la imagen.</li>
+                    <li>Puntos brillantes en diagonal indican patrones diagonales.</li>
+                </ul>
+            </li>
+            <li><strong>Brillo en el espectro:</strong>
+                 <ul>
+                     <li>Mayor brillo = Mayor magnitud = Mayor presencia de esa frecuencia/orientación específica en la imagen.</li>
+                     <li>La <strong>escala logarítmica</strong> (log(1 + magnitud)) comprime los valores altos y realza los bajos, haciendo visibles más detalles del espectro.</li>
+                     <li>El espectro de magnitud es <strong>simétrico</strong> respecto al centro para imágenes reales.</li>
+                 </ul>
+            </li>
+        </ul>
     </div>
-</div>
 
-<!-- Raw HTML for styled explanation block -->
-<div class="spectrum-explanation">
-    <!-- Markdown H4 -->
-    #### Interpretación del Espectro de Frecuencia (Visualización Centrada)
-
-    El espectro mostrado es una representación visual de la **magnitud** de los coeficientes de la DFT, con la frecuencia cero (DC) desplazada al centro y usando una escala logarítmica para mejorar la visibilidad:
-
-    *   **Centro del espectro (punto más brillante):**
-        *   Representa la componente DC (frecuencia cero), relacionada con el brillo promedio de la imagen.
-        *   Las frecuencias **más bajas** (cambios lentos) están más cerca del centro.
-    *   **Bordes del espectro:**
-        *   Representan las frecuencias **más altas** (cambios rápidos, detalles finos, bordes).
-    *   **Dirección desde el centro:**
-        *   Indica la orientación de los patrones en la imagen.
-        *   Puntos brillantes a lo largo del eje vertical indican patrones predominantemente horizontales en la imagen.
-        *   Puntos brillantes a lo largo del eje horizontal indican patrones predominantemente verticales en la imagen.
-        *   Puntos brillantes en diagonal indican patrones diagonales.
-    *   **Brillo en el espectro:**
-         *   Mayor brillo = Mayor magnitud = Mayor presencia de esa frecuencia/orientación específica en la imagen.
-         *   La **escala logarítmica** (log(1 + magnitud)) comprime los valores altos y realza los bajos, haciendo visibles más detalles del espectro.
-         *   El espectro de magnitud es **simétrico** respecto al centro para imágenes reales.
-</div>
-
-<!-- Raw HTML for matrix display -->
-<div class="matrix-display">
-    <!-- Markdown H4 -->
-    #### Coeficientes DFT (Magnitud, Primeros 10x10, No Centrado)
-    <pre id="fourierMatrix" class="matrix-values"></pre>
+    <!-- Raw HTML for matrix display -->
+    <div class="matrix-display">
+        <!-- HTML H4 -->
+        <h4>Coeficientes DFT (Magnitud, Primeros 10x10, No Centrado)</h4>
+        <pre id="fourierMatrix" class="matrix-values"></pre>
+    </div>
 </div>
 
 
 <!-- Section: Results -->
-## Resultados del Filtrado
+<div class="results-section">
+    <h2>Resultados del Filtrado</h2>
 
-<!-- Raw HTML for comparison container -->
-<div class="comparison-container">
-    <!-- Raw HTML for image containers -->
-    <div class="image-container">
-        <!-- Markdown H3 -->
-        ### Imagen Original (Gris)
-        <canvas id="resultOriginalCanvas"></canvas>
-    </div>
-    <div class="image-container">
-        <!-- Markdown H3 -->
-        ### Imagen Filtrada (IDFT)
-        <canvas id="filteredCanvas"></canvas>
-        <!-- Raw HTML for matrix display -->
-        <div class="matrix-display">
-            <h4>Valores de la Matriz Filtrada (Primeros 10x10)</h4>
-            <pre id="filteredMatrix" class="matrix-values"></pre>
+    <!-- Raw HTML for comparison container -->
+    <div class="comparison-container">
+        <!-- Raw HTML for image containers -->
+        <div class="image-container">
+            <!-- HTML H3 -->
+            <h3>Imagen Original (Gris)</h3>
+            <canvas id="resultOriginalCanvas"></canvas>
+        </div>
+        <div class="image-container">
+            <!-- HTML H3 -->
+            <h3>Imagen Filtrada (IDFT)</h3>
+            <canvas id="filteredCanvas"></canvas>
+            <!-- Raw HTML for matrix display -->
+            <div class="matrix-display">
+                <h4>Valores de la Matriz Filtrada (Primeros 10x10)</h4>
+                <pre id="filteredMatrix" class="matrix-values"></pre>
+            </div>
         </div>
     </div>
 </div>
 
 
 <!-- Section: Log -->
-## Registro de Progreso
+<div class="log-section">
+    <h2>Registro de Progreso</h2>
 
-<!-- Raw HTML for log display -->
-<div id="progressLog" class="log"></div>
+    <!-- Raw HTML for log display -->
+    <div id="progressLog" class="log"></div>
+</div>
 
 
 </div><!-- End of .container div -->

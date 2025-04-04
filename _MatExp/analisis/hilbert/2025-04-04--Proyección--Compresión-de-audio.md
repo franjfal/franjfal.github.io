@@ -439,7 +439,7 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
 
 <!-- You can add introductory Markdown text here if needed -->
 
-¡Hola! Este post incluye una demostración interactiva sobre la Transformada Discreta de Fourier (DFT) y su aplicación básica en la compresión de audio. Puedes cargar un archivo WAV o grabar audio, calcular la DFT, truncar los coeficientes y reconstruir la señal para ver y escuchar el efecto.
+Este post incluye una demostración interactiva sobre la Transformada Discreta de Fourier (DFT) y su aplicación básica en la compresión de audio. Puedes cargar un archivo WAV o grabar audio, calcular la DFT, truncar los coeficientes y reconstruir la señal para ver y escuchar el efecto.
 
 **Nota:** Esta es una herramienta educativa y no optimizada para compresión real.
 
