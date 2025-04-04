@@ -524,7 +524,13 @@ Este post incluye una demostración interactiva sobre la Transformada Discreta d
     <div class="dft-progress-content"> <!-- Prefixed class -->
         <p>Procesando...</p>
         <div class="dft-loader"></div> <!-- Prefixed class -->
-        <p class="dft-calculation-warning">Estos cálculos no están optimizados y pueden tardar.</p> <!-- Prefixed class -->
+        <p class="dft-calculation-warning">
+  Estos cálculos no están optimizados y pueden tardar. Si el navegador indica que la página no responde, puedes ignorar el aviso.
+</p>
+<p class="dft-calculation-warning" style="font-size: 12pt; margin-top: 5px;">
+  Los cálculos siguen ejecutándose en segundo plano.
+</p>
+ <!-- Prefixed class -->
     </div>
 </div>
 
