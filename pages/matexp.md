@@ -37,7 +37,7 @@ excerpt: ""
 
   /* Front side of the card */
   .matexp-card-front, .matexp-card-back {
-    position: absolute;
+    position: relative;
     width: 100%;
     height: 100%;
     backface-visibility: hidden; /* Hide the back face initially */
