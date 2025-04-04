@@ -1,15 +1,17 @@
 ---
-# --- START OF FRONT MATTER ---
-# REQUIRED: Change 'post' to the layout your posts use
-layout: post
-# REQUIRED: Set the title for this post
-title: "Demostración Interactiva: Compresión de Audio con DFT"
-# REQUIRED: Set the date (must match the filename's date)
-date: 2023-10-27 10:00:00 +0000 # Example Date - CHANGE THIS
-# OPTIONAL: Add categories or tags
-categories: [tecnología, audio, demo, fourier]
-tags: [dft, compresión, señal, javascript]
-# --- END OF FRONT MATTER ---
+title: Demostración Interactiva - Compresión de Audio con DFT
+date: '2024-04-04 14:54:31 +0200'
+categories:
+- experimento
+- Hilbert
+- aplicación
+taxonomy: experimento proyección hilbert análisis aplicación aplicaciones
+permalink: "/MatExp/analisis/derivadas/palomitas/"
+header:
+  image: "/assets/MatExp/analisis/derivadas/palomitas/header.jpg"
+excerpt: 
+feature: "/assets/MatExp/analisis/derivadas/palomitas/feature.jpg"
+---
 
 <!-- Embedded CSS -->
 <style>
