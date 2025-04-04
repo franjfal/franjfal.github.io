@@ -152,34 +152,38 @@ feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
 
     /* --- Quick Navigation Styles --- */
     .dft-app-container .quick-nav {
-        margin: 0 auto 20px;
-        padding: 10px 0;
-        border-bottom: 1px solid #eee;
-        border-top: 1px solid #eee;
-    }
-    .dft-app-container .quick-nav ul {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-    .dft-app-container .quick-nav li { margin: 5px 10px; }
-    .dft-app-container .quick-nav a {
-        /* color handled by theme */
-        /* text-decoration handled by theme */
-        padding: 5px 10px;
-        border-radius: 5px;
-        transition: all 0.3s ease;
-        font-size: 0.9em;
-        display: inline-block;
-    }
-    .dft-app-container .quick-nav a:hover {
-        background-color: #f0f0f0; /* Keep specific hover background */
-        /* color: #2980b9; */ /* Keep specific hover color? Or let theme handle hover? Keeping for now */
-         color: #2980b9;
-    }
+    margin: 0 auto 20px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    border-top: 1px solid #eee;
+}
+
+.dft-app-container .quick-nav ul {
+    display: flex;
+    flex-direction: column; /* ← clave para lista vertical */
+    align-items: center;     /* centra horizontalmente los items */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dft-app-container .quick-nav li {
+    margin: 8px 0; /* más margen vertical */
+}
+
+.dft-app-container .quick-nav a {
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+    display: inline-block;
+}
+
+.dft-app-container .quick-nav a:hover {
+    background-color: #f0f0f0;
+    color: #2980b9;
+}
+
 
 
     /* --- Consolidated Button Styles --- */
