@@ -87,7 +87,7 @@ A través de actividades manipulativas, visuales e interactivas, el libro ofrece
   <div style="flex: 1 1 250px; max-width: 250px; margin-right: 2em;">
     ![Portada del libro](assets/MatExp/libro/PortadaMatExp.jpg){:style="width: 100%; border: 1px solid #ccc;"}
   </div>
-  
+</div>
 
 ## Material complementario
 
