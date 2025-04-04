@@ -16,8 +16,9 @@ excerpt: ""
   }
 
   /* Flip card container */
-  .matexp-card {
+  .matexp-card-container { /* New container to manage grid item height */
     perspective: 1000px; /* For the 3D effect */
+    height: auto; /* Let the height be determined by content */
   }
 
   /* Inner container for the flip effect */
@@ -27,9 +28,10 @@ excerpt: ""
     transition: transform 0.8s ease-in-out;
     transform-style: preserve-3d;
     cursor: pointer; /* Indicate it's interactive */
+    position: relative; /* Needed for absolute positioning of faces */
   }
 
-  .matexp-card:hover .matexp-card-inner {
+  .matexp-card-container:hover .matexp-card-inner {
     transform: rotateY(180deg);
   }
 
@@ -80,12 +82,17 @@ excerpt: ""
     font-size: 0.9em;
     color: #555;
   }
+
+  .matexp-card-back h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
 </style>
 
 <div class="matexp-grid">
   {% for post in site.MatExp %}
     {% if post.hidden != true %}
-      <div class="matexp-card">
+      <div class="matexp-card-container">
         <div class="matexp-card-inner">
           <div class="matexp-card-front">
             {% if post.feature %}
