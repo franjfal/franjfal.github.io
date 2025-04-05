@@ -50,7 +50,7 @@ permalink: "/investigacion/"
 ## Estancias de investigación
 
 {: reversed="reversed"}
-3. Estancia de investigación: [University of the Fraser Valley](https://www.ufv.ca/math/){:style="text-decoration:none;color:black;" target="_blank"}, 27 marzo - 12 april 2025.
+3. Estancia de investigación: [University of the Fraser Valley](https://www.ufv.ca/math/){:target="_blank"}, 27 marzo - 12 april 2025.
 2. Research in Pairs: [Holomorphic and harmonic approximation on products of sets](https://www.mfo.de/scientific-program/long-term/research-in-pairs/rip-2018.pdf){:target="_blank"}, 18 noviembre - 8 diciembre 2018, [Mathematisches Forschungsinstitut Oberwolfach (Germany)](https://www.mfo.de/){:style="text-decoration:none;color:black;" target="_blank"}.
 1. Research in Pairs: [Algebrability in Linear Dynamics](https://conferences.cirm-math.fr/2094.html){:target="_blank"}, 22-26 enero 2018, [CIRM (Marseille)](https://www.cirm-math.com){:style="text-decoration:none;color:black;" target="_blank"}, número de proyecto 2094.
 
