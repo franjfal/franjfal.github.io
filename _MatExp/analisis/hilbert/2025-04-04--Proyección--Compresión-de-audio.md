@@ -8,7 +8,7 @@ permalink: "/MatExp/analisis/hilbert/compresion-audio"
 header:
   image: "/assets/MatExp/analisis/hilbert/audio/header.jpg"
 excerpt: "Explora cómo se comprime el sonido con una demostración interactiva basada en la Transformada Discreta de Fourier (DFT). Sube o graba tu propio audio, observa cómo se transforma en frecuencias, elimina los componentes menos importantes y escucha cómo cambia el resultado. Una forma visual y práctica de entender la proyección ortonormal en espacios de Hilbert."
-feature: "/assets/MatExp/analisis/hilbert/audio/feature.jpg"
+feature: "/assets/MatExp/analisis/hilbert/audio-conversion/feature.jpg"
 ---
 
 <!-- Embedded CSS -->

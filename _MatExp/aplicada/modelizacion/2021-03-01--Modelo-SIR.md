@@ -8,6 +8,8 @@ categories:
 taxonomy: experimento modelización ecuaciones-diferenciales simulación geogebra matemáticas-experimentales
 permalink: "/MatExp/aplicada/modelizacion/SIR/"
 excerpt: Simulación del modelo epidemiológico SIR.
+feature: "/assets/MatExp/aplicada/modelizacion/SIR/feature.jpg"
+
 ---
 
 El modelo matemático SIR cuyas siglas provienen de Susceptibles-Infectados-Recuperados se utiliza para representar y estudiar matemáticamente la evolución de enfermedades infecciosas, como por ejemplo la pandemia causada por el virus de la COVID-19. En este modelo la población se divide en tres grupos distintos:
