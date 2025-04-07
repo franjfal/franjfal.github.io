@@ -5,7 +5,7 @@ categories:   experimento optimización análisis hilbert imagen proyección apl
 tags: [Hilbert, proyección ortogonal, DFT, transformada fourier, filtro, imagen, procesamiento señal,]
 permalink: "/MatExp/analisis/hilbert/filtro-imagen"
 header:
-  image: "/assets/MatExp/analisis/hilbert/image/header.jpg"
+  image: "/assets/MatExp/analisis/hilbert/image-filter/header.jpg"
 excerpt: "Descubre cómo se pueden filtrar imágenes usando la Transformada Discreta de Fourier (DFT) con esta demostración interactiva. Sube una imagen, observa su transformación al dominio de las frecuencias, aplica distintos filtros (paso bajo, paso alto o de banda) y compara el espectro y la imagen resultante. Una forma visual de entender cómo funciona el procesamiento de imágenes y su relación con la proyección ortogonal en un espacio de Hilber."
 feature: "/assets/MatExp/analisis/hilbert/image-filter/feature.jpg"
 ---
