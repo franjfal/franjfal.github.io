@@ -14,6 +14,7 @@ gallery1:
   alt: ejemplo de caja
 - image_path: "/assets/MatExp/analisis/derivadas/palomitas/caja3.jpg"
   alt: ejemplo de caja
+feature: "assets/MatExp/discreta/grafos/trazos/feature.jpg"
 ---
 
 <div class="materials">

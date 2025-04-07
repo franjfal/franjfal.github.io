@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>XVIII Encuentros Análisis Funcional Granada-Murcia-Valencia
+	</title>
+
+	<!-- Meta -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Bootstrap 5 Tech Conference Template">
+	<meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+	<link rel="shortcut icon" href="favicon.ico">
+
+	<!-- Google Font -->
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:600,700,800|Roboto:300,400,700&display=swap"
+		rel="stylesheet">
+
+	<!-- FontAwesome JS-->
+	<script defer src="assets/fontawesome/js/all.min.js"></script>
+
+	<!-- PARTICIPANTS -->
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', (event) => {
+			console.log('DOM fully loaded and parsed');
+			fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vS6T8X8olK6d5ByTpFRk2TNHEYGeS8SjdDRCb6guz99J1_6WXha4CbOzdjveD4bh93KwqSc-XDpS6Kg/pub?gid=1799425409&single=true&output=csv')
+				.then(response => {
+					console.log('Received response from fetch');
+					return response.text();
+				})
+				.then(data => {
+					console.log('original cvs data:');
+					console.log(data);
+					console.log('Received data from response.text()');
+					let parsedData = Papa.parse(data, { header: true }).data;
+					console.log('Parsed data:', parsedData);
+
+					// Extract the participant names and affiliations from the parsed data
+					let participants = parsedData.flatMap(Object.values);
+					console.log('Participants:', participants);
+
+					// Filter out any undefined values and sort the participants
+					participants = participants.filter(participant => participant !== undefined && participant !== '');
+
+					// Capitalize the first letter of each word in each participant's name
+					participants = participants.map(participant => participant.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' '));
+
+					participants.sort((a, b) => a.localeCompare(b));
+					console.log('Sorted participants:', participants);
+
+					let container = document.querySelector('.participants .row'); // Select the row where you want to append the participants
+					console.log('Container:', container);
+
+					participants.forEach(participant => {
+						console.log('Processing participant:', participant);
+						let participantElement = document.createElement('div');
+						participantElement.className = 'participant-name col-lg-6';
+
+						let iconElement = document.createElement('span');
+						iconElement.className = 'fas fa-user';
+						participantElement.appendChild(iconElement);
+
+						let textNode = document.createTextNode(' ' + participant);
+						participantElement.appendChild(textNode);
+
+						container.appendChild(participantElement);
+					});
+				});
+		});
+	</script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+	<!-- Script: display mathematics -->
+	<script type="text/javascript">
+		window.MathJax = {
+			tex2jax: {
+				inlineMath: [
+					['$', '$'],
+					["\\(", "\\)"]
+				],
+				processEscapes: true
+			}
+		};
+	</script>
+	<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+	<!--End of script for display mathematics -->
+	<!-- Theme CSS -->
+	<link id="theme-style" rel="stylesheet" href="assets/css/theme.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+</head>
+
+<body>
+	<header id="header" class="header fixed-top">
+		<div class="branding">
+			<div class="container-fluid">
+				<nav class="main-nav navbar navbar-expand-lg">
+					<!--<div class="site-logo"><a class="scrollto" href="#hero-block"><img class="logo-icon"
+								src="assets/images/logo-white.svg" alt="logo"></a></div>-->
+
+					<div class="navbar-btn order-lg-2"><a class="btn btn-secondary"
+							href="https://forms.gle/MfQtXJ8Ukys7Tmkv9" target="_blank">Registro</a></div>
+
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navigation"
+						aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+
+					<div id="navigation" class="navbar-collapse collapse  justify-content-lg-end me-lg-3">
+						<ul class="nav navbar-nav">
+
+							<li class="nav-item"><a class="nav-link scrollto" href="#about-section">Información</a></li>
+							<!--<li class="nav-item"><a class="nav-link scrollto" href="#speakers-section">Speakers</a></li>-->
+							<li class="nav-item"><a class="nav-link scrollto" href="#schedule-section">Programa</a></li>
+							<li class="nav-item"><a class="nav-link scrollto" href="#posters">Posters</a></li>
+							<li class="nav-item"><a class="nav-link scrollto" href="#participants">Participantes</a>
+							</li>
+							<li class="nav-item"><a class="nav-link scrollto" href="#location">Localización</a></li>
+							<!--<li class="nav-item"><a class="nav-link scrollto" href="#venue-section">Venue</a></li>-->
+							<li class="nav-item"><a class="nav-link scrollto" href="#accommodation">Alojamiento</a></li>
+							<li class="nav-item"><a class="nav-link scrollto" href="#sponsors-section">Sponsors</a></li>
+						</ul><!--//nav-->
+					</div><!--//navabr-collapse-->
+
+				</nav><!--//main-nav-->
+
+			</div><!--//container-->
+		</div><!--//branding-->
+	</header><!--//header-->
+
+	<div id="hero-block" class="hero-block">
+		<div id="hero-carousel" class="hero-carousel carousel slide carousel-fade" data-ride="carousel">
+			<div class="carousel-inner">
+				<div class="carousel-item-1 carousel-item active">
+				</div>
+				<div class="carousel-item-2 carousel-item">
+				</div>
+				<div class="carousel-item-3 carousel-item">
+				</div>
+			</div>
+		</div>
+		<div class="hero-block-mask"></div>
+		<div class="container">
+			<div class="hero-text-block">
+				<!--<h1 class="hero-heading mb-2">EncAF</h1>-->
+				<div class="hero-intro mb-4">XVIII Encuentros Análisis Funcional <br> Granada-Murcia-Valencia</div>
+				<div class="hero-meta mb-3"><i class="far fa-calendar-alt me-2"></i>16 - 17 febrero 2024 <i
+						class="fas fa-map-marker-alt mx-2"></i>Murcia (Murcia)</div>
+				<div class="hero-cta"><a class="btn btn-primary btn-lg" href="#schedule-section">Programa</a>
+					<a class="btn btn-secondary btn-lg" style="margin-left: 15px;"
+						href="https://forms.gle/MfQtXJ8Ukys7Tmkv9" target="_blank">Registro</a>
+				</div>
+
+			</div><!--//hero-text-block-->
+		</div><!--//container-->
+
+	</div><!--//hero-block-->
+
+	<!--
+		<div class="stats-block theme-bg-primary text-white py-4 text-center">
+		<div class="container">
+			<div class="row">
+				<div class="col-6 col-md-3">
+					<div class="item">
+						<div class="number">2000+</div>
+						<div class="unit">Attendees</div>
+					</div>
+	</div>
+	<div class="col-6 col-md-3">
+		<div class="item">
+			<div class="number">3</div>
+			<div class="unit">Days</div>
+		</div>
+	</div>
+	<div class="col-6 col-md-3">
+		<div class="item">
+			<div class="number">60+</div>
+			<div class="unit">Talks</div>
+		</div>
+	</div>
+	<div class="col-6 col-md-3">
+		<div class="item">
+			<div class="number">10+</div>
+			<div class="unit">Workshops</div>
+		</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	-->
+
+	<section id="about-section" class="about-section section theme-bg-light">
+		<div class="container">
+			<h3 class="section-heading text-center mb-3">Sobre el encuentro</h3>
+			<div class="section-intro single-col-max mx-auto mb-4">El "XVIII Encuentros Análisis Funcional
+				Granada-Murcia-Valencia" es un espacio único donde convergen la teoría y la práctica
+				del análisis funcional. Este evento tiene como objetivo principal fomentar la colaboración, el
+				intercambio de ideas y la
+				creación de redes entre los investigadores y profesionales.</div>
+			<div class="benefits-list text-center mb-3">
+				<h4 class="text-center mb-4">Temas Destacados</h4>
+				<ul class="list-unstyled text-start d-inline-block">
+					<li><i class="fas fa-check-circle me-2"></i>Geometry and Operators in Banach algebras and spaces
+					</li>
+					<li><i class="fas fa-check-circle me-2"></i>Banach spaces, geometry, topology, and order</li>
+					<li><i class="fas fa-check-circle me-2"></i>Complex analysis and geometry in Banach spaces</li>
+				</ul>
+			</div><!--//benefits-list-->
+			<!--<div class="event-countdown text-center mb-3">
+				<h4 class="countdown-intro mb-2 text-center mb-3">Event Starts In:</h4>
+				<div id="countdown-box" class="countdown-box"></div>
+			</div>
+			<div class="about-cta text-center mb-5"><a class="btn btn-secondary btn-lg  mb-5"
+					href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/devconf-free-bootstrap-4-conference-template-for-tech-conferences-and-events/"
+					target="_blank">Get Your Ticket Today</a></div>-->
+		</div><!--//container-->
+	</section><!--//about-section-->
+
+
+	<div class="container">
+		<hr>
+	</div>
+
+	<section id="schedule-section" class="schedule-section section">
+		<div class="container">
+			<h3 class="section-heading text-center mb-5">Conferenciantes</h3>
+
+			<div class="row" style="margin: 0 auto; max-width: 600px;">
+				<div class="card mb-0 border-0 ">
+					<div class="card-body">
+						<h5 class="card-title d-inline"><i class="fas fa-user"></i> Ramón Aliaga Varea</h5>
+						<span class="card-text d-inline"> (UPV)</span>
+					</div>
+				</div>
+				<div class="card mb-0 border-0">
+					<div class="card-body">
+						<h5 class="card-title d-inline"><i class="fas fa-user"></i> Javier Falcó </h5>
+						<span class="card-text d-inline"> (UV)</span>
+					</div>
+				</div>
+				<div class="card mb-0 border-0">
+					<div class="card-body">
+						<h5 class="card-title d-inline"><i class="fas fa-user"></i> Audrey Fovelle</h5>
+						<span class="card-text d-inline"> (UGR)</span>
+					</div>
+				</div>
+				<div class="card mb-0 border-0">
+					<div class="card-body">
+						<h5 class="card-title d-inline"><i class="fas fa-user"></i> Daniel Isert Sales</h5>
+						<span class="card-text d-inline"> (UV)</span>
+					</div>
+				</div>
+				<div class="card mb-0 border-0">
+					<div class="card-body">
+						<h5 class="card-title d-inline"><i class="fas fa-user"></i> Mikolaj Krupski</h5>
+						<span class="card-text d-inline"> (UM)</span>
+					</div>
+				</div>
+				<div class="card mb-0 border-0">
+					<div class="card-body">
+						<h5 class="card-title d-inline"><i class="fas fa-user"></i> Gerardo Martín Escolano</h5>
+						<span class="card-text d-inline"> (UGR)</span>
+					</div>
+				</div>
+				<div class="card mb-0 border-0">
+					<div class="card-body">
+						<h5 class="card-title d-inline"><i class="fas fa-user"></i> Gonzalo Martínez Cervantes</h5>
+						<span class="card-text d-inline"> (UM)</span>
+					</div>
+				</div>
+				<div class="card mb-0 border-0">
+					<div class="card-body">
+						<h5 class="card-title d-inline"><i class="fas fa-user"></i> Abraham Rueda</h5>
+						<span class="card-text d-inline"> (UGR)</span>
+					</div>
+				</div>
+				<div class="card mb-0 border-0">
+					<div class="card-body">
+						<h5 class="card-title d-inline"><i class="fas fa-user"></i> Shanshan Su</h5>
+						<span class="card-text d-inline"> (UGR)</span>
+					</div>
+				</div>
+				<div class="card mb-0 border-0">
+					<div class="card-body">
+						<h5 class="card-title d-inline"><i class="fas fa-user"></i> José Miguel Zapata</h5>
+						<span class="card-text d-inline"> (UM)</span>
+					</div>
+				</div>
+			</div>
+
+			<h3 class="section-heading text-center mb-5">Programa</h3>
+
+			<!-- Nav tabs -->
+			<ul class="schedule-nav nav nav-pills nav-fill" id="myTab" role="tablist">
+				<li class="nav-item me-2">
+					<a class="nav-link active" id="tab-1" data-bs-toggle="tab" href="#tab-1-content" role="tab"
+						aria-controls="tab-1-content" aria-selected="true">
+						<span class="heading">Día 1</span>
+						<span class="meta">(Viernes 16)</span>
+					</a>
+				</li>
+				<li class="nav-item me-2">
+					<a class="nav-link" id="tab-2" data-bs-toggle="tab" href="#tab-2-content" role="tab"
+						aria-controls="tab-2-content" aria-selected="false">
+						<span class="heading">Día 2</span>
+						<span class="meta">(Sábado 17)</span>
+					</a>
+				</li>
+
+			</ul>
+
+			<!-- Tab panes -->
+			<div class="schedule-tab-content tab-content">
+				<div class="tab-pane active" id="tab-1-content" role="tabpanel" aria-labelledby="tab-1">
+
+					<div class="item item-talk">
+						<div class="time mb-3">11:00 - 11:30</div>
+						<div class="details">
+							<div class="profile">
+								<div class="name"><a class="theme-link" href="#modal-speaker-1" data-bs-toggle="modal"
+										data-bs-target="#Falco">Javier Falcó Benavent</a></div>
+							</div>
+							<div class="content">
+								<h3 class="title mb-3"><a class="theme-link" href="#modal-speaker-1"
+										data-bs-toggle="modal" data-bs-target="#Falco">Norm-Attaining and
+										Non-Norm-Attaining Group-Invariant Operators and multilinear forms</a></h3>
+							</div>
+						</div>
+					</div>
+
+					<div class="item item-talk">
+						<div class="time mb-3">11:40 - 12:10</div>
+						<div class="details">
+							<div class="profile">
+								<div class="name"><a class="theme-link" href="#modal-speaker-1" data-bs-toggle="modal"
+										data-bs-target="#Krupski">Mikolaj Krupski</a></div>
+							</div>
+							<div class="content">
+								<h3 class="title mb-3"><a class="theme-link" href="#modal-speaker-1"
+										data-bs-toggle="modal" data-bs-target="#Krupski">On $\omega$-Corson and $NY$
+										compact spaces</a></h3>
+							</div>
+						</div>
+					</div>
+
+					<div class="item item-talk">
+						<div class="time mb-3">12:20 - 12:50</div>
+						<div class="details">
+							<div class="profile">
+								<div class="name"><a class="theme-link" href="#fovelle" data-bs-toggle="modal"
+										data-bs-target="#Fovelle">Audrey Fovelle</a></div>
+							</div>
+							<div class="content">
+								<h3 class="title mb-3"><a class="theme-link" href="#fovelle" data-bs-toggle="modal"
+										data-bs-target="#Fovelle">Asymptotic smoothness in Banach spaces, Three-space
+										properties and applications</a></h3>
+							</div>
+						</div>
+					</div>
+					<br>
+					<br>
+					<br>
+
+					<div class="item item-talk">
+						<div class="time mb-3">15:00 - 15:30</div>
+						<div class="details">
+							<div class="profile">
+								<div class="name"><a class="theme-link" href="#Marin" data-bs-toggle="modal"
+										data-bs-target="#Marin">Gerardo Marín Escolano</a></div>
+							</div>
+							<div class="content">
+								<h3 class="title mb-3"><a class="theme-link" href="#Marin" data-bs-toggle="modal"
+										data-bs-target="#Marin">Lie--Trotter formulae in Jordan-Banach algebras with
+										applications to the study of spectral-valued multiplicative functionals.</a>
+								</h3>
+							</div>
+						</div>
+					</div>
+
+					<div class="item item-talk">
+						<div class="time mb-3">15:40 - 16:10</div>
+						<div class="details">
+							<div class="profile">
+								<div class="name"><a class="theme-link" href="#modal-speaker-1" data-bs-toggle="modal"
+										data-bs-target="#Isert">Daniel Isert Sales</a></div>
+							</div>
+							<div class="content">
+								<h3 class="title mb-3"><a class="theme-link" href="#modal-speaker-1"
+										data-bs-toggle="modal" data-bs-target="#Isert">On the group invariant Ekeland's
+										variational principle and its equivalences</a></h3>
+							</div>
+						</div>
+					</div>
+
+					<div class="item item-talk">
+						<div class="time mb-3">16:10 - 16:40</div>
+						<div class="details">
+							<div class="content">
+								<h3 class="title mb-3">Coffee Break</h3>
+							</div>
+						</div>
+					</div>
+
+					<div class="item item-talk">
+						<div class="time mb-3">16:40 - 17:10</div>
+						<div class="details">
+							<div class="profile">
+								<div class="name"><a class="theme-link" href="#Su" data-bs-toggle="modal"
+										data-bs-target="#Su">Shanshan Su</a></div>
+							</div>
+							<div class="content">
+								<h3 class="title mb-3"><a class="theme-link" href="#su" data-bs-toggle="modal"
+										data-bs-target="#Su">M-ideals, yet again: the case of real JB*-triples</a></h3>
+							</div>
+						</div>
+					</div>
+
+					<div class="item item-talk">
+						<div class="time mb-3">17:20 - 17:50</div>
+						<div class="details">
+							<div class="profile">
+								<div class="name"><a class="theme-link" href="#modal-speaker-1" data-bs-toggle="modal"
+										data-bs-target="#Zapata">José Miguel Zapata
+										García</a></div>
+							</div>
+							<div class="content">
+								<h3 class="title mb-3"><a class="theme-link" href="#modal-speaker-1"
+										data-bs-toggle="modal" data-bs-target="#Zapata">Representation of maxitive
+										functionals on lattices</a></h3>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="tab-pane timeline" id="tab-2-content" role="tabpanel" aria-labelledby="tab-2">
+					<div class="item item-talk">
+						<div class="time mb-3">09:30 - 10:00</div>
+						<div class="details">
+							<div class="profile">
+								<div class="name"><a class="theme-link" href="#Aliaga" data-bs-toggle="modal"
+										data-bs-target="#Aliaga">Ramón Aliaga Varea</a>
+								</div>
+							</div>
+							<div class="content">
+								<h3 class="title mb-3"><a class="theme-link" href="#Aliaga" data-bs-toggle="modal"
+										data-bs-target="#Aliaga">Espacios Lipschitz-free. Integrales de moléculas</a>
+								</h3>
+							</div>
+						</div>
+					</div>
+
+					<div class="item item-talk">
+						<div class="time mb-3">10:10 - 10:40</div>
+						<div class="details">
+							<div class="profile">
+								<div class="name"><a class="theme-link" href="#modal-speaker-1" data-bs-toggle="modal"
+										data-bs-target="#Martinez">Gonzalo Martínez
+										Cervantes</a></div>
+							</div>
+							<div class="content">
+								<h3 class="title mb-3"><a class="theme-link" href="#modal-speaker-1"
+										data-bs-toggle="modal" data-bs-target="#Martinez">The disorder of the recent
+										counterexample to the Complemented Subspace Problem</a></h3>
+							</div>
+						</div>
+					</div>
+
+					<div class="item item-talk">
+						<div class="time mb-3">10:50 - 11:20</div>
+						<div class="details">
+							<div class="profile">
+								<div class="name"><a class="theme-link" href="#Rueda" data-bs-toggle="modal"
+										data-bs-target="#Rueda">Abraham Rueda Zoca</a>
+								</div>
+							</div>
+							<div class="content">
+								<h3 class="title mb-3"><a class="theme-link" href="#Rueda" data-bs-toggle="modal"
+										data-bs-target="#Rueda">Radius and diameter of slices in Banach spaces</a></h3>
+							</div>
+						</div>
+					</div>
+
+					<div class="item item-talk">
+						<div class="time mb-3">11:30</div>
+						<div class="details">
+							<div class="content">
+								<h3 class="title mb-3">Reunión</h3>
+							</div>
+						</div>
+					</div>
+				</div><!--//tab-2-content-->
+
+			</div><!--//schedule-tab-content-->
+			<!--<div class="schedule-cta text-center mx-auto"><a
+					href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/devconf-free-bootstrap-4-conference-template-for-tech-conferences-and-events/"
+					class="btn btn-primary btn-lg me-md-2 d-block d-md-inline-block mb-3 mb-md-0"
+					target="_blank">Download Schedule</a><a
+					href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/devconf-free-bootstrap-4-conference-template-for-tech-conferences-and-events/"
+					class="btn btn-secondary btn-lg d-block d-md-inline-block" target="_blank">Buy Tickets</a></div>-->
+			<div class="container"
+				style="text-align: center; padding: 20px; background-color: #f8f9fa; border-radius: 5px; margin-top: 20px;">
+				<h2 style="color: #6c757d;">Conference Location</h2>
+				<p>The talks will take place in the auditorium of the Faculty of Mathematics</p>
+			</div>
+		</div><!--//container-->
+	</section><!--//schedule-section-->
+
+	<section id="participants" class="participants-section section">
+		<div class="container participants">
+			<div class="text-center">
+				<h2 class="section-heading text-uppercase">Participants</h2>
+			</div>
+			<div class="row " style="background: rgba(255, 255, 255, 0.324);padding: 20px;">
+				<!-- Participants will be appended here by the JavaScript code -->
+			</div>
+		</div>
+	</section>
+
+	<section id="posters" class="posters-section section">
+		<div class="container posters">
+			<div class="text-center">
+				<h2 class="section-heading text-uppercase">Posters</h2>
+			</div>
+			<div class="row " style="background: rgba(255, 255, 255, 0.324);padding: 20px;">
+				<ul>
+
+					<li>Avilés, Antonio - <em>"Some examples concerning LΣ(≤ω) and metrizably fibered compacta"</em>
+					</li>
+					<li>de la Cruz Lajara López, Sebastián - <em>"Operator ranges and endomorphisms with a prescribed
+							behaviour on Banach spaces"</em></li>
+					<li>García Castaño, Fernando - <em>"Existence and Density Theorems of Henig Global Proper Efficient
+							Points in Non-Convex Vector Optimization Problems"</em></li>
+					<li>García, Domingo - <em>"Farkas' Lemma in the bilinear setting and evaluation functionals"</em>
+					<li>Garces Perez, Jorge José - <em>"Bilinear maps that have product property at a compact
+							element"</em></li>
+					<li>Grelier, Guillaume - <em>"A note on nonseparable Lipschitz-free spaces"</em></li>
+					<li>Guirao Sánchez, Antonio José - <em>"On Projectional Skeletons and the Plichko Property in
+							Lipschitz-Free Banach Spaces"</em></li>
+					<li>Korpalski, Maciej - <em>"Countable discrete extensions of compact lines"</em></li>
+					<li>López Pérez, Ginés - <em>"The equivalence between CPCP and strong regularity under Krein-Milman
+							property"</em></li>
+					<li>Maestre, Manuel - <em>"Norm attaining elements of the ball algebra H∞(BN)"</em></li>
+					<li>Martín Suárez, Miguel - <em>"The Daugavet equation for polynomials on C*-algebras and
+							JB*-triples"</em></li>
+					<li>Orihuela Calatayud, José - <em>"Solution to an old open problem of Joram Lindenstrauss". (con V.
+							Montesinos)</em></li>
+					<li>Peralta, Antonio M. - <em>"Preservers of triple transition pseudo-probabilities and
+							Wigner--Uhlhorn"</em></li>
+					<li>Raja Baño, Matías - <em>"Representation in C(K) by Lipschitz functions"</em></li>
+					<li>Rodríguez Ruiz, José - <em>"On vector measures with values in $\ell_\infty$"</em></li>
+					</li>
+					<li>Sevilla, Pablo - <em>"Decoupling inequalities with exponential constants" (joint work with D,
+							Carando y F.Marceca)</em></li>
+
+					<li>Troyanski, Stanimir - <em>"Orlicz functions that do not satisfy the Δ2-condition and high order
+							Gâteaux smoothness in hM(Γ)" (con M. Ivanov y N. Zlateva)
+						</em></li>
+
+				</ul>
+			</div>
+		</div>
+	</section>
+	<section id="location" class="venue-section section theme-bg-primary text-white">
+		<div class="container">
+			<div class="text-center">
+				<h2 class="section-heading text-uppercase">Localización</h2>
+			</div>
+
+			<div class="row" style="background: rgba(255, 255, 255, 0.324);padding: 20px;">
+				<p>El encuentro tendrá lugar en la Facultad de Matemáticas de la Universidad de Murcia.</p>
+				<div class="col-lg-6">
+					<h4 class="text-white mb-3">Dirección:</h4>
+					<p>
+						C. Campus Universitario, 9, 30100 Murcia</p>
+					<h4 class="text-white mb-3">Cómo llegar al Campus, en transporte público:</h4>
+					<ul>
+						<li>Latbus: líneas 21, 22, 31, 39, 41, 42, 47 y 78
+						</li>
+						<li>Lycar: Cieza - Murcia, Barinas - Fortuna - Murcia, Yecla - Jumilla - Murcia, Águilas -
+							Murcia, Abarán - Murcia y
+							Moratalla - Murcia
+						</li>
+						<li>Meroño: Cartagena - Murcia</li>
+						<li>Tranvía de Murcia: L1, Parada: Biblioteca General.</li>
+					</ul>
+					<p class="text-white mb-3">The talks will take place in the auditorium of the Faculty of
+						Mathematics
+
+					</p>
+					<!--<h4 class="text-white mb-3">Cómo llegar al Campus, por carretera:</h4>
+					<ul>
+						<li>Por la autovía CV-35 (autovía Liria-Ademuz), el campus está junto a la carretera y es
+							perfectamente
+							visible desde ella.</li>
+						<li>Desde el centro de Valencia se puede acceder por la salida 4B (Burjassot-Centre).</li>
+					</ul>-->
+				</div>
+				<div class="col-lg-6">
+					<iframe width="100%" style="border:0"
+						src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12572.970125411222!2d-1.16916!3d38.018125!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd63810176a60a4b%3A0xdb4110a2ada237fe!2sFacultad%20de%20Matem%C3%A1ticas!5e0!3m2!1ses!2ses!4v1704246373765!5m2!1ses!2ses"
+						allowfullscreen="" frameborder="0" height="450"> </iframe>
+				</div>
+			</div>
+
+
+
+		</div>
+	</section>
+
+	<!--<section id="venue-section" class="venue-section section  theme-bg-primary text-white">
+		<div class="container">
+			<h3 class="section-heading text-center mb-5 text-white">Venue</h3>
+			<div class="row gx-5 py-lg-5">
+				<div class="col-12 col-lg-7 h-100">
+					<div class="desc">
+						<h4 class="text-white mb-3">How To Get Here</h4>
+						<p>Your venue info goes here. Sed feugiat nibh lorem, a laoreet sem aliquet ut. Praesent
+							tincidunt efficitur nisi, ut eleifend diam tempor sit amet. Aliquam volutpat ex feugiat,
+							semper urna a, pharetra lacus. Sed eget eros cursus, consequat lectus ultricies, efficitur
+							metus. Sed sit amet mauris faucibus magna finibus convallis vel quis justo. Curabitur
+							ultricies sagittis erat, quis faucibus lectus tempor vitae. Proin sodales, elit vitae
+							accumsan efficitur, orci quam molestie orci, accumsan tincidunt dui turpis sed libero. Duis
+							id vehicula ex. In quis pellentesque lorem, ut sollicitudin mauris.</p>
+
+						<div class="row pt-3">
+							<div class="col-12 col-md-6 mb-4">
+								<div class="grid-item p-4">
+									<h5 class="text-white mb-3 title"><i class="fas fa-plane-departure me-2"></i>By
+										Plane</h5>
+									<p>Aliquam gravida, enim et efficitur feugiat, tellus ligula scelerisque orci, et
+										sagittis erat lectus sit amet orci.</p>
+									<a class="text-white" href="#">Search Tickets &rarr;</a>
+								</div>
+							<div class="col-12 col-md-6 mb-4">
+								<div class="grid-item p-4">
+									<h5 class="text-white mb-3 title"><i class="fas fa-car me-2"></i>By Car</h5>
+									<p>Aliquam gravida, enim et efficitur feugiat, tellus ligula scelerisque orci, et
+										sagittis erat lectus sit amet orci.</p>
+									<a class="text-white" href="#">Check Route &rarr;</a>
+								</div>
+							</div>
+							<div class="col-12 col-md-6 mb-4">
+								<div class="grid-item p-4">
+									<h5 class="text-white mb-3 title"><i class="fas fa-bus-alt me-2"></i>By Bus</h5>
+									<p>Aliquam gravida, enim et efficitur feugiat, tellus ligula scelerisque orci, et
+										sagittis erat lectus sit amet orci. </p>
+									<a class="text-white" href="#">Book Tickets &rarr;</a>
+								</div>
+							</div>
+							<div class="col-12 col-md-6 mb-4">
+								<div class="grid-item p-4">
+									<h5 class="text-white mb-3 title"><i class="fas fa-subway me-2"></i>By Train</h5>
+									<p>Aliquam gravida, enim et efficitur feugiat, tellus ligula scelerisque orci, et
+										sagittis erat lectus sit amet orci.</p>
+									<a class="text-white" href="#">Book Tickets &rarr;</a>
+								</div>
+							</div>
+						</div>
+						<h4 class="text-white mb-4 mt-3 mt-lg-5">Facilities &amp; Accommodations</h4>
+						<p>Your venue info goes here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin
+							consequat magna eu accumsan mattis. Duis non augue porttitor, fringilla velit vitae,
+							ultricies eros. Sed libero eros, tristique ac orci nec, hendrerit dictum lacus. Aenean
+							iaculis massa felis, eget venenatis turpis lacinia sit amet. </p>
+						<a class="btn btn-ghost" href="#">Search Hotels</a>
+					</div>
+				</div>
+				<div class="col-12 col-xl-3 col-lg-4 offset-lg-1 position-relative h-100 mt-5 mt-lg-0">
+					<div class="figures-holder">
+						<div class="figure figure-1"><img class="shadow" src="assets/images/venue/venue-1.jpg" alt="">
+						</div>
+						<div class="figure figure-2"><img class="shadow" src="assets/images/venue/venue-2.jpg" alt="">
+						</div>
+						<div class="figure figure-3"><img class="shadow" src="assets/images/venue/venue-3.jpg" alt="">
+						</div>
+						<div class="figure figure-4"><img class="shadow" src="assets/images/venue/venue-4.jpg" alt="">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+-->
+
+	<section id="accommodation" class="theme-bg-light">
+		<div class="card">
+			<div class="card-header">
+				<h2>Alojamiento</h2>
+			</div>
+			<div class="card-body">
+				<h3 class="card-title">HOTEL SERCOTEL JC1 MURCIA 4*</h3>
+				<p class="card-text">C/ Av. Juan Carlos I, 55,</p>
+				<p class="card-text">30100 - Murcia (Murcia)</p>
+				<p class="card-text">Teléfono: <a href="tel:968858844">968 85 88 44</a></p>
+				<p class="card-text">Website: <a href="https://www.sercotelhoteles.com/es/hotel-jc1"
+						target="_blank">www.sercotelhoteles.com/es/hotel-jc1</a></p>
+				<h4 class="card-subtitle mb-2 text-muted">NOMBRE: ENCUENTRO UNIVERSIDAD</h4>
+				<p class="card-text">LOCALIZADOR: 45870</p>
+				<h4 class="card-subtitle mb-2 text-muted">Tarifas:</h4>
+				<p class="card-text">HABITACION DOBLE USO INDIVIDUAL ALOJAMIENTO Y DESAYUNO: 69€ / noche</p>
+				<p class="card-text">HABITACION DOBLE ALOJAMIENTO Y DESAYUNO: 75€ / noche</p>
+				<p class="card-text">PRECIOS IVA INCLUIDO</p>
+				<p class="card-text">TARIFAS NETAS</p>
+			</div>
+		</div>
+	</section>
+	<section id="sponsors-section" class="sponsors-section section">
+		<div class="container">
+			<h3 class="section-heading text-center mb-3">Sponsors</h3>
+			<div class="section-intro text-center single-col-max mx-auto mb-5">Supported by grants PID2021-122126NB-C31,
+				C32, C33 funded by MICIU/AEI/10.13039/501100011033 and by FEDER, UE as well as by
+				Fundación
+				Séneca - Agencia de Ciencia y Tecnología de la Región de Murcia (21955/PI/22)</div>
+			<div class="row logos justify-content-center">
+				<!--<div class="logo-item col-6 col-md-4 col-lg-2"><img src="assets/images/logos/AEI.jpg" alt=""></div>
+				<div class="logo-item col-6 col-md-4 col-lg-2"><img src="assets/images/logos/feder.jpg" alt=""></div>
+				<div class="logo-item col-6 col-md-4 col-lg-2"><img src="assets/images/logos/micinnu.png" alt=""></div>-->
+				<div class="logo-item col-12 col-md-8 col-lg-6"><img
+						src="assets/images/logos/MICIU+Cofinanciado+AEI.jpg" alt=""><br></div>
+				<div class="logo-item col-6 col-md-4 col-lg-2"><img src="assets/images/logos/fseneca.png" alt=""><br>
+
+				</div>
+
+			</div><!--//row-->
+		</div><!--//container-->
+	</section><!--//sponsors-section-->
+
+	<footer class="footer py-5 theme-bg-primary">
+		<div class="row" style="display: flex; align-items: flex-start;">
+			<div class="committee-section col-12 col-md-6">
+				<h3 class="section-heading text-center mb-3">Comité científico</h3>
+				<ul class="committee-list">
+					<li>Antonio Avilés (UM)</li>
+					<li>Domingo García (UV)</li>
+					<li>Miguel Martín (UGR)</li>
+					<li>Antonio Peralta (UGR)</li>
+					<li>Matías Raja (UM)</li>
+					<li>Pablo Sevilla (UPV)</li>
+				</ul>
+			</div>
+			<div class="committee-section col-12 col-md-6">
+				<h3 class="section-heading text-center mb-3">Comité organizador</h3>
+				<ul class="committee-list">
+					<li>Antonio Avilés</li>
+					<li>Javier Falcó</li>
+					<li>Gonzalo Martínez</li>
+					<li>Mikołaj Krupski</li>
+					<li>José Orihuela</li>
+					<li>Matías Raja</li>
+					<li>José Miguel Zapata</li>
+				</ul>
+			</div>
+		</div>
+		<div class="container text-center">
+			<!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+			<small class="copyright">Designed with <i class="fas fa-heart" style="color: #EC645E;"></i> by <a
+					href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a> for developers</small>
+
+		</div><!--//container-->
+	</footer>
+
+
+	<!-- Javascript -->
+	<script src="assets/plugins/popper.min.js"></script>
+	<script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script src="assets/plugins/smoothscroll.min.js"></script>
+	<script src="assets/plugins/gumshoe/gumshoe.polyfills.min.js"></script>
+	<script src="assets/js/main.js"></script>
+
+
+	<!-- ISERT -->
+	<div class="modal" id="Isert">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Isert Sales, Daniel (Universidad de Valencia)</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<h1 class="">On the group invariant Ekeland's variational principle and its equivalences.</h1>
+					<p class="text-justify">During the years, the group invariant mappings have been mainly studied in
+						measure theory. Recently, this studies have extended to other fields including functional
+						analysis. In this talk we will present a group invariant version of the well-known Ekeland's
+						variational principle (EVP). To do so we will briefly present the three basic notions of group
+						invariant and convexity with respect to the group. Then we will present some of the widely
+						extended applications of the EVP, all of them in their respective group invariant version, such
+						as the Palais-Smale minimizing sequences, the Bronsted-Rockafellar theorem, the Bishop-Phelps
+						theorem, and give a full description of the linear and continuous group invariant functionals
+						space. Finally we will present some equivalences of the Ekeland variational principle to the
+						petal and the drop theorem, in their respective group invariant versions.
+
+						This is joint work with Javier Falcó.</p>
+					<ol>
+						<li>Ekeland I., On the variational principle, Journal mathematical analysis and applications
+							47.2, (1974), pp. 324-353.</li>
+						<li>Fabian M.; Habala P.; H\'ajek P.; Montesinos V.; Zizler V., Banach space theory: the basis
+							for linear and nonlinear analysis, Springer, 2011.</li>
+						<li>Falcó J.; Isert D., Group invariant variational principles, ArXiv (2023).</li>
+						<li>Penot J.-P., The drop theorem, the petal theorem and Ekeland's variational principle,
+							Nonlinear analysis theory, methods and applications, 10 (1986), pp. 813--822.</li>
+						<li>Oettli, W. and Th\'era, M., Equivalents of Ekeland's variational principle, Bulletin of the
+							Austrlian Mathematical Society, 48 (1993), pp. 385--392.</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- FALCO-->
+	<div class="modal" id="Falco">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Falcó, Javier (Universidad de Valencia)</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> <span
+							aria-hidden="true"></span> </button>
+				</div>
+				<div class="modal-body">
+					<h1 class="">Norm-Attaining and Non-Norm-Attaining Group-Invariant Operators and multilinear forms
+					</h1>
+					<p class="text-justify">In this talk we present some recent results in the theory of norm-attaining
+						operators within the framework of group invariant mappings—those satisfying $T(x) = T(g(x))$ for
+						every operator $G \subset L(X)$, where $G$ represents a group of linear operators from
+						$X$ to $X$. Within this context, we delve into geometric properties such as group invariant
+						versions of the Hahn-Banach theorem and extend classical results of the norm-attaining theory.
+						Furthermore, we will also present several lineability properties of the set of
+						non-norm-attaining mappings in this framework.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- MARTINEZ-->
+	<div class="modal" id="Martinez">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Gonzalo Martínez Cervantes (Universidad de Murcia)</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> <span
+							aria-hidden="true"></span> </button>
+				</div>
+				<div class="modal-body">
+					<h1 class="">The disorder of the recent counterexample to the Complemented Subspace Problem</h1>
+					<p class="text-justify">The well-known Complemented Subspace Problem for C(K)-spaces, which asks
+						whether every complemented subspace of a C(K)-space is also isomorphic to a C(K)-space, has been
+						recently solved by G. Plebanek and A. Salguero-Alarcón in the negative.</p>
+					<p class="text-justify">The goal of this talk is to sketch the main ideas behind their construction
+						and to reformulate it in terms of the order, showing that their space not only fails to be
+						isomorphic to a C(K)-space but it is not even isomorphic to a Banach lattice.</p>
+					<p class="text-justify">This talk is based on a joint work with David de Hevia, Alberto
+						Salguero-Alarcón and Pedro Tradacete.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- KRUPSKI-->
+	<div class="modal" id="Krupski">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Mikołaj Krupski (University of Murcia and University of Warsaw)</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> <span
+							aria-hidden="true"></span> </button>
+				</div>
+				<div class="modal-body">
+					<h1 class="">On $\omega$-Corson and $NY$ compact spaces</h1>
+					<p class="text-justify">Given a family $\{X_\gamma:\gamma\in \Gamma\}$ of topological spaces
+						$X_\gamma$ and a point $a=(a_\gamma)_{\gamma\in \Gamma}\in X=\prod_{\gamma\in \Gamma} X_\gamma$,
+						we define the $\sigma$-product in $X$ centered at $a$ as
+						$$\sigma(X,a)=\{x\in \prod_{\gamma\in \Gamma} X_\gamma:\{\gamma\in \Gamma:x(\gamma)\neq
+						a_\gamma\}<\omega\}.$$ </p>
+							<p class="text-justify">A compact space $K$ is called $\omega$-Corson (resp.
+								$NY$ compact) if $K$ embeds into a $\sigma$-product of intervals (resp. a
+								$\sigma$-product of compact metric spaces). Clearly, every $\omega$-Corson compactum is
+								$NY$ compact and every $NY$ compact space is Eberlein compact. In my talk I will discuss
+								some recent results about $\omega$-Corson and $NY$ compact spaces, as well as related
+								classes of $\omega$-Valdivia and $NY$-Valdivia compacta. Joint work with Antonio Avilés.
+							</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--ZAPATA-->
+	<div class="modal" id="Zapata">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">José Miguel Zapata (Universidad de Murcia)</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> <span
+							aria-hidden="true"></span> </button>
+				</div>
+				<div class="modal-body">
+					<h1 class="">Representation of maxitive functionals on lattices</h1>
+					<p class="text-justify">A functional on a lattice is maxitive if it commutes with the supremum
+						operation. Motivated by questions in risk analysis, we provide a representation result for
+						maxitive functionals on Dedekind complete lattices.</p>
+					<p class="text-justify">The key assumption is that the partial order admits a numerical
+						representation which depends lower-semicontinuously on a parameter. The result is illustrated by
+						discussing the representation for different stochastic orderings of random variables.</p>
+					<p class="text-justify">This talk is based on joint work with Michael Kupper.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Aliaga-->
+	<div class="modal" id="Aliaga">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Aliaga, Ramón (Universidad Politécnica de Valencia)</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<h1 class="">Espacios Lipschitz-free. Integrales de moléculas.</h1>
+					<p class="text-justify">Los espacios Lipschitz-free son linealizaciones canónicas de espacios
+						métricos que se obtienen como espacios de funcionales sobre espacios
+						de funciones Lipschitz. Sus elementos básicos son las llamadas
+						moléculas, que representan cocientes incrementales. Todo elemento de
+						un espacio Lipschitz-free puede obtenerse como una serie casi convexa
+						de moléculas. En esta línea de investigación, conjunta con E. Pernecká
+						(Praga) y R. J. Smith (Dublin), estudiamos qué elementos pueden
+						obtenerse como una serie, o más en general una integral, convexa de
+						moléculas. Mostraré los resultados obtenidos hasta ahora, y su
+						relación con otros problemas abiertos como el de determinar los puntos
+						extremos de la bola o la densidad de las funciones Lipschitz que
+						alcanzan la norma fuertemente.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Fovelle -->
+	<div class="modal" id="Fovelle">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Fovelle, Audrey (Universidad de Granada)</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<h1 class="">Asymptotic smoothness in Banach spaces, Three-space properties and applications.</h1>
+					<p class="text-justify">Four linear properties, related to the asymptotic smoothness, will be
+						considered in this talk: $\mathsf{T}_p$, $\mathsf{A}_p$, $\mathsf{N}_p$
+						and $\mathsf{P}_p$. We will be interested in their stability under some
+						nonlinear equivalences and if they are three-space properties or not.
+						After recalling the already known results, we will complety solve the
+						three-space problem for this family of properties and derive from
+						characterizations of $\mathsf{A}_p$ and $\mathsf{N}_p$ in terms of
+						equivalent renormings, new coarse Lipschitz rigidity results for these
+						classes. This is part of a joint work with R. Causey and G. Lancien.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Su -->
+	<div class="modal" id="Su">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Su, Shanshan (East China University of Science and Technology)</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<h1 class="">M-ideals, yet again: the case of real JB*-triples.</h1>
+					<p class="text-justify">We prove that a subspace of a real JBW*-triple is an M-summand if and only
+						if it is a weak*-closed triple ideal. As a consequence, M-ideals of real JB*-triples correspond
+						to norm-closed triple ideals. This is a newfangled treatment of the classical notion of M-ideal
+						in the real setting by a fully new approach due to the unfeasibility of the known arguments in
+						the setting of complex C*-algebras and JB*-triples. The results in this note also provide a full
+						characterization of all M-ideals in real C*-algebras, real JB*-algebras and real TROs.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Rueda -->
+	<div class="modal" id="Rueda">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Rueda Zoca, Abraham (Universidad de Granada)</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<h1 class="">Radius and diameter of slices in Banach spaces.</h1>
+					<p class="text-justify">In 2006, Y. Ivakhno considered two different properties which, somehow,
+						encode the fact that slices of the unit ball of a given Banach space are big. On the one hand,
+						we say that a Banach space $X$ has the slice-D2P if
+						$$d(X):=\inf\{diam(S): S\mbox{ is a slice of }B_X\}=2.$$</p>
+					<!-- Add the rest of the abstract here -->
+					<p class="text-justify">On the other hand, we say that $X$ has the r-BSP if, for every slice $S$ of
+						$B_X$ we
+						have,
+						$$r(S):=\inf\{r>0: S\subseteq B(x,r)\mbox{ for some }x\in X\}\geq 1.$$
+						Similarly to $d(X)$, we can define
+						$$r(X):=\inf\{r(S): S\mbox{ is a slice of }B_X\}.$$
+						Y. Ivakhno proved in [2] that $d(X)=2$ implies $r(X)\geq 1$. The converse was left as an open
+						question.
+						Based on the research developed in [1,3], the aim of this talk is to show that this converse
+						does not hold. Moreover, we will explore how small $d(X)$ can be if $r(X)\geq 1$.</p>
+					<p class="text-justify">This work was supported by MCIN/AEI/10.13039/501100011033: Grant
+						PID2021-122126NB-C31, Junta de Andalucía: Grant FQM-0185, by Fundación Séneca: ACyT Región de
+						Murcia grant 21955/PI/22 and by Generalitat Valenciana project CIGE/2022/97.</p>
+					<p class="text-justify">References:</p>
+					<ul>
+						<li>R. Haller, J. Langemets, V. Lima, R. Nadel and A. Rueda Zoca, On Daugavet indices of
+							thickness, J. Funct. Anal. 280 (2021), article 108846.</li>
+						<li>Y. Ivakhno, On sets with extremely big slices, J. Math. Phys. Anal. Geom. 2 (2006), no. 1,
+							94--103.</li>
+						<li>A. Rueda Zoca, Diameter, radius and Daugavet index thickness of slices in Banach spaces,
+							accepted in Isr. J. Math.</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- ESCOLANO -->
+	<div class="modal" id="Marin">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Marín Escolano, Gerardo (Universidad de Granada)</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<h1 class="">Lie--Trotter formulae in Jordan-Banach algebras with applications to the study of
+						spectral-valued multiplicative functionals.</h1>
+					<p class="text-justify">We establish some Lie--Trotter formulae for unital complex Jordan-Banach
+						algebras, showing that for each couple of elements $a,b$ in a unital complex Jordan-Banach
+						algebra $\mathfrak{A}$ the identities
+						$$ \lim_{n\to \infty} \left(e^{\frac{a}{n}}\circ e^{\frac{b}{n}} \right)^{n} = e^{a+b},\
+						\lim_{n\to \infty} \left(U_{e^{\frac{a}{n}}} \left( e^{\frac{b}{n}}\right) \right)^{n} = e^{2
+						a+b}, \hbox{ and }$$ $$ \lim_{n\to \infty} \left(U_{e^{\frac{a}{n}},e^{\frac{c}{n}}} \left(
+						e^{\frac{b}{n}}\right) \right)^{n} = e^{a+b + c}$$ hold.</p>
+					<p class="text-justify">These formulae are employed in the study of spectral-valued (non-necessarily
+						linear) functionals $f:\mathfrak{A}\to \mathbb{C}$ satisfying $f(U_x (y))=U_{f(x)}f(y),$ for all
+						$x,y\in \mathfrak{A}$. We prove that for any such a functional $f,$ there exists a unique
+						continuous (Jordan-)multiplicative linear functional $\psi\colon \mathfrak{A}\to\mathbb{C}$ such
+						that $ f(x)=\psi(x),$ for every $x$ in the connected component of set of all invertible elements
+						of $\mathfrak{A}$ containing the unit element. If we additionally assume that $\mathfrak{A}$ is
+						a JB$^*$-algebra and $f$ is continuous, then $f$ is a linear multiplicative functional on
+						$\mathfrak{A}$.</p>
+					<p class="text-justify">The new conclusions are appropriate Jordan versions of results by Maouche,
+						Brits, Mabrouk, Shulz, and Touré.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

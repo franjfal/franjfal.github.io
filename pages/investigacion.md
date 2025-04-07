@@ -41,6 +41,7 @@ permalink: "/investigacion/"
 ## Participación en proyectos de investigación
 
 {: reversed="reversed"}
+5. _Análisis complejo y geometría de espacios de Banach_ PID2021-122126NB-C31 funded by MICIU/AEI/10.13039/501100011033 and by ERDF/EU, 2022-2026.
 4. _Análisis complejo y geometría en espacios de Banach_, Ministerio de Economía y Competitividad de España, 2018-2022.
 3. _Algebraic structures in Linear dynamics_, Fonds de la Recherche Scientifique - FNRS (Bélgica), 2016-2017.
 2. _Espacios y álgebras de funciones diferenciables_, Ministerio de Economía y Competitividad de España, 2012-2015.
