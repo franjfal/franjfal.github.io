@@ -57,10 +57,10 @@ A través de actividades manipulativas, visuales e interactivas, el libro ofrece
   <div class="book-info">
     <h2><em>Matemáticas Experimentales</em></h2>
 
-    <p><i class="fas fa-user"></i><strong>Autor:</strong> José María Beltrán del Río</p>
+    <p><i class="fas fa-user"></i><strong>Autor:</strong> Francisco Javier Falcó Benavent</p>
     <p><i class="fas fa-building"></i><strong>Editorial:</strong> Ediciones SM / RSME · Colección Estímulos Matemáticos</p>
     <p><i class="fas fa-calendar-alt"></i><strong>Año:</strong> 2022</p>
-    <p><i class="fas fa-barcode"></i><strong>ISBN:</strong> 9788413924641</p>
+    <p><i class="fas fa-barcode"></i><strong>ISBN:</strong> 978-8413929293</p>
 
     
   </div>
