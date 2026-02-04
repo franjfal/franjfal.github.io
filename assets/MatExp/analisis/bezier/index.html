@@ -791,26 +791,14 @@
       const root = new THREE.Group();
       scene.add(root);
 
+      let dynamicGroup = new THREE.Group();
+      root.add(dynamicGroup);
+
       let curveLine = null;
       let constructionGroup = new THREE.Group();
       dynamicGroup.add(constructionGroup);
       let currentSphere = null;
       let controlLine = null;
-
-      const raycaster = new THREE.Raycaster();
-      const mouse = new THREE.Vector2();
-      const dragIntersection = new THREE.Vector3();
-
-      const visibleSpheres = [];
-      const pickSpheres = [];
-
-      let points = [];
-      let hoverIndex = null;
-      let dragIndex = null;
-      let dragPlane = null;
-
-      let dynamicGroup = new THREE.Group();
-      root.add(dynamicGroup);
 
       let isPlaying = false;
       let animDir = 1;
