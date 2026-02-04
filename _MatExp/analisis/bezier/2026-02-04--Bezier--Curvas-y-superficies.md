@@ -32,18 +32,114 @@ $$
 
 **Cómo usar el interactivo**
 - Curva 2D: clic para añadir un punto, `Shift`+clic para borrar, arrastrar para mover.
-- Curva 3D y superficie 3D: activa/desactiva **Modo cámara** para alternar entre orbitar y mover puntos.
+- Curva 3D y superficie 3D: para **mover puntos** hay que **desactivar** primero **Modo cámara** (si está activado, el ratón controla la órbita/zoom).
 - He aumentado la zona “agarrable” de los puntos (hit-area) para que sea más fácil seleccionarlos.
 
-<div style="margin: 1rem 0;">
-  <a class="btn btn--small btn--info" style="color: white;" target="_blank" href="{{ site.baseurl }}/assets/MatExp/analisis/bezier/index.html">Abrir interactivo en una pestaña nueva</a>
+<style>
+  .bezier-embed {
+    width: 100%;
+    height: 940px;
+    max-height: 85vh;
+    border: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f6f7f9;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.08);
+  }
+
+  @media (max-width: 700px) {
+    .bezier-embed {
+      height: 920px;
+      max-height: none;
+    }
+  }
+
+  .bezier-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0,0,0,.65);
+    padding: 2vh 2vw;
+  }
+
+  .bezier-modal[aria-hidden="false"] { display: block; }
+
+  .bezier-modal__panel {
+    width: 95vw;
+    height: 95vh;
+    margin: 0 auto;
+    background: #0000;
+    position: relative;
+  }
+
+  .bezier-modal__close {
+    position: absolute;
+    right: 0;
+    top: -44px;
+    border: 0;
+    border-radius: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+
+  .bezier-modal__frame {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 12px;
+    background: #f6f7f9;
+  }
+</style>
+
+<div style="margin: 0.75rem 0 0.5rem;">
+  <button id="bezierOpenModal" class="btn btn--small btn--info" style="color: white;" type="button">Ver en grande</button>
 </div>
 
 <iframe
+  class="bezier-embed"
   title="Curvas y superficies de Bézier"
   src="{{ site.baseurl }}/assets/MatExp/analisis/bezier/index.html"
-  width="100%"
-  height="980"
-  style="border: 0; border-radius: 12px;"
   loading="lazy"
 ></iframe>
+
+<div id="bezierModal" class="bezier-modal" aria-hidden="true" role="dialog" aria-label="Curvas y superficies de Bézier">
+  <div class="bezier-modal__panel">
+    <button id="bezierCloseModal" class="bezier-modal__close" type="button">Cerrar</button>
+    <iframe
+      class="bezier-modal__frame"
+      title="Curvas y superficies de Bézier (modo grande)"
+      src="{{ site.baseurl }}/assets/MatExp/analisis/bezier/index.html"
+      loading="lazy"
+    ></iframe>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var openBtn = document.getElementById('bezierOpenModal');
+    var closeBtn = document.getElementById('bezierCloseModal');
+    var modal = document.getElementById('bezierModal');
+
+    if (!openBtn || !closeBtn || !modal) return;
+
+    function openModal() {
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    openBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') closeModal();
+    });
+  })();
+</script>

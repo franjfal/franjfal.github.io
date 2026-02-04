@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="es">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -31,10 +32,14 @@
       --primary: #2563eb;
       --primary-weak: #e8efff;
       --danger: #dc2626;
-      --shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.08);
+      --shadow: 0 1px 2px rgba(0, 0, 0, .06), 0 8px 24px rgba(0, 0, 0, .08);
     }
 
-    html, body { height: 100%; }
+    html,
+    body {
+      height: 100%;
+    }
+
     body {
       margin: 0;
       background: var(--bg);
@@ -102,7 +107,9 @@
       padding: 12px;
     }
 
-    .panel[hidden] { display: none; }
+    .panel[hidden] {
+      display: none;
+    }
 
     .row {
       display: grid;
@@ -125,7 +132,11 @@
       position: relative;
     }
 
-    .stage canvas { display: block; width: 100%; height: 100%; }
+    .stage canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
 
     .threeHost {
       width: 100%;
@@ -153,7 +164,12 @@
       letter-spacing: .04em;
     }
 
-    .btnrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .btnrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
     button.primary {
       border: 1px solid #1e40af;
@@ -193,7 +209,9 @@
       color: var(--text);
     }
 
-    input[type="range"] { width: 100%; }
+    input[type="range"] {
+      width: 100%;
+    }
 
     .hint {
       font-size: 13px;
@@ -232,20 +250,25 @@
     }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="header">
       <h2>Curvas y superficies de Bézier (interactivo)</h2>
       <p>
-        Mueve los puntos de control para ver cómo cambian la curva (2D/3D) y la superficie (3D). La construcción muestra el algoritmo de De Casteljau.
+        Mueve los puntos de control para ver cómo cambian la curva (2D/3D) y la superficie (3D). La construcción muestra
+        el algoritmo de De Casteljau.
         Consejo: si te cuesta seleccionar puntos, desactiva <strong>Modo cámara</strong> y usa el ratón cerca del punto.
       </p>
     </div>
 
     <div class="tabbar" role="tablist" aria-label="Secciones">
-      <button class="tabbtn" role="tab" id="tab-2d" aria-controls="panel-2d" aria-selected="true">Curvas en el plano</button>
-      <button class="tabbtn" role="tab" id="tab-3d" aria-controls="panel-3d" aria-selected="false">Curvas en el espacio</button>
-      <button class="tabbtn" role="tab" id="tab-surf" aria-controls="panel-surf" aria-selected="false">Superficies en el espacio</button>
+      <button class="tabbtn" role="tab" id="tab-2d" aria-controls="panel-2d" aria-selected="true">Curvas en el
+        plano</button>
+      <button class="tabbtn" role="tab" id="tab-3d" aria-controls="panel-3d" aria-selected="false">Curvas en el
+        espacio</button>
+      <button class="tabbtn" role="tab" id="tab-surf" aria-controls="panel-surf" aria-selected="false">Superficies en el
+        espacio</button>
     </div>
 
     <section class="panel" role="tabpanel" id="panel-2d" aria-labelledby="tab-2d">
@@ -270,7 +293,8 @@
             <h4>Vista</h4>
             <label><input id="c2dGrid" type="checkbox" /> Mostrar cuadrícula</label>
             <label><input id="c2dCoords" type="checkbox" /> Mostrar coordenadas</label>
-            <div class="hint">Acciones: clic para añadir, <span class="kbd">Shift</span>+clic para borrar, arrastrar para mover.</div>
+            <div class="hint">Acciones: clic para añadir, <span class="kbd">Shift</span>+clic para borrar, arrastrar
+              para mover.</div>
           </div>
 
           <div class="mathbox" id="c2dEq"></div>
@@ -301,7 +325,9 @@
             <label><input id="c3dCam" type="checkbox" checked /> Modo cámara</label>
             <label><input id="c3dGrid" type="checkbox" /> Mostrar cuadrícula</label>
             <label><input id="c3dAxes" type="checkbox" /> Mostrar ejes</label>
-            <div class="hint">Desactiva <strong>Modo cámara</strong> para mover puntos. <span class="kbd">Shift</span>+clic sobre un punto lo elimina; clic en vacío añade un punto sobre el plano de trabajo.</div>
+            <div class="hint">Desactiva <strong>Modo cámara</strong> para mover puntos. <span
+                class="kbd">Shift</span>+clic sobre un punto lo elimina; clic en vacío añade un punto sobre el plano de
+              trabajo.</div>
           </div>
 
           <div class="mathbox" id="c3dEq"></div>
@@ -334,7 +360,8 @@
             <label><input id="s3dCam" type="checkbox" checked /> Modo cámara</label>
             <label><input id="s3dGrid" type="checkbox" /> Mostrar cuadrícula</label>
             <label><input id="s3dCoords" type="checkbox" /> Mostrar coordenadas</label>
-            <div class="hint">Desactiva <strong>Modo cámara</strong> para arrastrar puntos. La selección usa una “zona de agarre” más grande que el punto visible.</div>
+            <div class="hint">Desactiva <strong>Modo cámara</strong> para arrastrar puntos. La selección usa una “zona
+              de agarre” más grande que el punto visible.</div>
           </div>
 
           <div class="mathbox" id="s3dEq"></div>
@@ -595,7 +622,7 @@
         const n = pointsN.length - 1;
         eqBox.innerHTML = `\\[B(t)=\\sum_{i=0}^{${n}} \\binom{${n}}{i}(1-t)^{${n}-i}t^i P_i\\]\\[B(${t.toFixed(2)})=(${pNow.x.toFixed(1)},${pNow.y.toFixed(1)})\\]`;
         if (forceMathJax && window.MathJax?.typesetPromise) {
-          MathJax.typesetPromise([eqBox]).catch(() => {});
+          MathJax.typesetPromise([eqBox]).catch(() => { });
         }
       }
 
@@ -904,7 +931,7 @@
         const n = points.length - 1;
         eqBox.innerHTML = `\\[B(t)=\\sum_{i=0}^{${n}} \\binom{${n}}{i}(1-t)^{${n}-i}t^i P_i\\]\\[B(${t.toFixed(2)})=(${pNow.x.toFixed(2)},${pNow.y.toFixed(2)},${pNow.z.toFixed(2)})\\]`;
         if (forceMathJax && window.MathJax?.typesetPromise) {
-          MathJax.typesetPromise([eqBox]).catch(() => {});
+          MathJax.typesetPromise([eqBox]).catch(() => { });
         }
       }
 
@@ -1404,7 +1431,7 @@
         }
 
         eqBox.innerHTML = `\\[S(${u.toFixed(2)},${v.toFixed(2)})=(${constr.finalPoint.x.toFixed(2)},${constr.finalPoint.y.toFixed(2)},${constr.finalPoint.z.toFixed(2)})\\]`;
-        if (window.MathJax?.typesetPromise) MathJax.typesetPromise([eqBox]).catch(() => {});
+        if (window.MathJax?.typesetPromise) MathJax.typesetPromise([eqBox]).catch(() => { });
       }
 
       function setSize() {
@@ -1630,4 +1657,5 @@
     })();
   </script>
 </body>
+
 </html>
