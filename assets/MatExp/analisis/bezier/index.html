@@ -1,0 +1,1633 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Curvas y superficies de Bézier</title>
+
+  <script>
+    // MathJax (solo dentro del iframe)
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      },
+      options: { renderActions: { addMenu: [] } },
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/renderers/CSS2DRenderer.js"></script>
+
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --border: #d0d7de;
+      --text: #111827;
+      --muted: #4b5563;
+      --primary: #2563eb;
+      --primary-weak: #e8efff;
+      --danger: #dc2626;
+      --shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.08);
+    }
+
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      line-height: 1.45;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 14px 26px;
+    }
+
+    .header {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 14px 16px;
+    }
+
+    .header h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* Tabs */
+    .tabbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0 10px;
+    }
+
+    .tabbtn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background .15s ease, border-color .15s ease;
+    }
+
+    .tabbtn[aria-selected="true"] {
+      border-color: var(--primary);
+      background: var(--primary-weak);
+      font-weight: 600;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 12px;
+    }
+
+    .panel[hidden] { display: none; }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 980px) {
+      .row {
+        grid-template-columns: minmax(520px, 2fr) minmax(260px, 1fr);
+        align-items: start;
+      }
+    }
+
+    .stage {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #f3f4f6;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .stage canvas { display: block; width: 100%; height: 100%; }
+
+    .threeHost {
+      width: 100%;
+      height: 520px;
+      position: relative;
+    }
+
+    .controls {
+      display: grid;
+      gap: 10px;
+    }
+
+    .controls .group {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fcfcfd;
+    }
+
+    .controls .group h4 {
+      margin: 0 0 8px;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .btnrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    button.primary {
+      border: 1px solid #1e40af;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button.ghost {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button.danger {
+      border: 1px solid #991b1b;
+      background: var(--danger);
+      color: #fff;
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    label {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    input[type="range"] { width: 100%; }
+
+    .hint {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .mathbox {
+      font-size: 13px;
+      color: var(--text);
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+      margin-top: 10px;
+      overflow-x: auto;
+    }
+
+    .kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      padding: 2px 6px;
+      border: 1px solid var(--border);
+      border-bottom-width: 2px;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .label3d {
+      color: #fff;
+      font-family: sans-serif;
+      padding: 2px 6px;
+      background: rgba(0, 0, 0, 0.55);
+      border-radius: 8px;
+      font-size: 11px;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <h2>Curvas y superficies de Bézier (interactivo)</h2>
+      <p>
+        Mueve los puntos de control para ver cómo cambian la curva (2D/3D) y la superficie (3D). La construcción muestra el algoritmo de De Casteljau.
+        Consejo: si te cuesta seleccionar puntos, desactiva <strong>Modo cámara</strong> y usa el ratón cerca del punto.
+      </p>
+    </div>
+
+    <div class="tabbar" role="tablist" aria-label="Secciones">
+      <button class="tabbtn" role="tab" id="tab-2d" aria-controls="panel-2d" aria-selected="true">Curvas en el plano</button>
+      <button class="tabbtn" role="tab" id="tab-3d" aria-controls="panel-3d" aria-selected="false">Curvas en el espacio</button>
+      <button class="tabbtn" role="tab" id="tab-surf" aria-controls="panel-surf" aria-selected="false">Superficies en el espacio</button>
+    </div>
+
+    <section class="panel" role="tabpanel" id="panel-2d" aria-labelledby="tab-2d">
+      <div class="row">
+        <div class="stage" style="height: 520px;">
+          <canvas id="c2d" aria-label="Canvas 2D"></canvas>
+        </div>
+
+        <aside class="controls">
+          <div class="group">
+            <h4>Parámetro</h4>
+            <div class="btnrow">
+              <button id="c2dPlay" class="primary" type="button">▶</button>
+              <button id="c2dReset" class="ghost" type="button">Reiniciar puntos</button>
+            </div>
+            <label>t
+              <input id="c2dT" type="range" min="0" max="1" step="0.01" value="0" />
+            </label>
+          </div>
+
+          <div class="group">
+            <h4>Vista</h4>
+            <label><input id="c2dGrid" type="checkbox" /> Mostrar cuadrícula</label>
+            <label><input id="c2dCoords" type="checkbox" /> Mostrar coordenadas</label>
+            <div class="hint">Acciones: clic para añadir, <span class="kbd">Shift</span>+clic para borrar, arrastrar para mover.</div>
+          </div>
+
+          <div class="mathbox" id="c2dEq"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="panel" role="tabpanel" id="panel-3d" aria-labelledby="tab-3d" hidden>
+      <div class="row">
+        <div class="stage">
+          <div id="curve3d" class="threeHost" aria-label="Curva 3D"></div>
+        </div>
+
+        <aside class="controls">
+          <div class="group">
+            <h4>Parámetro</h4>
+            <div class="btnrow">
+              <button id="c3dPlay" class="primary" type="button">▶</button>
+              <button id="c3dReset" class="ghost" type="button">Reiniciar puntos</button>
+            </div>
+            <label>t
+              <input id="c3dT" type="range" min="0" max="1" step="0.01" value="0" />
+            </label>
+          </div>
+
+          <div class="group">
+            <h4>Interacción</h4>
+            <label><input id="c3dCam" type="checkbox" checked /> Modo cámara</label>
+            <label><input id="c3dGrid" type="checkbox" /> Mostrar cuadrícula</label>
+            <label><input id="c3dAxes" type="checkbox" /> Mostrar ejes</label>
+            <div class="hint">Desactiva <strong>Modo cámara</strong> para mover puntos. <span class="kbd">Shift</span>+clic sobre un punto lo elimina; clic en vacío añade un punto sobre el plano de trabajo.</div>
+          </div>
+
+          <div class="mathbox" id="c3dEq"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="panel" role="tabpanel" id="panel-surf" aria-labelledby="tab-surf" hidden>
+      <div class="row">
+        <div class="stage">
+          <div id="surf3d" class="threeHost" aria-label="Superficie 3D"></div>
+        </div>
+
+        <aside class="controls">
+          <div class="group">
+            <h4>Parámetros</h4>
+            <div class="btnrow">
+              <button id="s3dReset" class="ghost" type="button">Reiniciar malla</button>
+            </div>
+            <label>u
+              <input id="s3dU" type="range" min="0" max="1" step="0.01" value="0" />
+            </label>
+            <label>v
+              <input id="s3dV" type="range" min="0" max="1" step="0.01" value="0" />
+            </label>
+          </div>
+
+          <div class="group">
+            <h4>Interacción</h4>
+            <label><input id="s3dCam" type="checkbox" checked /> Modo cámara</label>
+            <label><input id="s3dGrid" type="checkbox" /> Mostrar cuadrícula</label>
+            <label><input id="s3dCoords" type="checkbox" /> Mostrar coordenadas</label>
+            <div class="hint">Desactiva <strong>Modo cámara</strong> para arrastrar puntos. La selección usa una “zona de agarre” más grande que el punto visible.</div>
+          </div>
+
+          <div class="mathbox" id="s3dEq"></div>
+        </aside>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Utilidades
+    const clamp01 = (x) => Math.max(0, Math.min(1, x));
+
+    function setupTabs() {
+      const tabs = Array.from(document.querySelectorAll('.tabbtn[role="tab"]'));
+      const panels = new Map(tabs.map(t => [t.id, document.getElementById(t.getAttribute('aria-controls'))]));
+
+      function activate(tabId) {
+        for (const tab of tabs) {
+          const selected = tab.id === tabId;
+          tab.setAttribute('aria-selected', selected ? 'true' : 'false');
+          const panel = panels.get(tab.id);
+          if (panel) panel.hidden = !selected;
+        }
+        return tabId;
+      }
+
+      for (const tab of tabs) {
+        tab.addEventListener('click', () => {
+          const active = activate(tab.id);
+          window.__bezierActiveTab = active;
+          window.dispatchEvent(new CustomEvent('bezier:tab', { detail: { active } }));
+        });
+      }
+
+      window.__bezierActiveTab = 'tab-2d';
+    }
+
+    // --------------- Demo 2D ---------------
+    function Bezier2D(opts) {
+      const canvas = opts.canvas;
+      const ctx = canvas.getContext('2d');
+      const tSlider = opts.tSlider;
+      const playBtn = opts.playBtn;
+      const resetBtn = opts.resetBtn;
+      const gridChk = opts.gridChk;
+      const coordsChk = opts.coordsChk;
+      const eqBox = opts.eqBox;
+
+      const VIS_RADIUS = 7;
+      const HIT_RADIUS = 18; // mejora selección
+
+      let pointsN = [
+        { x: 0.16, y: 0.75 },
+        { x: 0.32, y: 0.25 },
+        { x: 0.68, y: 0.25 },
+        { x: 0.84, y: 0.75 },
+      ];
+
+      let hoverIndex = null;
+      let dragIndex = null;
+      let isPlaying = false;
+      let animDir = 1;
+      let lastTs = 0;
+      let rafId = null;
+
+      function sizeCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = Math.max(2, Math.floor(rect.width * dpr));
+        canvas.height = Math.max(2, Math.floor(rect.height * dpr));
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        draw(true);
+      }
+
+      function toPx(pN) {
+        const rect = canvas.getBoundingClientRect();
+        return { x: pN.x * rect.width, y: pN.y * rect.height };
+      }
+
+      function toNorm(x, y) {
+        const rect = canvas.getBoundingClientRect();
+        return { x: clamp01(x / rect.width), y: clamp01(y / rect.height) };
+      }
+
+      function dist(a, b) {
+        return Math.hypot(a.x - b.x, a.y - b.y);
+      }
+
+      function findNearestIndex(px, py) {
+        const q = { x: px, y: py };
+        let best = { i: null, d: Infinity };
+        for (let i = 0; i < pointsN.length; i++) {
+          const p = toPx(pointsN[i]);
+          const d = dist(p, q);
+          if (d < best.d) best = { i, d };
+        }
+        return best.d <= HIT_RADIUS ? best.i : null;
+      }
+
+      function bezier(pts, t) {
+        if (pts.length === 1) return pts[0];
+        const next = [];
+        for (let i = 0; i < pts.length - 1; i++) {
+          next.push({
+            x: (1 - t) * pts[i].x + t * pts[i + 1].x,
+            y: (1 - t) * pts[i].y + t * pts[i + 1].y,
+          });
+        }
+        return bezier(next, t);
+      }
+
+      function drawGrid(w, h) {
+        ctx.save();
+        ctx.strokeStyle = '#d1d5db';
+        ctx.lineWidth = 1;
+        const step = 50;
+        for (let x = 0; x <= w; x += step) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, h);
+          ctx.stroke();
+        }
+        for (let y = 0; y <= h; y += step) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(w, y);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      function draw(forceMathJax) {
+        const rect = canvas.getBoundingClientRect();
+        const w = rect.width;
+        const h = rect.height;
+        ctx.clearRect(0, 0, w, h);
+
+        // fondo
+        ctx.fillStyle = '#f3f4f6';
+        ctx.fillRect(0, 0, w, h);
+
+        if (gridChk.checked) drawGrid(w, h);
+
+        const pts = pointsN.map(toPx);
+
+        // polígono de control
+        ctx.save();
+        ctx.strokeStyle = '#9ca3af';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (let i = 0; i < pts.length; i++) {
+          if (i === 0) ctx.moveTo(pts[i].x, pts[i].y);
+          else ctx.lineTo(pts[i].x, pts[i].y);
+        }
+        ctx.stroke();
+        ctx.restore();
+
+        // curva
+        ctx.save();
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let t = 0; t <= 1.00001; t += 0.01) {
+          const p = bezier(pts, t);
+          ctx.lineTo(p.x, p.y);
+        }
+        ctx.stroke();
+        ctx.restore();
+
+        // construcción (De Casteljau)
+        const t = parseFloat(tSlider.value);
+        drawConstruction(pts, t);
+
+        // punto actual
+        const pNow = bezier(pts, t);
+        ctx.save();
+        ctx.fillStyle = '#10b981';
+        ctx.beginPath();
+        ctx.arc(pNow.x, pNow.y, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // puntos de control (con hover)
+        for (let i = 0; i < pts.length; i++) {
+          const p = pts[i];
+          const isHot = i === dragIndex || i === hoverIndex;
+
+          // halo (aumenta percepción de “agarrable”)
+          if (isHot) {
+            ctx.save();
+            ctx.fillStyle = 'rgba(37, 99, 235, 0.18)';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, HIT_RADIUS, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+
+          ctx.save();
+          ctx.fillStyle = '#2563eb';
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, VIS_RADIUS + (isHot ? 2 : 0), 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#1e3a8a';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+          ctx.restore();
+
+          if (coordsChk.checked) {
+            ctx.save();
+            ctx.fillStyle = '#111827';
+            ctx.font = '12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace';
+            ctx.fillText(`(${p.x.toFixed(0)}, ${p.y.toFixed(0)})`, p.x + 10, p.y - 10);
+            ctx.restore();
+          }
+        }
+
+        updateEquation(pNow, t, forceMathJax);
+      }
+
+      function drawConstruction(pts, t) {
+        if (pts.length < 2) return;
+
+        // líneas entre nivel actual
+        ctx.save();
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (let i = 0; i < pts.length - 1; i++) {
+          ctx.moveTo(pts[i].x, pts[i].y);
+          ctx.lineTo(pts[i + 1].x, pts[i + 1].y);
+        }
+        ctx.stroke();
+        ctx.restore();
+
+        const next = [];
+        for (let i = 0; i < pts.length - 1; i++) {
+          next.push({
+            x: (1 - t) * pts[i].x + t * pts[i + 1].x,
+            y: (1 - t) * pts[i].y + t * pts[i + 1].y,
+          });
+        }
+
+        // puntos intermedios
+        ctx.save();
+        ctx.fillStyle = '#7c3aed';
+        for (const p of next) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+
+        drawConstruction(next, t);
+      }
+
+      function updateEquation(pNow, t, forceMathJax) {
+        const n = pointsN.length - 1;
+        eqBox.innerHTML = `\\[B(t)=\\sum_{i=0}^{${n}} \\binom{${n}}{i}(1-t)^{${n}-i}t^i P_i\\]\\[B(${t.toFixed(2)})=(${pNow.x.toFixed(1)},${pNow.y.toFixed(1)})\\]`;
+        if (forceMathJax && window.MathJax?.typesetPromise) {
+          MathJax.typesetPromise([eqBox]).catch(() => {});
+        }
+      }
+
+      function togglePlay() {
+        isPlaying = !isPlaying;
+        playBtn.textContent = isPlaying ? '⏸' : '▶';
+        if (!isPlaying && rafId) cancelAnimationFrame(rafId);
+        if (isPlaying) {
+          lastTs = performance.now();
+          rafId = requestAnimationFrame(step);
+        }
+      }
+
+      function step(ts) {
+        if (!isPlaying) return;
+        const dt = (ts - lastTs) / 1000;
+        lastTs = ts;
+        const speed = 2.0;
+
+        let v = parseFloat(tSlider.value);
+        v += (dt / speed) * animDir;
+        if (animDir > 0 && v >= 1) { v = 1; animDir = -1; }
+        if (animDir < 0 && v <= 0) { v = 0; animDir = 1; }
+        tSlider.value = String(v);
+        draw(false);
+        rafId = requestAnimationFrame(step);
+      }
+
+      function reset() {
+        pointsN = [
+          { x: 0.16, y: 0.75 },
+          { x: 0.32, y: 0.25 },
+          { x: 0.68, y: 0.25 },
+          { x: 0.84, y: 0.75 },
+        ];
+        hoverIndex = null;
+        dragIndex = null;
+        draw(true);
+      }
+
+      // Eventos (pointer events para mejorar selección en trackpad/táctil)
+      canvas.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        if (isPlaying) togglePlay();
+
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const idx = findNearestIndex(x, y);
+        if (e.shiftKey) {
+          if (idx !== null && pointsN.length > 2) {
+            pointsN.splice(idx, 1);
+            dragIndex = null;
+            hoverIndex = null;
+          }
+          draw(true);
+          return;
+        }
+
+        if (idx !== null) {
+          dragIndex = idx;
+        } else {
+          pointsN.push(toNorm(x, y));
+          dragIndex = pointsN.length - 1;
+        }
+
+        canvas.setPointerCapture(e.pointerId);
+        draw(true);
+      }, { passive: false });
+
+      canvas.addEventListener('pointermove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (dragIndex !== null) {
+          pointsN[dragIndex] = toNorm(x, y);
+          draw(false);
+          return;
+        }
+
+        const idx = findNearestIndex(x, y);
+        if (idx !== hoverIndex) {
+          hoverIndex = idx;
+          canvas.style.cursor = idx !== null ? 'grab' : 'crosshair';
+          draw(false);
+        }
+      }, { passive: true });
+
+      function endDrag() {
+        if (dragIndex !== null) {
+          dragIndex = null;
+          canvas.style.cursor = 'crosshair';
+          draw(false);
+        }
+      }
+
+      canvas.addEventListener('pointerup', endDrag);
+      canvas.addEventListener('pointercancel', endDrag);
+      canvas.addEventListener('pointerleave', () => { if (dragIndex === null) { hoverIndex = null; draw(false); } });
+
+      tSlider.addEventListener('input', () => draw(false));
+      gridChk.addEventListener('change', () => draw(false));
+      coordsChk.addEventListener('change', () => draw(false));
+      playBtn.addEventListener('click', togglePlay);
+      resetBtn.addEventListener('click', () => { if (isPlaying) togglePlay(); reset(); });
+
+      const ro = new ResizeObserver(sizeCanvas);
+      ro.observe(canvas);
+
+      // Public
+      return {
+        start() { draw(true); },
+        stop() { if (isPlaying) togglePlay(); },
+      };
+    }
+
+    // --------------- Demo 3D (curva) ---------------
+    function BezierCurve3D(opts) {
+      const host = opts.host;
+      const tSlider = opts.tSlider;
+      const playBtn = opts.playBtn;
+      const resetBtn = opts.resetBtn;
+      const camChk = opts.camChk;
+      const gridChk = opts.gridChk;
+      const axesChk = opts.axesChk;
+      const eqBox = opts.eqBox;
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xf3f4f6);
+
+      const camera = new THREE.PerspectiveCamera(55, 1, 0.01, 200);
+      camera.position.set(0, 0, 7);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setPixelRatio(window.devicePixelRatio || 1);
+      host.appendChild(renderer.domElement);
+
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.06;
+
+      const light = new THREE.DirectionalLight(0xffffff, 0.9);
+      light.position.set(6, 6, 8);
+      scene.add(light);
+      scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+
+      const gridHelper = new THREE.GridHelper(8, 16, 0x9ca3af, 0xd1d5db);
+      gridHelper.visible = false;
+      gridHelper.position.y = -2.5;
+      scene.add(gridHelper);
+
+      const axesHelper = new THREE.AxesHelper(3.5);
+      axesHelper.visible = false;
+      scene.add(axesHelper);
+
+      const materialCurve = new THREE.LineBasicMaterial({ color: 0xef4444 });
+      const materialControl = new THREE.LineBasicMaterial({ color: 0x9ca3af });
+      const matPoint = new THREE.MeshPhongMaterial({ color: 0x2563eb, shininess: 80 });
+      const matPointHot = new THREE.MeshPhongMaterial({ color: 0x1d4ed8, shininess: 120 });
+      const matCurrent = new THREE.MeshPhongMaterial({ color: 0x10b981, shininess: 80 });
+      const matConstructionLine = new THREE.LineBasicMaterial({ color: 0xf59e0b });
+      const matIntermediate = new THREE.MeshPhongMaterial({ color: 0x7c3aed, shininess: 80 });
+
+      const root = new THREE.Group();
+      scene.add(root);
+
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      const dragIntersection = new THREE.Vector3();
+
+      const visibleSpheres = [];
+      const pickSpheres = [];
+
+      let points = [];
+      let hoverIndex = null;
+      let dragIndex = null;
+      let dragPlane = null;
+
+      let dynamicGroup = new THREE.Group();
+      root.add(dynamicGroup);
+
+      let isPlaying = false;
+      let animDir = 1;
+      let lastTs = 0;
+      let rafId = null;
+      let running = false;
+
+      function resetPoints() {
+        points = [
+          new THREE.Vector3(-2, -1.6, 0),
+          new THREE.Vector3(-0.9, 1.1, 1.0),
+          new THREE.Vector3(0.9, 1.0, -1.0),
+          new THREE.Vector3(2, -1.6, 0),
+        ];
+      }
+
+      function bezierPoint(pts, t) {
+        if (pts.length === 1) return pts[0].clone();
+        const next = [];
+        for (let i = 0; i < pts.length - 1; i++) {
+          next.push(new THREE.Vector3().lerpVectors(pts[i], pts[i + 1], t));
+        }
+        return bezierPoint(next, t);
+      }
+
+      function casteljauLevels(pts, t) {
+        const levels = [pts.map(p => p.clone())];
+        let current = pts.map(p => p.clone());
+        while (current.length > 1) {
+          const next = [];
+          for (let i = 0; i < current.length - 1; i++) {
+            next.push(new THREE.Vector3().lerpVectors(current[i], current[i + 1], t));
+          }
+          levels.push(next);
+          current = next;
+        }
+        return levels;
+      }
+
+      function clearDynamic() {
+        root.remove(dynamicGroup);
+        dynamicGroup.traverse(obj => {
+          if (obj.geometry) obj.geometry.dispose?.();
+        });
+        dynamicGroup = new THREE.Group();
+        root.add(dynamicGroup);
+      }
+
+      function rebuildControlPoints() {
+        // eliminar spheres antiguas
+        for (const s of visibleSpheres) { root.remove(s); s.geometry.dispose?.(); }
+        for (const s of pickSpheres) { root.remove(s); s.geometry.dispose?.(); }
+        visibleSpheres.length = 0;
+        pickSpheres.length = 0;
+
+        for (let i = 0; i < points.length; i++) {
+          const visible = new THREE.Mesh(new THREE.SphereGeometry(0.14, 20, 20), matPoint);
+          visible.position.copy(points[i]);
+          root.add(visible);
+          visibleSpheres.push(visible);
+
+          // esfera invisible más grande para selección (mejora usabilidad)
+          const pick = new THREE.Mesh(
+            new THREE.SphereGeometry(0.28, 12, 12),
+            new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.0 })
+          );
+          pick.position.copy(points[i]);
+          pick.userData.index = i;
+          root.add(pick);
+          pickSpheres.push(pick);
+        }
+      }
+
+      function rebuildScene() {
+        clearDynamic();
+
+        // polígono de control
+        {
+          const geom = new THREE.BufferGeometry().setFromPoints(points);
+          dynamicGroup.add(new THREE.Line(geom, materialControl));
+        }
+
+        // curva
+        {
+          const curvePts = [];
+          for (let t = 0; t <= 1.00001; t += 0.01) curvePts.push(bezierPoint(points, t));
+          const geom = new THREE.BufferGeometry().setFromPoints(curvePts);
+          dynamicGroup.add(new THREE.Line(geom, materialCurve));
+        }
+
+        const t = parseFloat(tSlider.value);
+        const levels = casteljauLevels(points, t);
+
+        // líneas y puntos intermedios
+        for (let k = 0; k < levels.length - 1; k++) {
+          const level = levels[k];
+          const geomLine = new THREE.BufferGeometry().setFromPoints(level);
+          dynamicGroup.add(new THREE.Line(geomLine, matConstructionLine));
+
+          const next = levels[k + 1];
+          for (const p of next) {
+            const m = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 16), matIntermediate);
+            m.position.copy(p);
+            dynamicGroup.add(m);
+          }
+        }
+
+        // punto actual
+        const pNow = levels[levels.length - 1][0];
+        const current = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 20), matCurrent);
+        current.position.copy(pNow);
+        dynamicGroup.add(current);
+
+        // sincronizar esferas visibles/pick
+        for (let i = 0; i < points.length; i++) {
+          visibleSpheres[i].position.copy(points[i]);
+          pickSpheres[i].position.copy(points[i]);
+        }
+
+        updateEquation(pNow, t, true);
+      }
+
+      function updateEquation(pNow, t, forceMathJax) {
+        const n = points.length - 1;
+        eqBox.innerHTML = `\\[B(t)=\\sum_{i=0}^{${n}} \\binom{${n}}{i}(1-t)^{${n}-i}t^i P_i\\]\\[B(${t.toFixed(2)})=(${pNow.x.toFixed(2)},${pNow.y.toFixed(2)},${pNow.z.toFixed(2)})\\]`;
+        if (forceMathJax && window.MathJax?.typesetPromise) {
+          MathJax.typesetPromise([eqBox]).catch(() => {});
+        }
+      }
+
+      function setSize() {
+        const rect = host.getBoundingClientRect();
+        const w = Math.max(2, rect.width);
+        const h = Math.max(2, rect.height);
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderOnce();
+      }
+
+      function renderOnce() {
+        renderer.render(scene, camera);
+      }
+
+      function loop() {
+        if (!running) return;
+        controls.update();
+        renderer.render(scene, camera);
+        rafId = requestAnimationFrame(loop);
+      }
+
+      function start() {
+        if (running) return;
+        running = true;
+        rafId = requestAnimationFrame(loop);
+      }
+
+      function stop() {
+        running = false;
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = null;
+        if (isPlaying) togglePlay();
+      }
+
+      function togglePlay() {
+        isPlaying = !isPlaying;
+        playBtn.textContent = isPlaying ? '⏸' : '▶';
+        if (!isPlaying) return;
+        lastTs = performance.now();
+        requestAnimationFrame(stepAnim);
+      }
+
+      function stepAnim(ts) {
+        if (!isPlaying) return;
+        const dt = (ts - lastTs) / 1000;
+        lastTs = ts;
+        const speed = 2.0;
+
+        let v = parseFloat(tSlider.value);
+        v += (dt / speed) * animDir;
+        if (animDir > 0 && v >= 1) { v = 1; animDir = -1; }
+        if (animDir < 0 && v <= 0) { v = 0; animDir = 1; }
+        tSlider.value = String(v);
+        rebuildScene();
+        requestAnimationFrame(stepAnim);
+      }
+
+      function setMouseFromEvent(e) {
+        const rect = renderer.domElement.getBoundingClientRect();
+        mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      }
+
+      function hitTest(e) {
+        setMouseFromEvent(e);
+        raycaster.setFromCamera(mouse, camera);
+        const hits = raycaster.intersectObjects(pickSpheres, false);
+        return hits.length ? hits[0].object.userData.index : null;
+      }
+
+      function setHover(idx) {
+        if (idx === hoverIndex) return;
+        hoverIndex = idx;
+        for (let i = 0; i < visibleSpheres.length; i++) {
+          visibleSpheres[i].material = (i === hoverIndex || i === dragIndex) ? matPointHot : matPoint;
+        }
+        renderer.domElement.style.cursor = (hoverIndex !== null && !camChk.checked) ? 'grab' : (camChk.checked ? 'grab' : 'crosshair');
+      }
+
+      function createDragPlane(point) {
+        const normal = new THREE.Vector3(0, 0, 1).applyQuaternion(camera.quaternion);
+        return new THREE.Plane(normal, -point.dot(normal));
+      }
+
+      renderer.domElement.addEventListener('pointerdown', (e) => {
+        if (camChk.checked) return;
+        e.preventDefault();
+
+        const idx = hitTest(e);
+        if (e.shiftKey) {
+          if (idx !== null && points.length > 2) {
+            points.splice(idx, 1);
+            resetGeometryAfterPointChange();
+          }
+          return;
+        }
+
+        if (idx !== null) {
+          dragIndex = idx;
+          dragPlane = createDragPlane(points[idx]);
+          controls.enabled = false;
+          renderer.domElement.setPointerCapture(e.pointerId);
+          rebuildScene();
+          setHover(idx);
+          return;
+        }
+
+        // click en vacío: añadir punto sobre plano z=0
+        setMouseFromEvent(e);
+        raycaster.setFromCamera(mouse, camera);
+        const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+        if (raycaster.ray.intersectPlane(plane, dragIntersection)) {
+          points.push(dragIntersection.clone());
+          resetGeometryAfterPointChange();
+        }
+      }, { passive: false });
+
+      renderer.domElement.addEventListener('pointermove', (e) => {
+        if (camChk.checked) return;
+
+        if (dragIndex === null) {
+          const idx = hitTest(e);
+          setHover(idx);
+          return;
+        }
+
+        setMouseFromEvent(e);
+        raycaster.setFromCamera(mouse, camera);
+        if (dragPlane && raycaster.ray.intersectPlane(dragPlane, dragIntersection)) {
+          points[dragIndex].copy(dragIntersection);
+          rebuildScene();
+        }
+      });
+
+      renderer.domElement.addEventListener('pointerup', () => {
+        if (dragIndex !== null) {
+          dragIndex = null;
+          dragPlane = null;
+          controls.enabled = camChk.checked;
+          rebuildScene();
+        }
+      });
+
+      renderer.domElement.addEventListener('pointerleave', () => { if (dragIndex === null) setHover(null); });
+
+      function resetGeometryAfterPointChange() {
+        rebuildControlPoints();
+        rebuildScene();
+      }
+
+      // UI
+      tSlider.addEventListener('input', () => rebuildScene());
+      playBtn.addEventListener('click', togglePlay);
+      resetBtn.addEventListener('click', () => {
+        if (isPlaying) togglePlay();
+        resetPoints();
+        resetGeometryAfterPointChange();
+      });
+
+      camChk.addEventListener('change', () => {
+        controls.enabled = camChk.checked;
+        if (camChk.checked) {
+          dragIndex = null;
+          dragPlane = null;
+          setHover(null);
+        }
+        renderer.domElement.style.cursor = camChk.checked ? 'grab' : 'crosshair';
+      });
+
+      gridChk.addEventListener('change', () => { gridHelper.visible = gridChk.checked; renderOnce(); });
+      axesChk.addEventListener('change', () => { axesHelper.visible = axesChk.checked; renderOnce(); });
+
+      // Init
+      resetPoints();
+      rebuildControlPoints();
+      rebuildScene();
+      controls.enabled = camChk.checked;
+
+      const ro = new ResizeObserver(setSize);
+      ro.observe(host);
+      setSize();
+
+      return { start, stop };
+    }
+
+    // --------------- Demo 3D (superficie) ---------------
+    function BezierSurface3D(opts) {
+      const host = opts.host;
+      const uSlider = opts.uSlider;
+      const vSlider = opts.vSlider;
+      const resetBtn = opts.resetBtn;
+      const camChk = opts.camChk;
+      const gridChk = opts.gridChk;
+      const coordsChk = opts.coordsChk;
+      const eqBox = opts.eqBox;
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xf3f4f6);
+
+      const camera = new THREE.PerspectiveCamera(55, 1, 0.01, 200);
+      camera.position.set(3.8, 3.4, 6.8);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setPixelRatio(window.devicePixelRatio || 1);
+      host.appendChild(renderer.domElement);
+
+      const labelRenderer = new THREE.CSS2DRenderer();
+      labelRenderer.domElement.style.position = 'absolute';
+      labelRenderer.domElement.style.top = '0';
+      labelRenderer.domElement.style.left = '0';
+      labelRenderer.domElement.style.pointerEvents = 'none';
+      host.appendChild(labelRenderer.domElement);
+
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.06;
+
+      const light = new THREE.DirectionalLight(0xffffff, 0.95);
+      light.position.set(6, 8, 10);
+      scene.add(light);
+      scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+
+      const gridHelper = new THREE.GridHelper(8, 16, 0x9ca3af, 0xd1d5db);
+      gridHelper.visible = false;
+      gridHelper.position.y = -2.2;
+      scene.add(gridHelper);
+
+      const axesHelper = new THREE.AxesHelper(3.5);
+      axesHelper.visible = false;
+      scene.add(axesHelper);
+
+      const matSurface = new THREE.MeshPhongMaterial({
+        color: 0x2194ce,
+        side: THREE.DoubleSide,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.85,
+      });
+
+      const matControl = new THREE.MeshPhongMaterial({ color: 0xef4444, shininess: 110 });
+      const matControlHot = new THREE.MeshPhongMaterial({ color: 0xb91c1c, shininess: 140 });
+      const matCurrent = new THREE.MeshPhongMaterial({ color: 0x10b981, shininess: 90 });
+      const matIntermediate = new THREE.MeshPhongMaterial({ color: 0x7c3aed, shininess: 90 });
+      const matConstrLine = new THREE.LineBasicMaterial({ color: 0xf59e0b });
+
+      const root = new THREE.Group();
+      scene.add(root);
+
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      const dragIntersection = new THREE.Vector3();
+
+      let controlPoints = [];
+      let controlMeshes = [];
+      let pickMeshes = [];
+      let labels = [];
+
+      let dynamicGroup = new THREE.Group();
+      root.add(dynamicGroup);
+
+      let hover = null; // {i,j}
+      let selected = null; // {i,j}
+      let dragPlane = null;
+
+      let running = false;
+      let rafId = null;
+
+      function resetMesh() {
+        controlPoints = [
+          [[-1.5, -1.5, 1], [-0.5, -1.5, 0], [0.5, -1.5, 0], [1.5, -1.5, 1]],
+          [[-1.5, -0.5, 0], [-0.5, -0.5, 1], [0.5, -0.5, 1], [1.5, -0.5, 0]],
+          [[-1.5, 0.5, 0], [-0.5, 0.5, 1], [0.5, 0.5, 1], [1.5, 0.5, 0]],
+          [[-1.5, 1.5, 1], [-0.5, 1.5, 0], [0.5, 1.5, 0], [1.5, 1.5, 1]],
+        ].map(row => row.map(p => new THREE.Vector3(...p)));
+      }
+
+      function binomial(n, k) {
+        if (k === 0 || k === n) return 1;
+        let res = 1;
+        for (let i = 1; i <= k; i++) res = (res * (n - (k - i))) / i;
+        return res;
+      }
+
+      function bernstein(n, i, t) {
+        return binomial(n, i) * Math.pow(t, i) * Math.pow(1 - t, n - i);
+      }
+
+      function bezierSurface(u, v) {
+        const p = new THREE.Vector3(0, 0, 0);
+        const n = controlPoints.length - 1;
+        const m = controlPoints[0].length - 1;
+        for (let i = 0; i <= n; i++) {
+          for (let j = 0; j <= m; j++) {
+            p.add(controlPoints[i][j].clone().multiplyScalar(bernstein(n, i, u) * bernstein(m, j, v)));
+          }
+        }
+        return p;
+      }
+
+      function createSurfaceMesh(resolution = 26) {
+        const geom = new THREE.BufferGeometry();
+        const vertices = [];
+        const indices = [];
+
+        for (let i = 0; i <= resolution; i++) {
+          const u = i / resolution;
+          for (let j = 0; j <= resolution; j++) {
+            const v = j / resolution;
+            const p = bezierSurface(u, v);
+            vertices.push(p.x, p.y, p.z);
+          }
+        }
+
+        for (let i = 0; i < resolution; i++) {
+          for (let j = 0; j < resolution; j++) {
+            const a = i * (resolution + 1) + j;
+            const b = a + 1;
+            const c = (i + 1) * (resolution + 1) + j;
+            const d = c + 1;
+            indices.push(a, b, c, b, d, c);
+          }
+        }
+
+        geom.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        geom.setIndex(indices);
+        geom.computeVertexNormals();
+        return new THREE.Mesh(geom, matSurface);
+      }
+
+      function casteljau2D(pointsGrid, u, v) {
+        const n = pointsGrid.length;
+        const m = pointsGrid[0].length;
+
+        // u en filas
+        const levelsU = [];
+        for (let i = 0; i < n; i++) {
+          let cur = pointsGrid[i].map(p => p.clone());
+          const all = [cur];
+          for (let k = 1; k < m; k++) {
+            const next = [];
+            for (let j = 0; j < m - k; j++) {
+              next.push(new THREE.Vector3().lerpVectors(cur[j], cur[j + 1], u));
+            }
+            cur = next;
+            all.push(cur);
+          }
+          levelsU.push(all);
+        }
+
+        const uResult = levelsU.map(levels => levels[levels.length - 1][0]);
+
+        // v en esos resultados
+        let cur = uResult.map(p => p.clone());
+        const levelsV = [cur];
+        for (let k = 1; k < n; k++) {
+          const next = [];
+          for (let i = 0; i < n - k; i++) next.push(new THREE.Vector3().lerpVectors(cur[i], cur[i + 1], v));
+          cur = next;
+          levelsV.push(cur);
+        }
+
+        const lines = [];
+        for (let i = 0; i < n; i++) {
+          for (const level of levelsU[i]) {
+            for (let j = 0; j < level.length - 1; j++) lines.push([level[j], level[j + 1]]);
+          }
+        }
+        for (const level of levelsV) {
+          for (let i = 0; i < level.length - 1; i++) lines.push([level[i], level[i + 1]]);
+        }
+
+        const points = [];
+        for (const rowLevels of levelsU) for (const level of rowLevels) points.push(...level);
+        for (const level of levelsV) points.push(...level);
+
+        // dedupe aproximado
+        const uniq = [];
+        const eps = 1e-10;
+        for (const p of points) {
+          if (!uniq.some(q => Math.abs(q.x - p.x) < eps && Math.abs(q.y - p.y) < eps && Math.abs(q.z - p.z) < eps)) {
+            uniq.push(p);
+          }
+        }
+
+        return { points: uniq, lines, finalPoint: levelsV[levelsV.length - 1][0] };
+      }
+
+      function clearDynamic() {
+        root.remove(dynamicGroup);
+        dynamicGroup.traverse(obj => { if (obj.geometry) obj.geometry.dispose?.(); });
+        dynamicGroup = new THREE.Group();
+        root.add(dynamicGroup);
+
+        for (const l of labels) root.remove(l);
+        labels = [];
+      }
+
+      function rebuildControlMeshes() {
+        for (const m of controlMeshes) { root.remove(m); m.geometry.dispose?.(); }
+        for (const m of pickMeshes) { root.remove(m); m.geometry.dispose?.(); }
+        controlMeshes = [];
+        pickMeshes = [];
+
+        for (let i = 0; i < controlPoints.length; i++) {
+          for (let j = 0; j < controlPoints[i].length; j++) {
+            const p = controlPoints[i][j];
+
+            const visible = new THREE.Mesh(new THREE.SphereGeometry(0.11, 18, 18), matControl);
+            visible.position.copy(p);
+            visible.userData = { i, j };
+            root.add(visible);
+            controlMeshes.push(visible);
+
+            // pick más grande
+            const pick = new THREE.Mesh(
+              new THREE.SphereGeometry(0.24, 12, 12),
+              new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.0 })
+            );
+            pick.position.copy(p);
+            pick.userData = { i, j };
+            root.add(pick);
+            pickMeshes.push(pick);
+          }
+        }
+      }
+
+      function createLabel(text, pos) {
+        const div = document.createElement('div');
+        div.className = 'label3d';
+        div.textContent = text;
+        const obj = new THREE.CSS2DObject(div);
+        obj.position.copy(pos);
+        root.add(obj);
+        labels.push(obj);
+      }
+
+      function createDragPlane(point) {
+        const normal = new THREE.Vector3(0, 0, 1).applyQuaternion(camera.quaternion);
+        return new THREE.Plane(normal, -point.dot(normal));
+      }
+
+      function updateHover() {
+        for (const m of controlMeshes) {
+          const { i, j } = m.userData;
+          const hot = (selected && selected.i === i && selected.j === j) || (hover && hover.i === i && hover.j === j);
+          m.material = hot ? matControlHot : matControl;
+        }
+      }
+
+      function rebuildScene() {
+        clearDynamic();
+
+        // superficie
+        dynamicGroup.add(createSurfaceMesh());
+
+        // construcción y punto
+        const u = parseFloat(uSlider.value);
+        const v = parseFloat(vSlider.value);
+        const constr = casteljau2D(controlPoints, u, v);
+
+        for (const p of constr.points) {
+          const m = new THREE.Mesh(new THREE.SphereGeometry(0.07, 14, 14), matIntermediate);
+          m.position.copy(p);
+          dynamicGroup.add(m);
+        }
+
+        for (const [p1, p2] of constr.lines) {
+          const geom = new THREE.BufferGeometry().setFromPoints([p1, p2]);
+          dynamicGroup.add(new THREE.Line(geom, matConstrLine));
+        }
+
+        const current = new THREE.Mesh(new THREE.SphereGeometry(0.14, 18, 18), matCurrent);
+        current.position.copy(constr.finalPoint);
+        dynamicGroup.add(current);
+
+        // sync control meshes
+        for (const m of controlMeshes) {
+          const { i, j } = m.userData;
+          m.position.copy(controlPoints[i][j]);
+        }
+        for (const m of pickMeshes) {
+          const { i, j } = m.userData;
+          m.position.copy(controlPoints[i][j]);
+        }
+
+        updateHover();
+
+        if (coordsChk.checked) {
+          for (const m of controlMeshes) {
+            const p = m.position;
+            createLabel(`(${p.x.toFixed(1)}, ${p.y.toFixed(1)}, ${p.z.toFixed(1)})`, p);
+          }
+          createLabel(`(${constr.finalPoint.x.toFixed(1)}, ${constr.finalPoint.y.toFixed(1)}, ${constr.finalPoint.z.toFixed(1)})`, constr.finalPoint);
+        }
+
+        eqBox.innerHTML = `\\[S(${u.toFixed(2)},${v.toFixed(2)})=(${constr.finalPoint.x.toFixed(2)},${constr.finalPoint.y.toFixed(2)},${constr.finalPoint.z.toFixed(2)})\\]`;
+        if (window.MathJax?.typesetPromise) MathJax.typesetPromise([eqBox]).catch(() => {});
+      }
+
+      function setSize() {
+        const rect = host.getBoundingClientRect();
+        const w = Math.max(2, rect.width);
+        const h = Math.max(2, rect.height);
+        renderer.setSize(w, h, false);
+        labelRenderer.setSize(w, h);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderOnce();
+      }
+
+      function renderOnce() {
+        renderer.render(scene, camera);
+        labelRenderer.render(scene, camera);
+      }
+
+      function loop() {
+        if (!running) return;
+        controls.update();
+        renderer.render(scene, camera);
+        labelRenderer.render(scene, camera);
+        rafId = requestAnimationFrame(loop);
+      }
+
+      function start() {
+        if (running) return;
+        running = true;
+        rafId = requestAnimationFrame(loop);
+      }
+
+      function stop() {
+        running = false;
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = null;
+        selected = null;
+        hover = null;
+        dragPlane = null;
+        controls.enabled = camChk.checked;
+      }
+
+      function setMouseFromEvent(e) {
+        const rect = renderer.domElement.getBoundingClientRect();
+        mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      }
+
+      function hitTest(e) {
+        setMouseFromEvent(e);
+        raycaster.setFromCamera(mouse, camera);
+        const hits = raycaster.intersectObjects(pickMeshes, false);
+        if (!hits.length) return null;
+        return hits[0].object.userData;
+      }
+
+      renderer.domElement.addEventListener('pointerdown', (e) => {
+        if (camChk.checked) return;
+        e.preventDefault();
+
+        const hit = hitTest(e);
+        if (!hit) return;
+
+        selected = hit;
+        const p = controlPoints[hit.i][hit.j];
+        dragPlane = createDragPlane(p);
+        controls.enabled = false;
+        renderer.domElement.setPointerCapture(e.pointerId);
+        rebuildScene();
+      }, { passive: false });
+
+      renderer.domElement.addEventListener('pointermove', (e) => {
+        if (camChk.checked) return;
+
+        if (!selected) {
+          hover = hitTest(e);
+          updateHover();
+          renderer.domElement.style.cursor = hover ? 'grab' : 'crosshair';
+          return;
+        }
+
+        setMouseFromEvent(e);
+        raycaster.setFromCamera(mouse, camera);
+        if (dragPlane && raycaster.ray.intersectPlane(dragPlane, dragIntersection)) {
+          controlPoints[selected.i][selected.j].copy(dragIntersection);
+          rebuildScene();
+        }
+      });
+
+      renderer.domElement.addEventListener('pointerup', () => {
+        if (selected) {
+          selected = null;
+          dragPlane = null;
+          controls.enabled = camChk.checked;
+          rebuildScene();
+        }
+      });
+
+      renderer.domElement.addEventListener('pointerleave', () => { if (!selected) { hover = null; updateHover(); } });
+
+      // UI
+      uSlider.addEventListener('input', rebuildScene);
+      vSlider.addEventListener('input', rebuildScene);
+      gridChk.addEventListener('change', () => { gridHelper.visible = gridChk.checked; renderOnce(); });
+      coordsChk.addEventListener('change', rebuildScene);
+
+      camChk.addEventListener('change', () => {
+        controls.enabled = camChk.checked;
+        if (camChk.checked) {
+          selected = null;
+          hover = null;
+          dragPlane = null;
+          updateHover();
+        }
+        renderer.domElement.style.cursor = camChk.checked ? 'grab' : 'crosshair';
+      });
+
+      resetBtn.addEventListener('click', () => {
+        resetMesh();
+        rebuildControlMeshes();
+        rebuildScene();
+      });
+
+      // Init
+      resetMesh();
+      rebuildControlMeshes();
+      rebuildScene();
+      controls.enabled = camChk.checked;
+      renderer.domElement.style.cursor = camChk.checked ? 'grab' : 'crosshair';
+
+      const ro = new ResizeObserver(setSize);
+      ro.observe(host);
+      setSize();
+
+      return { start, stop, axesHelper };
+    }
+
+    // Bootstrap (esperar a que cargue Three)
+    setupTabs();
+
+    const demos = {
+      c2d: null,
+      c3d: null,
+      s3d: null,
+      inited: { 'tab-2d': false, 'tab-3d': false, 'tab-surf': false },
+    };
+
+    function init2D() {
+      if (demos.inited['tab-2d']) return;
+      demos.inited['tab-2d'] = true;
+      demos.c2d = Bezier2D({
+        canvas: document.getElementById('c2d'),
+        tSlider: document.getElementById('c2dT'),
+        playBtn: document.getElementById('c2dPlay'),
+        resetBtn: document.getElementById('c2dReset'),
+        gridChk: document.getElementById('c2dGrid'),
+        coordsChk: document.getElementById('c2dCoords'),
+        eqBox: document.getElementById('c2dEq'),
+      });
+      demos.c2d.start();
+    }
+
+    function init3D() {
+      if (demos.inited['tab-3d']) return;
+      demos.inited['tab-3d'] = true;
+      demos.c3d = BezierCurve3D({
+        host: document.getElementById('curve3d'),
+        tSlider: document.getElementById('c3dT'),
+        playBtn: document.getElementById('c3dPlay'),
+        resetBtn: document.getElementById('c3dReset'),
+        camChk: document.getElementById('c3dCam'),
+        gridChk: document.getElementById('c3dGrid'),
+        axesChk: document.getElementById('c3dAxes'),
+        eqBox: document.getElementById('c3dEq'),
+      });
+    }
+
+    function initSurf() {
+      if (demos.inited['tab-surf']) return;
+      demos.inited['tab-surf'] = true;
+      demos.s3d = BezierSurface3D({
+        host: document.getElementById('surf3d'),
+        uSlider: document.getElementById('s3dU'),
+        vSlider: document.getElementById('s3dV'),
+        resetBtn: document.getElementById('s3dReset'),
+        camChk: document.getElementById('s3dCam'),
+        gridChk: document.getElementById('s3dGrid'),
+        coordsChk: document.getElementById('s3dCoords'),
+        eqBox: document.getElementById('s3dEq'),
+      });
+    }
+
+    function onTab(active) {
+      // lazy init + start/stop loops
+      if (active === 'tab-2d') {
+        init2D();
+        demos.c2d?.start();
+        demos.c3d?.stop();
+        demos.s3d?.stop();
+      } else if (active === 'tab-3d') {
+        init3D();
+        demos.c2d?.stop();
+        demos.c3d?.start();
+        demos.s3d?.stop();
+      } else if (active === 'tab-surf') {
+        initSurf();
+        demos.c2d?.stop();
+        demos.c3d?.stop();
+        demos.s3d?.start();
+      }
+    }
+
+    // Espera a que Three esté disponible
+    (function waitForThree() {
+      if (!window.THREE) {
+        setTimeout(waitForThree, 30);
+        return;
+      }
+      // init tab 2D por defecto
+      init2D();
+      onTab('tab-2d');
+      window.addEventListener('bezier:tab', (e) => onTab(e.detail.active));
+    })();
+  </script>
+</body>
+</html>
