@@ -790,7 +790,6 @@
 
       const root = new THREE.Group();
       scene.add(root);
-
       let dynamicGroup = new THREE.Group();
       root.add(dynamicGroup);
 
@@ -799,6 +798,18 @@
       dynamicGroup.add(constructionGroup);
       let currentSphere = null;
       let controlLine = null;
+
+      // Estado (curva 3D)
+      let points = [];
+      const visibleSpheres = [];
+      const pickSpheres = [];
+      let hoverIndex = null;
+      let dragIndex = null;
+      let dragPlane = null;
+
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      const dragIntersection = new THREE.Vector3();
 
       let isPlaying = false;
       let animDir = 1;
@@ -1019,6 +1030,13 @@
       function setHover(idx) {
         if (idx === hoverIndex) return;
         hoverIndex = idx;
+        for (let i = 0; i < visibleSpheres.length; i++) {
+          visibleSpheres[i].material = (i === hoverIndex || i === dragIndex) ? matPointHot : matPoint;
+        }
+        renderer.domElement.style.cursor = (hoverIndex !== null && !camChk.checked) ? 'grab' : (camChk.checked ? 'grab' : 'crosshair');
+      }
+
+      function updateHover() {
         for (let i = 0; i < visibleSpheres.length; i++) {
           visibleSpheres[i].material = (i === hoverIndex || i === dragIndex) ? matPointHot : matPoint;
         }
