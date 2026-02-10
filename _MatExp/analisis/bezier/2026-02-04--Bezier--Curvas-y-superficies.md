@@ -33,7 +33,6 @@ $$
 **Cómo usar el interactivo**
 - Curva 2D: clic para añadir un punto, `Shift`+clic para borrar, arrastrar para mover.
 - Curva 3D y superficie 3D: para **mover puntos** hay que **desactivar** primero **Modo cámara** (si está activado, el ratón controla la órbita/zoom).
-- He aumentado la zona “agarrable” de los puntos (hit-area) para que sea más fácil seleccionarlos.
 
 <style>
   .bezier-embed {
