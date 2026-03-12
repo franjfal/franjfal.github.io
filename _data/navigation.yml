@@ -10,6 +10,8 @@ main:
         url: /Libros/MatExp/
       - title: "MatExp"
         url: /MatExp/
+      - title: "Cerebros Artificiales"
+        url: https://artibrains.github.io/
       - title: "Relojes solares"
         url: /RelojesSolares.html
       - title: "Recursos"

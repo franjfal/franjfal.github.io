@@ -1,5 +1,5 @@
 current directory: /Users/franjfal/franjfal.github.io/vendor/bundle/ruby/2.6.0/gems/commonmarker-0.23.12/ext/commonmarker
-/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/bin/ruby -I /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0 -r ./siteconf20260221-8356-11yfdbc.rb extconf.rb
+/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/bin/ruby -I /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0 -r ./siteconf20260311-58039-1k8jpcw.rb extconf.rb
 checking for whether -std=c99 is accepted as CFLAGS... yes
 creating Makefile
 
@@ -1724,8 +1724,8 @@ compiling tasklist.c
 compiling utf8.c
 compiling xml.c
 linking shared-object commonmarker/commonmarker.bundle
-ld: warning: search path '/AppleInternal/Library/BuildRoots/4~CB3uugBQxypsiyQCrI82QcTPBCns7_J7YMudMGY/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.Internal.sdk/usr/local/lib' not found
+ld: warning: search path '/AppleInternal/Library/BuildRoots/4~CG42ugDRrNTwtJ-8GtyT03OOGlHvQq8y7puCpJc/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.3.Internal.sdk/usr/local/lib' not found
 
 current directory: /Users/franjfal/franjfal.github.io/vendor/bundle/ruby/2.6.0/gems/commonmarker-0.23.12/ext/commonmarker
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 commonmarker.bundle ./.gem.20260221-8356-1ngmimu/commonmarker
+/usr/bin/install -c -m 0755 commonmarker.bundle ./.gem.20260311-58039-oiygxe/commonmarker

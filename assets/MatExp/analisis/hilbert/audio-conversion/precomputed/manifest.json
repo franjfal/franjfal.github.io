@@ -1,0 +1,115 @@
+{
+  "targetSeconds": 2,
+  "reconstructionLevels": [
+    500,
+    1000,
+    1500,
+    2000,
+    3000,
+    5000,
+    10000,
+    20000
+  ],
+  "audios": [
+    {
+      "id": "drumline-loop",
+      "label": "Drumline Loop",
+      "audioUrl": "/assets/wav-samples/drumline-loop.mp3",
+      "sampleRate": 44100,
+      "originalDuration": 9.351837,
+      "processedDuration": 2.0,
+      "processedSampleCount": 88200,
+      "dftCoefficientCount": 44100,
+      "wasTrimmed": true,
+      "files": {
+        "audioValues": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumline-loop-audio.f32",
+        "dftCoefficients": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumline-loop-dft.f32",
+        "reconstructions": {
+          "500": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumline-loop-recon-500.f32",
+          "1000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumline-loop-recon-1000.f32",
+          "1500": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumline-loop-recon-1500.f32",
+          "2000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumline-loop-recon-2000.f32",
+          "3000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumline-loop-recon-3000.f32",
+          "5000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumline-loop-recon-5000.f32",
+          "10000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumline-loop-recon-10000.f32",
+          "20000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumline-loop-recon-20000.f32"
+        }
+      }
+    },
+    {
+      "id": "drumloop",
+      "label": "Drumloop",
+      "audioUrl": "/assets/wav-samples/drumloop.mp3",
+      "sampleRate": 44100,
+      "originalDuration": 11.337143,
+      "processedDuration": 2.0,
+      "processedSampleCount": 88200,
+      "dftCoefficientCount": 44100,
+      "wasTrimmed": true,
+      "files": {
+        "audioValues": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumloop-audio.f32",
+        "dftCoefficients": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumloop-dft.f32",
+        "reconstructions": {
+          "500": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumloop-recon-500.f32",
+          "1000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumloop-recon-1000.f32",
+          "1500": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumloop-recon-1500.f32",
+          "2000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumloop-recon-2000.f32",
+          "3000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumloop-recon-3000.f32",
+          "5000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumloop-recon-5000.f32",
+          "10000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumloop-recon-10000.f32",
+          "20000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/drumloop-recon-20000.f32"
+        }
+      }
+    },
+    {
+      "id": "metronome",
+      "label": "Metronome",
+      "audioUrl": "/assets/wav-samples/metronome.mp3",
+      "sampleRate": 24000,
+      "originalDuration": 7.992,
+      "processedDuration": 2.0,
+      "processedSampleCount": 48000,
+      "dftCoefficientCount": 24000,
+      "wasTrimmed": true,
+      "files": {
+        "audioValues": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/metronome-audio.f32",
+        "dftCoefficients": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/metronome-dft.f32",
+        "reconstructions": {
+          "500": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/metronome-recon-500.f32",
+          "1000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/metronome-recon-1000.f32",
+          "1500": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/metronome-recon-1500.f32",
+          "2000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/metronome-recon-2000.f32",
+          "3000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/metronome-recon-3000.f32",
+          "5000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/metronome-recon-5000.f32",
+          "10000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/metronome-recon-10000.f32",
+          "20000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/metronome-recon-20000.f32"
+        }
+      }
+    },
+    {
+      "id": "pianos",
+      "label": "Pianos",
+      "audioUrl": "/assets/wav-samples/pianos.mp3",
+      "sampleRate": 44100,
+      "originalDuration": 18.860408,
+      "processedDuration": 2.0,
+      "processedSampleCount": 88200,
+      "dftCoefficientCount": 44100,
+      "wasTrimmed": true,
+      "files": {
+        "audioValues": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/pianos-audio.f32",
+        "dftCoefficients": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/pianos-dft.f32",
+        "reconstructions": {
+          "500": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/pianos-recon-500.f32",
+          "1000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/pianos-recon-1000.f32",
+          "1500": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/pianos-recon-1500.f32",
+          "2000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/pianos-recon-2000.f32",
+          "3000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/pianos-recon-3000.f32",
+          "5000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/pianos-recon-5000.f32",
+          "10000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/pianos-recon-10000.f32",
+          "20000": "/assets/MatExp/analisis/hilbert/audio-conversion/precomputed/pianos-recon-20000.f32"
+        }
+      }
+    }
+  ]
+}

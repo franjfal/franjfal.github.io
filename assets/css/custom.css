@@ -198,9 +198,45 @@
 
 .greedy-nav .hidden-links a:hover {
     color: #007bff;
-    /* Replace $masthead-link-color-hover with a value */
-    background: #e9ecef;
-    /* Replace $navicon-link-color-hover with a value */
+}
+
+/* Mobile-specific dropdown behavior */
+@media (max-width: 640px) {
+
+    /* hide the regular links and show toggle */
+    .greedy-nav .visible-links {
+        display: none;
+    }
+
+    .greedy-nav__toggle {
+        display: block !important;
+        /* override .hidden class */
+    }
+
+    .greedy-nav .hidden-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: #fff;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        border-top: 1px solid #ddd;
+    }
+
+    .greedy-nav .hidden-links.show {
+        display: flex;
+    }
+
+    .greedy-nav .hidden-links a {
+        padding: 10px 1rem;
+        border-bottom: 1px solid #eee;
+    }
+}
+
+/* Replace $masthead-link-color-hover with a value */
+background: #e9ecef;
+/* Replace $navicon-link-color-hover with a value */
 }
 
 .greedy-nav .hidden-links:before {

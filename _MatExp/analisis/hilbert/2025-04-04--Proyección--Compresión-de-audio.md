@@ -152,37 +152,69 @@ feature: "/assets/MatExp/analisis/hilbert/audio-conversion/feature.jpg"
 
     /* --- Quick Navigation Styles --- */
     .dft-app-container .quick-nav {
-    margin: 0 auto 20px;
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
-    border-top: 1px solid #eee;
-}
-
-.dft-app-container .quick-nav ul {
-    display: flex;
-    flex-direction: column; /* ← clave para lista vertical */
-    align-items: center;     /* centra horizontalmente los items */
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.dft-app-container .quick-nav li {
-    margin: 8px 0; /* más margen vertical */
-}
-
-.dft-app-container .quick-nav a {
-    padding: 5px 10px;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-    font-size: 0.9em;
-    display: inline-block;
-}
-
-.dft-app-container .quick-nav a:hover {
-    background-color: #f0f0f0;
-    color: #2980b9;
-}
+        margin: 0 auto 30px;
+        padding: 15px 12px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #eef1f5 100%);
+        border: 1px solid #dee2e6;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .dft-app-container .quick-nav ul {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        gap: 8px;
+    }
+    .dft-app-container .quick-nav li {
+        margin: 0;
+    }
+    .dft-app-container .quick-nav a {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 15px 7px 8px;
+        border-radius: 22px;
+        background: #ffffff;
+        border: 1px solid #d0d7de;
+        text-decoration: none;
+        font-size: 0.82em;
+        font-weight: 500;
+        color: #3d4f61;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+        white-space: nowrap;
+        line-height: 1;
+    }
+    .dft-app-container .quick-nav .step-num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 21px;
+        height: 21px;
+        border-radius: 50%;
+        background: #e4eaf2;
+        color: #2563eb;
+        font-size: 0.82em;
+        font-weight: 700;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+    }
+    .dft-app-container .quick-nav a:hover {
+        background: #2563eb;
+        border-color: #1d4ed8;
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 14px rgba(37,99,235,0.28);
+        text-decoration: none;
+    }
+    .dft-app-container .quick-nav a:hover .step-num {
+        background: rgba(255,255,255,0.22);
+        color: #ffffff;
+    }
 
 
 
@@ -262,11 +294,21 @@ feature: "/assets/MatExp/analisis/hilbert/audio-conversion/feature.jpg"
           margin: 0 5px; /* Keep spacing */
           /* padding, border, radius, font-size handled by theme */
       }
+      .dft-app-container .inline-controls select,
+      .dft-app-container .controls select {
+          min-width: 220px;
+          margin: 0 5px;
+      }
       .dft-app-container input[type="file"] {
          display: block; /* Keep block */
          margin: 15px auto; /* Keep centering */
          max-width: 90%; /* Keep max width */
          /* padding, border, radius handled by theme */
+     }
+     .dft-app-container .helper-text {
+         font-size: 0.9em;
+         color: #555;
+         margin-top: 8px;
      }
      /* Removed P styles for file/live sections */
 
@@ -337,8 +379,8 @@ feature: "/assets/MatExp/analisis/hilbert/audio-conversion/feature.jpg"
         .dft-app-container .controls {
             flex-direction: column; align-items: center; gap: 10px;
         }
-        .dft-app-container .quick-nav ul { flex-direction: column; align-items: center; }
-        .dft-app-container .quick-nav li { margin: 5px 0; }
+        .dft-app-container .quick-nav ul { flex-direction: row; flex-wrap: wrap; }
+        .dft-app-container .quick-nav li { margin: 3px 0; }
         .dft-app-container .values-comparison { flex-direction: column; gap: 10px; }
         .dft-app-container .values-column { min-width: 100%; margin-bottom: 10px; }
         .dft-app-container .values-list,
@@ -352,7 +394,7 @@ feature: "/assets/MatExp/analisis/hilbert/audio-conversion/feature.jpg"
          .dft-app-container .values-list,
          .dft-app-container .coefficients-list,
          .dft-app-container #progressLog { font-size: 0.7em; padding: 8px; } /* Keep specific size/padding */
-         .dft-app-container .quick-nav a { font-size: 0.85em; padding: 4px 8px;} /* Keep specific size/padding */
+         .dft-app-container .quick-nav a { font-size: 0.8em; padding: 6px 11px 6px 7px; }
          .dft-app-container button { font-size: 0.9em; padding: 8px 12px; } /* Keep specific size/padding */
          .dft-app-container .controls label,
          .dft-app-container .inline-controls label { font-size: 0.9em; } /* Keep specific size */
@@ -416,15 +458,15 @@ Este post incluye una demostración interactiva sobre la Transformada Discreta d
     </div>
 
     <!-- Quick Navigation -->
-    <nav class="quick-nav">
+    <nav class="quick-nav" aria-label="Navegación de secciones">
         <ul>
-            <li><a href="#dftInputSection">1. Seleccionar Audio</a></li>
-            <li><a href="#dftCalcSection">2. Calcular DFT</a></li>
-            <li><a href="#dftCoeffSection">3. Coeficientes</a></li>
-            <li><a href="#dftReconSection">4. Reconstrucción</a></li>
-            <li><a href="#dftWaveformSection">5. Forma de Onda</a></li>
-            <li><a href="#dftCompareSection">6. Comparación</a></li>
-            <li><a href="#dftLogSection">7. Registro</a></li>
+            <li><a href="#dftInputSection"><span class="step-num">1</span>Seleccionar Audio</a></li>
+            <li><a href="#dftCalcSection"><span class="step-num">2</span>Calcular DFT</a></li>
+            <li><a href="#dftCoeffSection"><span class="step-num">3</span>Coeficientes</a></li>
+            <li><a href="#dftReconSection"><span class="step-num">4</span>Reconstrucción</a></li>
+            <li><a href="#dftWaveformSection"><span class="step-num">5</span>Forma de Onda</a></li>
+            <li><a href="#dftCompareSection"><span class="step-num">6</span>Comparación</a></li>
+            <li><a href="#dftLogSection"><span class="step-num">7</span>Registro</a></li>
         </ul>
     </nav>
 
@@ -433,11 +475,21 @@ Este post incluye una demostración interactiva sobre la Transformada Discreta d
         <h2>1. Selección de Audio</h2>
         <div class="controls">
             <label><input type="radio" name="inputMethod" value="file" checked> Cargar archivo WAV</label>
+            <label><input type="radio" name="inputMethod" value="library"> Seleccionar audio de biblioteca</label>
             <label><input type="radio" name="inputMethod" value="live"> Grabar con micrófono</label>
         </div>
         <div id="fileSection">
             <input type="file" id="audioFile" accept="audio/wav,audio/wave,audio/x-wav,.wav">
             <p>Nota: Audios largos (> 2s) serán recortados para el análisis.</p>
+        </div>
+        <div id="librarySection" style="display:none;">
+            <div class="inline-controls">
+                <label for="libraryAudioSelect">Audio precalculado</label>
+                <select id="libraryAudioSelect" disabled>
+                    <option value="">Cargando biblioteca...</option>
+                </select>
+            </div>
+            <p class="helper-text">Estos audios usan la biblioteca de <strong>assets/wav-samples</strong> y ya tienen precalculados el vector ℓ², la DFT y las reconstrucciones para 500, 1000, 1500, 2000, 3000, 5000, 10000 y 20000 coeficientes.</p>
         </div>
         <div id="liveSection" style="display:none;">
             <div class="button-container">
@@ -451,6 +503,7 @@ Este post incluye una demostración interactiva sobre la Transformada Discreta d
     <section id="dftCalcSection">
         <h2>2. Calcular DFT</h2>
          <p>Calcula la Transformada Discreta de Fourier de los primeros 2 segundos del audio seleccionado.</p>
+         <p id="libraryPrecomputedHint" class="helper-text" style="display:none;">Para los audios de biblioteca, la DFT se carga directamente desde los datos precalculados, sin volver a ejecutar el cálculo en el navegador.</p>
         <div class="button-container">
             <button id="compressBtn" class="primary-button" disabled>Calcular DFT del Audio (máx 2s)</button>
         </div>
@@ -463,16 +516,42 @@ Este post incluye una demostración interactiva sobre la Transformada Discreta d
             <input type="number" id="numCoefficientsInput" value="10" min="1">
             <label>coeficientes:</label>
         </div>
-        <div id="dftCoefficientsList" class="coefficients-list">[Selecciona un audio y calcula la DFT para ver los coeficientes]</div>
+        <div class="values-comparison">
+             <div class="values-column">
+                 <h3>Coeficientes DFT originales</h3>
+                 <div id="dftCoefficientsList" class="coefficients-list">[Selecciona un audio y calcula/carga la DFT para ver los coeficientes]</div>
+             </div>
+             <div class="values-column">
+                 <h3>Coeficientes tras truncamiento</h3>
+                 <div id="truncatedDftCoefficientsList" class="coefficients-list">[Reconstruye el audio para ver los coeficientes tras el truncamiento]</div>
+             </div>
+        </div>
     </section>
 
     <section id="dftReconSection">
         <h2>4. Reconstrucción (Truncamiento + IDFT)</h2>
          <p>Selecciona cuántos coeficientes DFT (del paso 3) usar para reconstruir el audio mediante la IDFT. Menos coeficientes simulan mayor compresión.</p>
-        <div class="inline-controls">
+        <div id="manualReconstructionControls" class="inline-controls">
             <label for="numTruncateCoefficientsInput">Mantener primeros</label>
-            <input type="number" id="numTruncateCoefficientsInput" value="10000" min="0">
+            <input type="number" id="numTruncateCoefficientsInput" value="10000" min="0" list="manualReconstructionPresets">
             <label>coeficientes DFT</label> <!-- Simplified label -->
+        </div>
+        <datalist id="manualReconstructionPresets">
+            <option value="500"></option>
+            <option value="1000"></option>
+            <option value="1500"></option>
+            <option value="2000"></option>
+            <option value="3000"></option>
+            <option value="5000"></option>
+            <option value="10000"></option>
+            <option value="20000"></option>
+        </datalist>
+        <div id="libraryReconstructionControls" class="inline-controls" style="display:none;">
+            <label for="precomputedReconstructionSelect">Reconstrucción precalculada</label>
+            <select id="precomputedReconstructionSelect" disabled>
+                <option value="">Selecciona una reconstrucción</option>
+            </select>
+            <label>coeficientes DFT</label>
         </div>
         <div class="button-container">
             <button id="reconstructBtn" class="primary-button" disabled>Reconstruir Audio</button>
@@ -542,886 +621,5 @@ Este post incluye una demostración interactiva sobre la Transformada Discreta d
 
 ---
 
-<!-- Embedded JavaScript -->
-<script>
-    // --- START OF EMBEDDED JAVASCRIPT ---
-    (function() { // Optional IIFE to scope variables
-
-        // --- START: Added Code for Progress Overlay ---
-        // Use prefixed ID
-        const progressOverlay = document.getElementById('dftProgressOverlay');
-        const trimmingNotification = document.getElementById('trimmingNotification');
-        let clearAudioBtn = null; // Assigned in 'load'/'DOMContentLoaded'
-
-        function showProgressOverlay(message = "Procesando...") {
-            if (progressOverlay) {
-                // Use prefixed class
-                const messageElement = progressOverlay.querySelector('.dft-progress-content p:first-of-type');
-                if (messageElement) {
-                     messageElement.textContent = message;
-                }
-                if (progressOverlay.style.display !== 'flex') {
-                    progressOverlay.style.display = 'flex';
-                    console.log("Showing DFT progress overlay:", message);
-                } else {
-                    console.log("Updating DFT progress overlay message:", message);
-                }
-            } else {
-                console.error("DFT Progress overlay element not found!");
-            }
-        }
-
-        function hideProgressOverlay() {
-            if (progressOverlay) {
-                if (progressOverlay.style.display !== 'none') {
-                    progressOverlay.style.display = 'none';
-                    console.log("Hiding DFT progress overlay");
-                }
-            } else {
-                console.error("DFT Progress overlay element not found!");
-            }
-        }
-        // --- END: Added Code for Progress Overlay ---
-
-
-        // Objeto para representar números complejos
-        function Complex(real, imaginary) {
-            this.real = real;
-            this.imaginary = imaginary;
-        }
-        Complex.prototype.magnitude = function () {
-            return Math.sqrt(this.real * this.real + this.imaginary * this.imaginary);
-        };
-        Complex.prototype.add = function (complex) {
-            return new Complex(this.real + complex.real, this.imaginary + complex.imaginary);
-        };
-        Complex.prototype.subtract = function (complex) {
-            return new Complex(this.real - complex.real, this.imaginary - complex.imaginary);
-        };
-        Complex.prototype.multiply = function (complex) {
-            const realPart = (this.real * complex.real) - (this.imaginary * complex.imaginary);
-            const imaginaryPart = (this.real * complex.imaginary) + (this.imaginary * complex.real);
-            return new Complex(realPart, imaginaryPart);
-        };
-
-
-        // Función DFT
-        function calculateDFT(samples) {
-            console.log("calculateDFT: Iniciando cálculo DFT COMPLEJA con " + samples.length + " muestras.");
-            const N = samples.length;
-            const numCoefficients = Math.floor(N / 2);
-            if (numCoefficients <= 0) {
-                console.warn("calculateDFT: Número insuficiente de muestras (N/2 <= 0). Retornando espectro vacío.");
-                return [];
-            }
-            const spectrum = new Array(numCoefficients).fill(null).map(() => new Complex(0, 0));
-            // console.log("calculateDFT: Calculando " + numCoefficients + " coeficientes DFT complejos:"); // Verbose
-
-            for (let k = 0; k < numCoefficients; k++) {
-                let realSum = 0;
-                let imagSum = 0;
-                for (let n = 0; n < N; n++) {
-                    const angle = (2 * Math.PI * k * n) / N;
-                    realSum += samples[n] * Math.cos(angle);
-                    imagSum -= samples[n] * Math.sin(angle);
-                }
-                spectrum[k] = new Complex(realSum, imagSum);
-            }
-            console.log("calculateDFT: Cálculo DFT COMPLEJA completado. Espectro de tamaño: " + spectrum.length);
-            return spectrum;
-        }
-
-
-        // Variables globales específicas de esta instancia
-        let mediaRecorder, recordedBuffer = null;
-        let currentAudioData = null;
-        let fullAudioValuesList = null;
-        let fullDFTCoefficientsList = null;
-        let reconstructedAudioBuffer = null;
-        let fullReconstructedAudioValuesList = null;
-        let originalAudioBuffer = null;
-        let audioContext = null;
-        let currentAudioSource = null; // For stopping playback
-
-
-        // --- Initialize Audio Context ---
-        function getAudioContext() {
-            if (!audioContext) {
-                try {
-                    // Use || for broader browser compatibility check
-                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-                    if (!AudioContextClass) {
-                         throw new Error("Web Audio API no soportada por este navegador.");
-                    }
-                    audioContext = new AudioContextClass();
-                    console.log(`DFT Demo: AudioContext inicializado. Sample Rate: ${audioContext.sampleRate}Hz`);
-                     // Handle state changes (e.g., context suspended by browser)
-                     audioContext.onstatechange = () => {
-                         console.log(`DFT Demo: AudioContext state changed to: ${audioContext.state}`);
-                         logProgress(`Estado del AudioContext: ${audioContext.state}`);
-                         if (audioContext.state === 'suspended') {
-                            logProgress("AudioContext suspendido. Interacción del usuario (click) podría ser necesaria para reanudar.");
-                         }
-                     };
-                } catch (e) {
-                    console.error("DFT Demo: Error creating AudioContext:", e);
-                    alert("Error: No se pudo inicializar el contexto de audio. " + e.message);
-                    return null;
-                }
-            }
-             // Attempt to resume context if suspended (requires user interaction usually)
-             if (audioContext.state === 'suspended') {
-                audioContext.resume().then(() => {
-                    console.log("DFT Demo: AudioContext resumed successfully.");
-                }).catch(err => {
-                     console.error("DFT Demo: Error resuming AudioContext:", err);
-                });
-            }
-            return audioContext;
-        }
-
-
-        // Función para añadir mensajes al log
-        function logProgress(message) {
-            const logDiv = document.getElementById("progressLog");
-            if (logDiv) {
-                const timestamp = new Date().toLocaleTimeString();
-                logDiv.textContent += `[${timestamp}] ${message}\n`;
-                logDiv.scrollTop = logDiv.scrollHeight; // Auto-scroll
-            } else {
-                console.warn("DFT Demo: Log element 'progressLog' not found");
-            }
-        }
-
-        // Reset application state
-        function resetAppState() {
-            logProgress("Estado reiniciado.");
-            currentAudioData = null;
-            fullAudioValuesList = null;
-            fullDFTCoefficientsList = null;
-            reconstructedAudioBuffer = null;
-            fullReconstructedAudioValuesList = null;
-            originalAudioBuffer = null;
-            recordedBuffer = null;
-             if (currentAudioSource) { // Stop any playback on reset
-                 try { currentAudioSource.stop(); } catch(e){}
-                 currentAudioSource = null;
-             }
-
-            // Clear displays
-            const audioList = document.getElementById("audioValuesList");
-            const reconList = document.getElementById("reconstructedAudioValuesList");
-            const dftList = document.getElementById("dftCoefficientsList");
-            if(audioList) audioList.innerText = "[Audio Original Procesado]";
-            if(reconList) reconList.innerText = "[Audio Reconstruido]";
-            if(dftList) dftList.innerText = "[Calcula la DFT para ver coeficientes]";
-
-            const canvas = document.getElementById("audioCanvas");
-            if (canvas && canvas.getContext) {
-                const ctx = canvas.getContext("2d");
-                // Check if canvas has dimensions before resizing/clearing
-                if (canvas.offsetWidth > 0 && canvas.offsetHeight > 0) {
-                    canvas.width = canvas.offsetWidth; // Resize before clearing
-                    canvas.height = 150; // Set height explicitly
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.fillStyle = "#6c757d";
-                    ctx.textAlign = "center";
-                    ctx.font = "14px Arial";
-                    ctx.fillText("[Forma de onda aparecerá aquí]", canvas.width / 2, canvas.height / 2);
-                } else {
-                     console.warn("DFT Demo: Canvas has zero dimensions, skipping clear/draw.");
-                }
-            }
-
-            // Disable buttons carefully, checking existence first
-            const compressBtn = document.getElementById("compressBtn");
-            const reconstructBtn = document.getElementById("reconstructBtn");
-            const playOrigBtn = document.getElementById("playOriginalBtn");
-            const playReconBtn = document.getElementById("playReconstructedBtn");
-            const startRecBtn = document.getElementById("startRec");
-            const stopRecBtn = document.getElementById("stopRec");
-
-            if(compressBtn) compressBtn.disabled = true;
-            if(reconstructBtn) reconstructBtn.disabled = true;
-            if(playOrigBtn) playOrigBtn.disabled = true;
-            if(playReconBtn) playReconBtn.disabled = true;
-            if(startRecBtn) startRecBtn.disabled = false; // Re-enable start rec
-            if(stopRecBtn) stopRecBtn.disabled = true;
-
-            // Hide Clear Button
-            if (clearAudioBtn) clearAudioBtn.style.display = 'none';
-
-            // Reset file input
-            const fileInput = document.getElementById("audioFile");
-            if (fileInput) fileInput.value = '';
-
-            // Reset number inputs to defaults
-            const numValuesInput = document.getElementById("numValuesInput");
-            const numCoeffsInput = document.getElementById("numCoefficientsInput");
-            const numTruncInput = document.getElementById("numTruncateCoefficientsInput");
-
-            if (numValuesInput) numValuesInput.value = "10";
-            if (numCoeffsInput) numCoeffsInput.value = "10";
-            if (numTruncInput) { numTruncInput.value = "10000"; numTruncInput.max = ""; }
-
-            // Hide trimming notification
-            if (trimmingNotification) {
-                trimmingNotification.style.display = 'none';
-                trimmingNotification.textContent = '';
-            }
-
-            hideProgressOverlay(); // Hide overlay on reset
-        }
-
-        // File Input Change Handler Function
-        function handleAudioFileChange(event) {
-            console.log("DFT Demo: handleAudioFileChange triggered.");
-            const file = event.target.files[0];
-            if (file) {
-                console.log("DFT Demo: File selected:", file.name, file.type, file.size);
-                const acceptedWavTypes = ['audio/wav', 'audio/x-wav', 'audio/wave'];
-                 if (!acceptedWavTypes.includes(file.type) && !file.name.toLowerCase().endsWith('.wav')) {
-                    logProgress(`Advertencia: Archivo (${file.name}, tipo: ${file.type || '?'}) no parece WAV. La decodificación podría fallar.`);
-                }
-                logProgress(`Archivo "${file.name}" (${(file.size / 1024).toFixed(1)} KB) seleccionado. Leyendo...`);
-                const reader = new FileReader();
-                reader.onload = e => processAudioBuffer(e.target.result);
-                reader.onerror = err => {
-                    logProgress("Error leyendo el archivo: " + err);
-                    console.error("DFT Demo: FileReader error:", err);
-                    resetAppState();
-                };
-                reader.readAsArrayBuffer(file);
-            } else {
-                console.log("DFT Demo: No file selected.");
-            }
-        }
-
-        // Process Audio Buffer (Decode & Trim)
-        function processAudioBuffer(arrayBuffer) {
-            console.log("DFT Demo: processAudioBuffer called.");
-            const localAudioContext = getAudioContext();
-            if (!localAudioContext) {
-                logProgress("Error crítico: AudioContext no disponible.");
-                hideProgressOverlay(); // Ensure overlay hides if context fails early
-                return;
-            }
-
-            if (trimmingNotification) trimmingNotification.style.display = 'none';
-            showProgressOverlay("Decodificando audio...");
-            logProgress("Decodificando audio...");
-
-            localAudioContext.decodeAudioData(arrayBuffer).then(buffer => {
-                const originalDuration = buffer.duration;
-                logProgress(`Audio decodificado. Rate: ${buffer.sampleRate}Hz, Dur: ${originalDuration.toFixed(2)}s, Samples: ${buffer.length}`);
-
-                const targetDurationSeconds = 2;
-                if (originalDuration > targetDurationSeconds && trimmingNotification) {
-                    trimmingNotification.textContent = `Nota: Audio original (${originalDuration.toFixed(2)}s) > ${targetDurationSeconds}s. Será recortado para análisis. Se puede reproducir completo.`;
-                    trimmingNotification.style.display = 'block';
-                }
-
-                const sampleRate = buffer.sampleRate;
-                const maxSamplesToKeep = Math.floor(sampleRate * targetDurationSeconds);
-                const fullChannelData = buffer.getChannelData(0);
-                const actualSamplesToUse = Math.min(fullChannelData.length, maxSamplesToKeep);
-
-                if (actualSamplesToUse < fullChannelData.length) {
-                    logProgress(`RECORTANDO audio a ${actualSamplesToUse} samples (${(actualSamplesToUse / sampleRate).toFixed(2)}s).`);
-                    currentAudioData = fullChannelData.slice(0, actualSamplesToUse);
-                } else {
-                    logProgress(`Usando todas las ${actualSamplesToUse} samples.`);
-                    currentAudioData = fullChannelData;
-                }
-
-                originalAudioBuffer = buffer; // Keep full original
-                fullAudioValuesList = Array.from(currentAudioData);
-
-                drawWaveform(currentAudioData);
-                updateDisplayedValues();
-                const compressBtn = document.getElementById("compressBtn");
-                const playOrigBtn = document.getElementById("playOriginalBtn");
-                if(compressBtn) compressBtn.disabled = false;
-                if(playOrigBtn) playOrigBtn.disabled = false;
-
-                if (clearAudioBtn) clearAudioBtn.style.display = 'inline-block';
-
-                const maxCoeffs = Math.floor(currentAudioData.length / 2);
-                const numTruncateInput = document.getElementById("numTruncateCoefficientsInput");
-                if (numTruncateInput) {
-                    numTruncateInput.max = maxCoeffs > 0 ? maxCoeffs : 1;
-                    const currentTruncVal = parseInt(numTruncateInput.value, 10);
-                    if (isNaN(currentTruncVal) || currentTruncVal > maxCoeffs || currentTruncVal < 0) {
-                        const defaultTruncVal = Math.min(10000, maxCoeffs > 0 ? maxCoeffs : 0);
-                        numTruncateInput.value = defaultTruncVal;
-                        logProgress(`Ajustado truncamiento por defecto a ${defaultTruncVal}.`);
-                    }
-                }
-                logProgress("Audio listo para análisis DFT.");
-                hideProgressOverlay();
-
-            }).catch(err => {
-                logProgress("Error decodificando audio: " + err.message);
-                console.error("DFT Demo: decodeAudioData error:", err);
-                alert("Error al decodificar archivo. ¿Formato compatible (WAV)?\n" + err.message);
-                if (trimmingNotification) trimmingNotification.style.display = 'none';
-                hideProgressOverlay();
-                resetAppState();
-            });
-        }
-
-        // Draw Waveform
-         function drawWaveform(samples) {
-            const canvas = document.getElementById("audioCanvas");
-            if (!canvas || !canvas.getContext) return;
-            const ctx = canvas.getContext("2d");
-            const canvasHeight = 150; // Keep consistent height
-             // Check dimensions before drawing
-            if (canvas.offsetWidth <= 0 || canvas.offsetHeight <= 0) {
-                console.warn("DFT Demo: Canvas has zero dimensions, skipping drawWaveform.");
-                return;
-             }
-            canvas.width = canvas.offsetWidth; // Responsive width
-            canvas.height = canvasHeight; // Set height
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.strokeStyle = "#3498db"; // Blue
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            const middleY = canvas.height / 2;
-            const scale = middleY * 0.95;
-
-            if (!samples || samples.length === 0) {
-                ctx.fillStyle = "#6c757d";
-                ctx.textAlign = "center";
-                ctx.font = "14px Arial";
-                ctx.fillText("[No hay datos de audio procesado]", canvas.width / 2, middleY);
-                return;
-            }
-
-            const step = Math.max(1, Math.floor(samples.length / canvas.width));
-            for (let i = 0; i < canvas.width; i++) {
-                const sampleIndex = Math.min(i * step, samples.length - 1);
-                const value = samples[sampleIndex] || 0;
-                const y = middleY - (value * scale);
-                if (i === 0) ctx.moveTo(i, y); else ctx.lineTo(i, y);
-            }
-            ctx.stroke();
-        }
-
-        // Draw Reconstructed Waveform (Superimposed)
-        function drawReconstructedWaveform(samples) {
-            const canvas = document.getElementById("audioCanvas");
-             if (!canvas || !canvas.getContext) return;
-             const ctx = canvas.getContext("2d");
-             const canvasHeight = 150;
-
-            // Check dimensions before drawing
-             if (canvas.offsetWidth <= 0 || canvas.offsetHeight <= 0) {
-                console.warn("DFT Demo: Canvas has zero dimensions, skipping drawReconstructedWaveform.");
-                return;
-             }
-
-            // Redraw original first (drawWaveform clears canvas)
-            if (currentAudioData && currentAudioData.length > 0) {
-                drawWaveform(currentAudioData);
-            } else {
-                 canvas.width = canvas.offsetWidth;
-                 canvas.height = canvasHeight;
-                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                 console.warn("DFT Demo: drawReconstructedWaveform: Original data missing.");
-            }
-
-            // Draw reconstructed
-            ctx.strokeStyle = "#e67e22"; // Orange
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            const middleY = canvas.height / 2;
-            const scale = middleY * 0.95;
-
-            if (!samples || samples.length === 0) {
-                 ctx.fillStyle = "#e67e22";
-                 ctx.textAlign = "center";
-                 ctx.font = "12px Arial";
-                 ctx.fillText("[No hay datos reconstruidos]", canvas.width / 2, middleY + (currentAudioData ? 15 : 0));
-                return;
-            }
-
-            const step = Math.max(1, Math.floor(samples.length / canvas.width));
-            for (let i = 0; i < canvas.width; i++) {
-                const sampleIndex = Math.min(i * step, samples.length - 1);
-                const value = samples[sampleIndex] || 0;
-                const y = middleY - (value * scale);
-                 if (i === 0) ctx.moveTo(i, y); else ctx.lineTo(i, y);
-            }
-            ctx.stroke();
-            ctx.lineWidth = 1; // Reset line width
-        }
-
-        // Update Displayed Values (Lists)
-        function updateSingleValueList(elementId, data, label) {
-            const listElement = document.getElementById(elementId);
-            const numValuesInput = document.getElementById("numValuesInput");
-            let numToShow = 10;
-            if (numValuesInput) {
-                numToShow = parseInt(numValuesInput.value, 10);
-                if (isNaN(numToShow) || numToShow < 1) numToShow = 10;
-            }
-
-            if (!listElement) return;
-            if (!data || data.length === 0) {
-                listElement.innerText = `[${label} no disponible]`;
-                return;
-            }
-            numToShow = Math.min(numToShow, data.length);
-            const firstValues = data.slice(0, numToShow);
-            listElement.textContent = `Primeros ${numToShow} de ${data.length} valores (${label}): \n` +
-                firstValues.map(v => v.toFixed(6)).join(", ");
-        }
-
-        function updateDisplayedValues() {
-            updateSingleValueList("audioValuesList", fullAudioValuesList, "Original Procesado");
-        }
-        function updateReconstructedDisplayedValues() {
-            updateSingleValueList("reconstructedAudioValuesList", fullReconstructedAudioValuesList, "Reconstruido");
-        }
-
-
-        // Display DFT Coefficients
-        function displayDFTCoefficients() {
-            const listElement = document.getElementById("dftCoefficientsList");
-            const numCoeffsInput = document.getElementById("numCoefficientsInput");
-            let numToShow = 10;
-             if (numCoeffsInput) {
-                 numToShow = parseInt(numCoeffsInput.value, 10);
-                 if (isNaN(numToShow) || numToShow < 1) numToShow = 10;
-            }
-
-            if (!listElement) return;
-            const data = fullDFTCoefficientsList;
-            if (!data || data.length === 0) {
-                listElement.innerText = "[No se han calculado coeficientes DFT]"; return;
-            }
-            numToShow = Math.min(numToShow, data.length);
-             if (numToShow <= 0) { listElement.innerText = `[Mostrando 0 coeficientes DFT]`; return; }
-
-            const firstCoefficients = data.slice(0, numToShow);
-            const indexPadding = Math.max(5, numToShow.toString().length);
-            const formatted = firstCoefficients.map((c, i) => {
-                const real = c?.real?.toFixed(4).padStart(10, ' ') ?? 'N/A'.padStart(10, ' ');
-                const imag = c?.imaginary?.toFixed(4).padStart(10, ' ') ?? 'N/A'.padStart(10, ' ');
-                const mag = c?.magnitude()?.toFixed(4).padStart(10, ' ') ?? 'N/A'.padStart(10, ' ');
-                return `[${i.toString().padStart(indexPadding, ' ')}]: R=${real}, I=${imag}, M=${mag}`;
-            });
-            listElement.textContent = `Primeros ${numToShow} de ${data.length} coeficientes DFT (Complejos):\n` + formatted.join("\n");
-        }
-
-        // Truncate DFT Coefficients
-        function truncateDFTCoefficients(spectrum, numToKeep) {
-            const totalCoeffs = spectrum ? spectrum.length : 0;
-            console.log(`DFT Demo: Truncando ${totalCoeffs} coeficientes a ${numToKeep}.`);
-            if (!spectrum) return [];
-            if (numToKeep < 0) numToKeep = 0;
-            numToKeep = Math.min(numToKeep, totalCoeffs);
-
-            const truncated = new Array(totalCoeffs).fill(null).map(() => new Complex(0, 0));
-            for (let i = 0; i < numToKeep; i++) {
-                if (spectrum[i]) truncated[i] = spectrum[i];
-            }
-            return truncated;
-        }
-
-        // Inverse DFT
-        function calculateIDFT(spectrum) {
-            const K = spectrum ? spectrum.length : 0;
-            if (K === 0 || !spectrum) {
-                console.log(`DFT Demo: IDFT: Espectro vacío/inválido (K=${K}).`);
-                return new Float32Array(0);
-            }
-            const N = K * 2;
-            console.log(`DFT Demo: IDFT: K=${K}, N=${N}.`);
-            const reconstructed = new Float32Array(N);
-            const dcReal = spectrum[0]?.real ?? 0;
-
-            for (let n = 0; n < N; n++) {
-                let sum = dcReal;
-                for (let k = 1; k < K; k++) {
-                    const coeff = spectrum[k];
-                    if (coeff) {
-                        const angle = (2 * Math.PI * k * n) / N;
-                        sum += 2 * (coeff.real * Math.cos(angle) - coeff.imaginary * Math.sin(angle));
-                    }
-                }
-                reconstructed[n] = (N > 0) ? sum / N : 0;
-            }
-            console.log(`DFT Demo: IDFT completado. ${reconstructed.length} muestras.`);
-            return reconstructed;
-        }
-
-        // Reconstruct Audio (main function)
-        function reconstructAudio(truncatedSpectrum) {
-            logProgress("Iniciando reconstrucción...");
-             if (!truncatedSpectrum) {
-                 logProgress("Error: Espectro truncado inválido.");
-                 console.error("DFT Demo: reconstructAudio: Truncated spectrum is invalid.");
-                 hideProgressOverlay(); return;
-             }
-
-            const playReconBtn = document.getElementById("playReconstructedBtn");
-            if(playReconBtn) playReconBtn.disabled = true; // Disable playback initially
-
-            console.log("DFT Demo: reconstructAudio: Llamando a IDFT...");
-            const startTime = performance.now();
-            const reconstructedSamples = calculateIDFT(truncatedSpectrum);
-            const endTime = performance.now();
-            console.log(`DFT Demo: IDFT tomó ${(endTime - startTime).toFixed(1)} ms.`);
-
-            fullReconstructedAudioValuesList = Array.from(reconstructedSamples);
-            updateReconstructedDisplayedValues();
-            logProgress("Valores reconstruidos mostrados.");
-
-            drawReconstructedWaveform(reconstructedSamples);
-            logProgress("Forma de onda reconstruida mostrada.");
-
-            reconstructedAudioBuffer = null; // Reset buffer
-            try {
-                const localAudioContext = getAudioContext();
-                if (!originalAudioBuffer || !localAudioContext) throw new Error("Contexto/Buffer original no disponible.");
-                if (reconstructedSamples.length === 0) {
-                    logProgress("Audio reconstruido vacío (0 muestras). No se puede reproducir.");
-                    return; // Nothing to buffer/play
-                }
-
-                const buffer = localAudioContext.createBuffer(1, reconstructedSamples.length, originalAudioBuffer.sampleRate);
-                buffer.getChannelData(0).set(reconstructedSamples);
-                reconstructedAudioBuffer = buffer;
-
-                logProgress("Audio reconstruido listo para reproducir.");
-                if(playReconBtn) playReconBtn.disabled = false; // Enable playback
-
-            } catch (err) {
-                logProgress("Error creando AudioBuffer reconstruido: " + err.message);
-                console.error("DFT Demo: Error creating reconstructed AudioBuffer:", err);
-                if(playReconBtn) playReconBtn.disabled = true;
-            }
-        }
-
-        // Play Audio Buffer
-        function playAudioBuffer(bufferToPlay, typeLabel) {
-            const localAudioContext = getAudioContext();
-             if (!localAudioContext) { logProgress("Error: AudioContext no disponible."); return; }
-             if (!bufferToPlay) { alert(`Audio ${typeLabel} no disponible.`); logProgress(`Error: Audio ${typeLabel} no disponible.`); return; }
-             if (bufferToPlay.length === 0) { alert(`Audio ${typeLabel} vacío.`); logProgress(`Advertencia: Audio ${typeLabel} vacío.`); return; }
-
-            // Resume context if needed (important before playing)
-            if (localAudioContext.state === 'suspended') {
-                 logProgress("Intentando reanudar AudioContext para reproducción...");
-                localAudioContext.resume().then(() => {
-                    console.log("DFT Demo: Context resumed for playback.");
-                    proceedWithPlayback(bufferToPlay, typeLabel, localAudioContext);
-                }).catch(err => {
-                    logProgress("Error al reanudar AudioContext: " + err.message);
-                    alert("No se pudo iniciar el audio. Intenta interactuar con la página (click) y reintentar.");
-                });
-            } else {
-                proceedWithPlayback(bufferToPlay, typeLabel, localAudioContext);
-            }
-        }
-
-        function proceedWithPlayback(bufferToPlay, typeLabel, ctx) {
-             // Stop previous playback
-             if (currentAudioSource) {
-                 try { currentAudioSource.stop(); currentAudioSource.onended = null; } catch(e){}
-             }
-
-            console.log(`DFT Demo: Reproduciendo audio ${typeLabel}.`);
-            try {
-                const source = ctx.createBufferSource();
-                source.buffer = bufferToPlay;
-                source.connect(ctx.destination);
-                source.onended = () => {
-                    logProgress(`Reproducción ${typeLabel} finalizada.`);
-                    if (currentAudioSource === source) currentAudioSource = null;
-                };
-                source.start();
-                currentAudioSource = source;
-                logProgress(`Reproduciendo ${typeLabel}...`);
-            } catch (err) {
-                logProgress(`Error reproduciendo ${typeLabel}: ${err.message}`);
-                console.error(`DFT Demo: Error playing ${typeLabel}:`, err);
-                currentAudioSource = null;
-                 if (err.name === 'InvalidStateError') alert(`Error de estado inválido. Intenta recargar audio.`);
-            }
-        }
-
-        // --- Event Listener Setup ---
-        function setupEventListeners() {
-            console.log("DFT Demo: Setting up event listeners.");
-
-            // Assign clear button reference
-            clearAudioBtn = document.getElementById('clearAudioBtn');
-
-            // File Input
-            const audioFileInput = document.getElementById("audioFile");
-            if (audioFileInput) audioFileInput.addEventListener("change", handleAudioFileChange);
-            else console.error("DFT Demo: #audioFile not found!");
-
-            // Clear Button
-            if (clearAudioBtn) clearAudioBtn.addEventListener('click', resetAppState);
-            else console.error("DFT Demo: #clearAudioBtn not found!");
-
-            // Input Method Radios
-            document.querySelectorAll('.dft-app-container input[name="inputMethod"]').forEach(radio => {
-                 radio.addEventListener("change", function () {
-                    const fileSection = document.getElementById("fileSection");
-                    const liveSection = document.getElementById("liveSection");
-                    if(fileSection && liveSection) {
-                         fileSection.style.display = (this.value === "file") ? "block" : "none";
-                         liveSection.style.display = (this.value === "live") ? "block" : "none";
-                    }
-                    resetAppState(); // Reset when changing method
-                });
-            });
-
-            // Calculate DFT Button
-            const compressBtn = document.getElementById("compressBtn");
-            if (compressBtn) {
-                compressBtn.addEventListener("click", () => {
-                    if (!currentAudioData || currentAudioData.length === 0) {
-                        alert("Carga/Graba audio primero."); logProgress("Error: DFT sin datos."); return;
-                    }
-                    logProgress("Calculando DFT..."); showProgressOverlay("Calculando DFT...");
-                    setTimeout(() => { // Allow UI update
-                        try {
-                            const startTime = performance.now();
-                            const spectrum = calculateDFT(currentAudioData);
-                             const endTime = performance.now();
-                            if (!spectrum || !Array.isArray(spectrum)) throw new Error("calculateDFT no retornó un array válido.");
-
-                            logProgress(`DFT calculada (${spectrum.length} coeffs) en ${(endTime - startTime).toFixed(1)} ms.`);
-                            fullDFTCoefficientsList = [...spectrum];
-                            displayDFTCoefficients();
-                            logProgress("Coeficientes DFT mostrados.");
-
-                            const reconstructBtn = document.getElementById("reconstructBtn");
-                            const playReconBtn = document.getElementById("playReconstructedBtn");
-                            if(reconstructBtn) reconstructBtn.disabled = false;
-                            if(playReconBtn) playReconBtn.disabled = true; // Disable reconstructed playback
-
-                            // Adjust truncation input max and value
-                            const maxDFTCoeffs = fullDFTCoefficientsList.length;
-                            const truncInput = document.getElementById("numTruncateCoefficientsInput");
-                            if (truncInput) {
-                                truncInput.max = maxDFTCoeffs > 0 ? maxDFTCoeffs : 0;
-                                let currentTruncVal = parseInt(truncInput.value, 10);
-                                if (isNaN(currentTruncVal) || currentTruncVal < 0 || currentTruncVal > maxDFTCoeffs) {
-                                    currentTruncVal = maxDFTCoeffs; // Default to max if invalid
-                                     logProgress(`Ajustado número de coeficientes a ${maxDFTCoeffs}.`);
-                                }
-                                truncInput.value = currentTruncVal;
-                             }
-
-                        } catch (err) {
-                            logProgress("Error cálculo DFT: " + err.message);
-                            console.error("DFT Demo: Error in DFT calculation:", err);
-                            const reconstructBtn = document.getElementById("reconstructBtn");
-                            if(reconstructBtn) reconstructBtn.disabled = true;
-                        } finally {
-                            hideProgressOverlay();
-                        }
-                    }, 10);
-                });
-            } else console.error("DFT Demo: #compressBtn not found!");
-
-            // Reconstruct Button
-            const reconstructBtn = document.getElementById("reconstructBtn");
-            if (reconstructBtn) {
-                reconstructBtn.addEventListener("click", () => {
-                     if (fullDFTCoefficientsList === null) {
-                         alert("Calcula la DFT primero."); logProgress("Error: Reconstrucción sin DFT."); return;
-                    }
-                    const numTruncInput = document.getElementById("numTruncateCoefficientsInput");
-                    let numToKeep = 0;
-                    const maxCoeffs = fullDFTCoefficientsList.length;
-
-                    if (numTruncInput) {
-                         numToKeep = parseInt(numTruncInput.value, 10);
-                         if (isNaN(numToKeep) || numToKeep < 0) {
-                             alert("Número de coeficientes inválido (>= 0). Usando 0.");
-                             numToKeep = 0; numTruncInput.value = 0;
-                         }
-                         if (numToKeep > maxCoeffs) {
-                             logProgress(`Advertencia: ${numToKeep} > ${maxCoeffs} coeficientes. Usando ${maxCoeffs}.`);
-                             numToKeep = maxCoeffs; numTruncInput.value = numToKeep;
-                         }
-                    } else {
-                         logProgress("Advertencia: Input de truncamiento no encontrado. Usando 0.");
-                         numToKeep = 0;
-                    }
-
-                    showProgressOverlay(`Reconstruyendo (${numToKeep} coeficientes)...`);
-                    logProgress(`Reconstruyendo con ${numToKeep} coeficientes...`);
-                    setTimeout(() => { // Allow UI update
-                        try {
-                            const truncated = truncateDFTCoefficients(fullDFTCoefficientsList, numToKeep);
-                            reconstructAudio(truncated);
-                        } catch (err) {
-                            logProgress("Error reconstrucción: " + err.message);
-                            console.error("DFT Demo: Error during reconstruction:", err);
-                             const playReconBtn = document.getElementById("playReconstructedBtn");
-                             if(playReconBtn) playReconBtn.disabled = true;
-                        } finally {
-                            hideProgressOverlay();
-                        }
-                    }, 10);
-                });
-            } else console.error("DFT Demo: #reconstructBtn not found!");
-
-            // Playback Buttons
-            const playOrigBtn = document.getElementById("playOriginalBtn");
-            const playReconBtn = document.getElementById("playReconstructedBtn");
-            if(playOrigBtn) playOrigBtn.addEventListener("click", () => playAudioBuffer(originalAudioBuffer, "Original (Completo)"));
-            else console.error("DFT Demo: #playOriginalBtn not found!");
-            if(playReconBtn) playReconBtn.addEventListener("click", () => playAudioBuffer(reconstructedAudioBuffer, "Reconstruido"));
-             else console.error("DFT Demo: #playReconstructedBtn not found!");
-
-            // Number Input Listeners
-            const numValuesInput = document.getElementById("numValuesInput");
-            const numCoeffsInput = document.getElementById("numCoefficientsInput");
-            const numTruncInput = document.getElementById("numTruncateCoefficientsInput");
-
-            if(numValuesInput) numValuesInput.addEventListener("input", () => { updateDisplayedValues(); updateReconstructedDisplayedValues(); });
-            else console.error("DFT Demo: #numValuesInput not found!");
-
-            if(numCoeffsInput) numCoeffsInput.addEventListener("input", displayDFTCoefficients);
-            else console.error("DFT Demo: #numCoefficientsInput not found!");
-
-             if(numTruncInput) {
-                numTruncInput.addEventListener("input", function() { // Basic validation feedback
-                     const val = parseInt(this.value, 10);
-                     const maxVal = this.max ? parseInt(this.max, 10) : null;
-                     if (isNaN(val) || val < 0) this.style.borderColor = 'red';
-                     else if (maxVal !== null && val > maxVal) this.style.borderColor = 'orange';
-                     else this.style.borderColor = '';
-                 });
-             } else console.error("DFT Demo: #numTruncateCoefficientsInput not found!");
-
-
-            // Live Recording Buttons
-            const startRecBtn = document.getElementById("startRec");
-            const stopRecBtn = document.getElementById("stopRec");
-
-            if (startRecBtn) {
-                startRecBtn.addEventListener("click", () => {
-                    resetAppState();
-                    navigator.mediaDevices.getUserMedia({ audio: true })
-                        .then(stream => {
-                            if (typeof MediaRecorder === 'undefined') {
-                                alert("MediaRecorder no soportado."); logProgress("Error: MediaRecorder no soportado."); resetAppState(); return;
-                            }
-                            try {
-                                let options = { mimeType: 'audio/webm' }; // Default
-                                // Check for preferred types
-                                if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported('audio/wav;codecs=pcm')) options = { mimeType: 'audio/wav;codecs=pcm' };
-                                else if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) options = { mimeType: 'audio/ogg;codecs=opus' };
-                                // Add more checks if needed (e.g., 'audio/mp4')
-
-                                mediaRecorder = new MediaRecorder(stream, options);
-                                console.log(`DFT Demo: MediaRecorder iniciado con: ${mediaRecorder.mimeType}`);
-                                logProgress(`Grabando en formato: ${mediaRecorder.mimeType}`);
-                            } catch(e) {
-                                alert("Error iniciando grabadora: " + e.message); logProgress("Error MediaRecorder: " + e.message); resetAppState(); return;
-                            }
-
-                            recordedBuffer = [];
-                            mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedBuffer.push(e.data); };
-                            mediaRecorder.onstop = () => {
-                                logProgress("Grabación finalizada. Procesando...");
-                                stream.getTracks().forEach(track => track.stop()); // Release mic indicator
-                                if (recordedBuffer && recordedBuffer.length > 0) {
-                                    const blob = new Blob(recordedBuffer, { type: mediaRecorder.mimeType });
-                                    console.log(`DFT Demo: Blob created: Type=${blob.type}, Size=${blob.size}`);
-                                    const reader = new FileReader();
-                                    reader.onload = e => processAudioBuffer(e.target.result);
-                                    reader.onerror = err => { logProgress("Error leyendo Blob: " + err); resetAppState(); };
-                                    reader.readAsArrayBuffer(blob);
-                                } else {
-                                     logProgress("Error: No se grabaron datos."); resetAppState();
-                                }
-                                // Ensure buttons are reset correctly after processing attempt
-                                if (startRecBtn) startRecBtn.disabled = false;
-                                if (stopRecBtn) stopRecBtn.disabled = true;
-                            };
-                             mediaRecorder.onerror = (event) => {
-                                logProgress(`Error grabación: ${event.error.name} - ${event.error.message}`);
-                                console.error(`DFT Demo: MediaRecorder error: ${event.error}`);
-                                alert(`Error durante la grabación: ${event.error.message}`);
-                                stream.getTracks().forEach(track => track.stop());
-                                resetAppState(); // Resets button states
-                             };
-
-                            mediaRecorder.start();
-                            if(startRecBtn) startRecBtn.disabled = true;
-                            if(stopRecBtn) stopRecBtn.disabled = false;
-                            logProgress("Grabación iniciada...");
-                        })
-                        .catch(err => {
-                            logProgress("Error acceso micrófono: " + err.name + " - " + err.message);
-                            console.error("DFT Demo: getUserMedia error:", err);
-                             let userMsg = "Error acceso micrófono.";
-                             if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') userMsg += " Permiso denegado.";
-                             else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') userMsg += " No se encontró micrófono.";
-                             else if (err.name === 'NotReadableError') userMsg += " Hardware/OS impidió acceso al micrófono.";
-                             else if (err.name === 'AbortError') userMsg += " Acceso al micrófono abortado.";
-                             else userMsg += ` (${err.message})`;
-                            alert(userMsg);
-                            resetAppState();
-                        });
-                });
-            } else console.error("DFT Demo: #startRec not found!");
-
-            if (stopRecBtn) {
-                stopRecBtn.addEventListener("click", () => {
-                    if (mediaRecorder && mediaRecorder.state === "recording") {
-                        try {
-                            mediaRecorder.stop(); // onstop handler processes audio
-                            logProgress("Deteniendo grabación...");
-                            if(stopRecBtn) stopRecBtn.disabled = true; // Disable immediately
-                             // Start button re-enabled in onstop/onerror/reset
-                        } catch (e) {
-                            logProgress("Error deteniendo grabadora: " + e.message);
-                            console.error("DFT Demo: Error stopping MediaRecorder:", e);
-                            resetAppState();
-                        }
-                    } else {
-                         console.warn("DFT Demo: stopRec clicked when not recording.");
-                         if (stopRecBtn) stopRecBtn.disabled = true;
-                         if (startRecBtn) startRecBtn.disabled = false; // Ensure start is enabled
-                    }
-                });
-            } else console.error("DFT Demo: #stopRec not found!");
-
-             logProgress("DFT Demo: Event listeners configurados.");
-        }
-
-        // --- Initial Setup ---
-        // Use DOMContentLoaded which fires when the initial HTML document has been
-        // completely loaded and parsed, without waiting for stylesheets, images,
-        // and subframes to finish loading. This is usually sufficient for JS setup.
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                 console.log("DFT Demo: DOMContentLoaded fired.");
-                 resetAppState();
-                 setupEventListeners();
-                 getAudioContext(); // Attempt early AudioContext init
-            });
-        } else {
-             // DOM already loaded (e.g., script loaded async/defer or placed at end of body)
-             console.log("DFT Demo: DOM already loaded on script execution.");
-             resetAppState();
-             setupEventListeners();
-             getAudioContext(); // Attempt early AudioContext init
-        }
-
-    })(); // End of IIFE
-    // --- END OF EMBEDDED JAVASCRIPT ---
-</script>
+<!-- External JavaScript -->
+<script src="/assets/js/audio-dft-demo.js"></script>

@@ -1,0 +1,414 @@
+{
+  "maxSize": 250,
+  "cutoffPresets": [
+    10,
+    20,
+    30,
+    40,
+    50,
+    60,
+    70,
+    80,
+    90
+  ],
+  "filterTypes": [
+    "lowpass",
+    "highpass",
+    "bandpass"
+  ],
+  "images": [
+    {
+      "id": "daisy",
+      "label": "Daisy",
+      "sourceUrl": "/assets/image-samples/daisy.jpg",
+      "originalWidth": 640,
+      "originalHeight": 437,
+      "processedWidth": 250,
+      "processedHeight": 171,
+      "wasResized": true,
+      "files": {
+        "grayscalePixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-gray.u8",
+        "originalSpectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-spectrum.png",
+        "dftMagnitude": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-dft-magnitude.f32",
+        "filtered": {
+          "lowpass": {
+            "10": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-10-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-10-spectrum.png"
+            },
+            "20": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-20-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-20-spectrum.png"
+            },
+            "30": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-30-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-30-spectrum.png"
+            },
+            "40": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-40-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-40-spectrum.png"
+            },
+            "50": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-50-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-50-spectrum.png"
+            },
+            "60": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-60-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-60-spectrum.png"
+            },
+            "70": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-70-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-70-spectrum.png"
+            },
+            "80": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-80-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-80-spectrum.png"
+            },
+            "90": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-90-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-lowpass-90-spectrum.png"
+            }
+          },
+          "highpass": {
+            "10": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-10-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-10-spectrum.png"
+            },
+            "20": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-20-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-20-spectrum.png"
+            },
+            "30": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-30-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-30-spectrum.png"
+            },
+            "40": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-40-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-40-spectrum.png"
+            },
+            "50": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-50-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-50-spectrum.png"
+            },
+            "60": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-60-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-60-spectrum.png"
+            },
+            "70": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-70-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-70-spectrum.png"
+            },
+            "80": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-80-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-80-spectrum.png"
+            },
+            "90": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-90-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-highpass-90-spectrum.png"
+            }
+          },
+          "bandpass": {
+            "10": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-10-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-10-spectrum.png"
+            },
+            "20": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-20-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-20-spectrum.png"
+            },
+            "30": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-30-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-30-spectrum.png"
+            },
+            "40": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-40-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-40-spectrum.png"
+            },
+            "50": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-50-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-50-spectrum.png"
+            },
+            "60": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-60-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-60-spectrum.png"
+            },
+            "70": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-70-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-70-spectrum.png"
+            },
+            "80": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-80-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-80-spectrum.png"
+            },
+            "90": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-90-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/daisy-bandpass-90-spectrum.png"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "european-bee-eater",
+      "label": "European Bee Eater",
+      "sourceUrl": "/assets/image-samples/european-bee-eater.jpg",
+      "originalWidth": 640,
+      "originalHeight": 427,
+      "processedWidth": 250,
+      "processedHeight": 167,
+      "wasResized": true,
+      "files": {
+        "grayscalePixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-gray.u8",
+        "originalSpectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-spectrum.png",
+        "dftMagnitude": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-dft-magnitude.f32",
+        "filtered": {
+          "lowpass": {
+            "10": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-10-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-10-spectrum.png"
+            },
+            "20": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-20-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-20-spectrum.png"
+            },
+            "30": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-30-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-30-spectrum.png"
+            },
+            "40": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-40-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-40-spectrum.png"
+            },
+            "50": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-50-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-50-spectrum.png"
+            },
+            "60": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-60-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-60-spectrum.png"
+            },
+            "70": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-70-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-70-spectrum.png"
+            },
+            "80": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-80-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-80-spectrum.png"
+            },
+            "90": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-90-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-lowpass-90-spectrum.png"
+            }
+          },
+          "highpass": {
+            "10": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-10-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-10-spectrum.png"
+            },
+            "20": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-20-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-20-spectrum.png"
+            },
+            "30": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-30-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-30-spectrum.png"
+            },
+            "40": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-40-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-40-spectrum.png"
+            },
+            "50": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-50-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-50-spectrum.png"
+            },
+            "60": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-60-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-60-spectrum.png"
+            },
+            "70": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-70-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-70-spectrum.png"
+            },
+            "80": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-80-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-80-spectrum.png"
+            },
+            "90": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-90-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-highpass-90-spectrum.png"
+            }
+          },
+          "bandpass": {
+            "10": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-10-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-10-spectrum.png"
+            },
+            "20": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-20-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-20-spectrum.png"
+            },
+            "30": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-30-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-30-spectrum.png"
+            },
+            "40": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-40-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-40-spectrum.png"
+            },
+            "50": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-50-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-50-spectrum.png"
+            },
+            "60": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-60-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-60-spectrum.png"
+            },
+            "70": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-70-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-70-spectrum.png"
+            },
+            "80": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-80-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-80-spectrum.png"
+            },
+            "90": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-90-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/european-bee-eater-bandpass-90-spectrum.png"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "stork",
+      "label": "Stork",
+      "sourceUrl": "/assets/image-samples/stork.jpg",
+      "originalWidth": 640,
+      "originalHeight": 427,
+      "processedWidth": 250,
+      "processedHeight": 167,
+      "wasResized": true,
+      "files": {
+        "grayscalePixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-gray.u8",
+        "originalSpectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-spectrum.png",
+        "dftMagnitude": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-dft-magnitude.f32",
+        "filtered": {
+          "lowpass": {
+            "10": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-10-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-10-spectrum.png"
+            },
+            "20": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-20-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-20-spectrum.png"
+            },
+            "30": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-30-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-30-spectrum.png"
+            },
+            "40": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-40-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-40-spectrum.png"
+            },
+            "50": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-50-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-50-spectrum.png"
+            },
+            "60": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-60-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-60-spectrum.png"
+            },
+            "70": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-70-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-70-spectrum.png"
+            },
+            "80": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-80-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-80-spectrum.png"
+            },
+            "90": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-90-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-lowpass-90-spectrum.png"
+            }
+          },
+          "highpass": {
+            "10": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-10-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-10-spectrum.png"
+            },
+            "20": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-20-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-20-spectrum.png"
+            },
+            "30": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-30-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-30-spectrum.png"
+            },
+            "40": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-40-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-40-spectrum.png"
+            },
+            "50": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-50-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-50-spectrum.png"
+            },
+            "60": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-60-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-60-spectrum.png"
+            },
+            "70": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-70-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-70-spectrum.png"
+            },
+            "80": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-80-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-80-spectrum.png"
+            },
+            "90": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-90-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-highpass-90-spectrum.png"
+            }
+          },
+          "bandpass": {
+            "10": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-10-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-10-spectrum.png"
+            },
+            "20": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-20-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-20-spectrum.png"
+            },
+            "30": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-30-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-30-spectrum.png"
+            },
+            "40": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-40-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-40-spectrum.png"
+            },
+            "50": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-50-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-50-spectrum.png"
+            },
+            "60": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-60-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-60-spectrum.png"
+            },
+            "70": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-70-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-70-spectrum.png"
+            },
+            "80": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-80-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-80-spectrum.png"
+            },
+            "90": {
+              "pixels": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-90-pixels.u8",
+              "spectrum": "/assets/MatExp/analisis/hilbert/image-filter/precomputed/stork-bandpass-90-spectrum.png"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
