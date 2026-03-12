@@ -500,6 +500,56 @@ feature: "/assets/MatExp/analisis/hilbert/image-filter/feature.jpg"
               min-width: 90%; /* Adjust min-width for small screens */
           }
     }
+
+    /* Modal styles */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,0.6);
+        z-index: 1200;
+        padding: 20px;
+    }
+    .modal.active { display: flex; }
+    .modal-dialog {
+        background: #fff;
+        max-width: 980px;
+        width: 100%;
+        max-height: 85vh;
+        overflow: auto;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    .modal-header {
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+        margin-bottom:12px;
+    }
+    .modal-close {
+        background:transparent;
+        border:0;
+        font-size:1.1rem;
+        cursor:pointer;
+    }
+    .open-modal {
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        padding:6px 10px;
+        border-radius:6px;
+        border:1px solid #d0d7de;
+        background:#fff;
+        cursor:pointer;
+    }
+    .open-modal:focus { outline:2px solid #2563eb; }
 </style>
 
 <!-- Main container div is needed for overall structure and styling -->
@@ -521,8 +571,141 @@ feature: "/assets/MatExp/analisis/hilbert/image-filter/feature.jpg"
 <!-- HTML H1 -->
 <h1>Filtrado de Imágenes con Transformada Discreta de Fourier (DFT)</h1>
 
-<nav class="quick-nav" aria-label="Navegación de secciones">
-    <ul>
+
+    <!-- Modales con las explicaciones técnicas (ocultas por defecto) -->
+    <div id="modal-filter-explanation" class="modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-header">
+                <h3>¿Cómo funcionan los filtros en el dominio de la frecuencia?</h3>
+                <button class="modal-close" aria-label="Cerrar">✕</button>
+            </div>
+            <div class="modal-body">
+                <p>La Transformada de Fourier descompone una imagen en sus componentes de frecuencia. Cada punto en el espectro de Fourier representa una frecuencia específica (rapidez del cambio de intensidad) en una dirección particular:</p>
+                <ul>
+                    <li><strong>Bajas frecuencias (cerca del centro del espectro):</strong> Representan cambios suaves y graduales en la imagen (áreas uniformes, brillo general).</li>
+                    <li><strong>Altas frecuencias (lejos del centro del espectro):</strong> Representan cambios bruscos y detalles finos (bordes, texturas, ruido).</li>
+                </ul>
+                <p>El filtrado en el dominio de la frecuencia consiste en <strong>modificar (multiplicar) el espectro de Fourier</strong> de la imagen con una <strong>función de transferencia del filtro (máscara de filtro)</strong> y luego aplicar la Transformada Inversa de Fourier (IDFT) para obtener la imagen filtrada.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-filter-types" class="modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-header">
+                <h3>Tipos de filtros y nota sobre coeficientes DFT</h3>
+                <button class="modal-close" aria-label="Cerrar">✕</button>
+            </div>
+            <div class="modal-body">
+                <h4>Filtro Paso Bajo (LPF)</h4>
+                <p>Conserva las frecuencias bajas y elimina (pone a cero) las altas frecuencias por encima de una frecuencia de corte (D₀).</p>
+                <ul>
+                    <li>Suaviza la imagen (efecto de desenfoque).</li>
+                    <li>Reduce el ruido de alta frecuencia.</li>
+                    <li>Elimina detalles finos y texturas.</li>
+                </ul>
+                <div class="fourier-interpretation">
+                    <p><strong>Máscara de Filtro:</strong> Se crea una máscara circular en el espectro centrado. Los coeficientes dentro del círculo (distancia al centro ≤ D₀) se mantienen (multiplican por 1), y los de fuera se anulan (multiplican por 0).</p>
+                </div>
+
+                <h4>Filtro Paso Alto (HPF)</h4>
+                <p>Conserva las frecuencias altas y elimina (pone a cero) las bajas frecuencias por debajo de una frecuencia de corte (D₀).</p>
+                <ul>
+                    <li>Resalta los bordes y detalles finos.</li>
+                    <li>Atenúa las variaciones suaves (componente de baja frecuencia).</li>
+                    <li>Puede amplificar el ruido.</li>
+                </ul>
+                <div class="fourier-interpretation">
+                    <p><strong>Máscara de Filtro:</strong> Se crea una máscara circular en el espectro centrado. Los coeficientes dentro del círculo (distancia al centro &lt; D₀) se anulan (multiplican por 0), y los de fuera se mantienen (multiplican por 1).</p>
+                </div>
+
+                <h4>Filtro Paso Banda (BPF)</h4>
+                <p>Conserva un rango específico de frecuencias entre un límite inferior y superior (o centrado en D₀ con un cierto ancho).</p>
+                <ul>
+                    <li>Permite aislar características o texturas de un tamaño específico.</li>
+                    <li>Elimina tanto las frecuencias muy bajas como las muy altas.</li>
+                </ul>
+                <div class="fourier-interpretation">
+                    <p><strong>Máscara de Filtro:</strong> Se crea una máscara en forma de anillo en el espectro centrado. Los coeficientes dentro del anillo (distancia al centro entre D₁ y D₂) se mantienen (multiplican por 1), y los demás se anulan (multiplican por 0).</p>
+                </div>
+
+                <div class="mathematical-note">
+                    <h4>Nota sobre los Coeficientes DFT</h4>
+                    <p>Cada punto (k, l) en el espectro DFT 2D, F(k, l), es un número complejo:</p>
+                    <ul>
+                        <li><strong>Magnitud |F(k, l)|:</strong> Indica la "cantidad" o importancia de la componente de frecuencia (k, l) en la imagen. El brillo en la visualización del espectro representa la magnitud (generalmente en escala logarítmica).</li>
+                        <li><strong>Fase ∠F(k, l):</strong> Indica el desplazamiento espacial de esa componente de frecuencia. Es crucial para la reconstrucción correcta de la imagen.</li>
+                        <li><strong>Distancia al centro:</strong> En el espectro <em>centrado</em>, la distancia desde el punto (k, l) al centro es proporcional a la frecuencia espacial radial.</li>
+                        <li><strong>F(0, 0):</strong> El coeficiente en el origen (antes de centrar) representa la componente DC (frecuencia cero), relacionada con el brillo promedio de la imagen. Es el punto más brillante en el centro del espectro <em>centrado</em>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-spectrum-explanation" class="modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-header">
+                <h3>Interpretación del Espectro de Frecuencia</h3>
+                <button class="modal-close" aria-label="Cerrar">✕</button>
+            </div>
+            <div class="modal-body">
+                <p>El espectro mostrado es una representación visual de la <strong>magnitud</strong> de los coeficientes de la DFT, con la frecuencia cero (DC) desplazada al centro y usando una escala logarítmica para mejorar la visibilidad:</p>
+                <ul>
+                    <li><strong>Centro del espectro (punto más brillante):</strong>
+                        <ul>
+                            <li>Representa la componente DC (frecuencia cero), relacionada con el brillo promedio de la imagen.</li>
+                            <li>Las frecuencias <strong>más bajas</strong> (cambios lentos) están más cerca del centro.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Bordes del espectro:</strong>
+                        <ul>
+                            <li>Representan las frecuencias <strong>más altas</strong> (cambios rápidos, detalles finos, bordes).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Dirección desde el centro:</strong>
+                        <ul>
+                            <li>Indica la orientación de los patrones en la imagen.</li>
+                            <li>Puntos brillantes a lo largo del eje vertical indican patrones predominantemente horizontales en la imagen.</li>
+                            <li>Puntos brillantes a lo largo del eje horizontal indican patrones predominantemente verticales en la imagen.</li>
+                            <li>Puntos brillantes en diagonal indican patrones diagonales.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Brillo en el espectro:</strong>
+                        <ul>
+                            <li>Mayor brillo = Mayor magnitud = Mayor presencia de esa frecuencia/orientación específica en la imagen.</li>
+                            <li>La <strong>escala logarítmica</strong> (log(1 + magnitud)) comprime los valores altos y realza los bajos, haciendo visibles más detalles del espectro.</li>
+                            <li>El espectro de magnitud es <strong>simétrico</strong> respecto al centro para imágenes reales.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Modal open/close handlers
+    document.querySelectorAll('.open-modal').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+            const id = btn.getAttribute('data-modal');
+            const m = document.getElementById(id);
+            if(m) m.classList.add('active');
+        });
+    });
+    document.addEventListener('click', e=>{
+        if(e.target.classList && e.target.classList.contains('modal')) {
+            e.target.classList.remove('active');
+        }
+    });
+    document.querySelectorAll('.modal-close').forEach(b=>b.addEventListener('click', ()=>{
+        b.closest('.modal').classList.remove('active');
+    }));
+    document.addEventListener('keydown', e=>{
+        if(e.key==='Escape') document.querySelectorAll('.modal.active').forEach(m=>m.classList.remove('active'));
+    });
+    </script>
+
+    <script src="/assets/js/image-dft-demo.js"></script>
         <li><a href="#imageInputSection"><span class="step-num">1</span>Seleccionar Imagen</a></li>
         <li><a href="#imageDisplaySection"><span class="step-num">2</span>Imagen Base</a></li>
         <li><a href="#filterTheorySection"><span class="step-num">3</span>Filtros</a></li>
@@ -581,87 +764,17 @@ feature: "/assets/MatExp/analisis/hilbert/image-filter/feature.jpg"
 
     <!-- Raw HTML for styled explanation block -->
     <div class="filter-explanation">
-        <!-- HTML H3 -->
         <h3>¿Cómo funcionan los filtros en el dominio de la frecuencia?</h3>
-
-        <p>La Transformada de Fourier descompone una imagen en sus componentes de frecuencia. Cada punto en el espectro de Fourier representa una frecuencia específica (rapidez del cambio de intensidad) en una dirección particular:</p>
-        <ul>
-            <li><strong>Bajas frecuencias (cerca del centro del espectro):</strong> Representan cambios suaves y graduales en la imagen (áreas uniformes, brillo general).</li>
-            <li><strong>Altas frecuencias (lejos del centro del espectro):</strong> Representan cambios bruscos y detalles finos (bordes, texturas, ruido).</li>
-        </ul>
-        <p>El filtrado en el dominio de la frecuencia consiste en <strong>modificar (multiplicar) el espectro de Fourier</strong> de la imagen con una <strong>función de transferencia del filtro (máscara de filtro)</strong> y luego aplicar la Transformada Inversa de Fourier (IDFT) para obtener la imagen filtrada.</p>
+        <p>Resumen: La DFT descompone la imagen en sus componentes de frecuencia; use el botón para ver la explicación técnica completa.</p>
+        <button class="open-modal" data-modal="modal-filter-explanation">Ver explicación técnica</button>
     </div>
 
     <!-- Raw HTML for styled explanation block -->
     <div class="filter-types">
-        <!-- HTML H3 -->
         <h3>Tipos de Filtros Ideales:</h3>
-
         <p>(Estos son filtros ideales con cortes abruptos, usados aquí con fines demostrativos)</p>
-
-        <!-- Raw HTML for styled sub-block -->
-        <div class="filter-type-explanation">
-            <!-- HTML H4 -->
-            <h4>Filtro Paso Bajo (LPF)</h4>
-
-            <p>Conserva las frecuencias bajas y elimina (pone a cero) las altas frecuencias por encima de una frecuencia de corte (D₀).</p>
-            <ul>
-                <li>Suaviza la imagen (efecto de desenfoque).</li>
-                <li>Reduce el ruido de alta frecuencia.</li>
-                <li>Elimina detalles finos y texturas.</li>
-            </ul>
-            <!-- Raw HTML for styled interpretation block -->
-            <div class="fourier-interpretation">
-               <p><strong>Máscara de Filtro:</strong> Se crea una máscara circular en el espectro centrado. Los coeficientes dentro del círculo (distancia al centro ≤ D₀) se mantienen (multiplican por 1), y los de fuera se anulan (multiplican por 0).</p>
-            </div>
-        </div>
-
-        <!-- Raw HTML for styled sub-block -->
-        <div class="filter-type-explanation">
-            <!-- HTML H4 -->
-            <h4>Filtro Paso Alto (HPF)</h4>
-
-            <p>Conserva las frecuencias altas y elimina (pone a cero) las bajas frecuencias por debajo de una frecuencia de corte (D₀).</p>
-            <ul>
-                <li>Resalta los bordes y detalles finos.</li>
-                <li>Atenúa las variaciones suaves (componente de baja frecuencia).</li>
-                <li>Puede amplificar el ruido.</li>
-            </ul>
-            <!-- Raw HTML for styled interpretation block -->
-            <div class="fourier-interpretation">
-                <p><strong>Máscara de Filtro:</strong> Se crea una máscara circular en el espectro centrado. Los coeficientes dentro del círculo (distancia al centro < D₀) se anulan (multiplican por 0), y los de fuera se mantienen (multiplican por 1).</p>
-            </div>
-        </div>
-
-        <!-- Raw HTML for styled sub-block -->
-        <div class="filter-type-explanation">
-            <!-- HTML H4 -->
-            <h4>Filtro Paso Banda (BPF)</h4>
-
-            <p>Conserva un rango específico de frecuencias entre un límite inferior y superior (o centrado en D₀ con un cierto ancho).</p>
-            <ul>
-                <li>Permite aislar características o texturas de un tamaño específico.</li>
-                <li>Elimina tanto las frecuencias muy bajas como las muy altas.</li>
-            </ul>
-            <!-- Raw HTML for styled interpretation block -->
-            <div class="fourier-interpretation">
-                <p><strong>Máscara de Filtro:</strong> Se crea una máscara en forma de anillo en el espectro centrado. Los coeficientes dentro del anillo (distancia al centro entre D₁ y D₂) se mantienen (multiplican por 1), y los demás se anulan (multiplican por 0).</p>
-            </div>
-        </div>
-
-        <!-- Raw HTML for styled note block -->
-        <div class="mathematical-note">
-            <!-- HTML H4 -->
-            <h4>Nota sobre los Coeficientes DFT</h4>
-
-            <p>Cada punto (k, l) en el espectro DFT 2D, F(k, l), es un número complejo:</p>
-            <ul>
-                <li><strong>Magnitud |F(k, l)|:</strong> Indica la "cantidad" o importancia de la componente de frecuencia (k, l) en la imagen. El brillo en la visualización del espectro representa la magnitud (generalmente en escala logarítmica).</li>
-                <li><strong>Fase ∠F(k, l):</strong> Indica el desplazamiento espacial de esa componente de frecuencia. Es crucial para la reconstrucción correcta de la imagen.</li>
-                <li><strong>Distancia al centro:</strong> En el espectro <em>centrado</em>, la distancia desde el punto (k, l) al centro es proporcional a la frecuencia espacial radial.</li>
-                <li><strong>F(0, 0):</strong> El coeficiente en el origen (antes de centrar) representa la componente DC (frecuencia cero), relacionada con el brillo promedio de la imagen. Es el punto más brillante en el centro del espectro <em>centrado</em>.</li>
-            </ul>
-        </div>
+        <p>Resumen: Hay filtros Paso Bajo, Paso Alto y Paso Banda; pulse para ver las definiciones y la nota matemática.</p>
+        <button class="open-modal" data-modal="modal-filter-types">Ver tipos y nota matemática</button>
     </div>
 </div>
 
@@ -713,38 +826,9 @@ feature: "/assets/MatExp/analisis/hilbert/image-filter/feature.jpg"
 
     <!-- Raw HTML for styled explanation block -->
     <div class="spectrum-explanation">
-        <!-- HTML H4 -->
         <h4>Interpretación del Espectro de Frecuencia (Visualización Centrada)</h4>
-
-        <p>El espectro mostrado es una representación visual de la <strong>magnitud</strong> de los coeficientes de la DFT, con la frecuencia cero (DC) desplazada al centro y usando una escala logarítmica para mejorar la visibilidad:</p>
-        <ul>
-            <li><strong>Centro del espectro (punto más brillante):</strong>
-                <ul>
-                    <li>Representa la componente DC (frecuencia cero), relacionada con el brillo promedio de la imagen.</li>
-                    <li>Las frecuencias <strong>más bajas</strong> (cambios lentos) están más cerca del centro.</li>
-                </ul>
-            </li>
-            <li><strong>Bordes del espectro:</strong>
-                <ul>
-                    <li>Representan las frecuencias <strong>más altas</strong> (cambios rápidos, detalles finos, bordes).</li>
-                </ul>
-            </li>
-            <li><strong>Dirección desde el centro:</strong>
-                <ul>
-                    <li>Indica la orientación de los patrones en la imagen.</li>
-                    <li>Puntos brillantes a lo largo del eje vertical indican patrones predominantemente horizontales en la imagen.</li>
-                    <li>Puntos brillantes a lo largo del eje horizontal indican patrones predominantemente verticales en la imagen.</li>
-                    <li>Puntos brillantes en diagonal indican patrones diagonales.</li>
-                </ul>
-            </li>
-            <li><strong>Brillo en el espectro:</strong>
-                 <ul>
-                     <li>Mayor brillo = Mayor magnitud = Mayor presencia de esa frecuencia/orientación específica en la imagen.</li>
-                     <li>La <strong>escala logarítmica</strong> (log(1 + magnitud)) comprime los valores altos y realza los bajos, haciendo visibles más detalles del espectro.</li>
-                     <li>El espectro de magnitud es <strong>simétrico</strong> respecto al centro para imágenes reales.</li>
-                 </ul>
-            </li>
-        </ul>
+        <p>Resumen: el espectro muestra la magnitud de los coeficientes con DC céntrico; abra la explicación técnica para más detalles.</p>
+        <button class="open-modal" data-modal="modal-spectrum-explanation">Ver explicación técnica</button>
     </div>
 
     <!-- Raw HTML for matrix display -->
