@@ -706,15 +706,19 @@ feature: "/assets/MatExp/analisis/hilbert/image-filter/feature.jpg"
     </script>
 
     <script src="/assets/js/image-dft-demo.js"></script>
-        <li><a href="#imageInputSection"><span class="step-num">1</span>Seleccionar Imagen</a></li>
-        <li><a href="#imageDisplaySection"><span class="step-num">2</span>Imagen Base</a></li>
-        <li><a href="#filterTheorySection"><span class="step-num">3</span>Filtros</a></li>
-        <li><a href="#filterControlsSection"><span class="step-num">4</span>Controles</a></li>
-        <li><a href="#spectrumSection"><span class="step-num">5</span>Espectro</a></li>
-        <li><a href="#resultsSection"><span class="step-num">6</span>Resultados</a></li>
-        <li><a href="#logSection"><span class="step-num">7</span>Registro</a></li>
-    </ul>
-</nav>
+    <script src="/assets/js/image-dft-demo.js"></script>
+
+    <nav class="quick-nav" aria-label="Navegación rápida">
+        <ul>
+            <li><a href="#imageInputSection"><span class="step-num">1</span> Seleccionar Imagen</a></li>
+            <li><a href="#imageDisplaySection"><span class="step-num">2</span> Imagen Base</a></li>
+            <li><a href="#filterTheorySection"><span class="step-num">3</span> Filtros</a></li>
+            <li><a href="#filterControlsSection"><span class="step-num">4</span> Controles</a></li>
+            <li><a href="#spectrumSection"><span class="step-num">5</span> Espectro</a></li>
+            <li><a href="#resultsSection"><span class="step-num">6</span> Resultados</a></li>
+            <li><a href="#logSection"><span class="step-num">7</span> Registro</a></li>
+        </ul>
+    </nav>
 
 <!-- Section: Input -->
 <div class="content-section input-section" id="imageInputSection">
