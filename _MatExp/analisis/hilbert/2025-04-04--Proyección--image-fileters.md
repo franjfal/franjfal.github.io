@@ -684,24 +684,30 @@ feature: "/assets/MatExp/analisis/hilbert/image-filter/feature.jpg"
     </div>
 
     <script>
-    // Modal open/close handlers
-    document.querySelectorAll('.open-modal').forEach(btn=>{
-        btn.addEventListener('click', ()=>{
-            const id = btn.getAttribute('data-modal');
-            const m = document.getElementById(id);
-            if(m) m.classList.add('active');
+    // Modal open/close handlers (attach after DOM is ready)
+    document.addEventListener('DOMContentLoaded', function(){
+        document.querySelectorAll('.open-modal').forEach(btn=>{
+            btn.addEventListener('click', ()=>{
+                const id = btn.getAttribute('data-modal');
+                const m = document.getElementById(id);
+                if(m) m.classList.add('active');
+            });
         });
-    });
-    document.addEventListener('click', e=>{
-        if(e.target.classList && e.target.classList.contains('modal')) {
-            e.target.classList.remove('active');
-        }
-    });
-    document.querySelectorAll('.modal-close').forEach(b=>b.addEventListener('click', ()=>{
-        b.closest('.modal').classList.remove('active');
-    }));
-    document.addEventListener('keydown', e=>{
-        if(e.key==='Escape') document.querySelectorAll('.modal.active').forEach(m=>m.classList.remove('active'));
+
+        document.addEventListener('click', e=>{
+            if(e.target.classList && e.target.classList.contains('modal')) {
+                e.target.classList.remove('active');
+            }
+        });
+
+        document.querySelectorAll('.modal-close').forEach(b=>b.addEventListener('click', ()=>{
+            const modal = b.closest('.modal');
+            if(modal) modal.classList.remove('active');
+        }));
+
+        document.addEventListener('keydown', e=>{
+            if(e.key==='Escape') document.querySelectorAll('.modal.active').forEach(m=>m.classList.remove('active'));
+        });
     });
     </script>
 
