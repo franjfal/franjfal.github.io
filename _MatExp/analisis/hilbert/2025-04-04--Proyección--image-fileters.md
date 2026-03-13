@@ -518,27 +518,40 @@ feature: "/assets/MatExp/analisis/hilbert/image-filter/feature.jpg"
     .modal.active { display: flex; }
     .modal-dialog {
         background: #fff;
-        max-width: 980px;
-        width: 100%;
+        max-width: 760px; /* narrower for better centering */
+        width: calc(100% - 40px);
         max-height: 85vh;
         overflow: auto;
         border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        padding: 24px 28px; /* slightly larger padding */
+        box-shadow: 0 12px 50px rgba(0,0,0,0.45);
+        margin: 0 auto; /* ensure centered block */
+        position: relative;
+        border: none; /* remove any default border */
     }
     .modal-header {
         display:flex;
         align-items:center;
-        justify-content:space-between;
+        justify-content:center; /* center the title */
         gap:10px;
-        margin-bottom:12px;
+        margin-bottom:14px;
+        padding-right: 36px; /* space for close button */
     }
+    .modal-header h3 { margin: 0; text-align: center; font-size: 1.15rem; }
     .modal-close {
-        background:transparent;
-        border:0;
-        font-size:1.1rem;
-        cursor:pointer;
+        position: absolute; /* float on top-right of dialog */
+        top: 12px;
+        right: 12px;
+        background: transparent;
+        border: 0;
+        font-size: 1.15rem;
+        cursor: pointer;
+        color: #222;
+        padding: 6px;
+        line-height: 1;
     }
+    .modal-close:focus { outline: 2px solid rgba(37,99,235,0.25); border-radius: 4px; }
+    .modal-body { text-align: left; }
     .open-modal {
         display:inline-flex;
         align-items:center;
