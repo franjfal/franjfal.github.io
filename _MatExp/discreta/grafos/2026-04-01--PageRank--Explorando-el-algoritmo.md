@@ -118,6 +118,17 @@ En el interactivo de esta página puedes construir y modificar una web pequeña,
 - **Iterar paso a paso**: usa los botones inferiores para avanzar o retroceder por la tabla de iteraciones.
 - **Ejecutar automáticamente**: el botón **Auto** recorre las iteraciones hasta que se satisface el criterio de parada o se alcanza el máximo fijado.
 
+## Cómo funciona PageRank, en cuatro pasos
+
+Si quieres una visión rápida antes de mirar matrices y fórmulas, el algoritmo puede resumirse así:
+
+1. **La web se modela como un grafo dirigido**: cada página es un nodo y cada enlace es una flecha.
+2. **Ese grafo se transforma en una matriz de transición**: cada página reparte su peso entre sus enlaces salientes.
+3. **Se añade la teletransportación**: así evitamos que el proceso quede atrapado en páginas sin salida o en componentes cerradas.
+4. **Se repite la misma actualización muchas veces**: el vector de probabilidades se va estabilizando hasta producir un ranking final.
+
+En otras palabras, PageRank no "cuenta enlaces" sin más: va redistribuyendo importancia por toda la red hasta que el reparto deja prácticamente de cambiar.
+
 ## Idea probabilística del algoritmo
 
 Una forma muy intuitiva de entender PageRank es imaginar a una persona navegando por la web:

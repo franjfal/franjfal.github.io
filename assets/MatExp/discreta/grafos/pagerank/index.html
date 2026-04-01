@@ -1,1354 +1,1377 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Explorador de PageRank</title>
-  <style>
-    :root {
-      color-scheme: light;
-      --bg: #f5f7fb;
-      --card: #ffffff;
-      --ink: #1f2937;
-      --muted: #64748b;
-      --line: #d8e1ee;
-      --brand: #2459c7;
-      --brand-soft: #eaf1ff;
-      --accent: #f59e0b;
-      --danger: #d14343;
-      --success: #13795b;
-      --shadow: 0 8px 28px rgba(15, 23, 42, 0.08);
-      --radius: 16px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorador de PageRank</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --ink: #1f2937;
+            --muted: #64748b;
+            --line: #d8e1ee;
+            --brand: #2459c7;
+            --brand-soft: #eaf1ff;
+            --accent: #f59e0b;
+            --danger: #d14343;
+            --success: #13795b;
+            --shadow: 0 8px 28px rgba(15, 23, 42, 0.08);
+            --radius: 16px;
+        }
 
-    * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
-    body {
-      margin: 0;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--ink);
-      background: linear-gradient(180deg, #eef3ff 0%, var(--bg) 18%, #f8fafc 100%);
-    }
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--ink);
+            background: linear-gradient(180deg, #eef3ff 0%, var(--bg) 18%, #f8fafc 100%);
+        }
 
-    .app {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+        .app {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-    .hero,
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
+        .hero,
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
 
-    .hero {
-      padding: 22px 24px;
-      margin-bottom: 18px;
-      background: linear-gradient(140deg, #ffffff 0%, #f8fbff 50%, #edf4ff 100%);
-    }
+        .hero {
+            padding: 22px 24px;
+            margin-bottom: 18px;
+            background: linear-gradient(140deg, #ffffff 0%, #f8fbff 50%, #edf4ff 100%);
+        }
 
-    .hero h1 {
-      margin: 0 0 10px;
-      font-size: clamp(1.7rem, 3vw, 2.5rem);
-      line-height: 1.1;
-    }
+        .hero h1 {
+            margin: 0 0 10px;
+            font-size: clamp(1.7rem, 3vw, 2.5rem);
+            line-height: 1.1;
+        }
 
-    .hero p {
-      margin: 8px 0;
-      color: var(--muted);
-      max-width: 1000px;
-    }
+        .hero p {
+            margin: 8px 0;
+            color: var(--muted);
+            max-width: 1000px;
+        }
 
-    .hero ul {
-      margin: 12px 0 0;
-      padding-left: 20px;
-      color: var(--ink);
-    }
+        .hero ul {
+            margin: 12px 0 0;
+            padding-left: 20px;
+            color: var(--ink);
+        }
 
-    .grid {
-      display: grid;
-      gap: 18px;
-    }
+        .grid {
+            display: grid;
+            gap: 18px;
+        }
 
-    .controls-grid {
-      grid-template-columns: 1.3fr 1fr;
-      margin-bottom: 18px;
-    }
+        .controls-grid {
+            grid-template-columns: 1.3fr 1fr;
+            margin-bottom: 18px;
+        }
 
-    .card {
-      padding: 18px;
-    }
+        .card {
+            padding: 18px;
+        }
 
-    .card h2,
-    .card h3 {
-      margin: 0 0 12px;
-      line-height: 1.2;
-    }
+        .card h2,
+        .card h3 {
+            margin: 0 0 12px;
+            line-height: 1.2;
+        }
 
-    .toolbar,
-    .inline-grid,
-    .iteration-controls,
-    .info-strip,
-    .legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
+        .toolbar,
+        .inline-grid,
+        .iteration-controls,
+        .info-strip,
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
 
-    .toolbar {
-      margin-bottom: 14px;
-    }
+        .toolbar {
+            margin-bottom: 14px;
+        }
 
-    .stack {
-      display: grid;
-      gap: 12px;
-    }
+        .stack {
+            display: grid;
+            gap: 12px;
+        }
 
-    .inline-grid {
-      align-items: end;
-    }
+        .inline-grid {
+            align-items: end;
+        }
 
-    .inline-grid > label,
-    .params-grid > label,
-    .toolbar > label {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 0.92rem;
-      color: var(--muted);
-    }
+        .inline-grid>label,
+        .params-grid>label,
+        .toolbar>label {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.92rem;
+            color: var(--muted);
+        }
 
-    input[type="text"],
-    input[type="number"],
-    select,
-    button {
-      font: inherit;
-      border-radius: 10px;
-    }
+        input[type="text"],
+        input[type="number"],
+        select,
+        button {
+            font: inherit;
+            border-radius: 10px;
+        }
 
-    input[type="text"],
-    input[type="number"],
-    select {
-      min-height: 40px;
-      border: 1px solid #cad5e3;
-      background: #fff;
-      color: var(--ink);
-      padding: 8px 10px;
-    }
+        input[type="text"],
+        input[type="number"],
+        select {
+            min-height: 40px;
+            border: 1px solid #cad5e3;
+            background: #fff;
+            color: var(--ink);
+            padding: 8px 10px;
+        }
 
-    input[type="range"] {
-      width: 100%;
-      accent-color: var(--brand);
-    }
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--brand);
+        }
 
-    button {
-      min-height: 40px;
-      border: 1px solid #b7c8ea;
-      background: #fff;
-      color: var(--ink);
-      padding: 8px 14px;
-      cursor: pointer;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-    }
+        button {
+            min-height: 40px;
+            border: 1px solid #b7c8ea;
+            background: #fff;
+            color: var(--ink);
+            padding: 8px 14px;
+            cursor: pointer;
+            transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+        }
 
-    button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 16px rgba(36, 89, 199, 0.12);
-    }
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(36, 89, 199, 0.12);
+        }
 
-    button.primary {
-      background: var(--brand);
-      color: #fff;
-      border-color: var(--brand);
-    }
+        button.primary {
+            background: var(--brand);
+            color: #fff;
+            border-color: var(--brand);
+        }
 
-    button.warn {
-      border-color: #f1c36a;
-      background: #fff8e8;
-    }
+        button.warn {
+            border-color: #f1c36a;
+            background: #fff8e8;
+        }
 
-    button.danger {
-      border-color: #f0c0c0;
-      background: #fff3f3;
-      color: #8d1c1c;
-    }
+        button.danger {
+            border-color: #f0c0c0;
+            background: #fff3f3;
+            color: #8d1c1c;
+        }
 
-    button:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
+        button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
 
-    .params-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(180px, 1fr));
-      gap: 12px;
-    }
+        .params-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(180px, 1fr));
+            gap: 12px;
+        }
 
-    .canvas-wrap {
-      margin-top: 10px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: radial-gradient(circle at top, #ffffff 0%, #f6faff 100%);
-      overflow: hidden;
-    }
+        .canvas-wrap {
+            margin-top: 10px;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: radial-gradient(circle at top, #ffffff 0%, #f6faff 100%);
+            overflow: hidden;
+        }
 
-    #graphCanvas {
-      width: 100%;
-      height: auto;
-      display: block;
-      touch-action: none;
-      cursor: crosshair;
-    }
+        #graphCanvas {
+            width: 100%;
+            height: auto;
+            display: block;
+            touch-action: none;
+            cursor: crosshair;
+        }
 
-    .legend,
-    .info-strip {
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
+        .legend,
+        .info-strip {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
 
-    .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      display: inline-block;
-      margin-right: 4px;
-      border: 1px solid rgba(0,0,0,0.08);
-    }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
 
-    .info-strip strong,
-    .legend strong { color: var(--ink); }
+        .info-strip strong,
+        .legend strong {
+            color: var(--ink);
+        }
 
-    .iteration-controls {
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
+        .iteration-controls {
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
 
-    .iteration-controls .left,
-    .iteration-controls .right {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
+        .iteration-controls .left,
+        .iteration-controls .right {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: var(--brand-soft);
-      border: 1px solid #bfd4ff;
-      font-size: 0.92rem;
-    }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: var(--brand-soft);
+            border: 1px solid #bfd4ff;
+            font-size: 0.92rem;
+        }
 
-    .status {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
+        .status {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
 
-    .matrix-grid,
-    .results-grid {
-      display: grid;
-      gap: 18px;
-      margin-top: 18px;
-    }
+        .matrix-grid,
+        .results-grid {
+            display: grid;
+            gap: 18px;
+            margin-top: 18px;
+        }
 
-    .matrix-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+        .matrix-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
 
-    .results-grid {
-      grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.4fr);
-    }
+        .results-grid {
+            grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.4fr);
+        }
 
-    .table-wrap {
-      overflow: auto;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-    }
+        .table-wrap {
+            overflow: auto;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 420px;
-      background: #fff;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 420px;
+            background: #fff;
+        }
 
-    th,
-    td {
-      border-bottom: 1px solid #ebf0f6;
-      padding: 8px 10px;
-      text-align: center;
-      font-size: 0.92rem;
-      white-space: nowrap;
-    }
+        th,
+        td {
+            border-bottom: 1px solid #ebf0f6;
+            padding: 8px 10px;
+            text-align: center;
+            font-size: 0.92rem;
+            white-space: nowrap;
+        }
 
-    th {
-      position: sticky;
-      top: 0;
-      z-index: 1;
-      background: #f8fbff;
-      color: #32435d;
-    }
+        th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background: #f8fbff;
+            color: #32435d;
+        }
 
-    td:first-child,
-    th:first-child {
-      position: sticky;
-      left: 0;
-      background: inherit;
-      z-index: 1;
-    }
+        td:first-child,
+        th:first-child {
+            position: sticky;
+            left: 0;
+            background: inherit;
+            z-index: 1;
+        }
 
-    th:first-child {
-      background: #f8fbff;
-      z-index: 2;
-    }
+        th:first-child {
+            background: #f8fbff;
+            z-index: 2;
+        }
 
-    tr.current-row td {
-      background: #eef4ff;
-      font-weight: 600;
-    }
+        tr.current-row td {
+            background: #eef4ff;
+            font-weight: 600;
+        }
 
-    .ranking-list {
-      display: grid;
-      gap: 10px;
-    }
+        .ranking-list {
+            display: grid;
+            gap: 10px;
+        }
 
-    .rank-item {
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 10px 12px;
-      background: linear-gradient(180deg, #ffffff 0%, #f9fbfe 100%);
-    }
+        .rank-item {
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 10px 12px;
+            background: linear-gradient(180deg, #ffffff 0%, #f9fbfe 100%);
+        }
 
-    .rank-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+        .rank-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    .rank-position {
-      width: 30px;
-      height: 30px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: #eef4ff;
-      color: var(--brand);
-      font-weight: 700;
-      flex: 0 0 auto;
-    }
+        .rank-position {
+            width: 30px;
+            height: 30px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #eef4ff;
+            color: var(--brand);
+            font-weight: 700;
+            flex: 0 0 auto;
+        }
 
-    .rank-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
-      flex: 1;
-    }
+        .rank-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            flex: 1;
+        }
 
-    .rank-score {
-      font-variant-numeric: tabular-nums;
-      color: var(--ink);
-      font-weight: 700;
-    }
+        .rank-score {
+            font-variant-numeric: tabular-nums;
+            color: var(--ink);
+            font-weight: 700;
+        }
 
-    .bar {
-      width: 100%;
-      height: 10px;
-      border-radius: 999px;
-      background: #edf2f9;
-      overflow: hidden;
-      margin-top: 8px;
-    }
+        .bar {
+            width: 100%;
+            height: 10px;
+            border-radius: 999px;
+            background: #edf2f9;
+            overflow: hidden;
+            margin-top: 8px;
+        }
 
-    .bar > span {
-      display: block;
-      height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #79a8ff 0%, #2459c7 100%);
-    }
+        .bar>span {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #79a8ff 0%, #2459c7 100%);
+        }
 
-    .mini-note {
-      margin-top: 8px;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
+        .mini-note {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
 
-    .formula {
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: #f8fbff;
-      border: 1px solid #dbe6f6;
-      color: #334155;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 0.93rem;
-      overflow-x: auto;
-    }
+        .formula {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: #f8fbff;
+            border: 1px solid #dbe6f6;
+            color: #334155;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 0.93rem;
+            overflow-x: auto;
+        }
 
-    @media (max-width: 980px) {
-      .controls-grid,
-      .matrix-grid,
-      .results-grid {
-        grid-template-columns: 1fr;
-      }
+        @media (max-width: 980px) {
 
-      .params-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+            .controls-grid,
+            .matrix-grid,
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .params-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <div class="app">
-    <section class="hero">
-      <h1>Explorador visual del algoritmo PageRank</h1>
-      <p>
-        Construye una pequeña web dirigida, mueve sus páginas, añade o elimina enlaces y observa cómo el
-        vector de PageRank se estabiliza iteración a iteración.
-      </p>
-      <ul>
-        <li><strong>Añadir página:</strong> haz clic en un área vacía del canvas.</li>
-        <li><strong>Mover:</strong> arrastra cualquier página para reorganizar el grafo.</li>
-        <li><strong>Enlazar:</strong> selecciona una página y luego haz clic en otra para alternar el enlace dirigido.</li>
-        <li><strong>Editar:</strong> con una página seleccionada, cambia su icono y nombre en el panel inferior.</li>
-        <li><strong>Ejecutar:</strong> pulsa <em>Ejecutar PageRank</em> para calcular el ranking e historial de iteraciones.</li>
-      </ul>
-    </section>
+    <div class="app">
+        <section class="hero">
+            <h1>Explorador visual del algoritmo PageRank</h1>
+            <p>
+                Construye una pequeña web dirigida, mueve sus páginas, añade o elimina enlaces y observa cómo el
+                vector de PageRank se estabiliza iteración a iteración.
+            </p>
+            <ul>
+                <li><strong>Añadir página:</strong> haz clic en un área vacía del canvas.</li>
+                <li><strong>Mover:</strong> arrastra cualquier página para reorganizar el grafo.</li>
+                <li><strong>Enlazar:</strong> selecciona una página y luego haz clic en otra para alternar el enlace
+                    dirigido.</li>
+                <li><strong>Editar:</strong> con una página seleccionada, cambia su icono y nombre en el panel inferior.
+                </li>
+                <li><strong>Ejecutar:</strong> pulsa <em>Ejecutar PageRank</em> para calcular el ranking e historial de
+                    iteraciones.</li>
+            </ul>
+        </section>
 
-    <!-- ── GRAPH CARD ── -->
-    <section class="card" style="margin-bottom:18px;">
-      <div class="toolbar">
-        <label>
-          Web prediseñada
-          <select id="presetSelect"></select>
-        </label>
-        <button id="loadPresetBtn" class="primary" type="button">Cargar ejemplo</button>
-        <button id="deleteNodeBtn" class="danger" type="button">Eliminar seleccionada</button>
-        <button id="centerBtn" type="button">Reordenar en círculo</button>
-      </div>
+        <!-- ── GRAPH CARD ── -->
+        <section class="card" style="margin-bottom:18px;">
+            <div class="toolbar">
+                <label>
+                    Web prediseñada
+                    <select id="presetSelect"></select>
+                </label>
+                <button id="loadPresetBtn" class="primary" type="button">Cargar ejemplo</button>
+                <button id="deleteNodeBtn" class="danger" type="button">Eliminar seleccionada</button>
+                <button id="centerBtn" type="button">Reordenar en círculo</button>
+            </div>
 
-      <div class="canvas-wrap" style="position:relative;margin-top:10px;">
-        <canvas id="graphCanvas" width="980" height="560"></canvas>
-        <span style="position:absolute;bottom:10px;right:14px;font-size:.82rem;color:#90a3bc;
+            <div class="canvas-wrap" style="position:relative;margin-top:10px;">
+                <canvas id="graphCanvas" width="980" height="560"></canvas>
+                <span style="position:absolute;bottom:10px;right:14px;font-size:.82rem;color:#90a3bc;
           pointer-events:none;background:rgba(255,255,255,.72);border-radius:8px;padding:3px 8px;">
-          Clic en vacío → nueva página &nbsp;|&nbsp; Clic en página → seleccionar / enlazar
-        </span>
-      </div>
+                    Clic en vacío → nueva página &nbsp;|&nbsp; Clic en página → seleccionar / enlazar
+                </span>
+            </div>
 
-      <div class="legend">
-        <span><span class="dot" style="background:#2459c7"></span><strong>Borde azul:</strong> página seleccionada</span>
-        <span><span class="dot" style="background:#79a8ff"></span><strong>Color más intenso:</strong> mayor PageRank</span>
-        <span><strong>Flechas:</strong> enlaces dirigidos entre páginas</span>
-      </div>
-      <div class="info-strip" id="graphMessage"></div>
+            <div class="legend">
+                <span><span class="dot" style="background:#2459c7"></span><strong>Borde azul:</strong> página
+                    seleccionada</span>
+                <span><span class="dot" style="background:#79a8ff"></span><strong>Color más intenso:</strong> mayor
+                    PageRank</span>
+                <span><strong>Flechas:</strong> enlaces dirigidos entre páginas</span>
+            </div>
+            <div class="info-strip" id="graphMessage"></div>
 
-      <!-- node editing strip -->
-      <div class="inline-grid" style="padding-top:14px;border-top:1px solid var(--line);margin-top:14px;">
-        <label>
-          Icono
-          <input id="nodeIconInput" type="text" maxlength="4" placeholder="🌐" style="width:72px;">
-        </label>
-        <label style="flex:1 1 260px;">
-          Nombre de la página
-          <input id="nodeLabelInput" type="text" maxlength="24" placeholder="Nombre de la página">
-        </label>
-        <button id="applyNodeBtn" type="button">Actualizar</button>
-        <p class="mini-note" id="selectionHint" style="align-self:center;margin:0;">Sin selección.</p>
-      </div>
-    </section>
+            <!-- node editing strip -->
+            <div class="inline-grid" style="padding-top:14px;border-top:1px solid var(--line);margin-top:14px;">
+                <label>
+                    Icono
+                    <input id="nodeIconInput" type="text" maxlength="4" placeholder="🌐" style="width:72px;">
+                </label>
+                <label style="flex:1 1 260px;">
+                    Nombre de la página
+                    <input id="nodeLabelInput" type="text" maxlength="24" placeholder="Nombre de la página">
+                </label>
+                <button id="applyNodeBtn" type="button">Actualizar</button>
+                <p class="mini-note" id="selectionHint" style="align-self:center;margin:0;">Sin selección.</p>
+            </div>
+        </section>
 
-    <!-- ── PARAMS + RUN (2 cols) ── -->
-    <div class="grid" style="grid-template-columns:1.4fr 1fr;margin-bottom:18px;">
-      <article class="card stack">
-        <h3>Parámetros del modelo</h3>
-        <div class="params-grid">
-          <label>
-            Factor de amortiguación α: <span id="dampingValue">0.85</span>
-            <input id="dampingRange" type="range" min="0.5" max="0.99" step="0.01" value="0.85">
-          </label>
-          <label>
-            Tolerancia
-            <input id="toleranceInput" type="number" min="0.000001" max="0.1" step="0.000001" value="0.0001">
-          </label>
-          <label>
-            Máximo de iteraciones
-            <input id="maxIterationsInput" type="number" min="1" max="100" step="1" value="30">
-          </label>
+        <!-- ── PARAMS + RUN (2 cols) ── -->
+        <div class="grid" style="grid-template-columns:1.4fr 1fr;margin-bottom:18px;">
+            <article class="card stack">
+                <h3>Parámetros del modelo</h3>
+                <div class="params-grid">
+                    <label>
+                        Factor de amortiguación α: <span id="dampingValue">0.85</span>
+                        <input id="dampingRange" type="range" min="0.5" max="0.99" step="0.01" value="0.85">
+                    </label>
+                    <label>
+                        Tolerancia
+                        <input id="toleranceInput" type="number" min="0.000001" max="0.1" step="0.000001"
+                            value="0.0001">
+                    </label>
+                    <label>
+                        Máximo de iteraciones
+                        <input id="maxIterationsInput" type="number" min="1" max="100" step="1" value="30">
+                    </label>
+                </div>
+                <div class="formula">p<sup>(k+1)</sup> = G p<sup>(k)</sup>, &nbsp; G = αS +
+                    (1−α)·(1/n)·<b>11</b><sup>T</sup></div>
+                <p class="mini-note">
+                    <strong>S</strong>: matriz de transición corregida (nodos sin salida reparten uniformemente).
+                    <strong>α</strong>: prob. de seguir enlace; <strong>1−α</strong>: teletransportación.
+                </p>
+            </article>
+
+            <article class="card" style="display:flex;flex-direction:column;gap:12px;">
+                <h3>Cómo funciona PageRank</h3>
+                <div class="mini-note" style="flex:1;display:grid;gap:8px;">
+                    <p style="margin:0;">El cálculo se entiende mejor si lo divides en cuatro ideas:</p>
+                    <ol style="margin:0 0 0 18px;padding:0;display:grid;gap:6px;">
+                        <li>El grafo se convierte en una matriz de transición <strong>S</strong>.</li>
+                        <li>Los nodos sin salida se corrigen para que siempre repartan su peso.</li>
+                        <li>Se añade teletransportación y se obtiene la matriz de Google <strong>G</strong>.</li>
+                        <li>Se itera <strong>p<sup>(k+1)</sup> = Gp<sup>(k)</sup></strong> hasta estabilizar el ranking.
+                        </li>
+                    </ol>
+                    <p class="mini-note" style="margin:0;" id="runStatusText">
+                        Carga un ejemplo o construye tu red y pulsa el botón para empezar a recorrer las iteraciones.
+                    </p>
+                </div>
+                <button id="runBtn" class="primary" type="button"
+                    style="width:100%;min-height:44px;font-size:1rem;font-weight:700;">
+                    ▶ Ejecutar PageRank
+                </button>
+            </article>
         </div>
-        <div class="formula">p<sup>(k+1)</sup> = G p<sup>(k)</sup>, &nbsp; G = αS + (1−α)·(1/n)·<b>11</b><sup>T</sup></div>
-        <p class="mini-note">
-          <strong>S</strong>: matriz de transición corregida (nodos sin salida reparten uniformemente).
-          <strong>α</strong>: prob. de seguir enlace; <strong>1−α</strong>: teletransportación.
-        </p>
-      </article>
-
-      <article class="card" style="display:flex;flex-direction:column;gap:12px;">
-        <h3>Ejecutar algoritmo</h3>
-        <p class="mini-note" style="flex:1;" id="runStatusText">
-          Carga un ejemplo o construye tu red y pulsa el botón para calcular el ranking.
-        </p>
-        <button id="runBtn" class="primary" type="button"
-          style="width:100%;min-height:44px;font-size:1rem;font-weight:700;">
-          ▶ Ejecutar PageRank
-        </button>
-      </article>
-    </div>
-
-    <!-- ── MATRICES (always visible) ── -->
-    <section class="matrix-grid">
-      <article class="card">
-        <h3>Matriz de transición corregida S</h3>
-        <div class="table-wrap" id="linkMatrixWrap"></div>
-        <p class="mini-note">Columna j → página origen; fila i → página destino. Cada columna suma&nbsp;1.</p>
-      </article>
-      <article class="card">
-        <h3>Matriz de Google G</h3>
-        <div class="table-wrap" id="googleMatrixWrap"></div>
-        <p class="mini-note">G = αS + (1−α)·(1/n)·<b>11</b><sup>T</sup>. La teletransportación garantiza convergencia.</p>
-      </article>
-    </section>
-
-    <!-- ── ITERATION PANEL (hidden until algorithm is run) ── -->
-    <div id="iterationPanel" style="display:none;">
-
-      <section class="card" style="margin-top:18px;">
-        <div class="iteration-controls">
-          <div class="left">
-            <button id="resetBtn" type="button">⏮ Inicio</button>
-            <button id="prevStepBtn" type="button">← Paso anterior</button>
-            <button id="nextStepBtn" type="button" class="primary">Paso siguiente →</button>
-            <button id="playBtn" type="button" class="warn">▶ Auto</button>
-            <button id="stopBtn" type="button">⏹ Detener</button>
-          </div>
-          <div class="right">
-            <span class="badge" id="iterationBadge">Iteración 0</span>
-            <span class="badge" id="diffBadge">‖Δ‖₁ = 0.000000</span>
-          </div>
-        </div>
-        <div class="status" id="statusText"></div>
-      </section>
-
-      <section class="results-grid">
-        <article class="card">
-          <h3>Ranking actual</h3>
-          <div id="rankingWrap" class="ranking-list"></div>
-        </article>
-        <article class="card">
-          <h3>Historial de iteraciones</h3>
-          <div class="table-wrap" id="historyWrap"></div>
-        </article>
-      </section>
-
-    </div><!-- /iterationPanel -->
-  </div><!-- /app -->
-
-  <script>
-    (function () {
-      var canvas = document.getElementById('graphCanvas');
-      var ctx = canvas.getContext('2d');
-      var presetSelect = document.getElementById('presetSelect');
-      var loadPresetBtn = document.getElementById('loadPresetBtn');
-      var deleteNodeBtn = document.getElementById('deleteNodeBtn');
-      var centerBtn = document.getElementById('centerBtn');
-      var runBtn = document.getElementById('runBtn');
-      var applyNodeBtn = document.getElementById('applyNodeBtn');
-      var nodeIconInput = document.getElementById('nodeIconInput');
-      var nodeLabelInput = document.getElementById('nodeLabelInput');
-      var selectionHint = document.getElementById('selectionHint');
-      var graphMessage = document.getElementById('graphMessage');
-      var dampingRange = document.getElementById('dampingRange');
-      var dampingValue = document.getElementById('dampingValue');
-      var toleranceInput = document.getElementById('toleranceInput');
-      var maxIterationsInput = document.getElementById('maxIterationsInput');
-      var prevStepBtn = document.getElementById('prevStepBtn');
-      var nextStepBtn = document.getElementById('nextStepBtn');
-      var playBtn = document.getElementById('playBtn');
-      var stopBtn = document.getElementById('stopBtn');
-      var resetBtn = document.getElementById('resetBtn');
-      var iterationBadge = document.getElementById('iterationBadge');
-      var diffBadge = document.getElementById('diffBadge');
-      var statusText = document.getElementById('statusText');
-      var linkMatrixWrap = document.getElementById('linkMatrixWrap');
-      var googleMatrixWrap = document.getElementById('googleMatrixWrap');
-      var rankingWrap = document.getElementById('rankingWrap');
-      var historyWrap = document.getElementById('historyWrap');
-
-      var NODE_RADIUS = 34;
-      var DEFAULT_ICON = '🌐';
-      var playTimer = null;
-      var pointerState = {
-        pointerId: null,
-        candidateId: null,
-        dragId: null,
-        startX: 0,
-        startY: 0,
-        moved: false,
-        offsetX: 0,
-        offsetY: 0
-      };
-
-      var presets = {
-        mini: {
-          label: 'Miniweb: 4 páginas',
-          description: 'Una web pequeña para seguir fácilmente el cálculo a mano.',
-          nodes: [
-            { id: 'A', x: 220, y: 160, label: 'Inicio', icon: '🏠' },
-            { id: 'B', x: 490, y: 110, label: 'Blog', icon: '📰' },
-            { id: 'C', x: 700, y: 270, label: 'Cursos', icon: '🎓' },
-            { id: 'D', x: 360, y: 360, label: 'Contacto', icon: '✉️' }
-          ],
-          edges: [
-            { from: 'A', to: 'B' },
-            { from: 'A', to: 'C' },
-            { from: 'B', to: 'C' },
-            { from: 'B', to: 'D' },
-            { from: 'C', to: 'A' },
-            { from: 'D', to: 'C' }
-          ]
-        },
-        medium: {
-          label: 'Web media: 7 páginas',
-          description: 'Un ejemplo más amplio con páginas muy enlazadas y otras más periféricas.',
-          nodes: [
-            { id: 'A', x: 170, y: 145, label: 'Inicio', icon: '🏠' },
-            { id: 'B', x: 385, y: 85, label: 'Noticias', icon: '📰' },
-            { id: 'C', x: 625, y: 120, label: 'Tienda', icon: '🛒' },
-            { id: 'D', x: 800, y: 255, label: 'Vídeos', icon: '🎬' },
-            { id: 'E', x: 655, y: 420, label: 'FAQ', icon: '❓' },
-            { id: 'F', x: 390, y: 455, label: 'Blog', icon: '✍️' },
-            { id: 'G', x: 165, y: 355, label: 'Ayuda', icon: '🧭' }
-          ],
-          edges: [
-            { from: 'A', to: 'B' },
-            { from: 'A', to: 'C' },
-            { from: 'A', to: 'G' },
-            { from: 'B', to: 'A' },
-            { from: 'B', to: 'C' },
-            { from: 'B', to: 'F' },
-            { from: 'C', to: 'A' },
-            { from: 'C', to: 'D' },
-            { from: 'C', to: 'E' },
-            { from: 'D', to: 'C' },
-            { from: 'D', to: 'F' },
-            { from: 'E', to: 'A' },
-            { from: 'E', to: 'F' },
-            { from: 'F', to: 'B' },
-            { from: 'F', to: 'C' },
-            { from: 'F', to: 'G' },
-            { from: 'G', to: 'A' },
-            { from: 'G', to: 'E' }
-          ]
-        },
-        disconnected: {
-          label: 'Componentes desconexas y nodo colgante',
-          description: 'Aquí aparecen dos subredes separadas y una página sin enlaces salientes: la corrección de PageRank evita el bloqueo.',
-          nodes: [
-            { id: 'A', x: 180, y: 160, label: 'Foro', icon: '💬' },
-            { id: 'B', x: 370, y: 110, label: 'Docs', icon: '📚' },
-            { id: 'C', x: 300, y: 305, label: 'Inicio', icon: '🏠' },
-            { id: 'D', x: 645, y: 140, label: 'Tienda', icon: '🛒' },
-            { id: 'E', x: 820, y: 275, label: 'Promos', icon: '🎯' },
-            { id: 'F', x: 625, y: 390, label: 'Landing', icon: '📣' }
-          ],
-          edges: [
-            { from: 'A', to: 'B' },
-            { from: 'B', to: 'C' },
-            { from: 'C', to: 'A' },
-            { from: 'D', to: 'E' },
-            { from: 'E', to: 'D' }
-          ]
-        }
-      };
-
-      var state = {
-        nodes: [],
-        edges: [],
-        selectedId: null,
-        history: [],
-        currentStep: 0,
-        converged: false,
-        executed: false,   /* true after Ejecutar PageRank is pressed */
-        S: [],
-        G: [],
-        presetKey: 'mini'
-      };
-
-      function cloneGraph(data) {
-        return {
-          nodes: data.nodes.map(function (node) { return Object.assign({}, node); }),
-          edges: data.edges.map(function (edge) { return Object.assign({}, edge); })
-        };
-      }
-
-      function populatePresets() {
-        Object.keys(presets).forEach(function (key) {
-          var option = document.createElement('option');
-          option.value = key;
-          option.textContent = presets[key].label;
-          presetSelect.appendChild(option);
-        });
-      }
-
-      function loadPreset(key) {
-        var preset = presets[key] || presets.mini;
-        var graph = cloneGraph(preset);
-        state.nodes = graph.nodes;
-        state.edges = dedupeEdges(graph.edges.filter(function (edge) {
-          return edge.from !== edge.to;
-        }));
-        state.selectedId = null;
-        state.presetKey = key;
-        presetSelect.value = key;
-        recompute(true);
-      }
-
-      function dedupeEdges(edges) {
-        var seen = new Set();
-        return edges.filter(function (edge) {
-          var key = edge.from + '->' + edge.to;
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        });
-      }
-
-      function getNodeIndex(id) {
-        return state.nodes.findIndex(function (node) { return node.id === id; });
-      }
-
-      function getNode(id) {
-        return state.nodes.find(function (node) { return node.id === id; }) || null;
-      }
-
-      function getOutgoing(id) {
-        return state.edges.filter(function (edge) { return edge.from === id; });
-      }
-
-      function addNode(x, y) {
-        var nextCode = state.nodes.length + 1;
-        var id = 'N' + nextCode;
-        while (getNode(id)) {
-          nextCode += 1;
-          id = 'N' + nextCode;
-        }
-
-        state.nodes.push({
-          id: id,
-          x: (x !== undefined) ? x : 490 + Math.cos(nextCode) * 80,
-          y: (y !== undefined) ? y : 280 + Math.sin(nextCode) * 80,
-          label: 'Página ' + nextCode,
-          icon: DEFAULT_ICON
-        });
-        state.selectedId = id;
-        recompute(true);
-      }
-
-      function deleteSelectedNode() {
-        if (!state.selectedId) return;
-        state.nodes = state.nodes.filter(function (node) { return node.id !== state.selectedId; });
-        state.edges = state.edges.filter(function (edge) {
-          return edge.from !== state.selectedId && edge.to !== state.selectedId;
-        });
-        state.selectedId = null;
-        recompute(true);
-      }
-
-      function circleLayout() {
-        var n = state.nodes.length;
-        var centerX = canvas.width / 2;
-        var centerY = canvas.height / 2 + 8;
-        var radius = Math.min(canvas.width, canvas.height) * 0.33;
-        state.nodes.forEach(function (node, index) {
-          var angle = -Math.PI / 2 + (Math.PI * 2 * index) / Math.max(n, 1);
-          node.x = centerX + radius * Math.cos(angle);
-          node.y = centerY + radius * Math.sin(angle);
-        });
-        recompute(false);
-      }
-
-      function toggleEdge(fromId, toId) {
-        if (!fromId || !toId || fromId === toId) return;
-        var index = state.edges.findIndex(function (edge) {
-          return edge.from === fromId && edge.to === toId;
-        });
-        if (index >= 0) {
-          state.edges.splice(index, 1);
-        } else {
-          state.edges.push({ from: fromId, to: toId });
-        }
-        state.edges = dedupeEdges(state.edges);
-        state.selectedId = null;
-        recompute(true);
-      }
-
-      function updateSelectedNodeFromInputs() {
-        if (!state.selectedId) return;
-        var node = getNode(state.selectedId);
-        if (!node) return;
-        node.icon = (nodeIconInput.value || DEFAULT_ICON).trim().slice(0, 4) || DEFAULT_ICON;
-        node.label = (nodeLabelInput.value || node.label).trim().slice(0, 24) || node.label;
-        recompute(false);
-      }
-
-      function updateInputsFromSelection() {
-        var node = getNode(state.selectedId);
-        if (!node) {
-          nodeIconInput.value = '';
-          nodeLabelInput.value = '';
-          selectionHint.textContent = 'No hay ninguna página seleccionada.';
-          return;
-        }
-        nodeIconInput.value = node.icon || DEFAULT_ICON;
-        nodeLabelInput.value = node.label || '';
-        selectionHint.textContent = 'Página seleccionada: ' + node.label + '. Haz clic en otra para alternar el enlace dirigido.';
-      }
-
-      function computeMatrices() {
-        var n = state.nodes.length;
-        if (!n) {
-          return { S: [], G: [] };
-        }
-
-        var S = Array.from({ length: n }, function () {
-          return Array.from({ length: n }, function () { return 0; });
-        });
-
-        state.nodes.forEach(function (sourceNode, sourceIndex) {
-          var outgoing = getOutgoing(sourceNode.id);
-          if (!outgoing.length) {
-            for (var i = 0; i < n; i += 1) S[i][sourceIndex] = 1 / n;
-            return;
-          }
-          outgoing.forEach(function (edge) {
-            var targetIndex = getNodeIndex(edge.to);
-            if (targetIndex >= 0) S[targetIndex][sourceIndex] += 1 / outgoing.length;
-          });
-        });
-
-        var damping = parseFloat(dampingRange.value);
-        var G = S.map(function (row) {
-          return row.map(function (value) {
-            return damping * value + (1 - damping) / n;
-          });
-        });
-
-        return { S: S, G: G };
-      }
-
-      function multiplyMatrixVector(matrix, vector) {
-        return matrix.map(function (row) {
-          return row.reduce(function (sum, value, index) {
-            return sum + value * vector[index];
-          }, 0);
-        });
-      }
-
-      function l1Diff(a, b) {
-        return a.reduce(function (sum, value, index) {
-          return sum + Math.abs(value - b[index]);
-        }, 0);
-      }
-
-      /* Recompute only the S and G matrices (no iteration) */
-      function computeMatricesOnly() {
-        var matrices = computeMatrices();
-        state.S = matrices.S;
-        state.G = matrices.G;
-      }
-
-      /* Run full PageRank iterations and populate state.history */
-      function computeHistory() {
-        var n = state.nodes.length;
-        computeMatricesOnly();
-
-        if (!n) {
-          state.history = [];
-          state.currentStep = 0;
-          state.converged = true;
-          return;
-        }
-
-        var tolerance = Math.max(parseFloat(toleranceInput.value) || 0.0001, 0.0000001);
-        var maxIterations = Math.max(parseInt(maxIterationsInput.value, 10) || 30, 1);
-        var vector = Array.from({ length: n }, function () { return 1 / n; });
-        var history = [{ vector: vector.slice(), diff: 0 }];
-        var converged = false;
-
-        for (var step = 1; step <= maxIterations; step += 1) {
-          var next = multiplyMatrixVector(state.G, vector);
-          var diff = l1Diff(next, vector);
-          history.push({ vector: next.slice(), diff: diff });
-          vector = next;
-          if (diff < tolerance) {
-            converged = true;
-            break;
-          }
-        }
-
-        state.history = history;
-        state.currentStep = Math.min(state.currentStep, history.length - 1);
-        state.converged = converged;
-      }
-
-      function round(value) {
-        return (Math.round(value * 10000) / 10000).toFixed(4);
-      }
-
-      function buildMatrixTable(matrix) {
-        if (!matrix.length) return '<p class="mini-note">Añade al menos una página para ver la matriz.</p>';
-
-        var headers = state.nodes.map(function (node) { return escapeHtml(node.label); });
-        var html = '<table><thead><tr><th>↓ / →</th>';
-        headers.forEach(function (header) { html += '<th>' + header + '</th>'; });
-        html += '</tr></thead><tbody>';
-
-        matrix.forEach(function (row, rowIndex) {
-          html += '<tr><th>' + escapeHtml(state.nodes[rowIndex].label) + '</th>';
-          row.forEach(function (value) {
-            html += '<td>' + round(value) + '</td>';
-          });
-          html += '</tr>';
-        });
-
-        html += '</tbody></table>';
-        return html;
-      }
-
-      function buildHistoryTable() {
-        if (!state.history.length) return '<p class="mini-note">No hay iteraciones disponibles.</p>';
-
-        var html = '<table><thead><tr><th>k</th>';
-        state.nodes.forEach(function (node) {
-          html += '<th>' + escapeHtml(node.label) + '</th>';
-        });
-        html += '<th>‖Δ‖₁</th></tr></thead><tbody>';
-
-        state.history.forEach(function (entry, index) {
-          html += '<tr' + (index === state.currentStep ? ' class="current-row"' : '') + '>';
-          html += '<th>' + index + '</th>';
-          entry.vector.forEach(function (value) {
-            html += '<td>' + round(value) + '</td>';
-          });
-          html += '<td>' + round(entry.diff || 0) + '</td>';
-          html += '</tr>';
-        });
-
-        html += '</tbody></table>';
-        return html;
-      }
-
-      function buildRanking() {
-        if (!state.history.length) {
-          rankingWrap.innerHTML = '<p class="mini-note">El ranking aparecerá aquí.</p>';
-          return;
-        }
-
-        var current = state.history[state.currentStep].vector;
-        var maxValue = Math.max.apply(null, current);
-        var ranking = state.nodes.map(function (node, index) {
-          return {
-            id: node.id,
-            icon: node.icon || DEFAULT_ICON,
-            label: node.label,
-            score: current[index]
-          };
-        }).sort(function (a, b) {
-          return b.score - a.score;
-        });
-
-        rankingWrap.innerHTML = ranking.map(function (item, index) {
-          var width = maxValue > 0 ? (item.score / maxValue) * 100 : 0;
-          return '' +
-            '<div class="rank-item">' +
-              '<div class="rank-row">' +
-                '<span class="rank-position">' + (index + 1) + '</span>' +
-                '<div class="rank-label"><span style="font-size:1.3rem;">' + escapeHtml(item.icon) + '</span><strong>' + escapeHtml(item.label) + '</strong></div>' +
-                '<span class="rank-score">' + round(item.score) + '</span>' +
-              '</div>' +
-              '<div class="bar"><span style="width:' + width.toFixed(2) + '%"></span></div>' +
-            '</div>';
-        }).join('');
-      }
-
-      function escapeHtml(text) {
-        return String(text)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#039;');
-      }
-
-      /* offset: lateral px shift (+ or -) for bidirectional arrows so they don't overlap */
-      function drawArrow(fromNode, toNode, offset, color, width) {
-        var dx = toNode.x - fromNode.x;
-        var dy = toNode.y - fromNode.y;
-        var distance = Math.hypot(dx, dy) || 1;
-        var ux = dx / distance;
-        var uy = dy / distance;
-        /* perpendicular unit vector */
-        var px = -uy, py = ux;
-        var ox = px * offset, oy = py * offset;
-        var startX = fromNode.x + ux * (NODE_RADIUS + 2) + ox;
-        var startY = fromNode.y + uy * (NODE_RADIUS + 2) + oy;
-        var endX = toNode.x - ux * (NODE_RADIUS + 10) + ox;
-        var endY = toNode.y - uy * (NODE_RADIUS + 10) + oy;
-
-        ctx.strokeStyle = color;
-        ctx.lineWidth = width;
-        ctx.beginPath();
-        ctx.moveTo(startX, startY);
-        ctx.lineTo(endX, endY);
-        ctx.stroke();
-
-        var arrowSize = 10;
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.moveTo(endX, endY);
-        ctx.lineTo(endX - ux * arrowSize - uy * arrowSize * 0.6, endY - uy * arrowSize + ux * arrowSize * 0.6);
-        ctx.lineTo(endX - ux * arrowSize + uy * arrowSize * 0.6, endY - uy * arrowSize - ux * arrowSize * 0.6);
-        ctx.closePath();
-        ctx.fill();
-      }
-
-      function rankColor(score, minScore, maxScore) {
-        if (maxScore - minScore < 1e-12) return 'rgba(121, 168, 255, 0.55)';
-        var t = (score - minScore) / (maxScore - minScore);
-        var r = Math.round(201 - 38 * t);
-        var g = Math.round(226 - 110 * t);
-        var b = Math.round(255 - 80 * t);
-        return 'rgba(' + r + ',' + g + ',' + b + ',0.95)';
-      }
-
-      function drawGraph() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        ctx.fillStyle = '#f8fbff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        var currentVector = state.history.length ? state.history[state.currentStep].vector : [];
-        var minScore = currentVector.length ? Math.min.apply(null, currentVector) : 0;
-        var maxScore = currentVector.length ? Math.max.apply(null, currentVector) : 1;
-
-        state.edges.forEach(function (edge) {
-          var fromNode = getNode(edge.from);
-          var toNode = getNode(edge.to);
-          if (!fromNode || !toNode) return;
-          /* detect bidirectional pair → apply 10 px lateral offset on both arrows */
-          var biDir  = state.edges.some(function (e) { return e.from === edge.to && e.to === edge.from; });
-          var offset = biDir ? 10 : 0;
-          var active = state.selectedId && state.selectedId === edge.from;
-          drawArrow(fromNode, toNode, offset, active ? '#2459c7' : '#7890b8', active ? 3 : 2);
-        });
-
-        state.nodes.forEach(function (node, index) {
-          var score = currentVector[index] || 0;
-          var fill = rankColor(score, minScore, maxScore);
-          var isSelected = state.selectedId === node.id;
-
-          ctx.save();
-          ctx.shadowColor = 'rgba(15, 23, 42, 0.12)';
-          ctx.shadowBlur = 12;
-          ctx.shadowOffsetY = 4;
-          ctx.fillStyle = fill;
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, NODE_RADIUS, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-
-          ctx.lineWidth = isSelected ? 4 : 2;
-          ctx.strokeStyle = isSelected ? '#2459c7' : '#ffffff';
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, NODE_RADIUS, 0, Math.PI * 2);
-          ctx.stroke();
-
-          ctx.fillStyle = '#183153';
-          ctx.font = '30px system-ui, Apple Color Emoji, Segoe UI Emoji, sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(node.icon || DEFAULT_ICON, node.x, node.y - 4);
-
-          ctx.font = '600 13px Inter, system-ui, sans-serif';
-          ctx.fillStyle = '#122033';
-          ctx.fillText(node.label, node.x, node.y + NODE_RADIUS + 18);
-
-          ctx.font = '600 12px Inter, system-ui, sans-serif';
-          ctx.fillStyle = '#0f172a';
-          ctx.fillText(round(score), node.x, node.y + NODE_RADIUS + 35);
-        });
-      }
-
-      function renderMatrices() {
-        linkMatrixWrap.innerHTML = buildMatrixTable(state.S);
-        googleMatrixWrap.innerHTML = buildMatrixTable(state.G);
-      }
-
-      function renderStatus() {
-        var totalSteps = Math.max(state.history.length - 1, 0);
-        var currentDiff = state.history.length ? state.history[state.currentStep].diff || 0 : 0;
-        iterationBadge.textContent = 'Iteración ' + state.currentStep + ' de ' + totalSteps;
-        diffBadge.textContent = '‖Δ‖₁ = ' + currentDiff.toFixed(6);
-
-        if (!state.nodes.length) {
-          statusText.textContent = 'Añade páginas para empezar.';
-          graphMessage.textContent = 'El lienzo está vacío. Puedes crear una red desde cero o cargar una web prediseñada.';
-          return;
-        }
-
-        var preset = presets[state.presetKey];
-        var danglingNodes = state.nodes.filter(function (node) {
-          return getOutgoing(node.id).length === 0;
-        }).map(function (node) { return node.label; });
-
-        var message = preset ? preset.description : 'Red personalizada.';
-        if (danglingNodes.length) {
-          message += ' Páginas sin enlaces salientes: ' + danglingNodes.join(', ') + '.';
-        }
-        graphMessage.textContent = message;
-
-        if (state.converged) {
-          statusText.textContent = 'Convergencia alcanzada en ' + (state.history.length - 1) + ' iteraciones con tolerancia ' + (parseFloat(toleranceInput.value) || 0.0001) + '.';
-        } else {
-          statusText.textContent = 'No se alcanzó la tolerancia antes del máximo fijado. Puedes aumentar el número de iteraciones o relajar la tolerancia.';
-        }
-      }
-
-      function render() {
-        var iterPanel = document.getElementById('iterationPanel');
-        updateInputsFromSelection();
-        renderMatrices();
-        renderStatus();
-        drawGraph();
-        deleteNodeBtn.disabled = !state.selectedId;
-
-        if (state.executed) {
-          historyWrap.innerHTML = buildHistoryTable();
-          buildRanking();
-          var atEnd = state.currentStep >= state.history.length - 1;
-          prevStepBtn.disabled = state.currentStep <= 0;
-          nextStepBtn.disabled = atEnd || !state.history.length;
-          playBtn.disabled = atEnd || !state.history.length;
-          stopBtn.disabled = !playTimer;
-          resetBtn.disabled = false;
-          if (iterPanel) iterPanel.style.display = '';
-          /* scroll current history row into view */
-          var curRow = historyWrap.querySelector('tr.current-row');
-          if (curRow) curRow.scrollIntoView({ block: 'nearest' });
-        } else {
-          if (iterPanel) iterPanel.style.display = 'none';
-        }
-
-        if (runBtn) {
-          runBtn.disabled = !state.nodes.length;
-        }
-      }
-
-      /* Recompute matrices (and optionally reset execution state) but do NOT run iterations */
-      function recompute(resetStep) {
-        stopAuto();
-        if (resetStep) {
-          state.currentStep = 0;
-          state.executed = false;
-          state.history = [];
-        }
-        computeMatricesOnly();
-        render();
-      }
-
-      /* Called by the Ejecutar PageRank button: runs iterations and shows the panel */
-      function executePageRank() {
-        stopAuto();
-        computeHistory();
-        state.executed = true;
-        state.currentStep = 0;
-        render();
-      }
-
-      function stepTo(index) {
-        if (!state.history.length) return;
-        state.currentStep = Math.max(0, Math.min(index, state.history.length - 1));
-        render();
-      }
-
-      function stepNext() {
-        stepTo(state.currentStep + 1);
-      }
-
-      function stepPrev() {
-        stepTo(state.currentStep - 1);
-      }
-
-      function stopAuto() {
-        if (playTimer) {
-          clearInterval(playTimer);
-          playTimer = null;
-        }
-      }
-
-      function playAuto() {
-        if (playTimer || state.currentStep >= state.history.length - 1) return;
-        playTimer = setInterval(function () {
-          if (state.currentStep >= state.history.length - 1) {
-            stopAuto();
-            render();
-            return;
-          }
-          state.currentStep += 1;
-          render();
-        }, 850);
-        render();
-      }
-
-      function getCanvasPoint(event) {
-        var rect = canvas.getBoundingClientRect();
-        return {
-          x: (event.clientX - rect.left) * (canvas.width / rect.width),
-          y: (event.clientY - rect.top) * (canvas.height / rect.height)
-        };
-      }
-
-      function hitNode(point) {
-        for (var i = state.nodes.length - 1; i >= 0; i -= 1) {
-          var node = state.nodes[i];
-          var dx = point.x - node.x;
-          var dy = point.y - node.y;
-          if (dx * dx + dy * dy <= NODE_RADIUS * NODE_RADIUS) return node;
-        }
-        return null;
-      }
-
-      function onPointerDown(event) {
-        var point = getCanvasPoint(event);
-        var node = hitNode(point);
-        pointerState.pointerId = event.pointerId;
-        pointerState.candidateId = node ? node.id : null;
-        pointerState.dragId = null;
-        pointerState.startX = point.x;
-        pointerState.startY = point.y;
-        pointerState.moved = false;
-        if (node) {
-          pointerState.offsetX = point.x - node.x;
-          pointerState.offsetY = point.y - node.y;
-        }
-        canvas.setPointerCapture(event.pointerId);
-      }
-
-      function onPointerMove(event) {
-        if (pointerState.pointerId !== event.pointerId) return;
-        var point = getCanvasPoint(event);
-        if (!pointerState.candidateId) return;
-
-        var dx = point.x - pointerState.startX;
-        var dy = point.y - pointerState.startY;
-        if (!pointerState.dragId && Math.hypot(dx, dy) > 6) {
-          pointerState.dragId = pointerState.candidateId;
-          pointerState.moved = true;
-        }
-
-        if (!pointerState.dragId) return;
-        var node = getNode(pointerState.dragId);
-        if (!node) return;
-        node.x = Math.max(NODE_RADIUS + 10, Math.min(canvas.width - NODE_RADIUS - 10, point.x - pointerState.offsetX));
-        node.y = Math.max(NODE_RADIUS + 10, Math.min(canvas.height - NODE_RADIUS - 16, point.y - pointerState.offsetY));
-        drawGraph();
-      }
-
-      function onPointerUp(event) {
-        if (pointerState.pointerId !== event.pointerId) return;
-        var point = getCanvasPoint(event);
-        var releasedNode = hitNode(point);
-
-        if (pointerState.dragId) {
-          pointerState.pointerId = null;
-          pointerState.candidateId = null;
-          pointerState.dragId = null;
-          recompute(false);
-          return;
-        }
-
-        if (!releasedNode) {
-          if (state.selectedId) {
-            /* click on empty with selection → deselect */
-            state.selectedId = null;
-            render();
-          } else {
-            /* click on empty without selection → add new node at that position */
-            addNode(point.x, point.y);
-          }
-        } else if (!state.selectedId) {
-          state.selectedId = releasedNode.id;
-          render();
-        } else if (state.selectedId === releasedNode.id) {
-          state.selectedId = null;
-          render();
-        } else {
-          toggleEdge(state.selectedId, releasedNode.id);
-        }
-
-        pointerState.pointerId = null;
-        pointerState.candidateId = null;
-        pointerState.dragId = null;
-      }
-
-      canvas.addEventListener('pointerdown', onPointerDown);
-      canvas.addEventListener('pointermove', onPointerMove);
-      canvas.addEventListener('pointerup', onPointerUp);
-      canvas.addEventListener('pointercancel', function () {
-        pointerState.pointerId = null;
-        pointerState.candidateId = null;
-        pointerState.dragId = null;
-      });
-
-      loadPresetBtn.addEventListener('click', function () {
-        loadPreset(presetSelect.value);
-      });
-      presetSelect.addEventListener('change', function () {
-        loadPreset(presetSelect.value);
-      });
-      deleteNodeBtn.addEventListener('click', deleteSelectedNode);
-      centerBtn.addEventListener('click', circleLayout);
-      applyNodeBtn.addEventListener('click', updateSelectedNodeFromInputs);
-      nodeIconInput.addEventListener('change', updateSelectedNodeFromInputs);
-      nodeLabelInput.addEventListener('change', updateSelectedNodeFromInputs);
-      dampingRange.addEventListener('input', function () {
-        dampingValue.textContent = Number(dampingRange.value).toFixed(2);
-        recompute(true);
-      });
-      toleranceInput.addEventListener('change', function () {
-        recompute(true);
-      });
-      maxIterationsInput.addEventListener('change', function () {
-        recompute(true);
-      });
-      runBtn.addEventListener('click', executePageRank);
-      prevStepBtn.addEventListener('click', stepPrev);
-      nextStepBtn.addEventListener('click', stepNext);
-      playBtn.addEventListener('click', playAuto);
-      stopBtn.addEventListener('click', function () {
-        stopAuto();
-        render();
-      });
-      resetBtn.addEventListener('click', function () {
-        stopAuto();
-        stepTo(0);
-      });
-
-      populatePresets();
-      dampingValue.textContent = Number(dampingRange.value).toFixed(2);
-      loadPreset('mini');
-    })();
-  </script>
+
+        <!-- ── MATRICES (always visible) ── -->
+        <section class="matrix-grid">
+            <article class="card">
+                <h3>Matriz de transición corregida S</h3>
+                <div class="table-wrap" id="linkMatrixWrap"></div>
+                <p class="mini-note">Columna j → página origen; fila i → página destino. Cada columna suma&nbsp;1.</p>
+            </article>
+            <article class="card">
+                <h3>Matriz de Google G</h3>
+                <div class="table-wrap" id="googleMatrixWrap"></div>
+                <p class="mini-note">La matriz <strong>G</strong> mezcla seguir enlaces reales con saltos aleatorios a
+                    cualquier página. Esa pequeña corrección evita bloqueos en subredes cerradas y hace que el proceso
+                    converja de forma estable.</p>
+            </article>
+        </section>
+
+        <!-- ── ITERATION PANEL (hidden until algorithm is run) ── -->
+        <div id="iterationPanel" style="display:none;">
+
+            <section class="card" style="margin-top:18px;">
+                <div class="iteration-controls">
+                    <div class="left">
+                        <button id="resetBtn" type="button">⏮ Inicio</button>
+                        <button id="prevStepBtn" type="button">← Paso anterior</button>
+                        <button id="nextStepBtn" type="button" class="primary">Paso siguiente →</button>
+                        <button id="playBtn" type="button" class="warn">▶ Auto</button>
+                        <button id="stopBtn" type="button">⏹ Detener</button>
+                    </div>
+                    <div class="right">
+                        <span class="badge" id="iterationBadge">Iteración 0</span>
+                        <span class="badge" id="diffBadge">‖Δ‖₁ = 0.000000</span>
+                    </div>
+                </div>
+                <div class="status" id="statusText"></div>
+            </section>
+
+            <section class="results-grid">
+                <article class="card">
+                    <h3>Ranking actual</h3>
+                    <div id="rankingWrap" class="ranking-list"></div>
+                </article>
+                <article class="card">
+                    <h3>Iteración actual</h3>
+                    <div class="table-wrap" id="historyWrap"></div>
+                </article>
+            </section>
+
+        </div><!-- /iterationPanel -->
+    </div><!-- /app -->
+
+    <script>
+        (function () {
+            var canvas = document.getElementById('graphCanvas');
+            var ctx = canvas.getContext('2d');
+            var presetSelect = document.getElementById('presetSelect');
+            var loadPresetBtn = document.getElementById('loadPresetBtn');
+            var deleteNodeBtn = document.getElementById('deleteNodeBtn');
+            var centerBtn = document.getElementById('centerBtn');
+            var runBtn = document.getElementById('runBtn');
+            var applyNodeBtn = document.getElementById('applyNodeBtn');
+            var nodeIconInput = document.getElementById('nodeIconInput');
+            var nodeLabelInput = document.getElementById('nodeLabelInput');
+            var selectionHint = document.getElementById('selectionHint');
+            var graphMessage = document.getElementById('graphMessage');
+            var dampingRange = document.getElementById('dampingRange');
+            var dampingValue = document.getElementById('dampingValue');
+            var toleranceInput = document.getElementById('toleranceInput');
+            var maxIterationsInput = document.getElementById('maxIterationsInput');
+            var prevStepBtn = document.getElementById('prevStepBtn');
+            var nextStepBtn = document.getElementById('nextStepBtn');
+            var playBtn = document.getElementById('playBtn');
+            var stopBtn = document.getElementById('stopBtn');
+            var resetBtn = document.getElementById('resetBtn');
+            var iterationBadge = document.getElementById('iterationBadge');
+            var diffBadge = document.getElementById('diffBadge');
+            var statusText = document.getElementById('statusText');
+            var linkMatrixWrap = document.getElementById('linkMatrixWrap');
+            var googleMatrixWrap = document.getElementById('googleMatrixWrap');
+            var rankingWrap = document.getElementById('rankingWrap');
+            var historyWrap = document.getElementById('historyWrap');
+
+            var NODE_RADIUS = 34;
+            var DEFAULT_ICON = '🌐';
+            var playTimer = null;
+            var pointerState = {
+                pointerId: null,
+                candidateId: null,
+                dragId: null,
+                startX: 0,
+                startY: 0,
+                moved: false,
+                offsetX: 0,
+                offsetY: 0
+            };
+
+            var presets = {
+                mini: {
+                    label: 'Miniweb: 4 páginas',
+                    description: 'Una web pequeña para seguir fácilmente el cálculo a mano.',
+                    nodes: [
+                        { id: 'A', x: 220, y: 160, label: 'Inicio', icon: '🏠' },
+                        { id: 'B', x: 490, y: 110, label: 'Blog', icon: '📰' },
+                        { id: 'C', x: 700, y: 270, label: 'Cursos', icon: '🎓' },
+                        { id: 'D', x: 360, y: 360, label: 'Contacto', icon: '✉️' }
+                    ],
+                    edges: [
+                        { from: 'A', to: 'B' },
+                        { from: 'A', to: 'C' },
+                        { from: 'B', to: 'C' },
+                        { from: 'B', to: 'D' },
+                        { from: 'C', to: 'A' },
+                        { from: 'D', to: 'C' }
+                    ]
+                },
+                medium: {
+                    label: 'Web media: 7 páginas',
+                    description: 'Un ejemplo más amplio con páginas muy enlazadas y otras más periféricas.',
+                    nodes: [
+                        { id: 'A', x: 170, y: 145, label: 'Inicio', icon: '🏠' },
+                        { id: 'B', x: 385, y: 85, label: 'Noticias', icon: '📰' },
+                        { id: 'C', x: 625, y: 120, label: 'Tienda', icon: '🛒' },
+                        { id: 'D', x: 800, y: 255, label: 'Vídeos', icon: '🎬' },
+                        { id: 'E', x: 655, y: 420, label: 'FAQ', icon: '❓' },
+                        { id: 'F', x: 390, y: 455, label: 'Blog', icon: '✍️' },
+                        { id: 'G', x: 165, y: 355, label: 'Ayuda', icon: '🧭' }
+                    ],
+                    edges: [
+                        { from: 'A', to: 'B' },
+                        { from: 'A', to: 'C' },
+                        { from: 'A', to: 'G' },
+                        { from: 'B', to: 'A' },
+                        { from: 'B', to: 'C' },
+                        { from: 'B', to: 'F' },
+                        { from: 'C', to: 'A' },
+                        { from: 'C', to: 'D' },
+                        { from: 'C', to: 'E' },
+                        { from: 'D', to: 'C' },
+                        { from: 'D', to: 'F' },
+                        { from: 'E', to: 'A' },
+                        { from: 'E', to: 'F' },
+                        { from: 'F', to: 'B' },
+                        { from: 'F', to: 'C' },
+                        { from: 'F', to: 'G' },
+                        { from: 'G', to: 'A' },
+                        { from: 'G', to: 'E' }
+                    ]
+                },
+                disconnected: {
+                    label: 'Componentes desconexas y nodo colgante',
+                    description: 'Aquí aparecen dos subredes separadas y una página sin enlaces salientes: la corrección de PageRank evita el bloqueo.',
+                    nodes: [
+                        { id: 'A', x: 180, y: 160, label: 'Foro', icon: '💬' },
+                        { id: 'B', x: 370, y: 110, label: 'Docs', icon: '📚' },
+                        { id: 'C', x: 300, y: 305, label: 'Inicio', icon: '🏠' },
+                        { id: 'D', x: 645, y: 140, label: 'Tienda', icon: '🛒' },
+                        { id: 'E', x: 820, y: 275, label: 'Promos', icon: '🎯' },
+                        { id: 'F', x: 625, y: 390, label: 'Landing', icon: '📣' }
+                    ],
+                    edges: [
+                        { from: 'A', to: 'B' },
+                        { from: 'B', to: 'C' },
+                        { from: 'C', to: 'A' },
+                        { from: 'D', to: 'E' },
+                        { from: 'E', to: 'D' }
+                    ]
+                }
+            };
+
+            var state = {
+                nodes: [],
+                edges: [],
+                selectedId: null,
+                history: [],
+                currentStep: 0,
+                converged: false,
+                executed: false,   /* true after Ejecutar PageRank is pressed */
+                S: [],
+                G: [],
+                presetKey: 'mini'
+            };
+
+            function cloneGraph(data) {
+                return {
+                    nodes: data.nodes.map(function (node) { return Object.assign({}, node); }),
+                    edges: data.edges.map(function (edge) { return Object.assign({}, edge); })
+                };
+            }
+
+            function populatePresets() {
+                Object.keys(presets).forEach(function (key) {
+                    var option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = presets[key].label;
+                    presetSelect.appendChild(option);
+                });
+            }
+
+            function loadPreset(key) {
+                var preset = presets[key] || presets.mini;
+                var graph = cloneGraph(preset);
+                state.nodes = graph.nodes;
+                state.edges = dedupeEdges(graph.edges.filter(function (edge) {
+                    return edge.from !== edge.to;
+                }));
+                state.selectedId = null;
+                state.presetKey = key;
+                presetSelect.value = key;
+                recompute(true);
+            }
+
+            function dedupeEdges(edges) {
+                var seen = new Set();
+                return edges.filter(function (edge) {
+                    var key = edge.from + '->' + edge.to;
+                    if (seen.has(key)) return false;
+                    seen.add(key);
+                    return true;
+                });
+            }
+
+            function getNodeIndex(id) {
+                return state.nodes.findIndex(function (node) { return node.id === id; });
+            }
+
+            function getNode(id) {
+                return state.nodes.find(function (node) { return node.id === id; }) || null;
+            }
+
+            function getOutgoing(id) {
+                return state.edges.filter(function (edge) { return edge.from === id; });
+            }
+
+            function addNode(x, y) {
+                var nextCode = state.nodes.length + 1;
+                var id = 'N' + nextCode;
+                while (getNode(id)) {
+                    nextCode += 1;
+                    id = 'N' + nextCode;
+                }
+
+                state.nodes.push({
+                    id: id,
+                    x: (x !== undefined) ? x : 490 + Math.cos(nextCode) * 80,
+                    y: (y !== undefined) ? y : 280 + Math.sin(nextCode) * 80,
+                    label: 'Página ' + nextCode,
+                    icon: DEFAULT_ICON
+                });
+                state.selectedId = id;
+                recompute(true);
+            }
+
+            function deleteSelectedNode() {
+                if (!state.selectedId) return;
+                state.nodes = state.nodes.filter(function (node) { return node.id !== state.selectedId; });
+                state.edges = state.edges.filter(function (edge) {
+                    return edge.from !== state.selectedId && edge.to !== state.selectedId;
+                });
+                state.selectedId = null;
+                recompute(true);
+            }
+
+            function circleLayout() {
+                var n = state.nodes.length;
+                var centerX = canvas.width / 2;
+                var centerY = canvas.height / 2 + 8;
+                var radius = Math.min(canvas.width, canvas.height) * 0.33;
+                state.nodes.forEach(function (node, index) {
+                    var angle = -Math.PI / 2 + (Math.PI * 2 * index) / Math.max(n, 1);
+                    node.x = centerX + radius * Math.cos(angle);
+                    node.y = centerY + radius * Math.sin(angle);
+                });
+                recompute(false);
+            }
+
+            function toggleEdge(fromId, toId) {
+                if (!fromId || !toId || fromId === toId) return;
+                var index = state.edges.findIndex(function (edge) {
+                    return edge.from === fromId && edge.to === toId;
+                });
+                if (index >= 0) {
+                    state.edges.splice(index, 1);
+                } else {
+                    state.edges.push({ from: fromId, to: toId });
+                }
+                state.edges = dedupeEdges(state.edges);
+                state.selectedId = null;
+                recompute(true);
+            }
+
+            function updateSelectedNodeFromInputs() {
+                if (!state.selectedId) return;
+                var node = getNode(state.selectedId);
+                if (!node) return;
+                node.icon = (nodeIconInput.value || DEFAULT_ICON).trim().slice(0, 4) || DEFAULT_ICON;
+                node.label = (nodeLabelInput.value || node.label).trim().slice(0, 24) || node.label;
+                recompute(false);
+            }
+
+            function updateInputsFromSelection() {
+                var node = getNode(state.selectedId);
+                if (!node) {
+                    nodeIconInput.value = '';
+                    nodeLabelInput.value = '';
+                    selectionHint.textContent = 'No hay ninguna página seleccionada.';
+                    return;
+                }
+                nodeIconInput.value = node.icon || DEFAULT_ICON;
+                nodeLabelInput.value = node.label || '';
+                selectionHint.textContent = 'Página seleccionada: ' + node.label + '. Haz clic en otra para alternar el enlace dirigido.';
+            }
+
+            function computeMatrices() {
+                var n = state.nodes.length;
+                if (!n) {
+                    return { S: [], G: [] };
+                }
+
+                var S = Array.from({ length: n }, function () {
+                    return Array.from({ length: n }, function () { return 0; });
+                });
+
+                state.nodes.forEach(function (sourceNode, sourceIndex) {
+                    var outgoing = getOutgoing(sourceNode.id);
+                    if (!outgoing.length) {
+                        for (var i = 0; i < n; i += 1) S[i][sourceIndex] = 1 / n;
+                        return;
+                    }
+                    outgoing.forEach(function (edge) {
+                        var targetIndex = getNodeIndex(edge.to);
+                        if (targetIndex >= 0) S[targetIndex][sourceIndex] += 1 / outgoing.length;
+                    });
+                });
+
+                var damping = parseFloat(dampingRange.value);
+                var G = S.map(function (row) {
+                    return row.map(function (value) {
+                        return damping * value + (1 - damping) / n;
+                    });
+                });
+
+                return { S: S, G: G };
+            }
+
+            function multiplyMatrixVector(matrix, vector) {
+                return matrix.map(function (row) {
+                    return row.reduce(function (sum, value, index) {
+                        return sum + value * vector[index];
+                    }, 0);
+                });
+            }
+
+            function l1Diff(a, b) {
+                return a.reduce(function (sum, value, index) {
+                    return sum + Math.abs(value - b[index]);
+                }, 0);
+            }
+
+            /* Recompute only the S and G matrices (no iteration) */
+            function computeMatricesOnly() {
+                var matrices = computeMatrices();
+                state.S = matrices.S;
+                state.G = matrices.G;
+            }
+
+            /* Run full PageRank iterations and populate state.history */
+            function computeHistory() {
+                var n = state.nodes.length;
+                computeMatricesOnly();
+
+                if (!n) {
+                    state.history = [];
+                    state.currentStep = 0;
+                    state.converged = true;
+                    return;
+                }
+
+                var tolerance = Math.max(parseFloat(toleranceInput.value) || 0.0001, 0.0000001);
+                var maxIterations = Math.max(parseInt(maxIterationsInput.value, 10) || 30, 1);
+                var vector = Array.from({ length: n }, function () { return 1 / n; });
+                var history = [{ vector: vector.slice(), diff: 0 }];
+                var converged = false;
+
+                for (var step = 1; step <= maxIterations; step += 1) {
+                    var next = multiplyMatrixVector(state.G, vector);
+                    var diff = l1Diff(next, vector);
+                    history.push({ vector: next.slice(), diff: diff });
+                    vector = next;
+                    if (diff < tolerance) {
+                        converged = true;
+                        break;
+                    }
+                }
+
+                state.history = history;
+                state.currentStep = Math.min(state.currentStep, history.length - 1);
+                state.converged = converged;
+            }
+
+            function round(value) {
+                return (Math.round(value * 10000) / 10000).toFixed(4);
+            }
+
+            function buildMatrixTable(matrix) {
+                if (!matrix.length) return '<p class="mini-note">Añade al menos una página para ver la matriz.</p>';
+
+                var headers = state.nodes.map(function (node) { return escapeHtml(node.label); });
+                var html = '<table><thead><tr><th>↓ / →</th>';
+                headers.forEach(function (header) { html += '<th>' + header + '</th>'; });
+                html += '</tr></thead><tbody>';
+
+                matrix.forEach(function (row, rowIndex) {
+                    html += '<tr><th>' + escapeHtml(state.nodes[rowIndex].label) + '</th>';
+                    row.forEach(function (value) {
+                        html += '<td>' + round(value) + '</td>';
+                    });
+                    html += '</tr>';
+                });
+
+                html += '</tbody></table>';
+                return html;
+            }
+
+            function buildHistoryTable() {
+                if (!state.history.length) return '<p class="mini-note">No hay iteraciones disponibles.</p>';
+
+                var entry = state.history[state.currentStep];
+                var html = '<table><thead><tr><th>k</th>';
+                state.nodes.forEach(function (node) {
+                    html += '<th>' + escapeHtml(node.label) + '</th>';
+                });
+                html += '<th>‖Δ‖₁</th></tr></thead><tbody>';
+
+                html += '<tr class="current-row">';
+                html += '<th>' + state.currentStep + '</th>';
+                entry.vector.forEach(function (value) {
+                    html += '<td>' + round(value) + '</td>';
+                });
+                html += '<td>' + round(entry.diff || 0) + '</td>';
+                html += '</tr>';
+
+                html += '</tbody></table>';
+                return html;
+            }
+
+            function buildRanking() {
+                if (!state.history.length) {
+                    rankingWrap.innerHTML = '<p class="mini-note">El ranking aparecerá aquí.</p>';
+                    return;
+                }
+
+                var current = state.history[state.currentStep].vector;
+                var maxValue = Math.max.apply(null, current);
+                var ranking = state.nodes.map(function (node, index) {
+                    return {
+                        id: node.id,
+                        icon: node.icon || DEFAULT_ICON,
+                        label: node.label,
+                        score: current[index]
+                    };
+                }).sort(function (a, b) {
+                    return b.score - a.score;
+                });
+
+                rankingWrap.innerHTML = ranking.map(function (item, index) {
+                    var width = maxValue > 0 ? (item.score / maxValue) * 100 : 0;
+                    return '' +
+                        '<div class="rank-item">' +
+                        '<div class="rank-row">' +
+                        '<span class="rank-position">' + (index + 1) + '</span>' +
+                        '<div class="rank-label"><span style="font-size:1.3rem;">' + escapeHtml(item.icon) + '</span><strong>' + escapeHtml(item.label) + '</strong></div>' +
+                        '<span class="rank-score">' + round(item.score) + '</span>' +
+                        '</div>' +
+                        '<div class="bar"><span style="width:' + width.toFixed(2) + '%"></span></div>' +
+                        '</div>';
+                }).join('');
+            }
+
+            function escapeHtml(text) {
+                return String(text)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+
+            /* offset: lateral px shift (+ or -) for bidirectional arrows so they don't overlap */
+            function drawArrow(fromNode, toNode, offset, color, width) {
+                var dx = toNode.x - fromNode.x;
+                var dy = toNode.y - fromNode.y;
+                var distance = Math.hypot(dx, dy) || 1;
+                var ux = dx / distance;
+                var uy = dy / distance;
+                /* perpendicular unit vector */
+                var px = -uy, py = ux;
+                var ox = px * offset, oy = py * offset;
+                var startX = fromNode.x + ux * (NODE_RADIUS + 2) + ox;
+                var startY = fromNode.y + uy * (NODE_RADIUS + 2) + oy;
+                var endX = toNode.x - ux * (NODE_RADIUS + 10) + ox;
+                var endY = toNode.y - uy * (NODE_RADIUS + 10) + oy;
+
+                ctx.strokeStyle = color;
+                ctx.lineWidth = width;
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(endX, endY);
+                ctx.stroke();
+
+                var arrowSize = 10;
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.moveTo(endX, endY);
+                ctx.lineTo(endX - ux * arrowSize - uy * arrowSize * 0.6, endY - uy * arrowSize + ux * arrowSize * 0.6);
+                ctx.lineTo(endX - ux * arrowSize + uy * arrowSize * 0.6, endY - uy * arrowSize - ux * arrowSize * 0.6);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            function rankColor(score, minScore, maxScore) {
+                if (maxScore - minScore < 1e-12) return 'rgba(121, 168, 255, 0.55)';
+                var t = (score - minScore) / (maxScore - minScore);
+                var r = Math.round(201 - 38 * t);
+                var g = Math.round(226 - 110 * t);
+                var b = Math.round(255 - 80 * t);
+                return 'rgba(' + r + ',' + g + ',' + b + ',0.95)';
+            }
+
+            function drawGraph() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = '#f8fbff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                var currentVector = state.history.length ? state.history[state.currentStep].vector : [];
+                var minScore = currentVector.length ? Math.min.apply(null, currentVector) : 0;
+                var maxScore = currentVector.length ? Math.max.apply(null, currentVector) : 1;
+
+                state.edges.forEach(function (edge) {
+                    var fromNode = getNode(edge.from);
+                    var toNode = getNode(edge.to);
+                    if (!fromNode || !toNode) return;
+                    /* detect bidirectional pair → apply 10 px lateral offset on both arrows */
+                    var biDir = state.edges.some(function (e) { return e.from === edge.to && e.to === edge.from; });
+                    var offset = biDir ? 10 : 0;
+                    var active = state.selectedId && state.selectedId === edge.from;
+                    drawArrow(fromNode, toNode, offset, active ? '#2459c7' : '#7890b8', active ? 3 : 2);
+                });
+
+                state.nodes.forEach(function (node, index) {
+                    var score = currentVector[index] || 0;
+                    var fill = rankColor(score, minScore, maxScore);
+                    var isSelected = state.selectedId === node.id;
+
+                    ctx.save();
+                    ctx.shadowColor = 'rgba(15, 23, 42, 0.12)';
+                    ctx.shadowBlur = 12;
+                    ctx.shadowOffsetY = 4;
+                    ctx.fillStyle = fill;
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, NODE_RADIUS, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+
+                    ctx.lineWidth = isSelected ? 4 : 2;
+                    ctx.strokeStyle = isSelected ? '#2459c7' : '#ffffff';
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, NODE_RADIUS, 0, Math.PI * 2);
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#183153';
+                    ctx.font = '30px system-ui, Apple Color Emoji, Segoe UI Emoji, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(node.icon || DEFAULT_ICON, node.x, node.y - 4);
+
+                    ctx.font = '600 13px Inter, system-ui, sans-serif';
+                    ctx.fillStyle = '#122033';
+                    ctx.fillText(node.label, node.x, node.y + NODE_RADIUS + 18);
+
+                    ctx.font = '600 12px Inter, system-ui, sans-serif';
+                    ctx.fillStyle = '#0f172a';
+                    ctx.fillText(round(score), node.x, node.y + NODE_RADIUS + 35);
+                });
+            }
+
+            function renderMatrices() {
+                linkMatrixWrap.innerHTML = buildMatrixTable(state.S);
+                googleMatrixWrap.innerHTML = buildMatrixTable(state.G);
+            }
+
+            /* Update only the graph-area message (always safe to call) */
+            function renderGraphMessage() {
+                if (!state.nodes.length) {
+                    graphMessage.textContent = 'El lienzo está vacío. Puedes crear una red desde cero o cargar una web prediseñada.';
+                    return;
+                }
+                var preset = presets[state.presetKey];
+                var danglingNodes = state.nodes.filter(function (node) {
+                    return getOutgoing(node.id).length === 0;
+                }).map(function (node) { return node.label; });
+                var message = preset ? preset.description : 'Red personalizada.';
+                if (danglingNodes.length) {
+                    message += ' Páginas sin enlaces salientes: ' + danglingNodes.join(', ') + '.';
+                }
+                graphMessage.textContent = message;
+            }
+
+            /* Update the iteration-panel status (only call when state.executed) */
+            function renderIterationStatus() {
+                if (!state.history.length) return;
+                var step = Math.min(state.currentStep, state.history.length - 1);
+                var totalSteps = state.history.length - 1;
+                var currentDiff = state.history[step].diff || 0;
+                iterationBadge.textContent = 'Iteración ' + step + ' de ' + totalSteps;
+                diffBadge.textContent = '‖Δ‖₁ = ' + currentDiff.toFixed(6);
+                if (state.converged) {
+                    statusText.textContent = 'Convergencia alcanzada en ' + totalSteps + ' iteraciones con tolerancia ' + (parseFloat(toleranceInput.value) || 0.0001) + '.';
+                } else {
+                    statusText.textContent = 'No se alcanzó la tolerancia antes del máximo fijado. Puedes aumentar el número de iteraciones o relajar la tolerancia.';
+                }
+            }
+
+            function render() {
+                updateInputsFromSelection();
+                renderMatrices();
+                renderGraphMessage();
+                drawGraph();
+                deleteNodeBtn.disabled = !state.selectedId;
+                runBtn.disabled = !state.nodes.length;
+
+                var iterPanel = document.getElementById('iterationPanel');
+                if (state.executed && state.history.length) {
+                    renderIterationStatus();
+                    historyWrap.innerHTML = buildHistoryTable();
+                    buildRanking();
+                    var atEnd = state.currentStep >= state.history.length - 1;
+                    prevStepBtn.disabled = state.currentStep <= 0;
+                    nextStepBtn.disabled = atEnd;
+                    playBtn.disabled = atEnd;
+                    stopBtn.disabled = !playTimer;
+                    resetBtn.disabled = state.currentStep <= 0;
+                    iterPanel.style.display = 'block';
+                } else {
+                    iterPanel.style.display = 'none';
+                }
+            }
+
+            /* Recompute matrices (and optionally reset execution state) but do NOT run iterations */
+            function recompute(resetStep) {
+                stopAuto();
+                if (resetStep) {
+                    state.currentStep = 0;
+                    state.executed = false;
+                    state.history = [];
+                }
+                computeMatricesOnly();
+                render();
+            }
+
+            /* Called by the Ejecutar PageRank button: runs iterations and shows the panel */
+            function executePageRank() {
+                stopAuto();
+                computeHistory();
+                state.executed = true;
+                state.currentStep = 0;
+                render();
+            }
+
+            function stepTo(index) {
+                if (!state.history.length) return;
+                state.currentStep = Math.max(0, Math.min(index, state.history.length - 1));
+                render();
+            }
+
+            function stepNext() {
+                stepTo(state.currentStep + 1);
+            }
+
+            function stepPrev() {
+                stepTo(state.currentStep - 1);
+            }
+
+            function stopAuto() {
+                if (playTimer) {
+                    clearInterval(playTimer);
+                    playTimer = null;
+                }
+            }
+
+            function playAuto() {
+                if (playTimer || state.currentStep >= state.history.length - 1) return;
+                playTimer = setInterval(function () {
+                    if (state.currentStep >= state.history.length - 1) {
+                        stopAuto();
+                        render();
+                        return;
+                    }
+                    state.currentStep += 1;
+                    render();
+                }, 850);
+                render();
+            }
+
+            function getCanvasPoint(event) {
+                var rect = canvas.getBoundingClientRect();
+                return {
+                    x: (event.clientX - rect.left) * (canvas.width / rect.width),
+                    y: (event.clientY - rect.top) * (canvas.height / rect.height)
+                };
+            }
+
+            function hitNode(point) {
+                for (var i = state.nodes.length - 1; i >= 0; i -= 1) {
+                    var node = state.nodes[i];
+                    var dx = point.x - node.x;
+                    var dy = point.y - node.y;
+                    if (dx * dx + dy * dy <= NODE_RADIUS * NODE_RADIUS) return node;
+                }
+                return null;
+            }
+
+            function onPointerDown(event) {
+                var point = getCanvasPoint(event);
+                var node = hitNode(point);
+                pointerState.pointerId = event.pointerId;
+                pointerState.candidateId = node ? node.id : null;
+                pointerState.dragId = null;
+                pointerState.startX = point.x;
+                pointerState.startY = point.y;
+                pointerState.moved = false;
+                if (node) {
+                    pointerState.offsetX = point.x - node.x;
+                    pointerState.offsetY = point.y - node.y;
+                }
+                canvas.setPointerCapture(event.pointerId);
+            }
+
+            function onPointerMove(event) {
+                if (pointerState.pointerId !== event.pointerId) return;
+                var point = getCanvasPoint(event);
+                if (!pointerState.candidateId) return;
+
+                var dx = point.x - pointerState.startX;
+                var dy = point.y - pointerState.startY;
+                if (!pointerState.dragId && Math.hypot(dx, dy) > 6) {
+                    pointerState.dragId = pointerState.candidateId;
+                    pointerState.moved = true;
+                }
+
+                if (!pointerState.dragId) return;
+                var node = getNode(pointerState.dragId);
+                if (!node) return;
+                node.x = Math.max(NODE_RADIUS + 10, Math.min(canvas.width - NODE_RADIUS - 10, point.x - pointerState.offsetX));
+                node.y = Math.max(NODE_RADIUS + 10, Math.min(canvas.height - NODE_RADIUS - 16, point.y - pointerState.offsetY));
+                drawGraph();
+            }
+
+            function onPointerUp(event) {
+                if (pointerState.pointerId !== event.pointerId) return;
+                var point = getCanvasPoint(event);
+                var releasedNode = hitNode(point);
+
+                if (pointerState.dragId) {
+                    pointerState.pointerId = null;
+                    pointerState.candidateId = null;
+                    pointerState.dragId = null;
+                    recompute(false);
+                    return;
+                }
+
+                if (!releasedNode) {
+                    if (state.selectedId) {
+                        /* click on empty with selection → deselect */
+                        state.selectedId = null;
+                        render();
+                    } else {
+                        /* click on empty without selection → add new node at that position */
+                        addNode(point.x, point.y);
+                    }
+                } else if (!state.selectedId) {
+                    state.selectedId = releasedNode.id;
+                    render();
+                } else if (state.selectedId === releasedNode.id) {
+                    state.selectedId = null;
+                    render();
+                } else {
+                    toggleEdge(state.selectedId, releasedNode.id);
+                }
+
+                pointerState.pointerId = null;
+                pointerState.candidateId = null;
+                pointerState.dragId = null;
+            }
+
+            canvas.addEventListener('pointerdown', onPointerDown);
+            canvas.addEventListener('pointermove', onPointerMove);
+            canvas.addEventListener('pointerup', onPointerUp);
+            canvas.addEventListener('pointercancel', function () {
+                pointerState.pointerId = null;
+                pointerState.candidateId = null;
+                pointerState.dragId = null;
+            });
+
+            loadPresetBtn.addEventListener('click', function () {
+                loadPreset(presetSelect.value);
+            });
+            presetSelect.addEventListener('change', function () {
+                loadPreset(presetSelect.value);
+            });
+            deleteNodeBtn.addEventListener('click', deleteSelectedNode);
+            centerBtn.addEventListener('click', circleLayout);
+            applyNodeBtn.addEventListener('click', updateSelectedNodeFromInputs);
+            nodeIconInput.addEventListener('change', updateSelectedNodeFromInputs);
+            nodeLabelInput.addEventListener('change', updateSelectedNodeFromInputs);
+            dampingRange.addEventListener('input', function () {
+                dampingValue.textContent = Number(dampingRange.value).toFixed(2);
+                recompute(true);
+            });
+            toleranceInput.addEventListener('change', function () {
+                recompute(true);
+            });
+            maxIterationsInput.addEventListener('change', function () {
+                recompute(true);
+            });
+            runBtn.addEventListener('click', executePageRank);
+            prevStepBtn.addEventListener('click', stepPrev);
+            nextStepBtn.addEventListener('click', stepNext);
+            playBtn.addEventListener('click', playAuto);
+            stopBtn.addEventListener('click', function () {
+                stopAuto();
+                render();
+            });
+            resetBtn.addEventListener('click', function () {
+                stopAuto();
+                stepTo(0);
+            });
+
+            populatePresets();
+            dampingValue.textContent = Number(dampingRange.value).toFixed(2);
+            loadPreset('mini');
+        })();
+    </script>
 </body>
+
 </html>
