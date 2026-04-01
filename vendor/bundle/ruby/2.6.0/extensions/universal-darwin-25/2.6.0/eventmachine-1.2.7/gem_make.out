@@ -1,5 +1,5 @@
 current directory: /Users/franjfal/franjfal.github.io/vendor/bundle/ruby/2.6.0/gems/eventmachine-1.2.7/ext/fastfilereader
-/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/bin/ruby -I /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0 -r ./siteconf20260311-58039-v4x6w0.rb extconf.rb
+/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/bin/ruby -I /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0 -r ./siteconf20260401-94195-y8rsbz.rb extconf.rb
 creating Makefile
 
 current directory: /Users/franjfal/franjfal.github.io/vendor/bundle/ruby/2.6.0/gems/eventmachine-1.2.7/ext/fastfilereader
@@ -24,4 +24,4 @@ ld: warning: search path '/AppleInternal/Library/BuildRoots/4~CG42ugDRrNTwtJ-8Gt
 
 current directory: /Users/franjfal/franjfal.github.io/vendor/bundle/ruby/2.6.0/gems/eventmachine-1.2.7/ext/fastfilereader
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 fastfilereaderext.bundle ./.gem.20260311-58039-1hj6nc2
+/usr/bin/install -c -m 0755 fastfilereaderext.bundle ./.gem.20260401-94195-vtfkxs
