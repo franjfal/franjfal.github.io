@@ -238,10 +238,10 @@ checked program was:
 "xcrun clang -o conftest -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/include/ruby-2.6.0/universal-darwin25 -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/include/ruby-2.6.0/ruby/backward -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/include/ruby-2.6.0 -I. -I/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/ffi -D_XOPEN_SOURCE -D_DARWIN_C_SOURCE -D_DARWIN_UNLIMITED_SELECT -D_REENTRANT    -g -Os -pipe -DHAVE_GCC_ATOMIC_BUILTINS -fno-typed-memory-operations -fno-typed-cxx-new-delete -DUSE_FFI_CLOSURE_ALLOC  conftest.c  -L. -L/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib -L. -L/AppleInternal/Library/BuildRoots/4~CG42ugDRrNTwtJ-8GtyT03OOGlHvQq8y7puCpJc/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.3.Internal.sdk/usr/local/lib     -lffi  -lffi -lruby.2.6 -lffi  -lffi  "
 ld: warning: ignoring duplicate libraries: '-lffi'
 ld: warning: search path '/AppleInternal/Library/BuildRoots/4~CG42ugDRrNTwtJ-8GtyT03OOGlHvQq8y7puCpJc/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.3.Internal.sdk/usr/local/lib' not found
-Undefined symbols for architecture x86_64:
+Undefined symbols for architecture arm64:
   "_rb_gc_mark_movable", referenced from:
-      _t in conftest-b53bee.o
-ld: symbol(s) not found for architecture x86_64
+      _t in conftest-4cad5a.o
+ld: symbol(s) not found for architecture arm64
 clang: error: linker command failed with exit code 1 (use -v to see invocation)
 checked program was:
 /* begin */
@@ -289,6 +289,7 @@ extconf.h is:
 4: #define HAVE_FFI_RAW_CALL 1
 5: #define HAVE_FFI_PREP_RAW_CLOSURE 1
 6: #define HAVE_RAW_API 1
-7: #endif
+7: #define USE_FFI_ALLOC 1
+8: #endif
 /* end */
 

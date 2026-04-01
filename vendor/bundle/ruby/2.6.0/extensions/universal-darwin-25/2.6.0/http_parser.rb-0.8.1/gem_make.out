@@ -1,5 +1,5 @@
 current directory: /Users/franjfal/franjfal.github.io/vendor/bundle/ruby/2.6.0/gems/http_parser.rb-0.8.1/ext/ruby_http_parser
-/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/bin/ruby -I /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0 -r ./siteconf20260311-58039-1kvplte.rb extconf.rb
+/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/bin/ruby -I /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0 -r ./siteconf20260401-94195-1chvsij.rb extconf.rb
 creating Makefile
 
 current directory: /Users/franjfal/franjfal.github.io/vendor/bundle/ruby/2.6.0/gems/http_parser.rb-0.8.1/ext/ruby_http_parser
@@ -465,4 +465,4 @@ ld: warning: search path '/AppleInternal/Library/BuildRoots/4~CG42ugDRrNTwtJ-8Gt
 
 current directory: /Users/franjfal/franjfal.github.io/vendor/bundle/ruby/2.6.0/gems/http_parser.rb-0.8.1/ext/ruby_http_parser
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 ruby_http_parser.bundle ./.gem.20260311-58039-10ckyae
+/usr/bin/install -c -m 0755 ruby_http_parser.bundle ./.gem.20260401-94195-x5fime

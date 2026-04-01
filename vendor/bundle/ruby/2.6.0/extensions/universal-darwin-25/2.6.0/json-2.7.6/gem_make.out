@@ -1,5 +1,5 @@
 current directory: /Users/franjfal/franjfal.github.io/vendor/bundle/ruby/2.6.0/gems/json-2.7.6/ext/json/ext/parser
-/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/bin/ruby -I /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0 -r ./siteconf20260311-58039-10zl7el.rb extconf.rb
+/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/bin/ruby -I /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0 -r ./siteconf20260401-94195-95d0y5.rb extconf.rb
 checking for rb_enc_raise() in ruby.h... yes
 checking for rb_enc_interned_str() in ruby.h... no
 checking for whether -std=c99 is accepted as CFLAGS... yes
@@ -16,4 +16,4 @@ ld: warning: search path '/AppleInternal/Library/BuildRoots/4~CG42ugDRrNTwtJ-8Gt
 
 current directory: /Users/franjfal/franjfal.github.io/vendor/bundle/ruby/2.6.0/gems/json-2.7.6/ext/json/ext/parser
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 parser.bundle ./.gem.20260311-58039-1i6ldp6/json/ext
+/usr/bin/install -c -m 0755 parser.bundle ./.gem.20260401-94195-p3vrcn/json/ext

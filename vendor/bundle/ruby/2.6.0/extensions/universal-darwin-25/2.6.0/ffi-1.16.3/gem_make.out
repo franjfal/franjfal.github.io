@@ -1,5 +1,5 @@
 current directory: /Users/franjfal/franjfal.github.io/vendor/bundle/ruby/2.6.0/gems/ffi-1.16.3/ext/ffi_c
-/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/bin/ruby -I /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0 -r ./siteconf20260311-58039-14vv4gl.rb extconf.rb
+/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/bin/ruby -I /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0 -r ./siteconf20260401-94195-1kz8gv8.rb extconf.rb
 checking for ffi_prep_closure_loc() in -lffi... yes
 checking for ffi_prep_cif_var()... yes
 checking for ffi_raw_call()... yes
@@ -4072,4 +4072,4 @@ ld: warning: search path '/AppleInternal/Library/BuildRoots/4~CG42ugDRrNTwtJ-8Gt
 
 current directory: /Users/franjfal/franjfal.github.io/vendor/bundle/ruby/2.6.0/gems/ffi-1.16.3/ext/ffi_c
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 ffi_c.bundle ./.gem.20260311-58039-1s19mej
+/usr/bin/install -c -m 0755 ffi_c.bundle ./.gem.20260401-94195-1hcdw2n
