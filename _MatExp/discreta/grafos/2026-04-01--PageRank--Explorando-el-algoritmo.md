@@ -9,9 +9,9 @@ categories:
 taxonomy: experimento grafos internet pagerank matrices autovalores
 permalink: "/MatExp/discreta/grafos/pagerank/"
 header:
-  image: "/assets/MatExp/discreta/grafos/pagerank/header.svg"
+  image: "/assets/MatExp/discreta/grafos/pagerank/header.png"
 excerpt: "Una visualización interactiva para construir una web, estudiar su matriz asociada y seguir paso a paso las iteraciones del algoritmo PageRank."
-feature: "/assets/MatExp/discreta/grafos/pagerank/feature.svg"
+feature: "/assets/MatExp/discreta/grafos/pagerank/feature.png"
 ---
 
 Cuando una red de páginas web se representa mediante un grafo dirigido, cada página se convierte en un nodo y cada enlace en una arista orientada. El algoritmo **PageRank** parte de esa idea para responder a una pregunta muy natural: **si una persona fuese saltando de enlace en enlace, qué páginas visitaría con mayor frecuencia a largo plazo**.

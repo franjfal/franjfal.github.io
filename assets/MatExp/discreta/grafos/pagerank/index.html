@@ -955,20 +955,23 @@
             function buildHistoryTable() {
                 if (!state.history.length) return '<p class="mini-note">No hay iteraciones disponibles.</p>';
 
-                var entry = state.history[state.currentStep];
                 var html = '<table><thead><tr><th>k</th>';
                 state.nodes.forEach(function (node) {
                     html += '<th>' + escapeHtml(node.label) + '</th>';
                 });
                 html += '<th>‖Δ‖₁</th></tr></thead><tbody>';
 
-                html += '<tr class="current-row">';
-                html += '<th>' + state.currentStep + '</th>';
-                entry.vector.forEach(function (value) {
-                    html += '<td>' + round(value) + '</td>';
-                });
-                html += '<td>' + round(entry.diff || 0) + '</td>';
-                html += '</tr>';
+                for (var i = 0; i < state.history.length; i += 1) {
+                    var entry = state.history[i];
+                    var cls = (i === state.currentStep) ? ' class="current-row"' : '';
+                    html += '<tr' + cls + '>';
+                    html += '<th>' + i + '</th>';
+                    entry.vector.forEach(function (value) {
+                        html += '<td>' + round(value) + '</td>';
+                    });
+                    html += '<td>' + round(entry.diff || 0) + '</td>';
+                    html += '</tr>';
+                }
 
                 html += '</tbody></table>';
                 return html;
