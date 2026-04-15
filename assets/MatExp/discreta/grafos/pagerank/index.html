@@ -706,6 +706,7 @@
                 currentStep: 0,
                 converged: false,
                 executed: false,   /* true after Ejecutar PageRank is pressed */
+                autoPlaying: false,
                 S: [],
                 G: [],
                 presetKey: 'mini'
@@ -955,13 +956,16 @@
             function buildHistoryTable() {
                 if (!state.history.length) return '<p class="mini-note">No hay iteraciones disponibles.</p>';
 
+                var showFullHistory = state.autoPlaying || state.currentStep >= state.history.length - 1;
+                var endIndex = showFullHistory ? state.history.length : state.currentStep + 1;
+
                 var html = '<table><thead><tr><th>k</th>';
                 state.nodes.forEach(function (node) {
                     html += '<th>' + escapeHtml(node.label) + '</th>';
                 });
                 html += '<th>‖Δ‖₁</th></tr></thead><tbody>';
 
-                for (var i = 0; i < state.history.length; i += 1) {
+                for (var i = 0; i < endIndex; i += 1) {
                     var entry = state.history[i];
                     var cls = (i === state.currentStep) ? ' class="current-row"' : '';
                     html += '<tr' + cls + '>';
@@ -1203,6 +1207,7 @@
 
             function stepTo(index) {
                 if (!state.history.length) return;
+                stopAuto();
                 state.currentStep = Math.max(0, Math.min(index, state.history.length - 1));
                 render();
             }
@@ -1220,10 +1225,12 @@
                     clearInterval(playTimer);
                     playTimer = null;
                 }
+                state.autoPlaying = false;
             }
 
             function playAuto() {
                 if (playTimer || state.currentStep >= state.history.length - 1) return;
+                state.autoPlaying = true;
                 playTimer = setInterval(function () {
                     if (state.currentStep >= state.history.length - 1) {
                         stopAuto();
