@@ -35,6 +35,17 @@
 
   <title>gap</title>
   <link rel="manifest" href="manifest.json">
+  <script>
+    // Soporte para SPA en GitHub Pages: restaura la ruta desde 404.html
+    (function () {
+      const redirect = sessionStorage.getItem('redirect');
+      if (redirect) {
+        sessionStorage.removeItem('redirect');
+        // Restaura la ruta histórica sin recargar la página
+        window.history.replaceState(null, null, redirect);
+      }
+    })();
+  </script>
 </head>
 
 <body>
