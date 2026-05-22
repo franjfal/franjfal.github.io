@@ -12,7 +12,7 @@ Mi investigación se centra en el análisis funcional y la geometría de los esp
 
 ## Libros
 
-He publicado dos libros:
+Entre mis proyectos de divulgación destacan estos dos libros, que exploran ámbitos distintos pero complementarios: el primero ofrece una introducción accesible a los fundamentos de la inteligencia artificial, con especial atención al funcionamiento de los chatbots y los modelos actuales; el segundo propone una aproximación experimental y manipulativa a las matemáticas, orientada al descubrimiento y al aprendizaje activo.
 
 <div style="display:flex; gap:1.25rem; flex-wrap:wrap; align-items:flex-start; margin-top:0.5rem;">
 	<div style="text-align:center; max-width:180px;">
