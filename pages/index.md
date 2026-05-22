@@ -19,13 +19,11 @@ Entre mis proyectos de divulgación destacan estos dos libros, que exploran ámb
 		<a href="https://artibrains.github.io/es/how-machines-think/index.html">
 			<img src="/assets/how_machines_learn_COVER-ES-640.webp" alt="Portada de Cerebros Artificiales" width="140" loading="lazy">
 		</a>
-		<p><a href="https://artibrains.github.io/es/how-machines-think/index.html">Cerebros Artificiales: Cómo aprenden las máquinas a pensar</a></p>
 	</div>
 	<div style="text-align:center; max-width:180px;">
 		<a href="https://franjfal.github.io/Libros/MatExp/">
 			<img src="/assets/MatExp/libro/PortadaMatExp.jpg" alt="Portada de Matemáticas Experimentales" width="140" loading="lazy">
 		</a>
-		<p><a href="https://franjfal.github.io/Libros/MatExp/">Matemáticas Experimentales</a></p>
 	</div>
 </div>
 
