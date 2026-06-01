@@ -10,6 +10,23 @@ Mi nombre es Francisco Javier Falcó Benavent. Soy profesor del departamento de 
 
 Mi investigación se centra en el análisis funcional y la geometría de los espacios de Banach donde he realizado aportaciones en diferentes campos.
 
+## Libros
+
+Entre mis proyectos de divulgación destacan estos dos libros, que exploran ámbitos distintos pero complementarios: el primero ofrece una introducción accesible a los fundamentos de la inteligencia artificial, con especial atención al funcionamiento de los chatbots y los modelos actuales; el segundo propone una aproximación experimental y manipulativa a las matemáticas, orientada al descubrimiento y al aprendizaje activo.
+
+<div style="display:flex; gap:1.25rem; flex-wrap:wrap; align-items:flex-start; margin-top:0.5rem;">
+	<div style="text-align:center; max-width:180px;">
+		<a href="https://artibrains.github.io/es/how-machines-think/index.html">
+			<img src="/assets/how_machines_learn_COVER-ES-640.webp" alt="Portada de Cerebros Artificiales" width="140" loading="lazy">
+		</a>
+	</div>
+	<div style="text-align:center; max-width:180px;">
+		<a href="https://franjfal.github.io/Libros/MatExp/">
+			<img src="/assets/MatExp/libro/PortadaMatExp.jpg" alt="Portada de Matemáticas Experimentales" width="140" loading="lazy">
+		</a>
+	</div>
+</div>
+
 ## Contacto
 - Dirección: Departamento de Análisis Matemático, C/ Dr. Moliner, 50 46100 Burjassot
 - Despacho: 2.16, segunda planta del Edificio Jerónimo Muñoz
