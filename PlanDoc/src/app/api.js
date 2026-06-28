@@ -27,7 +27,14 @@ export async function api(path, options = {}) {
     });
 
     const text = await res.text();
-    const body = text ? JSON.parse(text) : {};
+    let body = {};
+    try {
+        body = text ? JSON.parse(text) : {};
+    } catch {
+        const err = new Error("La API no ha devuelto JSON. Revisa la URL del worker/API en PLANDOC_API_BASE.");
+        err.responseText = text;
+        throw err;
+    }
     if (!res.ok) {
         const err = new Error(body.details || body.error || `HTTP ${res.status}`);
         err.body = body;
