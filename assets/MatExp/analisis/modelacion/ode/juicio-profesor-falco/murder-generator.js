@@ -276,64 +276,64 @@
       {
         id: "bundle_judge",
         fileName: "ROL_Juez_paquete_completo.pdf",
-        label: "Juez - paquete completo",
-        title: "Paquete completo para el juez",
+        label: "El juez",
+        title: "El juez",
         ids: ["context", "visualDossier", "trialGuide", "evidenceBoard", "judge"]
       },
       {
         id: "bundle_prosecution",
         fileName: "ROL_Fiscalia_paquete_completo.pdf",
-        label: "Fiscalía - paquete completo",
-        title: "Paquete completo para la Fiscalía",
+        label: "La Fiscalía",
+        title: "La Fiscalía",
         ids: ["context", "visualDossier", "trialGuide", "evidenceBoard", "prosecution", "forensicMath"]
       },
       {
         id: "bundle_forensic",
         fileName: "ROL_Medico_forense_paquete_completo.pdf",
-        label: "Médico forense - paquete completo",
-        title: "Paquete completo para el médico forense",
+        label: "El médico forense",
+        title: "El médico forense",
         ids: ["context", "visualDossier", "trialGuide", "forensicReport", "forensicMath"]
       },
       {
         id: "bundle_janitor",
         fileName: "ROL_Conserje_paquete_completo.pdf",
-        label: "Conserje - paquete completo",
-        title: "Paquete completo para la conserje",
+        label: "La conserje",
+        title: "La conserje",
         ids: ["context", "visualDossier", "trialGuide", "evidenceBoard", "janitor"]
       },
       {
         id: "bundle_jury",
         fileName: "ROL_Jurado_popular_paquete_completo.pdf",
-        label: "Jurado popular - paquete completo",
-        title: "Paquete completo para el jurado popular",
+        label: "El jurado popular",
+        title: "El jurado popular",
         ids: ["context", "visualDossier", "jury"]
       },
       {
         id: "bundle_suspect1",
         fileName: `ROL_${s1.fileStem}_paquete_completo.pdf`,
-        label: `${s1.label} - paquete completo`,
-        title: `Paquete completo para ${s1.withArticle}`,
+        label: s1.withArticleCap,
+        title: s1.withArticleCap,
         ids: ["context", "visualDossier", "suspect1"]
       },
       {
         id: "bundle_suspect2",
         fileName: `ROL_${s2.fileStem}_paquete_completo.pdf`,
-        label: `${s2.label} - paquete completo`,
-        title: `Paquete completo para ${s2.withArticle}`,
+        label: s2.withArticleCap,
+        title: s2.withArticleCap,
         ids: ["context", "visualDossier", "suspect2"]
       },
       {
         id: "bundle_suspect3",
         fileName: `ROL_${s3.fileStem}_paquete_completo.pdf`,
-        label: `${s3.label} - paquete completo`,
-        title: `Paquete completo para ${s3.withArticle}`,
+        label: s3.withArticleCap,
+        title: s3.withArticleCap,
         ids: ["context", "visualDossier", "suspect3"]
       },
       {
         id: "bundle_teacher",
         fileName: "ROL_Docente_paquete_completo_con_solucion.pdf",
-        label: "Docente - paquete completo con solución",
-        title: "Paquete completo para el docente",
+        label: "El docente",
+        title: "El docente",
         ids: individualSpecs.map((spec) => spec.id)
       }
     ];
@@ -351,8 +351,8 @@
     return makeSpec(
       "context",
       "00_Contexto_comun.pdf",
-      "Contexto común",
-      "Historia pública para todos los participantes",
+      "La historia del caso",
+      "",
       [
         block.image("cover", "Aula de la actividad y escena del caso.", { maxHeight: 190 }),
         block.heading("Historia de fondo"),
@@ -390,8 +390,8 @@
     return makeSpec(
       "visualDossier",
       "01_Dossier_visual_comun.pdf",
-      "Dossier visual común",
-      "Material visual sin solución para todos los roles",
+      "El plano del aula",
+      "",
       [
         block.heading("Plano del aula"),
         block.paragraph(
@@ -472,7 +472,7 @@
     return makeSpec(
       "judge",
       "04_Papel_Juez.pdf",
-      "Papel del juez",
+      "El juez",
       "Responsabilidades, preguntas y normas de moderación",
       [
         block.heading("Objetivo"),
@@ -506,7 +506,7 @@
     return makeSpec(
       "prosecution",
       "05_Papel_Fiscalia.pdf",
-      "Papel de la Fiscalía",
+      "La Fiscalía",
       "Guía para construir la acusación mediante interrogatorios",
       [
         block.heading("Objetivo"),
@@ -545,7 +545,7 @@
     return makeSpec(
       "forensicReport",
       "06_Informe_forense.pdf",
-      "Informe forense",
+      "El informe forense",
       "Causa de muerte, observaciones y conclusiones iniciales",
       [
         block.heading("Resumen"),
@@ -581,7 +581,7 @@
     return makeSpec(
       "forensicMath",
       "07_Informe_forense_matematico.pdf",
-      "Informe forense matemático",
+      "La estimación matemática",
       "Ley de enfriamiento de Newton aplicada al caso",
       [
         block.heading("Modelo visual generado"),
@@ -623,7 +623,7 @@
     return makeSpec(
       "janitor",
       "08_Registro_Conserje.pdf",
-      "Papel de la conserje",
+      "La conserje",
       "Registros del edificio y observaciones",
       [
         block.image("classroomPlan", "Plano del aula usado para situar las observaciones.", {
@@ -660,7 +660,7 @@
     return makeSpec(
       "jury",
       "09_Papel_Jurado_popular.pdf",
-      "Papel del jurado popular",
+      "El jurado popular",
       "Instrucciones para escuchar y deliberar",
       [
         block.heading("Objetivo"),
@@ -827,7 +827,7 @@
         ),
         block.heading("Reparto de información"),
         block.bullets([
-          "Contexto común y dossier visual común: se incluyen en todos los paquetes por rol.",
+          "La historia del caso y el plano del aula: se incluyen en todos los paquetes por rol.",
           "Guía de desarrollo del juicio: juez, Fiscalía, médico forense y conserje.",
           "Tablero de pruebas: juez, Fiscalía, conserje y docente.",
           "Informe forense e informe matemático: médico forense; el informe matemático también ayuda a la Fiscalía.",
@@ -857,7 +857,7 @@
       fileName,
       downloadLabel,
       title,
-      subtitle: "Documento combinado listo para entregar",
+      subtitle: "",
       blocks
     };
   }
