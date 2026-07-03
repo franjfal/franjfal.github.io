@@ -240,6 +240,42 @@
       color: var(--ink);
     }
 
+    .download-title {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .download-actions {
+      display: flex;
+      flex: none;
+      gap: 8px;
+    }
+
+    .download-icon {
+      display: inline-flex;
+      width: 36px;
+      height: 36px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid currentColor;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.85);
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .download-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+    }
+
+    .download-icon:hover,
+    .download-icon:focus {
+      background: #fff;
+      color: var(--blue);
+    }
+
     .download-link:hover {
       border-color: var(--green);
       color: var(--green);
@@ -251,6 +287,18 @@
       border-color: var(--accent);
       background: var(--accent);
       color: #fff;
+    }
+
+    .download-link.primary-link .download-icon {
+      border-color: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+    }
+
+    .download-link.primary-link .download-icon:hover,
+    .download-link.primary-link .download-icon:focus {
+      background: #fff;
+      color: var(--accent-dark);
     }
 
     .download-link.primary-link:hover,
@@ -352,24 +400,24 @@
     <section id="downloads-panel" class="panel hidden" aria-labelledby="downloads-title" style="margin-top: 22px;">
       <h2 id="downloads-title">Descargas</h2>
       <p class="download-note">
-        Usa la pestaña de documentos separados si quieres comprobar o imprimir cada
-        pieza por separado. Usa la pestaña de documentos conjuntos si vas a repartir
-        la actividad: cada descarga por rol incluye el contexto común, el dossier
-        compartido y los documentos específicos que le corresponden.
+        Usa la pestaña de documentos conjuntos si vas a repartir la actividad:
+        cada descarga por rol incluye el contexto común, el dossier compartido y
+        los documentos específicos que le corresponden. Usa la pestaña de
+        documentos separados si quieres comprobar o imprimir cada pieza por separado.
       </p>
       <div class="tabs" role="tablist" aria-label="Tipo de descarga">
-        <button id="tab-separate" class="tab-button" type="button" role="tab" aria-selected="true" aria-controls="panel-separate" data-tab-target="panel-separate">
-          Documentos separados
-        </button>
-        <button id="tab-bundles" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="panel-bundles" data-tab-target="panel-bundles">
+        <button id="tab-bundles" class="tab-button" type="button" role="tab" aria-selected="true" aria-controls="panel-bundles" data-tab-target="panel-bundles">
           Documentos conjuntos
         </button>
+        <button id="tab-separate" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="panel-separate" data-tab-target="panel-separate">
+          Documentos separados
+        </button>
       </div>
-      <div id="panel-separate" class="tab-panel" role="tabpanel" aria-labelledby="tab-separate">
-        <div id="separate-downloads" class="downloads"></div>
-      </div>
-      <div id="panel-bundles" class="tab-panel" role="tabpanel" aria-labelledby="tab-bundles" hidden>
+      <div id="panel-bundles" class="tab-panel" role="tabpanel" aria-labelledby="tab-bundles">
         <div id="bundle-downloads" class="downloads"></div>
+      </div>
+      <div id="panel-separate" class="tab-panel" role="tabpanel" aria-labelledby="tab-separate" hidden>
+        <div id="separate-downloads" class="downloads"></div>
       </div>
     </section>
   </main>

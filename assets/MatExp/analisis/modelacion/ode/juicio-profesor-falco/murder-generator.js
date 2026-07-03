@@ -1396,7 +1396,7 @@
     els.separateDownloads.innerHTML = "";
     els.bundleDownloads.innerHTML = "";
     els.downloadsPanel.classList.remove("hidden");
-    activateTab("panel-separate");
+    activateTab("panel-bundles");
 
     appendDownloadGroup(els.separateDownloads, separateZip, individualFiles);
     appendDownloadGroup(els.bundleDownloads, bundleZip, bundleFiles);
@@ -1413,12 +1413,46 @@
   }
 
   function makeDownloadLink(url, fileName, title, detail, primary) {
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = fileName;
-    link.className = primary ? "download-link primary-link" : "download-link";
-    link.innerHTML = `<span>${escapeHtml(title)}</span><small>${escapeHtml(detail)}</small>`;
-    return link;
+    const row = document.createElement("div");
+    row.className = primary ? "download-link primary-link" : "download-link";
+
+    const label = document.createElement("span");
+    label.className = "download-title";
+    label.textContent = title;
+
+    const actions = document.createElement("span");
+    actions.className = "download-actions";
+
+    const viewLink = document.createElement("a");
+    viewLink.href = url;
+    viewLink.target = "_blank";
+    viewLink.rel = "noopener";
+    viewLink.className = "download-icon";
+    viewLink.title = `Ver ${title} en el navegador`;
+    viewLink.setAttribute("aria-label", `Ver ${title} en el navegador`);
+    viewLink.innerHTML = iconEye();
+
+    const downloadLink = document.createElement("a");
+    downloadLink.href = url;
+    downloadLink.download = fileName;
+    downloadLink.className = "download-icon";
+    downloadLink.title = `Descargar ${title}`;
+    downloadLink.setAttribute("aria-label", `Descargar ${title}`);
+    downloadLink.innerHTML = iconDownload();
+
+    actions.appendChild(viewLink);
+    actions.appendChild(downloadLink);
+    row.appendChild(label);
+    row.appendChild(actions);
+    return row;
+  }
+
+  function iconEye() {
+    return '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke-width="2"/></svg>';
+  }
+
+  function iconDownload() {
+    return '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12" stroke-width="2" stroke-linecap="round"/><path d="m7 10 5 5 5-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 21h14" stroke-width="2" stroke-linecap="round"/></svg>';
   }
 
   function clearDownloads() {
