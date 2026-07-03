@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250" role="img" aria-labelledby="title desc">
+  <title id="title">ODE juicio matematico</title>
+  <desc id="desc">Miniatura estilo MatExp con una pizarra, un reloj y una curva de enfriamiento.</desc>
+  <rect width="250" height="250" fill="#43a6c7"/>
+  <g opacity=".18">
+    <path d="M0 34c38-14 74 11 114-4 53-20 93 9 136-7v227H0z" fill="#2d86a9"/>
+    <path d="M15 207c42 17 77-6 119 8 46 15 82-5 116 8v27H0v-37z" fill="#287f9f"/>
+  </g>
+  <g fill="none" stroke="#263447" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="43" y="53" width="164" height="106" rx="10" fill="#214e4c"/>
+    <path d="M58 174h134"/>
+    <path d="M100 159l-16 15M150 159l16 15"/>
+  </g>
+  <g fill="none" stroke="#f08a36" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M68 128c14-36 25-50 38-45 13 5 19 65 35 61 15-4 25-58 43-74"/>
+    <path d="M68 141h116"/>
+    <path d="M72 132l-4 9 9-2"/>
+  </g>
+  <g fill="#f5cc79" stroke="#263447" stroke-width="6" stroke-linejoin="round">
+    <path d="M161 34h48v44h-48z"/>
+    <path d="M164 45h42M164 59h31"/>
+  </g>
+  <g fill="#f08a36" stroke="#263447" stroke-width="6" stroke-linejoin="round">
+    <circle cx="68" cy="57" r="28"/>
+    <path d="M68 39v18l13 9" fill="none" stroke-linecap="round"/>
+  </g>
+  <g fill="#f5cc79" stroke="#263447" stroke-width="6" stroke-linejoin="round">
+    <path d="M39 168h55l9 47H48z"/>
+    <path d="M56 189h32M60 202h25"/>
+  </g>
+  <g fill="#f08a36" stroke="#263447" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M129 189h66"/>
+    <path d="M137 178h50l8 22h-66z"/>
+    <path d="M154 177v-10h17v10"/>
+  </g>
+  <text x="125" y="231" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="800" letter-spacing="0" fill="#f08a36" stroke="#263447" stroke-width="1.4">ODE JUICIO</text>
+</svg>

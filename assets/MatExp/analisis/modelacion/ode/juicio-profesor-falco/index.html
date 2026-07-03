@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generador del juicio - Caso del profesor Falcó</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #202a33;
+      --muted: #5a6570;
+      --line: #d8dee4;
+      --paper: #f7f5ef;
+      --panel: #ffffff;
+      --accent: #c85648;
+      --accent-dark: #993f35;
+      --blue: #2f5f77;
+      --green: #607f61;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.5;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .hero {
+      display: grid;
+      gap: 22px;
+      margin-bottom: 28px;
+    }
+
+    .hero img {
+      width: 100%;
+      max-height: 360px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      display: block;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 1.35rem;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0 0 12px;
+      color: var(--muted);
+    }
+
+    .intro {
+      max-width: 860px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid #b9c2ca;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font: inherit;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button,
+    .download-link {
+      appearance: none;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font: inherit;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+
+    button[type="submit"],
+    .primary-link {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    button[type="submit"]:hover,
+    .primary-link:hover {
+      background: var(--accent-dark);
+    }
+
+    button.secondary {
+      background: #fff;
+      border-color: #b9c2ca;
+      color: var(--ink);
+    }
+
+    button.secondary:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    button:disabled {
+      cursor: wait;
+      opacity: 0.65;
+    }
+
+    .status {
+      min-height: 24px;
+      margin-top: 12px;
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    .summary-list {
+      display: grid;
+      gap: 9px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .summary-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 9px;
+    }
+
+    .summary-list strong {
+      color: var(--ink);
+    }
+
+    .downloads {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .download-note {
+      margin-bottom: 14px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: 1px solid var(--line);
+      margin: 16px 0 14px;
+      padding-bottom: 8px;
+    }
+
+    .tab-button {
+      background: #fff;
+      border-color: #b9c2ca;
+      color: var(--ink);
+    }
+
+    .tab-button[aria-selected="true"] {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+    }
+
+    .tab-panel[hidden] {
+      display: none;
+    }
+
+    .download-group {
+      display: grid;
+      gap: 10px;
+    }
+
+    .download-link {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      border-color: #c9d1d8;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .download-link:hover {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .download-link.primary-link {
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 820px) {
+      .workspace,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .page {
+        width: min(100% - 22px, 1120px);
+        padding-top: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero" aria-labelledby="page-title">
+      <img src="assets/cover_scene.png" alt="Aula universitaria preparada como escena del caso">
+      <div class="intro">
+        <h1 id="page-title">Misterio de asesinato: el caso del profesor Falcó</h1>
+        <p>
+          Esta actividad convierte la ley de enfriamiento de Newton en un juicio.
+          El alumnado recibe papeles separados, interroga a testigos y sospechosos,
+          y reconstruye la cronología hasta encontrar a la persona culpable.
+        </p>
+        <p>
+          Selecciona la fecha, la hora a la que termina la clase y el género de cada
+          sospechoso. La muerte se situará diez minutos después del final de la clase
+          y todos los documentos se regenerarán con esa información.
+        </p>
+        <p>
+          Al generar los documentos verás dos pestañas: documentos separados, para
+          revisar o descargar cada pieza individual, y documentos conjuntos, para
+          descargar un único PDF por rol con el contexto común y todo lo que debe
+          recibir esa persona.
+        </p>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <form id="case-form" class="panel">
+        <h2>Datos del caso</h2>
+        <div class="form-grid">
+          <label>
+            Fecha del asesinato
+            <input id="case-date" name="caseDate" type="date" value="2026-07-02" required>
+          </label>
+          <label>
+            Fin de la clase
+            <input id="class-end-time" name="classEndTime" type="time" value="12:30" required>
+          </label>
+          <label>
+            Sospechoso 1
+            <select id="suspect-1-gender" name="suspect1Gender">
+              <option value="f" selected>Mujer</option>
+              <option value="m">Hombre</option>
+            </select>
+          </label>
+          <label>
+            Sospechoso 2
+            <select id="suspect-2-gender" name="suspect2Gender">
+              <option value="m" selected>Hombre</option>
+              <option value="f">Mujer</option>
+            </select>
+          </label>
+          <label>
+            Sospechoso 3
+            <select id="suspect-3-gender" name="suspect3Gender">
+              <option value="m" selected>Hombre</option>
+              <option value="f">Mujer</option>
+            </select>
+          </label>
+        </div>
+        <div class="actions">
+          <button id="generate-button" type="submit">Generar documentos</button>
+          <button id="clear-button" class="secondary" type="button">Limpiar descargas</button>
+        </div>
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+      </form>
+
+      <aside class="panel" aria-labelledby="case-summary-title">
+        <h2 id="case-summary-title">Resumen calculado</h2>
+        <ul id="case-summary" class="summary-list"></ul>
+      </aside>
+    </section>
+
+    <section id="downloads-panel" class="panel hidden" aria-labelledby="downloads-title" style="margin-top: 22px;">
+      <h2 id="downloads-title">Descargas</h2>
+      <p class="download-note">
+        Usa la pestaña de documentos separados si quieres comprobar o imprimir cada
+        pieza por separado. Usa la pestaña de documentos conjuntos si vas a repartir
+        la actividad: cada descarga por rol incluye el contexto común, el dossier
+        compartido y los documentos específicos que le corresponden.
+      </p>
+      <div class="tabs" role="tablist" aria-label="Tipo de descarga">
+        <button id="tab-separate" class="tab-button" type="button" role="tab" aria-selected="true" aria-controls="panel-separate" data-tab-target="panel-separate">
+          Documentos separados
+        </button>
+        <button id="tab-bundles" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="panel-bundles" data-tab-target="panel-bundles">
+          Documentos conjuntos
+        </button>
+      </div>
+      <div id="panel-separate" class="tab-panel" role="tabpanel" aria-labelledby="tab-separate">
+        <div id="separate-downloads" class="downloads"></div>
+      </div>
+      <div id="panel-bundles" class="tab-panel" role="tabpanel" aria-labelledby="tab-bundles" hidden>
+        <div id="bundle-downloads" class="downloads"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="murder-generator.js"></script>
+</body>
+</html>
