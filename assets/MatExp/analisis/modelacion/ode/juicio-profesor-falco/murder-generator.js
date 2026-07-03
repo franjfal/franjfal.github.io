@@ -45,6 +45,7 @@
 
   function init() {
     els.form = document.getElementById("case-form");
+    els.teacherName = document.getElementById("teacher-name");
     els.date = document.getElementById("case-date");
     els.time = document.getElementById("class-end-time");
     els.g1 = document.getElementById("suspect-1-gender");
@@ -66,7 +67,7 @@
       button.addEventListener("click", () => activateTab(button.dataset.tabTarget));
     });
 
-    [els.date, els.time, els.g1, els.g2, els.g3].forEach((input) => {
+    [els.teacherName, els.date, els.time, els.g1, els.g2, els.g3].forEach((input) => {
       input.addEventListener("input", updateSummary);
       input.addEventListener("change", updateSummary);
     });
@@ -98,12 +99,12 @@
       setStatus("Preparando archivos ZIP...");
       const stamp = `${caseData.dateValue}_${caseData.timeValue.replace(":", "-")}`;
       const separateZip = {
-        fileName: `juicio_profesor_falco_documentos_separados_${stamp}.zip`,
+        fileName: `juicio_${caseData.teacherFileStem}_documentos_separados_${stamp}.zip`,
         label: "ZIP documentos separados",
         blob: await buildZip(individualFiles)
       };
       const bundleZip = {
-        fileName: `juicio_profesor_falco_documentos_por_rol_${stamp}.zip`,
+        fileName: `juicio_${caseData.teacherFileStem}_documentos_por_rol_${stamp}.zip`,
         label: "ZIP documentos conjuntos",
         blob: await buildZip(bundleFiles)
       };
@@ -131,8 +132,12 @@
   }
 
   function readCaseData() {
+    const teacherFullName = normalizeName(els.teacherName.value);
     const dateValue = els.date.value;
     const timeValue = els.time.value;
+    if (!teacherFullName) {
+      throw new Error("Escribe el nombre del profesor.");
+    }
     if (!dateValue || !timeValue) {
       throw new Error("Selecciona una fecha y una hora de fin de clase.");
     }
@@ -147,6 +152,9 @@
     ];
 
     return {
+      teacherFullName,
+      teacherShortName: shortName(teacherFullName),
+      teacherFileStem: fileStem(teacherFullName),
       dateValue,
       timeValue,
       classEnd,
@@ -337,7 +345,7 @@
   }
 
   function commonContextDoc(data) {
-    const { timeline } = data;
+    const { timeline, teacherFullName } = data;
     const labels = data.suspects.map((suspect) => suspect.label).join(", ");
 
     return makeSpec(
@@ -349,7 +357,7 @@
         block.image("cover", "Aula de la actividad y escena del caso.", { maxHeight: 190 }),
         block.heading("Historia de fondo"),
         block.paragraph(
-          `El ${formatDate(timeline.classEnd)}, el profesor Javier Falcó impartió una clase especialmente tensa de ecuaciones diferenciales y transformadas de Laplace. La clase terminó a las ${formatTime(timeline.classEnd)}, después de un examen sorpresa que dejó al grupo inquieto.`
+          `El ${formatDate(timeline.classEnd)}, el profesor ${teacherFullName} impartió una clase especialmente tensa de ecuaciones diferenciales y transformadas de Laplace. La clase terminó a las ${formatTime(timeline.classEnd)}, después de un examen sorpresa que dejó al grupo inquieto.`
         ),
         block.paragraph(
           `Más tarde, a las ${formatEventTime(timeline.discovery, timeline.classEnd)}, el cuerpo del profesor fue encontrado en el aula. La policía acordonó la zona y comenzó una investigación que ha llevado a juicio a tres personas sospechosas.`
@@ -609,6 +617,7 @@
 
   function janitorDoc(data) {
     const { timeline, temps } = data;
+    const { teacherShortName } = data;
     const [s1, s2, s3] = data.suspects;
 
     return makeSpec(
@@ -626,7 +635,7 @@
         ),
         block.heading("Datos del aula"),
         block.bullets([
-          `A las ${formatEventTime(timeline.normalTemp, timeline.classEnd)}, el profesor Falcó tenía una temperatura normal de ${formatNumber(temps.bodyAtDeath)} C.`,
+          `A las ${formatEventTime(timeline.normalTemp, timeline.classEnd)}, el profesor ${teacherShortName} tenía una temperatura normal de ${formatNumber(temps.bodyAtDeath)} C.`,
           `El sistema de climatización del aula funcionaba correctamente y mantenía la sala a ${formatNumber(temps.ambient)} C.`,
           `${s3.withArticleCap} encontró el cuerpo a las ${formatEventTime(timeline.discovery, timeline.classEnd)} y te avisó inmediatamente.`,
           `Llamaste a las autoridades y al médico forense, que recibió el aviso a las ${formatEventTime(timeline.forensicCall, timeline.classEnd)}.`
@@ -682,6 +691,7 @@
 
   function suspectOneDoc(data) {
     const { timeline } = data;
+    const { teacherFullName } = data;
     const s1 = data.suspects[0];
 
     return makeSpec(
@@ -692,7 +702,7 @@
       [
         block.heading("Hechos privados"),
         block.bullets([
-          `Eres ${s1.un} estudiante ${s1.applied} de la clase del profesor Javier Falcó.`,
+          `Eres ${s1.un} estudiante ${s1.applied} de la clase del profesor ${teacherFullName}.`,
           `Te enfadaste por el examen sorpresa y te quedaste ${s1.alone} con el profesor cuando la clase terminó a las ${formatTime(timeline.classEnd)}.`,
           `Durante una discusión acalorada, mataste al profesor con una inyección oculta. La muerte fue instantánea, aproximadamente a las ${formatEventTime(timeline.death, timeline.classEnd)}.`,
           `Saliste del edificio justo después, a las ${formatEventTime(timeline.death, timeline.classEnd)}.`,
@@ -715,6 +725,7 @@
 
   function suspectTwoDoc(data) {
     const { timeline } = data;
+    const { teacherShortName } = data;
     const s2 = data.suspects[1];
 
     return makeSpec(
@@ -725,7 +736,7 @@
       [
         block.heading("Hechos"),
         block.bullets([
-          `Eres ${s2.un} estudiante ${s2.attentive} y puntual de la clase del profesor Falcó.`,
+          `Eres ${s2.un} estudiante ${s2.attentive} y puntual de la clase del profesor ${teacherShortName}.`,
           `Saliste del aula con la mayoría de la clase a las ${formatTime(timeline.classEnd)}.`,
           "Al llegar a la estación de metro, te diste cuenta de que habías olvidado una chaqueta y volviste al edificio.",
           `Entraste de nuevo sobre las ${formatEventTime(timeline.suspect2Return, timeline.classEnd)}, recogiste la chaqueta cerca de la entrada del aula y saliste unos minutos después, hacia las ${formatEventTime(timeline.suspect2Leave, timeline.classEnd)}.`,
@@ -1498,6 +1509,7 @@
 
     const { timeline } = data;
     const rows = [
+      ["Profesor", data.teacherFullName],
       ["Fecha", formatDate(timeline.classEnd)],
       ["Fin de clase", formatTime(timeline.classEnd)],
       ["Muerte estimada", formatEventTime(timeline.death, timeline.classEnd)],
@@ -1603,6 +1615,25 @@
 
   function formatNumber(value) {
     return Number(value).toFixed(2);
+  }
+
+  function normalizeName(value) {
+    return String(value || "").trim().replace(/\s+/g, " ");
+  }
+
+  function shortName(fullName) {
+    const parts = normalizeName(fullName).split(" ").filter(Boolean);
+    return parts.length ? parts[parts.length - 1] : "docente";
+  }
+
+  function fileStem(fullName) {
+    const normalized = normalizeName(fullName)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "");
+    return normalized || "docente";
   }
 
   function escapeHtml(value) {

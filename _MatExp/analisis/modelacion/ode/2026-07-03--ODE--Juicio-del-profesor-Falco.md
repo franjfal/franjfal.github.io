@@ -1,5 +1,5 @@
 ---
-title: "ODE: el juicio del profesor Falcó"
+title: "ODE: el juicio del profesor"
 date: '2026-07-03 20:30:00 +0200'
 categories:
   - experimento
@@ -15,7 +15,7 @@ feature: "/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/feature.s
 
 Esta actividad convierte la ley de enfriamiento de Newton en un juicio. El alumnado recibe papeles separados, interroga a testigos y sospechosos, y reconstruye la cronología hasta encontrar a la persona culpable.
 
-El generador permite elegir la fecha del caso, la hora de finalización de la clase y el género de cada sospechoso. A partir de esos datos produce los documentos necesarios para repartir la actividad en el aula, tanto por piezas separadas como en paquetes completos por rol.
+El generador permite elegir el nombre del profesor, la fecha del caso, la hora de finalización de la clase y el género de cada sospechoso. A partir de esos datos produce los documentos necesarios para repartir la actividad en el aula, tanto por piezas separadas como en paquetes completos por rol.
 
 <style>
   .trial-generator {
@@ -72,6 +72,10 @@ El generador permite elegir la fecha del caso, la hora de finalización de la cl
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
+  }
+
+  .trial-generator .full {
+    grid-column: 1 / -1;
   }
 
   .trial-generator label {
@@ -296,11 +300,15 @@ El generador permite elegir la fecha del caso, la hora de finalización de la cl
   }
 </style>
 
-<section class="trial-generator" aria-label="Generador del juicio del profesor Falco">
+<section class="trial-generator" aria-label="Generador del juicio del profesor">
   <section class="workspace">
     <form id="case-form" class="panel">
       <h2>Datos del caso</h2>
       <div class="form-grid">
+        <label class="full">
+          Nombre del profesor
+          <input id="teacher-name" name="teacherName" type="text" value="Javier Falcó" required>
+        </label>
         <label>
           Fecha del asesinato
           <input id="case-date" name="caseDate" type="date" value="2026-07-02" required>
