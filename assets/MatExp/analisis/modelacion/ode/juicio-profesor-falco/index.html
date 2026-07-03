@@ -245,8 +245,18 @@
       color: var(--green);
     }
 
-    .download-link.primary-link {
+    .download-link.primary-link,
+    .download-link.primary-link:visited,
+    .download-link.primary-link:focus {
       border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .download-link.primary-link:hover,
+    .download-link.primary-link:active {
+      border-color: var(--accent-dark);
+      background: var(--accent-dark);
       color: #fff;
     }
 

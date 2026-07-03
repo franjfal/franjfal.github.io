@@ -9,6 +9,8 @@
     hoursBetweenMeasurements: 1
   };
 
+  const SOURCE_CREDIT = "Material procedente de franjfal.github.io";
+
   const SCRIPT_URL =
     document.currentScript && document.currentScript.src
       ? document.currentScript.src
@@ -1060,7 +1062,15 @@
       width = height / ratio;
     }
 
-    ensureSpace(doc, page, cursor, height + 28);
+    const caption = item.caption ? String(item.caption) : "";
+    const captionSize = 8.5;
+    const captionLineHeight = 11;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(captionSize);
+    const captionLines = caption ? doc.splitTextToSize(caption, width) : [];
+    const captionHeight = captionLines.length ? captionLines.length * captionLineHeight + 8 : 8;
+
+    ensureSpace(doc, page, cursor, height + 6 + captionHeight);
     const x = page.marginX + (maxWidth - width) / 2;
     try {
       doc.addImage(image.dataUrl || image.element, "PNG", x, cursor.y, width, height);
@@ -1074,13 +1084,16 @@
     }
     cursor.y += height + 6;
 
-    if (item.caption) {
-      addWrappedText(doc, page, cursor, item.caption, {
-        size: 8.5,
-        color: [90, 101, 112],
-        lineHeight: 11,
-        gapAfter: 8
+    if (captionLines.length) {
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(captionSize);
+      doc.setTextColor(90, 101, 112);
+      captionLines.forEach((line) => {
+        ensureSpace(doc, page, cursor, captionLineHeight);
+        doc.text(line, x + width / 2, cursor.y, { align: "center" });
+        cursor.y += captionLineHeight;
       });
+      cursor.y += 8;
     } else {
       cursor.y += 8;
     }
@@ -1284,7 +1297,8 @@
       doc.setFont("helvetica", "normal");
       doc.setFontSize(8);
       doc.setTextColor(90, 101, 112);
-      doc.text(`Misterio de asesinato - ${label} - ${current}/${count}`, page.marginX, page.height - 24);
+      doc.text(`Misterio de asesinato - ${label} - ${current}/${count}`, page.marginX, page.height - 30);
+      doc.text(SOURCE_CREDIT, page.width - page.marginX, page.height - 18, { align: "right" });
     }
   }
 
