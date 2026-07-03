@@ -8,7 +8,7 @@ categories:
   - ODE
 permalink: "/MatExp/analisis/modelacion/ode/juicio-profesor-falco/"
 header:
-  image: "/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/assets/cover_scene.png"
+  image: "/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/header.jpg"
 excerpt: "Generador de documentos para una actividad de juicio matemático basada en la ley de enfriamiento de Newton."
 feature: "/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/feature.svg"
 ---
@@ -16,6 +16,10 @@ feature: "/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/feature.s
 Esta actividad convierte la ley de enfriamiento de Newton en un juicio. El alumnado recibe papeles separados, interroga a testigos y sospechosos, y reconstruye la cronología hasta encontrar a la persona culpable.
 
 El generador permite elegir el nombre del profesor, la fecha del caso, la hora de finalización de la clase y el género de cada sospechoso. A partir de esos datos produce los documentos necesarios para repartir la actividad en el aula, tanto por piezas separadas como en paquetes completos por rol.
+
+<figure>
+  <img src="{{ site.baseurl }}/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/assets/cover_scene.png" alt="Aula preparada como escena del caso">
+</figure>
 
 <style>
   .trial-generator {
