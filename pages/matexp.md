@@ -2,6 +2,8 @@
 title: "MatExp"
 permalink: /MatExp/
 excerpt: ""
+lang: es
+page_id: matexp
 ---
 
 <h1>Experimentos matemáticos</h1>

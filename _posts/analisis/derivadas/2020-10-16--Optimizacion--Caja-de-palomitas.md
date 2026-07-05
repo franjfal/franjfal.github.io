@@ -1,11 +1,13 @@
 ---
 title: La caja de palomitas del cine
+lang: es
+page_id: post-popcorn-box
 date: '2020-10-16 14:54:31 +0200'
 categories:
 - experimento
 - Análisis-una-variable
 taxonomy: experimento optimización análisis derivadas aplicaciones
-permalink: "/MatExp/analisis/derivadas/palomitas/"
+permalink: "/posts/MatExp/analisis/derivadas/palomitas/"
 header:
   image: "/assets/MatExp/analisis/derivadas/palomitas/header.jpg"
 excerpt: Experimento que muestra las aplicaciones del cálculo diferencial a la búsqueda
@@ -20,7 +22,6 @@ gallery1:
   alt: Ejemplo de caja
 feature: "/assets/MatExp/analisis/derivadas/palomitas/feature.jpg"
 ---
-
 <div class="materials">
 <h2> Materiales:</h2>
 <ul>

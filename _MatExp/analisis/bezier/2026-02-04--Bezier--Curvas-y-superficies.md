@@ -1,5 +1,7 @@
 ---
 title: Curvas y superficies de Bézier
+lang: es
+page_id: matexp-bezier-curves-surfaces
 date: '2026-02-04 12:00:00 +0100'
 categories:
   - experimento
@@ -13,7 +15,6 @@ header:
 excerpt: "Explora curvas de Bézier en 2D y 3D, y una superficie de Bézier en 3D, moviendo los puntos de control y visualizando el algoritmo de De Casteljau."
 feature: "/assets/MatExp/analisis/bezier/feature.jpg"
 ---
-
 Las curvas de Bézier nacen en los años 60 en el contexto del diseño industrial (Renault, Pierre Bézier) y se apoyan en una idea geométrica simple y potente: una curva (o superficie) se obtiene como combinación convexa de puntos de control mediante polinomios de Bernstein.
 
 En su forma más habitual, una curva de grado $n$ viene dada por

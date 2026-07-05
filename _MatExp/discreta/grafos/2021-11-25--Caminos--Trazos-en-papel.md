@@ -1,5 +1,7 @@
 ---
 title: Trazos en papel
+lang: es
+page_id: matexp-paper-traces
 date: '2021-11-23 14:54:31 +0200'
 categories:
 - experimento
@@ -16,7 +18,6 @@ gallery1:
   alt: ejemplo de caja
 feature: "assets/MatExp/discreta/grafos/trazos/feature.jpg"
 ---
-
 <div class="materials">
 <h2> Materiales:</h2>
 <ul>

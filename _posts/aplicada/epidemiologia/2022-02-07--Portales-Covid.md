@@ -1,15 +1,15 @@
 ---
 title: "Portales Covid-19"
+lang: es
+page_id: post-covid-portals
 name: Portales-Covid-19
 date: 2022-02-07 11:10:31 +0200
 categories: experimento modelización-matemática
 taxonomy: experimento modelización Covid-19
-permalink: /MatExp/aplicada/epidemiologia/portales-covid-19/
+permalink: /posts/MatExp/aplicada/epidemiologia/portales-covid-19/
 excerpt: "Listado de portales con datos sobre la Covid-19."
 hidden: true
 ---
-
-
 # Portales de datos de la Covid-19
 
 La siguiente lista contiene diversos portales donde puede consultarse los datos de la evolución de la pandemia producida por la Covid-19:

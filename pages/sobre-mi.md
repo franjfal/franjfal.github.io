@@ -2,6 +2,8 @@
 title:  "Sobre mi"
 permalink: /sobre-mi/
 excerpt: "Javier Falcó"
+lang: es
+page_id: about
 ---
 Bienvenido a mi sitio web.
 

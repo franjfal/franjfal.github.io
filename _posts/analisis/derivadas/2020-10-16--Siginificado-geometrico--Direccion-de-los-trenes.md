@@ -1,18 +1,19 @@
 ---
 title: La dirección del tren
+lang: es
+page_id: post-train-direction
 date: '2020-10-16 14:54:31 +0200'
 categories:
 - experimento
 - Análisis-una-variable
 taxonomy: experimento análisis derivadas aplicaciones
-permalink: "/MatExp/analisis/derivadas/trenes/"
+permalink: "/posts/MatExp/analisis/derivadas/trenes/"
 header:
   image: "/assets/MatExp/analisis/derivadas/trenes/header.jpg"
 excerpt: Experimento que muestra la derivada como un fenómeno natural que establece
   la dirección de los trenes en cada instante.
 feature: "/assets/MatExp/analisis/derivadas/trenes/feature.jpg"
 ---
-
 <div class="materials">
 <h2> Materiales:</h2>
 <ul>

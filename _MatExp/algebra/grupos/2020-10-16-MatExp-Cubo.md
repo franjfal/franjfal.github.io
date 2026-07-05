@@ -1,5 +1,7 @@
 ---
 title: Solución del cubo de Rubik
+lang: es
+page_id: matexp-rubiks-cube-solution
 date: '2021-02-25 11:00:31 +0200'
 categories: experimento algoritmo
 taxonomy: experimento algoritmo cubo-Rubik
@@ -8,7 +10,6 @@ excerpt: Algoritmo para resolver el cubo de Rubik
 feature: "/assets/MatExp/algebra/grupos/rubik/feature.png"
 hidden: true
 ---
-
 <style type="text/css">
     .frame-container {
         position: relative;
@@ -27,5 +28,5 @@ hidden: true
     </style>
 
 <div class="frame-container">
-<iframe scrolling="no" title="Solución del Cubo de Rubik" src="{% post_url 2020-10-16-Algoritmo-Cubo %}" width="100%" style="border:0px;"> </iframe>
+<iframe scrolling="no" title="Solución del Cubo de Rubik" src="{{ site.baseurl }}/otros/cuboRubik/" width="100%" style="border:0px;"> </iframe>
 </div>

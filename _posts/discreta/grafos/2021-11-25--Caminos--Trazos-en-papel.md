@@ -1,11 +1,13 @@
 ---
 title: Trazos en papel
+lang: es
+page_id: post-paper-traces
 date: '2021-11-23 14:54:31 +0200'
 categories:
 - experimento
 - Teoría-de-grafos
 taxonomy: experimento aplicaciones grafos caminos
-permalink: "/MatExp/discreta/grafos/trazos/"
+permalink: "/posts/MatExp/discreta/grafos/trazos/"
 excerpt: Representación de grafos utilizando chinchetas e hilo.
 gallery1:
 - image_path: "/assets/MatExp/analisis/derivadas/palomitas/caja1.jpg"
@@ -15,7 +17,6 @@ gallery1:
 - image_path: "/assets/MatExp/analisis/derivadas/palomitas/caja3.jpg"
   alt: ejemplo de caja
 ---
-
 <div class="materials">
 <h2> Materiales:</h2>
 <ul>

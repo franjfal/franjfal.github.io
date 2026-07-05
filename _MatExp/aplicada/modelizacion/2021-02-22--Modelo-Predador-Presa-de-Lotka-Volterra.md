@@ -1,5 +1,7 @@
 ---
 title: Simulación del Modelo Depredador-Presa de Lotka-Volterra
+lang: es
+page_id: matexp-lotka-volterra
 name: Lotka-Volterra
 date: '2021-02-22 11:00:31 +0200'
 categories: experimento modelización-matemática
@@ -8,7 +10,6 @@ permalink: "/MatExp/aplicada/modelizacion/Lotka-Volterra/"
 excerpt: Simulación del modelo Depredador-Presa de Lotka-Volterra.
 feature: "/assets/MatExp/aplicada/modelizacion/Lotka-Volterra/feature.jpg"
 ---
-
 El modelo Depredador-Presa utiliza las ecuaciones de Lotka-Volterra propuestas de forma independiente por Alfred J. Lotka (1880 -- 1949) en 1925 y Vito Volterra (1860 -- 1940) en 1926 para describir la dinámica de sistemas biológicos en los que dos especies interactúan. Este modelo estudia la evolución de dos sociedades que conviven en un entorno, una como presa y otra como depredador. Por ejemplo una población formada por lobos y conejos. 
 
 <center><img src="{{ site.baseurl }}/assets/MatExp/aplicada/modelizacion/Lotka-Volterra/Lotka-Volterra-equilibrio.png" alt="Lobos vs conejos" width="70%"/></center>

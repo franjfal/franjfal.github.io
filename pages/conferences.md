@@ -1,6 +1,8 @@
 ---
 title: Conferencias
 permalink: "/Conferences/"
+lang: es
+page_id: conferences
 ---
 
 La siguiente lista contiene enlaces a algunas de las conferencias organizadas en los últimos años.

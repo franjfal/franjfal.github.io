@@ -1,5 +1,7 @@
 ---
 title: Explorando el algoritmo PageRank
+lang: es
+page_id: matexp-pagerank
 date: '2026-04-01 10:00:00 +0200'
 categories:
   - experimento
@@ -13,7 +15,6 @@ header:
 excerpt: "Una visualización interactiva para construir una web, estudiar su matriz asociada y seguir paso a paso las iteraciones del algoritmo PageRank."
 feature: "/assets/MatExp/discreta/grafos/pagerank/feature.png"
 ---
-
 Cuando una red de páginas web se representa mediante un grafo dirigido, cada página se convierte en un nodo y cada enlace en una arista orientada. El algoritmo **PageRank** parte de esa idea para responder a una pregunta muy natural: **si una persona fuese saltando de enlace en enlace, qué páginas visitaría con mayor frecuencia a largo plazo**.
 
 La clave pedagógica del algoritmo es que combina tres niveles de descripción:

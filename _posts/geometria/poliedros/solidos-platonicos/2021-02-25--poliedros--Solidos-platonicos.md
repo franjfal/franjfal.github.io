@@ -1,11 +1,13 @@
 ---
 title: Los sólidos platónicos
+lang: es
+page_id: post-platonic-solids
 date: '2022-02-20 14:54:31'
 categories:
 - experimento
 - Geometría
 taxonomy: experimento geometría poliedros
-permalink: "/MatExp/geometria/solidosplatonicos/"
+permalink: "/posts/MatExp/geometria/solidosplatonicos/"
 excerpt: Construcción de los sólidos patñonicos por distintos métodos.
 gallery1:
 - image_path: "/assets/MatExp/geometria/poliedros/solidos-platonicos/poligonos/tetraedro.png"
@@ -17,7 +19,6 @@ gallery1:
 - image_path: "/assets/MatExp/geometria/poliedros/solidos-platonicos/poligonos/dodecaedro.png"
   alt: Dodecaedro realizado utilizando polígonos regulares.
 ---
-
 Los sólidos platónicos son los poliedros convexos en los que todas las caras están formadas por el mismo polígono regular y en todos los vértices se juntan el mismo número de caras.
 
 El siguiente applet informático del sition web Wolfram Demostration Project nor pernite interacturar con estos trece sólidos:

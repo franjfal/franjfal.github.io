@@ -1,13 +1,14 @@
 ---
 title: Solución del cubo de Rubik
+lang: es
+page_id: post-rubiks-cube-solution
 date: '2021-02-25 11:00:31 +0200'
 categories: experimento algoritmo
 taxonomy: experimento algoritmo cubo-Rubik
-permalink: "/MatExp/algebra/grupos/cuboRubik/"
+permalink: "/posts/MatExp/algebra/grupos/cuboRubik/"
 excerpt: Algoritmo para resolver el cubo de Rubik
 hidden: true
 ---
-
 <style type="text/css">
     .frame-container {
         position: relative;
@@ -26,5 +27,5 @@ hidden: true
     </style>
 
 <div class="frame-container">
-<iframe scrolling="no" title="Solución del Cubo de Rubik" src="{% post_url 2020-10-16-Algoritmo-Cubo %}" width="100%" style="border:0px;"> </iframe>
+<iframe scrolling="no" title="Solución del Cubo de Rubik" src="{{ site.baseurl }}/posts/otros/cuboRubik/" width="100%" style="border:0px;"> </iframe>
 </div>

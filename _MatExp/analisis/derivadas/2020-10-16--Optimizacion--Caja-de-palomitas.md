@@ -1,5 +1,7 @@
 ---
 title: La caja de palomitas del cine
+lang: es
+page_id: matexp-popcorn-box
 date: '2020-10-16 14:54:31 +0200'
 categories:
 - experimento
@@ -20,7 +22,6 @@ gallery1:
   alt: Ejemplo de caja
 feature: "/assets/MatExp/analisis/derivadas/palomitas/feature.jpg"
 ---
-
 <div class="materials">
 <h2> Materiales:</h2>
 <ul>

@@ -142,6 +142,24 @@
     /* reveal */
 }
 
+.language-switcher {
+    display: flex;
+    align-items: center;
+    margin-left: 0.5rem;
+}
+
+.language-switcher__select {
+    border: 1px solid #d6d6d6;
+    border-radius: 4px;
+    background: #fff;
+    color: #333;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 0.25rem 1.4rem 0.25rem 0.45rem;
+    cursor: pointer;
+}
+
 .greedy-nav .visible-links .dropdown {
     float: left;
     width: auto;
@@ -235,10 +253,6 @@
 }
 
 /* Replace $masthead-link-color-hover with a value */
-background: #e9ecef;
-/* Replace $navicon-link-color-hover with a value */
-}
-
 .greedy-nav .hidden-links:before {
     content: "";
     position: absolute;

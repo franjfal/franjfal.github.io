@@ -1,10 +1,11 @@
 ---
 title: Cubo de Rubik
+lang: es
+page_id: matexp-rubiks-cube-algorithm
 permalink: "/otros/cuboRubik/"
 layout: reveal
 hidden: true
 ---
-
 <section>
 <h3>Notación</h3>
     

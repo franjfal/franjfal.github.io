@@ -2,6 +2,8 @@
 title:  "Docencia"
 permalink: /docencia/
 excerpt: ""
+lang: es
+page_id: teaching
 ---
 
 Las matemáticas son **elegantes, poderosas y sorprendentes**. Para mí las matemáticas nunca han sido un trabajo más que una pasión y un juego continuo rodeado de lógica, precisión, elegancia y perfección.
@@ -31,4 +33,3 @@ Mi principal objetivo en mis clases es crear un ambiente educativo, amigable y a
 
 
 En mi opinión, las clases magistrales son importantes y necesarias, pero mientras tenga tiempo, intento introducir una actividad en la que los alumnos tengan que redescubrir las matemáticas por sí mismos de forma natural. Creo que estas actividades son importantes para el desarrollo de la clase y trato de presentarlas de forma recurrente. 
-

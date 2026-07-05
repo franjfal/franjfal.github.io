@@ -3,6 +3,8 @@ title: 'Libro: Matemáticas Experimentales'
 permalink: "/Libros/MatExp/"
 excerpt: Material complementario del libro "Matemáticas experimentales" publicado
   en la colección Estímulos Matemáticos que editan conjuntamente la RSME y SM.
+lang: es
+page_id: matexp-book
 ---
 
 <style>
@@ -90,7 +92,7 @@ Como dijo el matemático Stanley Gudder, “La esencia de las matemáticas no es
 
 ### 1. Secciones cónicas y órbitas planetarias
 
-- [Construcciones de secciones cónicas]({% post_url /geometria/conicas/construccion/2021-08-31--conicas--construccion %})
+- [Construcciones de secciones cónicas](/MatExp/geometria/conicas/construccion/)
 - [Corto de animación en 3D *Ellipses* de Pavel Boytchev](https://www.youtube.com/watch?v=1v5Aqo6PaFw){:target="_blank"}
 - Modelo del sistema solar a escala [(PDF)](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Modelo-a-escala-del-sistema-solar.pdf)
 - Fichas de los planetas: [Mercurio](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Mercurio.pdf), [Venus](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Venus.pdf), [Tierra](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Tierra.pdf), [Marte](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Marte.pdf), [Júpiter](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Jupiter.pdf), [Saturno](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Saturno.pdf), [Urano](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Urano.pdf), [Neptuno](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Neptuno.pdf)
@@ -107,9 +109,9 @@ Como dijo el matemático Stanley Gudder, “La esencia de las matemáticas no es
 - Construcción de teselados: [triángulo](/falbe/assets/MatExp/geometria/teselados/construccion/Teselado-3-lados.pdf), [cuadrado](/falbe/assets/MatExp/geometria/teselados/construccion/Teselado-4-lados.pdf), [hexágono](/falbe/assets/MatExp/geometria/teselados/construccion/Teselado-6-lados.pdf)
 - [17 maneras de construir mosaicos planos](https://www.imaginary.org/sites/default/files/rsme-imaginary_morenaments_rollup_es.pdf){:target="_blank"}
 - [Timeo de Locres - Platón](https://www.filosofia.org/cla/pla/azc11121.htm){:target="_blank"}
-- [Construcción de los sólidos platónicos]({% post_url /geometria/poliedros/solidos-platonicos/2021-02-25--poliedros--Solidos-platonicos %})
+- [Construcción de los sólidos platónicos](/MatExp/geometria/solidosplatonicos/)
 - Sólidos platónicos y pompas de jabón
-- [Sólidos arquimedianos]({% post_url /geometria/poliedros/solidos-arquimedianos/2022-02-28--poliedros--Solidos-arquimedianos %})
+- [Sólidos arquimedianos](/MatExp/geometria/solidos/arquimedianos/)
 - [Caleidociclo](https://www.polyhedra.net/es/model.php?name-en=hexagonal-kaleidocycle){:target="_blank"}
 - [Calendario dodecaédrico (PDF)](/falbe/assets/MatExp/geometria/poliedros/calendario-dodecaedro/Calendario-Dodecaedrico.pdf)
 - Modelos de los sólidos de Kepler-Poinsot:  
@@ -118,19 +120,17 @@ Como dijo el matemático Stanley Gudder, “La esencia de las matemáticas no es
 
 ### 4. Derivadas: Las matemáticas del cambio
 
-- [La recta tangente – Dirección del tren]({% post_url /analisis/derivadas/2020-10-16--Siginificado-geometrico--Direccion-de-los-trenes %})
+- [La recta tangente – Dirección del tren](/MatExp/analisis/derivadas/trenes/)
 - Calculadoras: [WolframAlpha](https://www.wolframalpha.com/calculators/derivative-calculator/){:target="_blank"}, [Symbolab](https://es.symbolab.com/solver/derivative-calculator){:target="_blank"}
-- [Optimización – La caja de palomitas del cine]({% post_url /analisis/derivadas/2020-10-16--Optimizacion--Caja-de-palomitas %})
+- [Optimización – La caja de palomitas del cine](/MatExp/analisis/derivadas/palomitas/)
 
 ### 5. Modelos matemáticos: Las pandemias y la COVID-19
 
 - Ley del enfriamiento de Newton
 - El asesinato del profesor
-- [Modelo Depredador-Presa de Lotka-Volterra]({% post_url /aplicada/modelizacion/2021-02-22--Modelo-Predador-Presa-de-Lotka-Volterra %})
+- [Modelo Depredador-Presa de Lotka-Volterra](/MatExp/aplicada/modelizacion/Lotka-Volterra/)
 - Juego de mesa sobre epidemias: [tablero (PDF)](/falbe/assets/MatExp/aplicada/modelizacion/juego-epidemias/El-juego-de-las-epidemias--tablero-6x6.pdf), [simulación online](https://www.nctm.org/tools/pandemic2020/index.html){:target="_blank"}
 - [Solución analítica del modelo SIR (sección 4.3)](https://repositorio.unican.es/xmlui/bitstream/handle/10902/7125/Andrea%20Garcia%20Pi%C3%B1era.pdf){:target="_blank"}
-- [Simulación del modelo SIR]({% post_url /aplicada/modelizacion/2021-03-01--Modelo-SIR %})
+- [Simulación del modelo SIR](/MatExp/aplicada/modelizacion/SIR/)
 - [Póster de eventos significativos en virología](https://www.rndsystems.com/resources/posters/significant-events-history-virology){:target="_blank"}
-- [Portales de datos sobre la COVID-19]({% post_url /aplicada/epidemiologia/2022-02-07--Portales-Covid %})
-
-
+- [Portales de datos sobre la COVID-19](/MatExp/aplicada/epidemiologia/portales-covid-19/)

@@ -1,5 +1,7 @@
 ---
 title: La dirección del tren
+lang: es
+page_id: matexp-train-direction
 date: '2020-10-16 14:54:31 +0200'
 categories:
 - experimento
@@ -12,7 +14,6 @@ excerpt: Experimento que muestra la derivada como un fenómeno natural que estab
   la dirección de los trenes en cada instante.
 feature: "/assets/MatExp/analisis/derivadas/trenes/feature.jpg"
 ---
-
 <div class="materials">
 <h2> Materiales:</h2>
 <ul>

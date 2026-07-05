@@ -2,6 +2,8 @@
 title: Bibliografía recomendada
 permalink: "/material/bibliografia/"
 excerpt: Listado con publicaciones y material divulgatorio recomendado de matemáticas.
+lang: es
+page_id: bibliography
 ---
 
 # Libros

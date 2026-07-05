@@ -1,5 +1,7 @@
 ---
 title: Demostración Interactiva - Compresión de Audio con DFT
+lang: es
+page_id: matexp-dft-audio-compression
 date: '2024-01-15 10:30:00 +0100' # CHANGE THIS to your desired publication date/time/zone
 categories:
   experimento optimización análisis hilbert audio proyección aplicaciones
@@ -10,7 +12,6 @@ header:
 excerpt: "Explora cómo se comprime el sonido con una demostración interactiva basada en la Transformada Discreta de Fourier (DFT). Sube o graba tu propio audio, observa cómo se transforma en frecuencias, elimina los componentes menos importantes y escucha cómo cambia el resultado. Una forma visual y práctica de entender la proyección ortonormal en espacios de Hilbert."
 feature: "/assets/MatExp/analisis/hilbert/audio-conversion/feature.jpg"
 ---
-
 <!-- Embedded CSS -->
 <style>
     /* --- START OF EMBEDDED CSS --- */

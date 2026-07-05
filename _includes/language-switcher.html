@@ -1,0 +1,13 @@
+{% assign current_lang = site.active_lang | default: site.default_lang %}
+<li class="masthead__menu-item language-switcher">
+  <label class="visually-hidden" for="language-switcher-select">Language selector</label>
+  <select id="language-switcher-select" class="language-switcher__select" aria-label="Language selector">
+    {% for language in site.languages %}
+      {% assign language_meta = site.data.languages[language] %}
+      {% capture language_url %}{{ site.baseurl }}{% if language != site.default_lang %}/{{ language }}/{% else %}/{% endif %}{% endcapture %}
+      <option value="{{ language_url | strip }}" data-language="{{ language }}" {% if language == current_lang %}selected{% endif %}>
+        {{ language_meta.short | default: language | upcase }}
+      </option>
+    {% endfor %}
+  </select>
+</li>

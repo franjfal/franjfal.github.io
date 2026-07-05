@@ -1,3 +1,43 @@
 <link href="/assets/css/custom.css" rel="stylesheet" type="text/css">
+{% if page.lang %}
+<meta http-equiv="content-language" content="{{ site.data.languages[page.lang].locale | default: page.lang }}">
+{% endif %}
+{% assign available_language_count = page.available_languages | size %}
+{% if page.permalink_lang and available_language_count > 1 %}
+{% for language in page.available_languages %}
+{% assign language_permalink = page.permalink_lang[language] %}
+{% capture language_url %}{{ site.baseurl }}{% if language != site.default_lang %}/{{ language }}{% endif %}{{ language_permalink }}{% endcapture %}
+<link rel="alternate" hreflang="{{ language }}" {% static_href %}href="{{ language_url | strip | absolute_url }}"{% endstatic_href %}>
+{% endfor %}
+{% assign default_permalink = page.permalink_lang[site.default_lang] %}
+{% if default_permalink %}
+{% capture default_url %}{{ site.baseurl }}{{ default_permalink }}{% endcapture %}
+<link rel="alternate" hreflang="x-default" {% static_href %}href="{{ default_url | strip | absolute_url }}"{% endstatic_href %}>
+{% endif %}
+<script>
+  window.languageAlternates = {
+    {% for language in page.available_languages %}
+      {% assign language_permalink = page.permalink_lang[language] %}
+      {% capture language_url %}{{ site.baseurl }}{% if language != site.default_lang %}/{{ language }}{% endif %}{{ language_permalink }}{% endcapture %}
+      "{{ language }}": "{{ language_url | strip }}"{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  };
+</script>
+{% endif %}
+{% if page.page_id == "home" and page.lang == site.default_lang %}
+<script>
+  (function () {
+    var storedLanguage = window.localStorage && window.localStorage.getItem('preferred-language');
+    if (storedLanguage) return;
+    var languages = navigator.languages || [navigator.language || navigator.userLanguage || ''];
+    var wantsEnglish = languages.some(function (language) {
+      return /^en\b/i.test(language);
+    });
+    if (wantsEnglish && window.location.pathname === '{{ page.url | relative_url }}') {
+      window.location.replace('{{ "/en/" | relative_url }}');
+    }
+  }());
+</script>
+{% endif %}
 <link href="/assets/css/video-js.css">
 <script src="/assets/js/nav.js" defer></script>

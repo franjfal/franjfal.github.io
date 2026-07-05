@@ -1,5 +1,7 @@
 ---
 title: "Filtración de imágenes interactivas con la tranformada de Fourier discreta (DFT)"
+lang: es
+page_id: matexp-dft-image-filter
 date: '2024-01-15 10:30:00 +0100' # CHANGE THIS to your desired publication date/time/zone
 categories:   experimento optimización análisis hilbert imagen proyección aplicaciones
 tags: [Hilbert, proyección ortogonal, DFT, transformada fourier, filtro, imagen, procesamiento señal,]
@@ -9,7 +11,6 @@ header:
 excerpt: "Descubre cómo se pueden filtrar imágenes usando la Transformada Discreta de Fourier (DFT) con esta demostración interactiva. Sube una imagen, observa su transformación al dominio de las frecuencias, aplica distintos filtros (paso bajo, paso alto o de banda) y compara el espectro y la imagen resultante. Una forma visual de entender cómo funciona el procesamiento de imágenes y su relación con la proyección ortogonal en un espacio de Hilber."
 feature: "/assets/MatExp/analisis/hilbert/image-filter/feature.jpg"
 ---
-
 <!-- Embedded CSS -->
 <style>
      /* Style for Markdown H4 inside specific divs */

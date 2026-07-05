@@ -1,0 +1,390 @@
+---
+title: "ODE: The Professor's Trial"
+
+lang: en
+page_id: matexp-ode-professor-trial
+date: '2026-07-03 20:30:00 +0200'
+categories:
+  - experiment
+  - analysis
+  - modeling
+  - ODE
+permalink: "/MatExp/analysis/modeling/ode/professor-falco-trial/"
+
+header:
+  image: "/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/header.jpg"
+excerpt: "Document generator for a mathematical trial activity based on Newton's law of cooling."
+
+feature: "/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/feature.svg"
+---
+This activity turns Newton's law of cooling into a trial. Students receive separate roles, question witnesses and suspects, and reconstruct the timeline until they identify the culprit.
+
+The generator lets you choose the professor's name, the date of the case, the class ending time, and the gender of each suspect. From those data it produces the documents needed to run the classroom activity, either as separate pieces or as complete packets by role.
+
+<figure>
+  <img src="{{ site.baseurl }}/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/assets/cover_scene.png" alt="Classroom prepared as the case scene">
+</figure>
+
+<style>
+  .trial-generator {
+    color-scheme: light;
+    --trial-ink: #202a33;
+    --trial-muted: #5a6570;
+    --trial-line: #d8dee4;
+    --trial-paper: #f7f5ef;
+    --trial-panel: #ffffff;
+    --trial-accent: #c85648;
+    --trial-accent-dark: #993f35;
+    --trial-blue: #2f5f77;
+    --trial-green: #607f61;
+    margin: 1.5rem 0 2rem;
+    padding: 24px;
+    border: 1px solid var(--trial-line);
+    border-radius: 8px;
+    background: var(--trial-paper);
+    color: var(--trial-ink);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1.5;
+  }
+
+  .trial-generator * {
+    box-sizing: border-box;
+  }
+
+  .trial-generator h2 {
+    margin: 0 0 14px;
+    font-size: 1.35rem;
+    letter-spacing: 0;
+  }
+
+  .trial-generator p {
+    margin: 0 0 12px;
+    color: var(--trial-muted);
+  }
+
+  .trial-generator .workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+    gap: 22px;
+    align-items: start;
+  }
+
+  .trial-generator .panel {
+    background: var(--trial-panel);
+    border: 1px solid var(--trial-line);
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  .trial-generator .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .trial-generator .full {
+    grid-column: 1 / -1;
+  }
+
+  .trial-generator label {
+    display: grid;
+    gap: 7px;
+    font-weight: 700;
+    color: var(--trial-ink);
+  }
+
+  .trial-generator input,
+  .trial-generator select {
+    width: 100%;
+    min-height: 42px;
+    border: 1px solid #b9c2ca;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font: inherit;
+    color: var(--trial-ink);
+    background: #fff;
+  }
+
+  .trial-generator .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .trial-generator button,
+  .trial-generator .download-link {
+    appearance: none;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font: inherit;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+  }
+
+  .trial-generator button[type="submit"],
+  .trial-generator .primary-link {
+    background: var(--trial-accent);
+    color: #fff;
+  }
+
+  .trial-generator button[type="submit"]:hover,
+  .trial-generator .primary-link:hover {
+    background: var(--trial-accent-dark);
+  }
+
+  .trial-generator button.secondary {
+    background: #fff;
+    border-color: #b9c2ca;
+    color: var(--trial-ink);
+  }
+
+  .trial-generator button.secondary:hover {
+    border-color: var(--trial-blue);
+    color: var(--trial-blue);
+  }
+
+  .trial-generator button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+  }
+
+  .trial-generator .status {
+    min-height: 24px;
+    margin-top: 12px;
+    color: var(--trial-blue);
+    font-weight: 700;
+  }
+
+  .trial-generator .summary-list {
+    display: grid;
+    gap: 9px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .trial-generator .summary-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    border-bottom: 1px solid var(--trial-line);
+    padding-bottom: 9px;
+  }
+
+  .trial-generator .summary-list strong {
+    color: var(--trial-ink);
+  }
+
+  .trial-generator .downloads {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .trial-generator .download-note {
+    margin-bottom: 14px;
+  }
+
+  .trial-generator .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    border-bottom: 1px solid var(--trial-line);
+    margin: 16px 0 14px;
+    padding-bottom: 8px;
+  }
+
+  .trial-generator .tab-button {
+    background: #fff;
+    border-color: #b9c2ca;
+    color: var(--trial-ink);
+  }
+
+  .trial-generator .tab-button[aria-selected="true"] {
+    background: var(--trial-blue);
+    border-color: var(--trial-blue);
+    color: #fff;
+  }
+
+  .trial-generator .tab-panel[hidden] {
+    display: none;
+  }
+
+  .trial-generator .download-link {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    border-color: #c9d1d8;
+    background: #fff;
+    color: var(--trial-ink);
+  }
+
+  .trial-generator .download-title {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .trial-generator .download-actions {
+    display: flex;
+    flex: none;
+    gap: 8px;
+  }
+
+  .trial-generator .download-icon {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.85);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .trial-generator .download-icon svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+  }
+
+  .trial-generator .download-icon:hover,
+  .trial-generator .download-icon:focus {
+    background: #fff;
+    color: var(--trial-blue);
+  }
+
+  .trial-generator .download-link:hover {
+    border-color: var(--trial-green);
+    color: var(--trial-green);
+  }
+
+  .trial-generator .download-link.primary-link,
+  .trial-generator .download-link.primary-link:visited,
+  .trial-generator .download-link.primary-link:focus {
+    border-color: var(--trial-accent);
+    background: var(--trial-accent);
+    color: #fff;
+  }
+
+  .trial-generator .download-link.primary-link .download-icon {
+    border-color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+  }
+
+  .trial-generator .download-link.primary-link .download-icon:hover,
+  .trial-generator .download-link.primary-link .download-icon:focus {
+    background: #fff;
+    color: var(--trial-accent-dark);
+  }
+
+  .trial-generator .download-link.primary-link:hover,
+  .trial-generator .download-link.primary-link:active {
+    border-color: var(--trial-accent-dark);
+    background: var(--trial-accent-dark);
+    color: #fff;
+  }
+
+  .trial-generator .hidden {
+    display: none;
+  }
+
+  @media (max-width: 820px) {
+    .trial-generator {
+      padding: 16px;
+    }
+
+    .trial-generator .workspace,
+    .trial-generator .form-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<section class="trial-generator" aria-label="Generador del juicio del profesor">
+  <section class="workspace">
+    <form id="case-form" class="panel">
+      <h2>Datos del caso</h2>
+      <div class="form-grid">
+        <label class="full">
+          Nombre del profesor
+          <input id="teacher-name" name="teacherName" type="text" value="Javier Falcó" required>
+        </label>
+        <label>
+          Fecha del asesinato
+          <input id="case-date" name="caseDate" type="date" value="2026-07-02" required>
+        </label>
+        <label>
+          Fin de la clase
+          <input id="class-end-time" name="classEndTime" type="time" value="12:30" required>
+        </label>
+        <label>
+          Sospechoso 1
+          <select id="suspect-1-gender" name="suspect1Gender">
+            <option value="f" selected>Mujer</option>
+            <option value="m">Hombre</option>
+          </select>
+        </label>
+        <label>
+          Sospechoso 2
+          <select id="suspect-2-gender" name="suspect2Gender">
+            <option value="m" selected>Hombre</option>
+            <option value="f">Mujer</option>
+          </select>
+        </label>
+        <label>
+          Sospechoso 3
+          <select id="suspect-3-gender" name="suspect3Gender">
+            <option value="m" selected>Hombre</option>
+            <option value="f">Mujer</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button id="generate-button" type="submit">Generar documentos</button>
+        <button id="clear-button" class="secondary" type="button">Limpiar descargas</button>
+      </div>
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+    </form>
+
+    <aside class="panel" aria-labelledby="case-summary-title">
+      <h2 id="case-summary-title">Resumen calculado</h2>
+      <ul id="case-summary" class="summary-list"></ul>
+    </aside>
+  </section>
+
+  <section id="downloads-panel" class="panel hidden" aria-labelledby="downloads-title" style="margin-top: 22px;">
+    <h2 id="downloads-title">Descargas</h2>
+    <p class="download-note">
+      Usa la pestaña de documentos conjuntos si vas a repartir la actividad:
+      cada descarga por rol incluye el contexto común, el dossier compartido y
+      los documentos específicos que le corresponden. Usa la pestaña de
+      documentos separados si quieres comprobar o imprimir cada pieza por separado.
+    </p>
+    <div class="tabs" role="tablist" aria-label="Tipo de descarga">
+      <button id="tab-bundles" class="tab-button" type="button" role="tab" aria-selected="true" aria-controls="panel-bundles" data-tab-target="panel-bundles">
+        Documentos conjuntos
+      </button>
+      <button id="tab-separate" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="panel-separate" data-tab-target="panel-separate">
+        Documentos separados
+      </button>
+    </div>
+    <div id="panel-bundles" class="tab-panel" role="tabpanel" aria-labelledby="tab-bundles">
+      <div id="bundle-downloads" class="downloads"></div>
+    </div>
+    <div id="panel-separate" class="tab-panel" role="tabpanel" aria-labelledby="tab-separate" hidden>
+      <div id="separate-downloads" class="downloads"></div>
+    </div>
+  </section>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/murder-generator.js"></script>

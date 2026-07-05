@@ -1,0 +1,8 @@
+es:
+  label: Castellano
+  short: ES
+  locale: es-ES
+en:
+  label: English
+  short: EN
+  locale: en-US

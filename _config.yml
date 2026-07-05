@@ -27,6 +27,17 @@ description: Página web personal de Javier Falcó
 #theme: minimal-mistakes-jekyll
 minimal_mistakes_skin: contrast #"default"  "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum" "sunrise"
 locale: es-ES
+languages: ["es", "en"]
+default_lang: "es"
+exclude_from_localization:
+  - assets
+  - Conferences
+  - Seminar
+  - PlanDoc
+  - gap
+  - pau
+  - minimal-mistakes
+parallel_localization: false
 search: true
 remote_theme: mmistakes/minimal-mistakes
 # Outputting
@@ -53,6 +64,7 @@ include: ["pages"]
 
 # Plugins (previously gems:)
 plugins:
+  - jekyll-polyglot
   - jekyll-remote-theme
   - jekyll-paginate
   - jekyll-sitemap

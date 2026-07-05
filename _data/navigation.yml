@@ -1,4 +1,4 @@
-main:
+main_es:
   - title: "Docencia"
     url: /docencia/
   - title: "Investigación"
@@ -18,3 +18,24 @@ main:
         url: /material/bibliografia/
   - title: "Sobre mi"
     url: /sobre-mi/
+
+main_en:
+  - title: "Teaching"
+    url: /teaching/
+  - title: "Research"
+    url: /research/
+  - title: "MatExp"
+    url: /MatExp/
+    sublinks:
+      - title: "Book: Experimental Mathematics"
+        url: /books/experimental-mathematics/
+      - title: "MatExp"
+        url: /MatExp/
+      - title: "Artificial Brains"
+        url: https://artibrains.github.io/en/how-machines-think/index.html
+      - title: "Sundials"
+        url: /sundials/
+      - title: "Resources"
+        url: /resources/bibliography/
+  - title: "About me"
+    url: /about/

@@ -1,6 +1,8 @@
 ---
 title: Investigación
 permalink: "/investigacion/"
+lang: es
+page_id: research
 ---
 
 ## Artículos publicados

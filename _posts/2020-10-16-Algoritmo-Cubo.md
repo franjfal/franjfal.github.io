@@ -1,10 +1,11 @@
 ---
 title: Cubo de Rubik
-permalink: "/otros/cuboRubik/"
+lang: es
+page_id: post-rubiks-cube-algorithm
+permalink: "/posts/otros/cuboRubik/"
 layout: reveal
 hidden: true
 ---
-
 <section>
 <h3>Notación</h3>
     

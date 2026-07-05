@@ -1,6 +1,8 @@
 ---
 title: Relojes solares
 permalink: RelojesSolares.html
+lang: es
+page_id: sundials
 ---
 
 # Las matemáticas del tiempo

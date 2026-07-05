@@ -1,12 +1,13 @@
 ---
 title:  "Simulación Monty Hall"
+lang: es
+page_id: post-monty-hall
 date:   2020-10-16 14:54:31 +0200
 categories: experimento probabilidad
 taxonomy: experimento probabilidad Monty-Hall intuición
-permalink: /MatExp/aplicada/probabilidad/Monty-Hall/
+permalink: /posts/MatExp/aplicada/probabilidad/Monty-Hall/
 excerpt: "Simulación del problema de Monty Hall."
 ---
-
    <style type="text/css">
       canvas { /* Just to get rid of selected text when click */
         -webkit-touch-callout: none;
