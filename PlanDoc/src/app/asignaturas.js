@@ -22,6 +22,7 @@ const TIPOS_SUBGRUPO = [
 
 const UV_TARGET_CREATE = "__create__";
 const UV_TARGET_SKIP = "__skip__";
+const HOURS_PER_CREDIT = 10;
 
 const DAY_INDEX = {
     domingo: 0,
@@ -316,8 +317,8 @@ function formatCredits(value) {
     return Number(toPositiveNumber(value, 0).toFixed(2));
 }
 
-function creditsToHours(value) {
-    return formatCredits(toPositiveNumber(value, 0) * 10);
+function hoursToCredits(value) {
+    return formatCredits(toPositiveNumber(value, 0) / HOURS_PER_CREDIT);
 }
 
 function subjectSortValue(asignatura) {
@@ -397,7 +398,7 @@ function printableGradosPdfHtml(state, mode = "expanded") {
                         <h2>${escapeHtml(asignatura.nombre || asignatura.id)}</h2>
                         <span>${escapeHtml(asignatura.codigoReferencia || asignatura.id || "")}</span>
                     </div>
-                    <strong>${total} cr</strong>
+                    <strong>${total} h</strong>
                 </header>
                 ${subgrupos.length === 0 ? `
                     <p class="grade-empty">Sin subgrupos definidos.</p>
@@ -406,7 +407,7 @@ function printableGradosPdfHtml(state, mode = "expanded") {
                         ${subgrupos.map(({ subgrupo, credits }) => `
                             <span class="grade-subgroup-pill">
                                 <strong>${escapeHtml(subgrupo.nombre || subgrupo.id)}</strong>
-                                <span>${escapeHtml(subgrupo.id)} · ${credits} cr</span>
+                                <span>${escapeHtml(subgrupo.id)} · ${credits} h</span>
                             </span>
                         `).join("")}
                     </p>
@@ -423,14 +424,14 @@ function printableGradosPdfHtml(state, mode = "expanded") {
                         <h2>${escapeHtml(asignatura.nombre || asignatura.id)}</h2>
                         <span>${escapeHtml(asignatura.codigoReferencia || asignatura.id || "")}</span>
                     </div>
-                    <strong>${total} cr</strong>
+                    <strong>${total} h</strong>
                 </header>
                 ${subgrupos.length === 0 ? `
                     <p class="grade-empty">Sin subgrupos definidos.</p>
                 ` : `
                     <table class="pdf-table grade-subgroup-table">
                         <thead>
-                            <tr><th>Subgrupo</th><th>Creditos</th><th>Horas</th></tr>
+                            <tr><th>Subgrupo</th><th>Horas</th><th>Creditos</th></tr>
                         </thead>
                         <tbody>
                             ${subgrupos.map(({ subgrupo, credits }) => `
@@ -440,15 +441,15 @@ function printableGradosPdfHtml(state, mode = "expanded") {
                                         <span>${escapeHtml(subgrupo.id)}${subgrupo.codigoUv ? ` · UV ${escapeHtml(subgrupo.codigoUv)}` : ""}</span>
                                     </td>
                                     <td>${credits}</td>
-                                    <td><strong>${creditsToHours(credits)}</strong></td>
+                                    <td><strong>${hoursToCredits(credits)}</strong></td>
                                 </tr>
                             `).join("")}
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td class="total-cell">Total</td>
-                                <td class="total-cell">${total} creditos</td>
-                                <td class="total-cell">${creditsToHours(total)} horas</td>
+                                <td class="total-cell">${total} horas</td>
+                                <td class="total-cell">${hoursToCredits(total)} creditos</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -505,7 +506,7 @@ function printableGradosPdfHtml(state, mode = "expanded") {
                 <div class="summary-grid">
                     <div class="summary-box"><span>Grados</span><strong>${categories.length}</strong></div>
                     <div class="summary-box"><span>Asignaturas</span><strong>${state.asignaturas.length}</strong></div>
-                    <div class="summary-box"><span>Total horas</span><strong>${creditsToHours(totalCredits)} h</strong></div>
+                    <div class="summary-box"><span>Total horas</span><strong>${totalCredits} h</strong></div>
                 </div>
                 ${categories.length === 0 ? `
                     <p>No hay grados/asignaturas cargados.</p>
@@ -513,7 +514,7 @@ function printableGradosPdfHtml(state, mode = "expanded") {
                     <section class="grade-section">
                         <div class="grade-title">
                             <h2>${escapeHtml(categoria.nombre)}</h2>
-                            <strong>${total} creditos · ${creditsToHours(total)} horas</strong>
+                            <strong>${total} horas · ${hoursToCredits(total)} creditos</strong>
                         </div>
                         ${asignaturas.map((asignatura) => renderSubject(asignatura)).join("")}
                     </section>
@@ -521,11 +522,11 @@ function printableGradosPdfHtml(state, mode = "expanded") {
                 <section class="grade-section">
                     <div class="grade-title">
                         <h2>Extras</h2>
-                        <strong>${extraCredits} creditos · ${creditsToHours(extraCredits)} horas</strong>
+                        <strong>${extraCredits} horas · ${hoursToCredits(extraCredits)} creditos</strong>
                     </div>
                     <table class="pdf-table">
                         <thead>
-                            <tr><th>Elemento</th><th>Creditos</th><th>Horas</th></tr>
+                            <tr><th>Elemento</th><th>Horas</th><th>Creditos</th></tr>
                         </thead>
                         <tbody>
                             ${specialWorks.length === 0 ? `
@@ -534,15 +535,15 @@ function printableGradosPdfHtml(state, mode = "expanded") {
                                 <tr>
                                     <td>${escapeHtml(trabajo.label)}</td>
                                     <td>${trabajo.credits}</td>
-                                    <td><strong>${creditsToHours(trabajo.credits)}</strong></td>
+                                    <td><strong>${hoursToCredits(trabajo.credits)}</strong></td>
                                 </tr>
                             `).join("")}
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td class="total-cell">Total departamento</td>
-                                <td class="total-cell">${totalCredits} creditos</td>
-                                <td class="total-cell">${creditsToHours(totalCredits)} horas</td>
+                                <td class="total-cell">${totalCredits} horas</td>
+                                <td class="total-cell">${hoursToCredits(totalCredits)} creditos</td>
                             </tr>
                         </tfoot>
                     </table>

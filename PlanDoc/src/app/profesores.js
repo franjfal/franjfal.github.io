@@ -152,6 +152,69 @@ function profesorInitials(profesor) {
     return `${first}${second}`.toUpperCase() || "P";
 }
 
+function compareValues(a, b, dir = 1) {
+    if (typeof a === "number" || typeof b === "number") {
+        return (toPositiveNumber(a, 0) - toPositiveNumber(b, 0)) * dir;
+    }
+    return String(a || "").localeCompare(String(b || ""), "es", { numeric: true, sensitivity: "base" }) * dir;
+}
+
+function profesorSortArrow(state, key) {
+    if (state.profesoresSortKey !== key) {
+        return "";
+    }
+    return state.profesoresSortDir === "desc" ? " v" : " ^";
+}
+
+function profesorSortValue(profesor, calc, key) {
+    if (key === "objetivo") return toPositiveNumber(profesor.creditosObjetivo, 0);
+    if (key === "reducciones") return totalReducciones(profesor);
+    if (key === "tfm") return toPositiveNumber(calc.cargaTfm, 0);
+    if (key === "capacidad") return toPositiveNumber(calc.capacidad, 0);
+    if (key === "reales") return toPositiveNumber(calc.objetivoReal, 0);
+    if (key === "reajuste") return toPositiveNumber(calc.reajuste, 0);
+    if (key === "ajustable") return calc.esAjustable ? 1 : 0;
+    return profesor.nombreCompleto || [profesor.nombre, profesor.apellidos].filter(Boolean).join(" ") || profesor.id || "";
+}
+
+function visibleProfesoresWithIndex(state, reajusteByProfesor) {
+    const text = (state.profesoresFilterText || "").trim().toLowerCase();
+    const reduccionesFilter = state.profesoresFilterReducciones || "";
+    const ajustableFilter = state.profesoresFilterAjustable || "";
+    const key = state.profesoresSortKey || "nombre";
+    const dir = state.profesoresSortDir === "desc" ? -1 : 1;
+
+    return state.profesores
+        .map((profesor, originalIndex) => {
+            const calc = reajusteByProfesor.get(profesor.id) || {
+                objetivoReal: creditosDisponibles(profesor),
+                reajuste: 0,
+                esAjustable: profesor.docenciaAjustable !== false,
+                cargaTfm: 0,
+                capacidad: creditosDisponibles(profesor),
+            };
+            return { profesor, originalIndex, calc };
+        })
+        .filter(({ profesor, calc }) => {
+            const reducciones = totalReducciones(profesor);
+            const haystack = [
+                profesor.id,
+                profesor.nombre,
+                profesor.apellidos,
+                profesor.nombreCompleto,
+                ...(profesor.reducciones || []).flatMap((reduccion) => [reduccion.tipo, reduccion.descripcion]),
+            ].filter(Boolean).join(" ").toLowerCase();
+            return (!text || haystack.includes(text))
+                && (!reduccionesFilter || (reduccionesFilter === "con" ? reducciones > 0 : reducciones <= 0))
+                && (!ajustableFilter || (ajustableFilter === "si" ? calc.esAjustable : !calc.esAjustable));
+        })
+        .sort((a, b) => compareValues(
+            profesorSortValue(a.profesor, a.calc, key),
+            profesorSortValue(b.profesor, b.calc, key),
+            dir,
+        ));
+}
+
 function renderProfesorImportInstructions() {
     const tipos = REDUCCION_TIPOS.map((tipo) => tipo.value).join(", ");
     return `Instrucciones para el LLM:
@@ -268,6 +331,7 @@ export function renderProfesoresSection(state) {
     const stats = profesoresStats(state.profesores);
     const reajuste = calcularReajusteDocente(state);
     const reajusteByProfesor = new Map(reajuste.profesoresDetalle.map((item) => [item.profesor.id, item]));
+    const visibleProfesores = visibleProfesoresWithIndex(state, reajusteByProfesor);
 
     return `
         <div class="card teacher-panel">
@@ -285,18 +349,42 @@ export function renderProfesoresSection(state) {
                 <div class="metric-box"><span>Total disponible</span><strong>${stats.disponibles}</strong></div>
             </div>
 
+            <div class="filter-bar">
+                <label>
+                    Buscar
+                    <input id="prof-filter-text" placeholder="Nombre, identificador o reduccion" value="${escapeHtml(state.profesoresFilterText || "")}" />
+                </label>
+                <label>
+                    Reducciones
+                    <select id="prof-filter-reducciones">
+                        <option value="">Todos</option>
+                        <option value="con" ${state.profesoresFilterReducciones === "con" ? "selected" : ""}>Con reducciones</option>
+                        <option value="sin" ${state.profesoresFilterReducciones === "sin" ? "selected" : ""}>Sin reducciones</option>
+                    </select>
+                </label>
+                <label>
+                    Ajustable
+                    <select id="prof-filter-ajustable">
+                        <option value="">Todos</option>
+                        <option value="si" ${state.profesoresFilterAjustable === "si" ? "selected" : ""}>Si</option>
+                        <option value="no" ${state.profesoresFilterAjustable === "no" ? "selected" : ""}>No</option>
+                    </select>
+                </label>
+                <button id="clear-prof-filters-btn" class="secondary" type="button">Limpiar filtros</button>
+            </div>
+
             <div class="table-shell">
                 <table class="table teacher-table">
                     <thead>
                         <tr>
-                            <th>Profesor</th>
-                            <th>Objetivo</th>
-                            <th>Reducciones</th>
-                            <th>TFM</th>
-                            <th>Capacidad reajuste</th>
-                            <th>Horas reales</th>
-                            <th>Reajuste</th>
-                            <th>Ajustable</th>
+                            <th><button class="table-sort" data-sort-profesores="nombre" type="button">Profesor${profesorSortArrow(state, "nombre")}</button></th>
+                            <th><button class="table-sort" data-sort-profesores="objetivo" type="button">Objetivo${profesorSortArrow(state, "objetivo")}</button></th>
+                            <th><button class="table-sort" data-sort-profesores="reducciones" type="button">Reducciones${profesorSortArrow(state, "reducciones")}</button></th>
+                            <th><button class="table-sort" data-sort-profesores="tfm" type="button">TFM${profesorSortArrow(state, "tfm")}</button></th>
+                            <th><button class="table-sort" data-sort-profesores="capacidad" type="button">Capacidad reajuste${profesorSortArrow(state, "capacidad")}</button></th>
+                            <th><button class="table-sort" data-sort-profesores="reales" type="button">Horas reales${profesorSortArrow(state, "reales")}</button></th>
+                            <th><button class="table-sort" data-sort-profesores="reajuste" type="button">Reajuste${profesorSortArrow(state, "reajuste")}</button></th>
+                            <th><button class="table-sort" data-sort-profesores="ajustable" type="button">Ajustable${profesorSortArrow(state, "ajustable")}</button></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -307,10 +395,13 @@ export function renderProfesoresSection(state) {
                                     No hay profesores en este curso. Usa el bot&oacute;n + para crear el primero.
                                 </td>
                             </tr>
-                        ` : state.profesores.map((p, i) => {
-        const calc = reajusteByProfesor.get(p.id) || { objetivoReal: creditosDisponibles(p), reajuste: 0, esAjustable: p.docenciaAjustable !== false, cargaTfm: 0, capacidad: creditosDisponibles(p) };
+                        ` : visibleProfesores.length === 0 ? `
+                            <tr>
+                                <td colspan="9" class="empty-cell">No hay profesores que coincidan con los filtros.</td>
+                            </tr>
+                        ` : visibleProfesores.map(({ profesor: p, originalIndex, calc }) => {
         return `
-                            <tr class="${i === state.selectedProfesorIndex ? "row-active" : ""}">
+                            <tr class="${originalIndex === state.selectedProfesorIndex ? "row-active" : ""}">
                                 <td>
                                     <div class="teacher-cell">
                                         <span class="avatar">${escapeHtml(profesorInitials(p))}</span>
@@ -328,8 +419,8 @@ export function renderProfesoresSection(state) {
                                 <td><span class="num-pill ${calc.reajuste < 0 ? "danger-pill" : "muted-pill"}">${calc.reajuste}</span></td>
                                 <td><span class="badge ${calc.esAjustable ? "" : "muted-badge"}">${calc.esAjustable ? "Si" : "No"}</span></td>
                                 <td class="table-actions">
-                                    <button class="secondary mini" data-edit-prof="${i}">Editar</button>
-                                    <button class="warn mini" data-remove-prof="${i}">Eliminar</button>
+                                    <button class="secondary mini" data-edit-prof="${originalIndex}">Editar</button>
+                                    <button class="warn mini" data-remove-prof="${originalIndex}">Eliminar</button>
                                 </td>
                             </tr>
                             `;
@@ -484,6 +575,59 @@ function renderProfesorImportModal(state) {
 
 export function bindProfesoresEvents({ app, state, setStatus, render, saveProfesores }) {
     bindManualReduccionToggle("new-red-tipo", "new-red-tipo-manual");
+
+    const filterText = document.getElementById("prof-filter-text");
+    if (filterText) {
+        const applyTextFilter = () => {
+            state.profesoresFilterText = filterText.value || "";
+            render();
+        };
+        filterText.onchange = applyTextFilter;
+        filterText.onkeydown = (e) => {
+            if (e.key === "Enter") {
+                applyTextFilter();
+            }
+        };
+    }
+
+    const filterReducciones = document.getElementById("prof-filter-reducciones");
+    if (filterReducciones) {
+        filterReducciones.onchange = () => {
+            state.profesoresFilterReducciones = filterReducciones.value;
+            render();
+        };
+    }
+
+    const filterAjustable = document.getElementById("prof-filter-ajustable");
+    if (filterAjustable) {
+        filterAjustable.onchange = () => {
+            state.profesoresFilterAjustable = filterAjustable.value;
+            render();
+        };
+    }
+
+    const clearFiltersBtn = document.getElementById("clear-prof-filters-btn");
+    if (clearFiltersBtn) {
+        clearFiltersBtn.onclick = () => {
+            state.profesoresFilterText = "";
+            state.profesoresFilterReducciones = "";
+            state.profesoresFilterAjustable = "";
+            render();
+        };
+    }
+
+    app.querySelectorAll("[data-sort-profesores]").forEach((btn) => {
+        btn.onclick = () => {
+            const key = btn.dataset.sortProfesores;
+            if (state.profesoresSortKey === key) {
+                state.profesoresSortDir = state.profesoresSortDir === "asc" ? "desc" : "asc";
+            } else {
+                state.profesoresSortKey = key;
+                state.profesoresSortDir = ["objetivo", "reducciones", "tfm", "capacidad", "reales", "reajuste"].includes(key) ? "desc" : "asc";
+            }
+            render();
+        };
+    });
 
     const openProfModalBtn = document.getElementById("open-prof-modal-btn");
     if (openProfModalBtn) {
@@ -691,7 +835,11 @@ export function bindProfesoresEvents({ app, state, setStatus, render, saveProfes
         btn.onclick = async () => {
             const idx = Number(btn.dataset.removeProf);
             state.profesores.splice(idx, 1);
-            if (state.selectedProfesorIndex >= state.profesores.length) {
+            if (state.selectedProfesorIndex === idx) {
+                state.selectedProfesorIndex = -1;
+            } else if (state.selectedProfesorIndex > idx) {
+                state.selectedProfesorIndex -= 1;
+            } else if (state.selectedProfesorIndex >= state.profesores.length) {
                 state.selectedProfesorIndex = state.profesores.length - 1;
             }
             closeProfesorModal(state);

@@ -31,6 +31,11 @@ export const state = {
     isCourseModalOpen: false,
     profesores: [],
     profesoresVersion: "",
+    profesoresFilterText: "",
+    profesoresFilterReducciones: "",
+    profesoresFilterAjustable: "",
+    profesoresSortKey: "nombre",
+    profesoresSortDir: "asc",
     isProfesorModalOpen: false,
     profesorModalMode: "create",
     editingProfesorIndex: -1,
@@ -120,6 +125,11 @@ export const state = {
 export function resetCourseSlices() {
     state.profesores = [];
     state.profesoresVersion = "";
+    state.profesoresFilterText = "";
+    state.profesoresFilterReducciones = "";
+    state.profesoresFilterAjustable = "";
+    state.profesoresSortKey = "nombre";
+    state.profesoresSortDir = "asc";
     state.isProfesorModalOpen = false;
     state.profesorModalMode = "create";
     state.editingProfesorIndex = -1;

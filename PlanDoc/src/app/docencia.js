@@ -147,8 +147,8 @@ function formatCredits(value) {
     return Number(toPositiveNumber(value, 0).toFixed(2));
 }
 
-function creditsToHours(value) {
-    return formatCredits(toPositiveNumber(value, 0) * HOURS_PER_CREDIT);
+function hoursToCredits(value) {
+    return formatCredits(toPositiveNumber(value, 0) / HOURS_PER_CREDIT);
 }
 
 function totalReduccionesProfesorLocal(profesor) {
@@ -829,17 +829,17 @@ function printableBaseStyles() {
 function printableProfesoresPdfHtml(state) {
     const profesores = [...state.profesores].sort((a, b) => compareText(a.nombreCompleto || a.id, b.nombreCompleto || b.id));
     const rows = profesores.map((profesor) => {
-        const originalCredits = formatCredits(profesor.creditosObjetivo);
-        const reductionCredits = totalReduccionesProfesorLocal(profesor);
-        const finalCredits = formatCredits(Math.max(0, originalCredits - reductionCredits));
+        const originalHours = formatCredits(profesor.creditosObjetivo);
+        const reductionHours = totalReduccionesProfesorLocal(profesor);
+        const finalHours = formatCredits(Math.max(0, originalHours - reductionHours));
         return {
             profesor,
-            originalCredits,
-            originalHours: creditsToHours(originalCredits),
-            reductionCredits,
-            reductionHours: creditsToHours(reductionCredits),
-            finalCredits,
-            finalHours: creditsToHours(finalCredits),
+            originalCredits: hoursToCredits(originalHours),
+            originalHours,
+            reductionCredits: hoursToCredits(reductionHours),
+            reductionHours,
+            finalCredits: hoursToCredits(finalHours),
+            finalHours,
         };
     });
     const totals = rows.reduce((acc, row) => ({
@@ -937,8 +937,8 @@ function printableGradosPdfHtml(state) {
                 <h1>${escapeHtml(title)}</h1>
                 <div class="summary-grid">
                     <div class="summary-box"><span>Grados</span><strong>${categories.length}</strong></div>
-                    <div class="summary-box"><span>Docencia asignaturas</span><strong>${creditsToHours(subjectCredits)} h</strong></div>
-                    <div class="summary-box"><span>Total departamento</span><strong>${creditsToHours(totalCredits)} h</strong></div>
+                    <div class="summary-box"><span>Docencia asignaturas</span><strong>${subjectCredits} h</strong></div>
+                    <div class="summary-box"><span>Total departamento</span><strong>${totalCredits} h</strong></div>
                 </div>
                 ${categories.length === 0 ? `
                     <p>No hay grados/asignaturas cargados.</p>
@@ -946,11 +946,11 @@ function printableGradosPdfHtml(state) {
                     <section class="grade-section">
                         <div class="grade-title">
                             <h2>${escapeHtml(categoria.nombre)}</h2>
-                            <strong>${total} creditos · ${creditsToHours(total)} horas</strong>
+                            <strong>${total} horas · ${hoursToCredits(total)} creditos</strong>
                         </div>
                         <table class="pdf-table">
                             <thead>
-                                <tr><th>Asignatura</th><th>Codigo</th><th>Creditos</th><th>Horas</th></tr>
+                                <tr><th>Asignatura</th><th>Codigo</th><th>Horas</th><th>Creditos</th></tr>
                             </thead>
                             <tbody>
                                 ${asignaturas.map((asignatura) => {
@@ -960,7 +960,7 @@ function printableGradosPdfHtml(state) {
                                             <td>${escapeHtml(asignatura.nombre || asignatura.id)}</td>
                                             <td>${escapeHtml(asignatura.codigoReferencia || asignatura.id || "")}</td>
                                             <td>${credits}</td>
-                                            <td><strong>${creditsToHours(credits)}</strong></td>
+                                            <td><strong>${hoursToCredits(credits)}</strong></td>
                                         </tr>
                                     `;
     }).join("")}
@@ -971,11 +971,11 @@ function printableGradosPdfHtml(state) {
                 <section class="grade-section">
                     <div class="grade-title">
                         <h2>Extras</h2>
-                        <strong>${extraCredits} creditos · ${creditsToHours(extraCredits)} horas</strong>
+                        <strong>${extraCredits} horas · ${hoursToCredits(extraCredits)} creditos</strong>
                     </div>
                     <table class="pdf-table">
                         <thead>
-                            <tr><th>Elemento</th><th>Creditos</th><th>Horas</th></tr>
+                            <tr><th>Elemento</th><th>Horas</th><th>Creditos</th></tr>
                         </thead>
                         <tbody>
                             ${specialWorks.length === 0 ? `
@@ -984,15 +984,15 @@ function printableGradosPdfHtml(state) {
                                 <tr>
                                     <td>${escapeHtml(trabajo.label)}</td>
                                     <td>${trabajo.credits}</td>
-                                    <td><strong>${creditsToHours(trabajo.credits)}</strong></td>
+                                    <td><strong>${hoursToCredits(trabajo.credits)}</strong></td>
                                 </tr>
                             `).join("")}
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td class="total-cell">Total departamento</td>
-                                <td class="total-cell">${totalCredits} creditos</td>
-                                <td class="total-cell">${creditsToHours(totalCredits)} horas</td>
+                                <td class="total-cell">${totalCredits} horas</td>
+                                <td class="total-cell">${hoursToCredits(totalCredits)} creditos</td>
                             </tr>
                         </tfoot>
                     </table>
