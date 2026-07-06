@@ -42,6 +42,9 @@ export const state = {
         docenciaAjustable: true,
         reducciones: [],
     },
+    isProfesorImportModalOpen: false,
+    showProfesorImportHelp: false,
+    profesorImportText: "",
     asignaturas: [],
     asignaturasVersion: "",
     isAsignaturaModalOpen: false,
@@ -128,6 +131,9 @@ export function resetCourseSlices() {
         docenciaAjustable: true,
         reducciones: [],
     };
+    state.isProfesorImportModalOpen = false;
+    state.showProfesorImportHelp = false;
+    state.profesorImportText = "";
     state.asignaturas = [];
     state.asignaturasVersion = "";
     state.isAsignaturaModalOpen = false;

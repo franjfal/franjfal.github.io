@@ -1,5 +1,5 @@
-import { escapeHtml, toPositiveNumber, uid } from "./utils.js";
 import { calcularReajusteDocente, capacidadProfesor, totalReduccionesProfesor } from "./reajuste.js";
+import { escapeHtml, toPositiveNumber, uid } from "./utils.js";
 
 const REDUCCION_TIPOS = [
     { value: "Sexenios", label: "Sexenios" },
@@ -90,6 +90,12 @@ function closeProfesorModal(state) {
     state.profesorDraft = emptyProfesorDraft();
 }
 
+function closeProfesorImportModal(state) {
+    state.isProfesorImportModalOpen = false;
+    state.showProfesorImportHelp = false;
+    state.profesorImportText = "";
+}
+
 function updateProfesorDraftFromModal(state) {
     state.profesorDraft = {
         id: (document.getElementById("prof-new-id")?.value || "").trim(),
@@ -146,6 +152,118 @@ function profesorInitials(profesor) {
     return `${first}${second}`.toUpperCase() || "P";
 }
 
+function renderProfesorImportInstructions() {
+    const tipos = REDUCCION_TIPOS.map((tipo) => tipo.value).join(", ");
+    return `Instrucciones para el LLM:
+- Convierte la informacion que te pase el usuario sobre profesores a un array JSON valido.
+- Devuelve solo JSON valido, sin texto alrededor.
+- Puedes devolver uno o varios profesores en el mismo array.
+- Cada profesor debe incluir: id, nombre, apellidos, creditosObjetivo, docenciaAjustable y reducciones.
+- creditosObjetivo debe ser un numero igual o mayor que 0.
+- docenciaAjustable debe ser true o false.
+- reducciones debe ser un array. Cada reduccion debe incluir: tipo, creditos y descripcion.
+- creditos de cada reduccion debe ser un numero igual o mayor que 0.
+- Usa uno de estos tipos de reduccion cuando encaje: ${tipos}.
+- Si no hay reducciones, devuelve reducciones: [].
+- Manten ids estables y cortos, por ejemplo jperez o maria-garcia.
+
+Ejemplo:
+[
+  {
+    "id": "jperez",
+    "nombre": "Juan",
+    "apellidos": "Perez Lopez",
+    "creditosObjetivo": 180,
+    "docenciaAjustable": true,
+    "reducciones": [
+      {
+        "tipo": "Cargos",
+        "creditos": 12,
+        "descripcion": "Coordinacion de titulacion"
+      }
+    ]
+  },
+  {
+    "id": "mgarcia",
+    "nombre": "Maria",
+    "apellidos": "Garcia Ruiz",
+    "creditosObjetivo": 160,
+    "docenciaAjustable": false,
+    "reducciones": []
+  }
+]`;
+}
+
+function isNonNegativeNumber(value) {
+    if (value === "" || value === null || value === undefined) {
+        return false;
+    }
+    const num = Number.parseFloat(String(value).replace(",", "."));
+    return Number.isFinite(num) && num >= 0;
+}
+
+function validateImportedProfesores(state, profesores) {
+    if (!Array.isArray(profesores) || profesores.length === 0) {
+        return "El importador espera un array JSON con uno o varios profesores.";
+    }
+
+    const seenIds = new Set();
+    for (const profesor of profesores) {
+        if (!profesor || typeof profesor !== "object" || Array.isArray(profesor)) {
+            return "Cada profesor importado debe ser un objeto JSON.";
+        }
+        if (!profesor.id || !profesor.nombre || !profesor.apellidos) {
+            return "Cada profesor debe incluir id, nombre y apellidos.";
+        }
+        if (seenIds.has(profesor.id)) {
+            return `El id de profesor ${profesor.id} esta repetido dentro de la importacion.`;
+        }
+        if (state.profesores.some((existing) => existing.id === profesor.id)) {
+            return `El id de profesor ${profesor.id} ya existe en este curso.`;
+        }
+        if (!isNonNegativeNumber(profesor.creditosObjetivo)) {
+            return `El profesor ${profesor.id} debe incluir creditosObjetivo con un numero igual o mayor que 0.`;
+        }
+        if (profesor.docenciaAjustable !== undefined && typeof profesor.docenciaAjustable !== "boolean") {
+            return `El profesor ${profesor.id} debe indicar docenciaAjustable como true o false.`;
+        }
+        if (profesor.reducciones !== undefined && !Array.isArray(profesor.reducciones)) {
+            return `El profesor ${profesor.id} debe incluir reducciones como array.`;
+        }
+        for (const reduccion of profesor.reducciones || []) {
+            if (!reduccion || typeof reduccion !== "object" || Array.isArray(reduccion)) {
+                return `Las reducciones del profesor ${profesor.id} deben ser objetos JSON.`;
+            }
+            if (!reduccion.tipo) {
+                return `Cada reduccion del profesor ${profesor.id} debe incluir tipo.`;
+            }
+            if (!isNonNegativeNumber(reduccion.creditos)) {
+                return `Cada reduccion del profesor ${profesor.id} debe incluir creditos con un numero igual o mayor que 0.`;
+            }
+        }
+        seenIds.add(profesor.id);
+    }
+
+    return "";
+}
+
+async function copyTextToClipboard(text) {
+    if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return;
+    }
+
+    const fallback = document.createElement("textarea");
+    fallback.value = text;
+    fallback.setAttribute("readonly", "readonly");
+    fallback.style.position = "fixed";
+    fallback.style.opacity = "0";
+    document.body.appendChild(fallback);
+    fallback.select();
+    document.execCommand("copy");
+    document.body.removeChild(fallback);
+}
+
 export function renderProfesoresSection(state) {
     const stats = profesoresStats(state.profesores);
     const reajuste = calcularReajusteDocente(state);
@@ -190,8 +308,8 @@ export function renderProfesoresSection(state) {
                                 </td>
                             </tr>
                         ` : state.profesores.map((p, i) => {
-                            const calc = reajusteByProfesor.get(p.id) || { objetivoReal: creditosDisponibles(p), reajuste: 0, esAjustable: p.docenciaAjustable !== false, cargaTfm: 0, capacidad: creditosDisponibles(p) };
-                            return `
+        const calc = reajusteByProfesor.get(p.id) || { objetivoReal: creditosDisponibles(p), reajuste: 0, esAjustable: p.docenciaAjustable !== false, cargaTfm: 0, capacidad: creditosDisponibles(p) };
+        return `
                             <tr class="${i === state.selectedProfesorIndex ? "row-active" : ""}">
                                 <td>
                                     <div class="teacher-cell">
@@ -215,7 +333,7 @@ export function renderProfesoresSection(state) {
                                 </td>
                             </tr>
                             `;
-                        }).join("")}
+    }).join("")}
                     </tbody>
                 </table>
             </div>
@@ -223,6 +341,7 @@ export function renderProfesoresSection(state) {
 
         <button id="open-prof-modal-btn" class="fab" type="button" aria-label="Anadir profesor" title="Anadir profesor">+</button>
         ${state.isProfesorModalOpen ? renderProfesorModal(state) : ""}
+        ${state.isProfesorImportModalOpen ? renderProfesorImportModal(state) : ""}
     `;
 }
 
@@ -245,8 +364,11 @@ function renderProfesorModal(state) {
                 <div class="grid">
                     <section class="form-section">
                         <div class="form-section-title">
-                            <span class="section-kicker">Datos personales</span>
-                            <h3>Identificaci&oacute;n del profesor</h3>
+                            <div>
+                                <span class="section-kicker">Datos personales</span>
+                                <h3>Identificaci&oacute;n del profesor</h3>
+                            </div>
+                            ${isEdit ? "" : `<button id="open-prof-import-modal-btn" class="secondary mini" type="button">Importar profesores</button>`}
                         </div>
                         <div class="grid grid-2">
                         <label>
@@ -319,6 +441,42 @@ function renderProfesorModal(state) {
     `;
 }
 
+function renderProfesorImportModal(state) {
+    return `
+        <div class="modal-backdrop" id="prof-import-modal-backdrop">
+            <section class="card modal professor-modal" role="dialog" aria-modal="true" aria-labelledby="prof-import-modal-title">
+                <div class="modal-header">
+                    <div>
+                        <h2 id="prof-import-modal-title">Importar profesores</h2>
+                        <p class="status">Pega un array JSON con uno o varios profesores y sus reducciones.</p>
+                    </div>
+                    <button class="secondary mini" id="close-prof-import-modal-btn" type="button">Cerrar</button>
+                </div>
+                <div class="grid">
+                    <section class="form-section">
+                        <div class="form-section-title import-title-row">
+                            <div>
+                                <span class="section-kicker">Importacion</span>
+                                <h3>Datos generados por LLM</h3>
+                            </div>
+                            <div class="header-actions">
+                                <button id="copy-prof-import-help-btn" class="secondary mini" type="button">Copiar instrucciones</button>
+                                <button id="toggle-prof-import-help-btn" class="secondary mini icon-button" type="button" title="Instrucciones para LLM" aria-label="Instrucciones para LLM">?</button>
+                            </div>
+                        </div>
+                        ${state.showProfesorImportHelp ? `<pre class="help-panel">${escapeHtml(renderProfesorImportInstructions())}</pre>` : ""}
+                        <label>
+                            JSON de profesores
+                            <textarea id="prof-import-text" class="import-textarea" placeholder='[{"id":"jperez","nombre":"Juan","apellidos":"Perez","creditosObjetivo":180,"docenciaAjustable":true,"reducciones":[]}]'>${escapeHtml(state.profesorImportText || "")}</textarea>
+                        </label>
+                    </section>
+                    <button id="apply-prof-import-btn" type="button">Importar profesores</button>
+                </div>
+            </section>
+        </div>
+    `;
+}
+
 export function bindProfesoresEvents({ app, state, setStatus, render, saveProfesores }) {
     bindManualReduccionToggle("new-red-tipo", "new-red-tipo-manual");
 
@@ -333,10 +491,29 @@ export function bindProfesoresEvents({ app, state, setStatus, render, saveProfes
         };
     }
 
+    const openProfImportBtn = document.getElementById("open-prof-import-modal-btn");
+    if (openProfImportBtn) {
+        openProfImportBtn.onclick = () => {
+            updateProfesorDraftFromModal(state);
+            state.isProfesorImportModalOpen = true;
+            state.showProfesorImportHelp = false;
+            state.profesorImportText = "";
+            render();
+        };
+    }
+
     const closeProfModalBtn = document.getElementById("close-prof-modal-btn");
     if (closeProfModalBtn) {
         closeProfModalBtn.onclick = () => {
             closeProfesorModal(state);
+            render();
+        };
+    }
+
+    const closeProfImportBtn = document.getElementById("close-prof-import-modal-btn");
+    if (closeProfImportBtn) {
+        closeProfImportBtn.onclick = () => {
+            closeProfesorImportModal(state);
             render();
         };
     }
@@ -347,6 +524,74 @@ export function bindProfesoresEvents({ app, state, setStatus, render, saveProfes
             if (e.target === profModalBackdrop) {
                 closeProfesorModal(state);
                 render();
+            }
+        };
+    }
+
+    const profImportBackdrop = document.getElementById("prof-import-modal-backdrop");
+    if (profImportBackdrop) {
+        profImportBackdrop.onclick = (e) => {
+            if (e.target === profImportBackdrop) {
+                closeProfesorImportModal(state);
+                render();
+            }
+        };
+    }
+
+    const toggleProfImportHelpBtn = document.getElementById("toggle-prof-import-help-btn");
+    if (toggleProfImportHelpBtn) {
+        toggleProfImportHelpBtn.onclick = () => {
+            state.profesorImportText = document.getElementById("prof-import-text")?.value || "";
+            state.showProfesorImportHelp = !state.showProfesorImportHelp;
+            render();
+        };
+    }
+
+    const copyProfImportHelpBtn = document.getElementById("copy-prof-import-help-btn");
+    if (copyProfImportHelpBtn) {
+        copyProfImportHelpBtn.onclick = async () => {
+            try {
+                await copyTextToClipboard(renderProfesorImportInstructions());
+                setStatus("Instrucciones de importacion de profesores copiadas al portapapeles.");
+            } catch {
+                setStatus("No se pudieron copiar automaticamente las instrucciones de importacion.");
+            }
+        };
+    }
+
+    const applyProfImportBtn = document.getElementById("apply-prof-import-btn");
+    if (applyProfImportBtn) {
+        applyProfImportBtn.onclick = async () => {
+            const rawText = (document.getElementById("prof-import-text")?.value || "").trim();
+            if (!rawText) {
+                setStatus("Pega el JSON de profesores antes de importar.");
+                return;
+            }
+
+            let parsed;
+            try {
+                parsed = JSON.parse(rawText);
+            } catch (err) {
+                setStatus(`JSON no valido: ${err.message}`);
+                return;
+            }
+
+            const importedProfesores = Array.isArray(parsed) ? parsed : [parsed];
+            const validationError = validateImportedProfesores(state, importedProfesores);
+            if (validationError) {
+                setStatus(validationError);
+                return;
+            }
+
+            const nextProfesores = importedProfesores.map((profesor) => normalizeProfesor(profesor));
+            state.profesores.push(...nextProfesores);
+            state.selectedProfesorIndex = state.profesores.length - 1;
+            closeProfesorImportModal(state);
+            closeProfesorModal(state);
+            const previousVersion = state.profesoresVersion;
+            await saveProfesores();
+            if (state.profesoresVersion !== previousVersion) {
+                setStatus(nextProfesores.length === 1 ? "1 profesor importado." : `${nextProfesores.length} profesores importados.`);
             }
         };
     }
