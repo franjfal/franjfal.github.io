@@ -186,7 +186,7 @@
     "nombre": "José Salvador",
     "apellidos": "Moll Cebolla",
     "nombreCompleto": "José Salvador Moll Cebolla",
-    "creditosObjetivo": 170,
+    "creditosObjetivo": 230,
     "docenciaAjustable": true,
     "reducciones": [
       {
@@ -206,6 +206,12 @@
         "tipo": "Gestion",
         "creditos": 5,
         "descripcion": "Reduccion por proyectos de investigacion"
+      },
+      {
+        "id": "red_2b6wccqe",
+        "tipo": "Sexenios",
+        "creditos": 60,
+        "descripcion": ""
       }
     ]
   },
