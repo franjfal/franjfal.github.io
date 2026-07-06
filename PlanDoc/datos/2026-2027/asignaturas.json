@@ -16062,5 +16062,27 @@
         "sesiones": []
       }
     ]
+  },
+  {
+    "id": "44079",
+    "nombre": "Anàlisi Matemàtica i aplicacions",
+    "categoriaId": "master-investmat",
+    "codigoReferencia": "44079",
+    "codigoTitulacion": "2183",
+    "color": "",
+    "cuatrimestre": "segundo",
+    "subgrupos": [
+      {
+        "id": "PT-T",
+        "nombre": "Teoría PT-T",
+        "codigoUv": "PT-T",
+        "color": "",
+        "tipo": "teoria",
+        "idioma": "castellano",
+        "cuatrimestre": "segundo",
+        "creditos": 30,
+        "sesiones": []
+      }
+    ]
   }
 ]
