@@ -10,5 +10,9 @@
   {
     "id": "grado-quimica",
     "nombre": "Grado en Química"
+  },
+  {
+    "id": "grado-datos",
+    "nombre": "Grado en Ciencia de Datos"
   }
 ]
