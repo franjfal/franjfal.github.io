@@ -22,7 +22,7 @@
     "nombre": "Francisco Javier",
     "apellidos": "Falco Benavent",
     "nombreCompleto": "Francisco Javier Falco Benavent",
-    "creditosObjetivo": 180,
+    "creditosObjetivo": 230,
     "docenciaAjustable": true,
     "reducciones": [
       {
@@ -36,6 +36,12 @@
         "tipo": "Cargos",
         "creditos": 20,
         "descripcion": "Reduccion por cargo"
+      },
+      {
+        "id": "red_ef074w21",
+        "tipo": "Sexenios",
+        "creditos": 20,
+        "descripcion": ""
       }
     ]
   },
