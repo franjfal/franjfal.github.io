@@ -59,6 +59,18 @@
     "titulo": "TFG GCD",
     "totalTrabajos": 1,
     "peso": 9.6,
-    "asignaciones": {}
+    "asignaciones": {
+      "JFalco": 1
+    }
+  },
+  {
+    "id": "tfg-cta",
+    "tipo": "tfg",
+    "titulo": "TFG CTA",
+    "totalTrabajos": 1,
+    "peso": 9.6,
+    "asignaciones": {
+      "JFalco": 1
+    }
   }
 ]
