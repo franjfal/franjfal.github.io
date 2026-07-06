@@ -29,7 +29,8 @@ export async function api(path, options = {}) {
         });
     } catch (cause) {
         const target = API_BASE || "la misma URL de la web";
-        const err = new Error(`No se pudo conectar con la API (${target}). Revisa PLANDOC_API_BASE, que el Worker este desplegado y que ALLOWED_ORIGIN incluya esta web.`);
+        const origin = window.location.origin || "null";
+        const err = new Error(`No se pudo conectar con la API (${target}) desde ${origin}. Revisa PLANDOC_API_BASE, que el Worker este desplegado y que ALLOWED_ORIGIN incluya este origen.`);
         err.cause = cause;
         throw err;
     }
