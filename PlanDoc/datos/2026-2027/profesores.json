@@ -57,7 +57,7 @@
     "nombre": "Carmen",
     "apellidos": "Fernandez Rosell",
     "nombreCompleto": "Carmen Fernandez Rosell",
-    "creditosObjetivo": 160,
+    "creditosObjetivo": 230,
     "docenciaAjustable": true,
     "reducciones": [
       {
@@ -65,6 +65,12 @@
         "tipo": "Direccion de tesis",
         "creditos": 10,
         "descripcion": "Reduccion por tesis"
+      },
+      {
+        "id": "red_08t0yn0g",
+        "tipo": "Sexenios",
+        "creditos": 70,
+        "descripcion": ""
       }
     ]
   },
