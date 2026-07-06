@@ -14357,5 +14357,269 @@
         ]
       }
     ]
+  },
+  {
+    "id": "34187",
+    "nombre": "Matemàtiques I",
+    "categoriaId": "Matematicas",
+    "codigoReferencia": "34187",
+    "codigoTitulacion": "1110",
+    "color": "",
+    "cuatrimestre": "primer",
+    "subgrupos": [
+      {
+        "id": "A-T",
+        "nombre": "Teoría A",
+        "codigoUv": "A-T",
+        "color": "",
+        "tipo": "teoria",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 41,
+        "sesiones": []
+      },
+      {
+        "id": "B-T",
+        "nombre": "Teoría B",
+        "codigoUv": "B-T",
+        "color": "",
+        "tipo": "teoria",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 41,
+        "sesiones": []
+      },
+      {
+        "id": "C-T",
+        "nombre": "Teoría C",
+        "codigoUv": "C-T",
+        "color": "",
+        "tipo": "teoria",
+        "idioma": "valenciano",
+        "cuatrimestre": "primer",
+        "creditos": 41,
+        "sesiones": []
+      },
+      {
+        "id": "D-T",
+        "nombre": "Teoría D",
+        "codigoUv": "D-T",
+        "color": "",
+        "tipo": "teoria",
+        "idioma": "valenciano",
+        "cuatrimestre": "primer",
+        "creditos": 41,
+        "sesiones": []
+      },
+      {
+        "id": "A-I1",
+        "nombre": "Aula informática A-I1",
+        "codigoUv": "A-I1",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 12,
+        "sesiones": []
+      },
+      {
+        "id": "A-I2",
+        "nombre": "Aula informática A-I2",
+        "codigoUv": "A-I2",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 12,
+        "sesiones": []
+      },
+      {
+        "id": "B-I1",
+        "nombre": "Aula informática B-I1",
+        "codigoUv": "B-I1",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 12,
+        "sesiones": []
+      },
+      {
+        "id": "B-I2",
+        "nombre": "Aula informática B-I2",
+        "codigoUv": "B-I2",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 12,
+        "sesiones": []
+      },
+      {
+        "id": "B-I3",
+        "nombre": "Aula informática B-I3 cerrado",
+        "codigoUv": "B-I3",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 0,
+        "sesiones": []
+      },
+      {
+        "id": "C-I1",
+        "nombre": "Aula informática C-I1",
+        "codigoUv": "C-I1",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "valenciano",
+        "cuatrimestre": "primer",
+        "creditos": 12,
+        "sesiones": []
+      },
+      {
+        "id": "C-I2",
+        "nombre": "Aula informática C-I2",
+        "codigoUv": "C-I2",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "valenciano",
+        "cuatrimestre": "primer",
+        "creditos": 12,
+        "sesiones": []
+      },
+      {
+        "id": "C-I3",
+        "nombre": "Aula informática C-I3",
+        "codigoUv": "C-I3",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "valenciano",
+        "cuatrimestre": "primer",
+        "creditos": 12,
+        "sesiones": []
+      },
+      {
+        "id": "D-I1",
+        "nombre": "Aula informática D-I1",
+        "codigoUv": "D-I1",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "valenciano",
+        "cuatrimestre": "primer",
+        "creditos": 12,
+        "sesiones": []
+      },
+      {
+        "id": "D-I2",
+        "nombre": "Aula informática D-I2",
+        "codigoUv": "D-I2",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "valenciano",
+        "cuatrimestre": "primer",
+        "creditos": 12,
+        "sesiones": []
+      },
+      {
+        "id": "D-I3",
+        "nombre": "Aula informática D-I3",
+        "codigoUv": "D-I3",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "valenciano",
+        "cuatrimestre": "primer",
+        "creditos": 12,
+        "sesiones": []
+      },
+      {
+        "id": "A-U1",
+        "nombre": "Tutorías A-U1",
+        "codigoUv": "A-U1",
+        "color": "",
+        "tipo": "tutorias",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 7,
+        "sesiones": []
+      },
+      {
+        "id": "A-U2",
+        "nombre": "Tutorías A-U2",
+        "codigoUv": "A-U2",
+        "color": "",
+        "tipo": "tutorias",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 7,
+        "sesiones": []
+      },
+      {
+        "id": "B-U1",
+        "nombre": "Tutorías B-U1",
+        "codigoUv": "B-U1",
+        "color": "",
+        "tipo": "tutorias",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 7,
+        "sesiones": []
+      },
+      {
+        "id": "B-U2",
+        "nombre": "Tutorías B-U2",
+        "codigoUv": "B-U2",
+        "color": "",
+        "tipo": "tutorias",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 7,
+        "sesiones": []
+      },
+      {
+        "id": "C-U1",
+        "nombre": "Tutorías C-U1",
+        "codigoUv": "C-U1",
+        "color": "",
+        "tipo": "tutorias",
+        "idioma": "valenciano",
+        "cuatrimestre": "primer",
+        "creditos": 7,
+        "sesiones": []
+      },
+      {
+        "id": "C-U2",
+        "nombre": "Tutorías C-U2",
+        "codigoUv": "C-U2",
+        "color": "",
+        "tipo": "tutorias",
+        "idioma": "valenciano",
+        "cuatrimestre": "primer",
+        "creditos": 7,
+        "sesiones": []
+      },
+      {
+        "id": "D-U1",
+        "nombre": "Tutorías D-U1",
+        "codigoUv": "D-U1",
+        "color": "",
+        "tipo": "tutorias",
+        "idioma": "valenciano",
+        "cuatrimestre": "primer",
+        "creditos": 7,
+        "sesiones": []
+      },
+      {
+        "id": "D-U2",
+        "nombre": "Tutorías D-U2",
+        "codigoUv": "D-U2",
+        "color": "",
+        "tipo": "tutorias",
+        "idioma": "valenciano",
+        "cuatrimestre": "primer",
+        "creditos": 7,
+        "sesiones": []
+      }
+    ]
   }
 ]
