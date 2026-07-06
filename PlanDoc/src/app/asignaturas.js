@@ -1052,7 +1052,7 @@ export function renderAsignaturasSection(state) {
                             <th><button class="table-sort" data-sort-asignaturas="categoria" type="button">Grado / facultad${asignaturaSortArrow(state, "categoria")}</button></th>
                             <th><button class="table-sort" data-sort-asignaturas="cuatrimestre" type="button">Cuatrimestre${asignaturaSortArrow(state, "cuatrimestre")}</button></th>
                             <th><button class="table-sort" data-sort-asignaturas="subgrupos" type="button">Subgrupos${asignaturaSortArrow(state, "subgrupos")}</button></th>
-                            <th><button class="table-sort" data-sort-asignaturas="creditos" type="button">Horas${asignaturaSortArrow(state, "creditos")}</button></th>
+                            <th><button class="table-sort" data-sort-asignaturas="creditos" type="button">Horas totales / calendario${asignaturaSortArrow(state, "creditos")}</button></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -1096,7 +1096,7 @@ export function renderAsignaturasSection(state) {
                                     </td>
                                     <td><span class="subject-code">${cuatrimestreLabel(a.cuatrimestre)}</span></td>
                                     <td><span class="num-pill muted-pill">${Array.isArray(a.subgrupos) ? a.subgrupos.length : 0}</span></td>
-                                    <td><span class="num-pill">${totalCreditosAsignatura(a)}</span></td>
+                                    <td><span class="num-pill">${totalCreditosAsignatura(a)} / ${totalHorasSubgrupos(a.subgrupos || [])}</span></td>
                                     <td class="table-actions">
                                         ${uvUrl ? `
                                             <a class="secondary mini icon-button web-link-button" href="${escapeHtml(uvUrl)}" target="_blank" rel="noopener noreferrer" title="Abrir informacion web de ${escapeHtml(a.nombre || a.id || "la asignatura")}" aria-label="Abrir informacion web de ${escapeHtml(a.nombre || a.id || "la asignatura")}">
@@ -1471,7 +1471,14 @@ function renderAsignaturaDetailModal(state) {
                 <div class="table-shell compact-table">
                     <table class="table teacher-table">
                         <thead>
-                            <tr><th>Subgrupo</th><th>Tipo</th><th>Idioma</th><th>Cuatrimestre</th><th>Horas carga</th><th>Sesiones</th><th>Horas calendario</th></tr>
+                            <tr>
+                                <th><button class="table-sort" data-sort-subgrupos="nombre" type="button">Subgrupo${sortArrow(state, "nombre")}</button></th>
+                                <th><button class="table-sort" data-sort-subgrupos="tipo" type="button">Tipo${sortArrow(state, "tipo")}</button></th>
+                                <th><button class="table-sort" data-sort-subgrupos="idioma" type="button">Idioma${sortArrow(state, "idioma")}</button></th>
+                                <th><button class="table-sort" data-sort-subgrupos="cuatrimestre" type="button">Cuatrimestre${sortArrow(state, "cuatrimestre")}</button></th>
+                                <th><button class="table-sort" data-sort-subgrupos="creditos" type="button">Horas carga${sortArrow(state, "creditos")}</button></th>
+                                <th>Sesiones</th><th>Horas calendario</th>
+                            </tr>
                         </thead>
                         <tbody>
                             ${subgrupos.length === 0 ? `
