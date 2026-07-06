@@ -167,6 +167,8 @@ function profesorSortArrow(state, key) {
 }
 
 function profesorSortValue(profesor, calc, key) {
+    if (key === "nombre") return profesor.nombre || profesor.nombreCompleto || profesor.id || "";
+    if (key === "apellidos") return profesor.apellidos || profesor.nombreCompleto || profesor.id || "";
     if (key === "objetivo") return toPositiveNumber(profesor.creditosObjetivo, 0);
     if (key === "reducciones") return totalReducciones(profesor);
     if (key === "tfm") return toPositiveNumber(calc.cargaTfm, 0);
@@ -377,7 +379,8 @@ export function renderProfesoresSection(state) {
                 <table class="table teacher-table">
                     <thead>
                         <tr>
-                            <th><button class="table-sort" data-sort-profesores="nombre" type="button">Profesor${profesorSortArrow(state, "nombre")}</button></th>
+                            <th><button class="table-sort" data-sort-profesores="nombre" type="button">Nombre${profesorSortArrow(state, "nombre")}</button></th>
+                            <th><button class="table-sort" data-sort-profesores="apellidos" type="button">Apellidos${profesorSortArrow(state, "apellidos")}</button></th>
                             <th><button class="table-sort" data-sort-profesores="objetivo" type="button">Objetivo${profesorSortArrow(state, "objetivo")}</button></th>
                             <th><button class="table-sort" data-sort-profesores="reducciones" type="button">Reducciones${profesorSortArrow(state, "reducciones")}</button></th>
                             <th><button class="table-sort" data-sort-profesores="tfm" type="button">TFM${profesorSortArrow(state, "tfm")}</button></th>
@@ -391,13 +394,13 @@ export function renderProfesoresSection(state) {
                     <tbody>
                         ${state.profesores.length === 0 ? `
                             <tr>
-                                <td colspan="9" class="empty-cell">
+                                <td colspan="10" class="empty-cell">
                                     No hay profesores en este curso. Usa el bot&oacute;n + para crear el primero.
                                 </td>
                             </tr>
                         ` : visibleProfesores.length === 0 ? `
                             <tr>
-                                <td colspan="9" class="empty-cell">No hay profesores que coincidan con los filtros.</td>
+                                <td colspan="10" class="empty-cell">No hay profesores que coincidan con los filtros.</td>
                             </tr>
                         ` : visibleProfesores.map(({ profesor: p, originalIndex, calc }) => {
         return `
@@ -406,11 +409,12 @@ export function renderProfesoresSection(state) {
                                     <div class="teacher-cell">
                                         <span class="avatar">${escapeHtml(profesorInitials(p))}</span>
                                         <span>
-                                            <strong>${escapeHtml(p.nombreCompleto)}</strong>
+                                            <strong>${escapeHtml(p.nombre || p.nombreCompleto || p.id)}</strong>
                                             <small>${escapeHtml(p.id)}</small>
                                         </span>
                                     </div>
                                 </td>
+                                <td><strong>${escapeHtml(p.apellidos || "")}</strong></td>
                                 <td><span class="num-pill">${toPositiveNumber(p.creditosObjetivo, 0)}</span></td>
                                 <td><span class="num-pill muted-pill">${totalReducciones(p)}</span></td>
                                 <td><span class="num-pill ${calc.cargaTfm > 0 ? "danger-pill" : "muted-pill"}">${calc.cargaTfm}</span></td>
