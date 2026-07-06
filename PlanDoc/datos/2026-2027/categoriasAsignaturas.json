@@ -18,5 +18,9 @@
   {
     "id": "grado-alimentos",
     "nombre": "Grado en Ciencia de los Alimentos"
+  },
+  {
+    "id": "grado-telematica",
+    "nombre": "Grado en Ingeniería Telemática"
   }
 ]
