@@ -1007,7 +1007,70 @@ button.mini {
 }
 
 .table-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
     white-space: nowrap;
+}
+
+.table-actions button {
+    width: auto;
+}
+
+.web-link-button {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    color: #fff;
+    text-decoration: none;
+    background: #334155;
+    border-radius: 999px;
+}
+
+.web-link-button.disabled {
+    opacity: 0.42;
+    cursor: not-allowed;
+}
+
+.web-mini-icon {
+    position: relative;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+}
+
+.web-mini-icon::before,
+.web-mini-icon::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -2px;
+    width: 7px;
+    height: 18px;
+    border: 2px solid currentColor;
+    border-top: 0;
+    border-bottom: 0;
+    border-radius: 50%;
+    transform: translateX(-50%);
+}
+
+.web-mini-icon::after {
+    left: -2px;
+    top: 50%;
+    width: 18px;
+    height: 0;
+    border-top: 2px solid currentColor;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 0;
+    transform: translateY(-50%);
 }
 
 .section-kicker {
@@ -1303,6 +1366,19 @@ button.mini {
 
 .allocation-summary-panel {
     margin-top: 12px;
+}
+
+.export-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 14px;
+}
+
+.export-actions button {
+    width: auto;
+    min-width: 210px;
 }
 
 .calculation-note {

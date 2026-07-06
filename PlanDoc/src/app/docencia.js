@@ -1,6 +1,13 @@
 import { escapeHtml, toPositiveNumber, uid } from "./utils.js";
 import { calcularReajusteDocente } from "./reajuste.js";
 
+const SPECIAL_WORK_TYPES = [
+    { value: "tfg", label: "TFG" },
+    { value: "tfm", label: "TFM" },
+    { value: "practicas", label: "Practicas de empresa" },
+];
+const HOURS_PER_CREDIT = 10;
+
 function normalizeDocenciaItem(raw) {
     return {
         id: String(raw?.id || uid("doc")).trim(),
@@ -130,6 +137,26 @@ function selectedAsignatura(state, candidates = state.asignaturas) {
 
 function profesorName(state, profesorId) {
     return state.profesores.find((profesor) => profesor.id === profesorId)?.nombreCompleto || profesorId;
+}
+
+function compareText(a, b) {
+    return String(a || "").localeCompare(String(b || ""), "es", { numeric: true, sensitivity: "base" });
+}
+
+function formatCredits(value) {
+    return Number(toPositiveNumber(value, 0).toFixed(2));
+}
+
+function creditsToHours(value) {
+    return formatCredits(toPositiveNumber(value, 0) * HOURS_PER_CREDIT);
+}
+
+function totalReduccionesProfesorLocal(profesor) {
+    return formatCredits((profesor.reducciones || []).reduce((sum, reduccion) => sum + toPositiveNumber(reduccion.creditos, 0), 0));
+}
+
+function subgrupoSortValue(subgrupo) {
+    return subgrupo.codigoUv || subgrupo.id || subgrupo.nombre || "";
 }
 
 const DAY_INDEX = {
@@ -533,6 +560,483 @@ function renderReajusteResumen(state) {
     `;
 }
 
+function specialWorkLabel(trabajo) {
+    const typeLabel = SPECIAL_WORK_TYPES.find((tipo) => tipo.value === trabajo.tipo)?.label || trabajo.tipo || "Trabajo";
+    return [typeLabel, trabajo.titulo || trabajo.id].filter(Boolean).join(" · ");
+}
+
+function specialWorkCreditsForProfesor(trabajo, profesorId) {
+    return formatCredits(toPositiveNumber(trabajo.asignaciones?.[profesorId], 0) * toPositiveNumber(trabajo.peso, 0));
+}
+
+function sortedSpecialWorks(state) {
+    return (state.trabajos || [])
+        .filter((trabajo) => SPECIAL_WORK_TYPES.some((tipo) => tipo.value === trabajo.tipo))
+        .sort((a, b) => {
+            const typeCompare = SPECIAL_WORK_TYPES.findIndex((tipo) => tipo.value === a.tipo)
+                - SPECIAL_WORK_TYPES.findIndex((tipo) => tipo.value === b.tipo);
+            if (typeCompare !== 0) return typeCompare;
+            return compareText(a.titulo || a.id, b.titulo || b.id);
+        });
+}
+
+function chunkList(list, size) {
+    const chunks = [];
+    for (let i = 0; i < list.length; i += size) {
+        chunks.push(list.slice(i, i + size));
+    }
+    return chunks.length ? chunks : [[]];
+}
+
+function exportCategories(state) {
+    const categories = sortedCategoriasForDocencia(state).map((categoria) => {
+        const asignaturas = state.asignaturas
+            .filter((asignatura) => (
+                categoria.id === "__uncategorized__"
+                    ? !categoriaById(state, asignatura.categoriaId)
+                    : asignatura.categoriaId === categoria.id
+            ))
+            .sort((a, b) => compareText(a.nombre || a.id, b.nombre || b.id));
+        const total = formatCredits(asignaturas.reduce((sum, asignatura) => sum + asignaturaStatus(state, asignatura).total, 0));
+        const assigned = formatCredits(asignaturas.reduce((sum, asignatura) => sum + asignaturaStatus(state, asignatura).assigned, 0));
+        return { categoria, asignaturas, total, assigned };
+    }).filter((group) => group.asignaturas.length > 0);
+    return categories;
+}
+
+function renderSpecialWorkPdfPages(state) {
+    const works = sortedSpecialWorks(state);
+    const professors = [...state.profesores].sort((a, b) => compareText(a.nombreCompleto || a.id, b.nombreCompleto || b.id));
+    if (works.length === 0) {
+        return `
+            <section class="pdf-page">
+                <h1>Trabajos especiales</h1>
+                <p>No hay TFG, TFM ni practicas de empresa configuradas.</p>
+            </section>
+        `;
+    }
+
+    const workChunks = chunkList(works, 3);
+    return workChunks.map((workChunk, chunkIndex) => `
+        <section class="pdf-page">
+            <h1>Trabajos especiales${workChunks.length > 1 ? ` · bloque ${chunkIndex + 1}/${workChunks.length}` : ""}</h1>
+            <table class="pdf-table pdf-work-table">
+                <thead>
+                    <tr>
+                        <th class="sticky-name">Profesor</th>
+                        ${workChunk.map((trabajo) => `
+                            <th>
+                                <strong>${escapeHtml(specialWorkLabel(trabajo))}</strong>
+                                <span>${escapeHtml(trabajo.id || "")}</span>
+                            </th>
+                        `).join("")}
+                        <th>Total bloque</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${professors.length === 0 ? `
+                        <tr><td colspan="${workChunk.length + 2}">No hay profesores cargados.</td></tr>
+                    ` : professors.map((profesor) => {
+                        const rowTotal = formatCredits(workChunk.reduce((sum, trabajo) => sum + specialWorkCreditsForProfesor(trabajo, profesor.id), 0));
+                        return `
+                            <tr>
+                                <td class="sticky-name">
+                                    <strong>${escapeHtml(profesor.nombreCompleto || profesor.id)}</strong>
+                                    <span>${escapeHtml(profesor.id)}</span>
+                                </td>
+                                ${workChunk.map((trabajo) => {
+                                    const credits = specialWorkCreditsForProfesor(trabajo, profesor.id);
+                                    return `<td class="${credits > 0 ? "has-value" : ""}">${credits || ""}</td>`;
+                                }).join("")}
+                                <td class="total-cell">${rowTotal}</td>
+                            </tr>
+                        `;
+                    }).join("")}
+                </tbody>
+            </table>
+        </section>
+    `).join("");
+}
+
+function renderAssignmentPdfPages(state) {
+    const categories = exportCategories(state);
+    if (categories.length === 0) {
+        return `
+            <section class="pdf-page">
+                <h1>Reparto de asignaturas</h1>
+                <p>No hay asignaturas cargadas en este curso.</p>
+            </section>
+        `;
+    }
+
+    return categories.map(({ categoria, asignaturas, total, assigned }) => `
+        <section class="pdf-page assignment-page">
+            <header class="pdf-category-header">
+                <div>
+                    <h1>${escapeHtml(categoria.nombre)}</h1>
+                    <p>${escapeHtml(state.selectedCourse || "")}</p>
+                </div>
+                <strong>${assigned} / ${total}</strong>
+            </header>
+            ${asignaturas.map((asignatura) => {
+                const status = asignaturaStatus(state, asignatura);
+                const subgrupos = [...(asignatura.subgrupos || [])].sort((a, b) => compareText(subgrupoSortValue(a), subgrupoSortValue(b)));
+                return `
+                    <section class="pdf-subject">
+                        <header>
+                            <div>
+                                <h2>${escapeHtml(asignatura.nombre || asignatura.id)}</h2>
+                                <span>${escapeHtml(asignatura.codigoReferencia || asignatura.id || "")}</span>
+                            </div>
+                            <strong>${status.assigned} / ${status.total}</strong>
+                        </header>
+                        ${subgrupos.length === 0 ? `
+                            <p class="pdf-empty">Sin subgrupos definidos.</p>
+                        ` : subgrupos.map((subgrupo) => {
+                            const items = assignmentsForSubgroup(state, asignatura.id, subgrupo.id)
+                                .sort((a, b) => compareText(profesorName(state, a.profesorId), profesorName(state, b.profesorId)));
+                            const assigned = assignmentCredits(items);
+                            const total = toPositiveNumber(subgrupo.creditos, 0);
+                            return `
+                                <div class="pdf-subgroup">
+                                    <div class="pdf-subgroup-title">
+                                        <strong>${escapeHtml(subgrupo.nombre || subgrupo.id)}</strong>
+                                        <span>${escapeHtml(subgrupo.id)} · ${assigned} / ${total}</span>
+                                    </div>
+                                    <div class="pdf-prof-list">
+                                        ${items.length === 0 ? `
+                                            <span class="pdf-empty">Sin profesores asignados.</span>
+                                        ` : items.map((item) => `
+                                            <span>
+                                                <strong>${escapeHtml(profesorName(state, item.profesorId))}</strong>
+                                                ${toPositiveNumber(item.creditos, 0)}
+                                            </span>
+                                        `).join("")}
+                                    </div>
+                                </div>
+                            `;
+                        }).join("")}
+                    </section>
+                `;
+            }).join("")}
+        </section>
+    `).join("");
+}
+
+function printableDocenciaHtml(state) {
+    const title = `Reparto de asignaturas · ${state.selectedCourse || "curso"}`;
+    return `
+        <!doctype html>
+        <html lang="es">
+        <head>
+            <meta charset="utf-8" />
+            <title>${escapeHtml(title)}</title>
+            <style>
+                * { box-sizing: border-box; }
+                html, body { margin: 0; padding: 0; color: #17242b; font-family: Arial, sans-serif; }
+                body { background: #fff; }
+                .pdf-page { width: 100%; padding: 0; break-after: page; page-break-after: always; }
+                .pdf-page:last-child { break-after: auto; page-break-after: auto; }
+                h1 { margin: 0 0 5mm; font-size: 18px; line-height: 1.15; }
+                h2 { margin: 0; font-size: 12px; line-height: 1.2; }
+                p { margin: 0 0 4mm; color: #475569; }
+                .pdf-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9px; }
+                .pdf-table th, .pdf-table td { border: 1px solid #cbd5e1; padding: 4px; vertical-align: top; overflow-wrap: anywhere; }
+                .pdf-table th { background: #e2e8f0; color: #0f172a; text-align: left; }
+                .pdf-table thead { display: table-header-group; }
+                .pdf-table tr { break-inside: avoid; page-break-inside: avoid; }
+                .pdf-table th span, .pdf-table td span { display: block; color: #64748b; font-size: 8px; margin-top: 1px; }
+                .sticky-name { width: 40mm; }
+                .has-value { background: #ecfdf5; font-weight: 700; color: #064e3b; }
+                .total-cell { background: #f8fafc; font-weight: 700; }
+                .pdf-category-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8mm; margin-bottom: 4mm; padding-bottom: 3mm; border-bottom: 2px solid #0f766e; break-after: avoid; page-break-after: avoid; }
+                .pdf-category-header h1 { margin-bottom: 1mm; }
+                .pdf-category-header strong { font-size: 18px; white-space: nowrap; }
+                .pdf-subject { margin: 0 0 4mm; border: 1px solid #cbd5e1; border-radius: 6px; overflow: visible; }
+                .pdf-subject > header { display: flex; justify-content: space-between; gap: 6mm; padding: 3mm; background: #f8fafc; border-bottom: 1px solid #cbd5e1; break-after: avoid; page-break-after: avoid; }
+                .pdf-subject > header span { display: block; margin-top: 1mm; color: #64748b; font-size: 9px; }
+                .pdf-subject > header strong { white-space: nowrap; font-size: 12px; }
+                .pdf-subgroup { display: grid; grid-template-columns: 46mm minmax(0, 1fr); gap: 3mm; padding: 2.5mm 3mm; border-bottom: 1px solid #e2e8f0; break-inside: avoid; page-break-inside: avoid; }
+                .pdf-subgroup:last-child { border-bottom: 0; }
+                .pdf-subgroup-title strong { display: block; font-size: 10px; }
+                .pdf-subgroup-title span { display: block; color: #475569; font-size: 9px; margin-top: 1mm; }
+                .pdf-prof-list { display: flex; flex-wrap: wrap; gap: 2mm; align-items: flex-start; }
+                .pdf-prof-list > span { display: inline-flex; gap: 2mm; align-items: baseline; padding: 1.5mm 2mm; border-radius: 999px; background: #eefcf9; color: #0f172a; font-size: 9px; }
+                .pdf-prof-list > span strong { color: #0f172a; }
+                .pdf-empty { color: #64748b; font-style: italic; font-size: 9px; }
+                @page { size: A4 portrait; margin: 8mm; }
+            </style>
+        </head>
+        <body>
+            ${renderSpecialWorkPdfPages(state)}
+            ${renderAssignmentPdfPages(state)}
+        </body>
+        </html>
+    `;
+}
+
+function downloadDocenciaPdf(state) {
+    const popup = window.open("", "_blank");
+    if (!popup) {
+        window.print();
+        return;
+    }
+    popup.document.open();
+    popup.document.write(printableDocenciaHtml(state));
+    popup.document.close();
+    popup.focus();
+    setTimeout(() => popup.print(), 400);
+}
+
+function openPrintableHtml(html) {
+    const popup = window.open("", "_blank");
+    if (!popup) {
+        window.print();
+        return;
+    }
+    popup.document.open();
+    popup.document.write(html);
+    popup.document.close();
+    popup.focus();
+    setTimeout(() => popup.print(), 400);
+}
+
+function printableBaseStyles() {
+    return `
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; color: #17242b; font-family: Arial, sans-serif; }
+        body { background: #fff; }
+        h1 { margin: 0 0 5mm; font-size: 18px; line-height: 1.15; }
+        h2 { margin: 0 0 3mm; font-size: 13px; line-height: 1.2; }
+        p { margin: 0 0 4mm; color: #475569; }
+        .pdf-page { width: 100%; padding: 0; break-after: page; page-break-after: always; }
+        .pdf-page:last-child { break-after: auto; page-break-after: auto; }
+        .pdf-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9px; }
+        .pdf-table th, .pdf-table td { border: 1px solid #cbd5e1; padding: 4px; vertical-align: top; overflow-wrap: anywhere; }
+        .pdf-table th { background: #e2e8f0; color: #0f172a; text-align: left; }
+        .pdf-table thead { display: table-header-group; }
+        .pdf-table tr { break-inside: avoid; page-break-inside: avoid; }
+        .total-cell { background: #f8fafc; font-weight: 700; }
+        .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4mm; margin: 0 0 5mm; }
+        .summary-box { border: 1px solid #cbd5e1; border-radius: 7px; padding: 4mm; background: #f8fafc; }
+        .summary-box span { display: block; color: #64748b; font-size: 9px; margin-bottom: 1mm; }
+        .summary-box strong { display: block; color: #0f172a; font-size: 15px; }
+        .muted { color: #64748b; }
+        @page { size: A4 portrait; margin: 8mm; }
+    `;
+}
+
+function printableProfesoresPdfHtml(state) {
+    const profesores = [...state.profesores].sort((a, b) => compareText(a.nombreCompleto || a.id, b.nombreCompleto || b.id));
+    const rows = profesores.map((profesor) => {
+        const originalCredits = formatCredits(profesor.creditosObjetivo);
+        const reductionCredits = totalReduccionesProfesorLocal(profesor);
+        const finalCredits = formatCredits(Math.max(0, originalCredits - reductionCredits));
+        return {
+            profesor,
+            originalCredits,
+            originalHours: creditsToHours(originalCredits),
+            reductionCredits,
+            reductionHours: creditsToHours(reductionCredits),
+            finalCredits,
+            finalHours: creditsToHours(finalCredits),
+        };
+    });
+    const totals = rows.reduce((acc, row) => ({
+        originalCredits: formatCredits(acc.originalCredits + row.originalCredits),
+        originalHours: formatCredits(acc.originalHours + row.originalHours),
+        reductionCredits: formatCredits(acc.reductionCredits + row.reductionCredits),
+        reductionHours: formatCredits(acc.reductionHours + row.reductionHours),
+        finalCredits: formatCredits(acc.finalCredits + row.finalCredits),
+        finalHours: formatCredits(acc.finalHours + row.finalHours),
+    }), { originalCredits: 0, originalHours: 0, reductionCredits: 0, reductionHours: 0, finalCredits: 0, finalHours: 0 });
+    const title = `Carga de profesores · ${state.selectedCourse || "curso"}`;
+
+    return `
+        <!doctype html>
+        <html lang="es">
+        <head>
+            <meta charset="utf-8" />
+            <title>${escapeHtml(title)}</title>
+            <style>${printableBaseStyles()}</style>
+        </head>
+        <body>
+            <section class="pdf-page">
+                <h1>${escapeHtml(title)}</h1>
+                <div class="summary-grid">
+                    <div class="summary-box"><span>Horas originales</span><strong>${totals.originalHours}</strong></div>
+                    <div class="summary-box"><span>Horas por reducciones</span><strong>${totals.reductionHours}</strong></div>
+                    <div class="summary-box"><span>Horas finales</span><strong>${totals.finalHours}</strong></div>
+                </div>
+                <table class="pdf-table">
+                    <thead>
+                        <tr>
+                            <th>Profesor</th>
+                            <th>Carga original</th>
+                            <th>Reducciones</th>
+                            <th>Carga final</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rows.length === 0 ? `
+                            <tr><td colspan="4">No hay profesores cargados.</td></tr>
+                        ` : rows.map((row) => `
+                            <tr>
+                                <td><strong>${escapeHtml(row.profesor.nombreCompleto || row.profesor.id)}</strong><br><span class="muted">${escapeHtml(row.profesor.id)}</span></td>
+                                <td>${row.originalCredits} creditos<br><strong>${row.originalHours} horas</strong></td>
+                                <td>${row.reductionCredits} creditos<br><strong>${row.reductionHours} horas</strong></td>
+                                <td>${row.finalCredits} creditos<br><strong>${row.finalHours} horas</strong></td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="total-cell">Total</td>
+                            <td class="total-cell">${totals.originalCredits} creditos · ${totals.originalHours} horas</td>
+                            <td class="total-cell">${totals.reductionCredits} creditos · ${totals.reductionHours} horas</td>
+                            <td class="total-cell">${totals.finalCredits} creditos · ${totals.finalHours} horas</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </section>
+        </body>
+        </html>
+    `;
+}
+
+function specialWorkTotalCredits(trabajo) {
+    return formatCredits(Object.values(trabajo.asignaciones || {}).reduce((sum, count) => sum + toPositiveNumber(count, 0), 0) * toPositiveNumber(trabajo.peso, 0));
+}
+
+function printableGradosPdfHtml(state) {
+    const categories = exportCategories(state);
+    const specialWorks = sortedSpecialWorks(state).map((trabajo) => ({
+        label: specialWorkLabel(trabajo),
+        credits: specialWorkTotalCredits(trabajo),
+    }));
+    const subjectCredits = formatCredits(categories.reduce((sum, group) => sum + group.total, 0));
+    const extraCredits = formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.credits, 0));
+    const totalCredits = formatCredits(subjectCredits + extraCredits);
+    const title = `Horas por grados y extras · ${state.selectedCourse || "curso"}`;
+
+    return `
+        <!doctype html>
+        <html lang="es">
+        <head>
+            <meta charset="utf-8" />
+            <title>${escapeHtml(title)}</title>
+            <style>
+                ${printableBaseStyles()}
+                .grade-section { margin: 0 0 5mm; }
+                .grade-title { display: flex; justify-content: space-between; gap: 5mm; align-items: baseline; margin: 0 0 2mm; padding-bottom: 2mm; border-bottom: 2px solid #0f766e; break-after: avoid; page-break-after: avoid; }
+                .grade-title strong { white-space: nowrap; }
+            </style>
+        </head>
+        <body>
+            <section class="pdf-page">
+                <h1>${escapeHtml(title)}</h1>
+                <div class="summary-grid">
+                    <div class="summary-box"><span>Grados</span><strong>${categories.length}</strong></div>
+                    <div class="summary-box"><span>Docencia asignaturas</span><strong>${creditsToHours(subjectCredits)} h</strong></div>
+                    <div class="summary-box"><span>Total departamento</span><strong>${creditsToHours(totalCredits)} h</strong></div>
+                </div>
+                ${categories.length === 0 ? `
+                    <p>No hay grados/asignaturas cargados.</p>
+                ` : categories.map(({ categoria, asignaturas, total }) => `
+                    <section class="grade-section">
+                        <div class="grade-title">
+                            <h2>${escapeHtml(categoria.nombre)}</h2>
+                            <strong>${total} creditos · ${creditsToHours(total)} horas</strong>
+                        </div>
+                        <table class="pdf-table">
+                            <thead>
+                                <tr><th>Asignatura</th><th>Codigo</th><th>Creditos</th><th>Horas</th></tr>
+                            </thead>
+                            <tbody>
+                                ${asignaturas.map((asignatura) => {
+                                    const credits = subjectTotalCredits(asignatura);
+                                    return `
+                                        <tr>
+                                            <td>${escapeHtml(asignatura.nombre || asignatura.id)}</td>
+                                            <td>${escapeHtml(asignatura.codigoReferencia || asignatura.id || "")}</td>
+                                            <td>${credits}</td>
+                                            <td><strong>${creditsToHours(credits)}</strong></td>
+                                        </tr>
+                                    `;
+                                }).join("")}
+                            </tbody>
+                        </table>
+                    </section>
+                `).join("")}
+                <section class="grade-section">
+                    <div class="grade-title">
+                        <h2>Extras</h2>
+                        <strong>${extraCredits} creditos · ${creditsToHours(extraCredits)} horas</strong>
+                    </div>
+                    <table class="pdf-table">
+                        <thead>
+                            <tr><th>Elemento</th><th>Creditos</th><th>Horas</th></tr>
+                        </thead>
+                        <tbody>
+                            ${specialWorks.length === 0 ? `
+                                <tr><td colspan="3">No hay TFG, TFM ni practicas de empresa configuradas.</td></tr>
+                            ` : specialWorks.map((trabajo) => `
+                                <tr>
+                                    <td>${escapeHtml(trabajo.label)}</td>
+                                    <td>${trabajo.credits}</td>
+                                    <td><strong>${creditsToHours(trabajo.credits)}</strong></td>
+                                </tr>
+                            `).join("")}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="total-cell">Total departamento</td>
+                                <td class="total-cell">${totalCredits} creditos</td>
+                                <td class="total-cell">${creditsToHours(totalCredits)} horas</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </section>
+            </section>
+        </body>
+        </html>
+    `;
+}
+
+function downloadProfesoresPdf(state) {
+    openPrintableHtml(printableProfesoresPdfHtml(state));
+}
+
+function downloadGradosPdf(state) {
+    openPrintableHtml(printableGradosPdfHtml(state));
+}
+
+function renderDocenciaExport(state) {
+    const categories = exportCategories(state);
+    const works = sortedSpecialWorks(state);
+    const subjectCount = categories.reduce((sum, group) => sum + group.asignaturas.length, 0);
+    return `
+        <section class="form-section allocation-summary-panel export-panel">
+            <div class="form-section-title">
+                <div>
+                    <span class="section-kicker">Exportacion</span>
+                    <h3>PDF del reparto completo</h3>
+                </div>
+            </div>
+            <div class="teacher-summary">
+                <div class="metric-box"><span>Bloques especiales</span><strong>${works.length}</strong></div>
+                <div class="metric-box"><span>Categorias</span><strong>${categories.length}</strong></div>
+                <div class="metric-box"><span>Asignaturas</span><strong>${subjectCount}</strong></div>
+            </div>
+            <div class="export-actions">
+                <button id="download-docencia-pdf-btn" type="button">Exportar reparto a PDF</button>
+                <button id="download-profesores-pdf-btn" class="secondary" type="button">Exportar profesores</button>
+                <button id="download-grados-pdf-btn" class="secondary" type="button">Exportar grados y extras</button>
+            </div>
+        </section>
+    `;
+}
+
 function renderDocenciaOverlapModal(state) {
     const warning = state.docenciaOverlapWarning;
     if (!warning?.overlaps?.length) return "";
@@ -597,6 +1101,7 @@ export function renderDocenciaSection(state) {
                 <button class="tab ${activeTab === "reparto" ? "active" : ""}" data-docencia-tab="reparto" type="button">Reparto de clases</button>
                 <button class="tab ${activeTab === "carga" ? "active" : ""}" data-docencia-tab="carga" type="button">Resumen por profesor</button>
                 <button class="tab ${activeTab === "resumen" ? "active" : ""}" data-docencia-tab="resumen" type="button">Resumen</button>
+                <button class="tab ${activeTab === "exportar" ? "active" : ""}" data-docencia-tab="exportar" type="button">Exportar</button>
             </div>
 
             ${activeTab === "reparto" ? `
@@ -636,7 +1141,7 @@ export function renderDocenciaSection(state) {
                     </div>
                     ${renderProfesorLoad(state)}
                 </section>
-            ` : activeTab === "resumen" ? renderReajusteResumen(state) : `
+            ` : activeTab === "resumen" ? renderReajusteResumen(state) : activeTab === "exportar" ? renderDocenciaExport(state) : `
                 <div class="allocation-layout">
                     <aside class="form-section allocation-picker">
                         <div class="form-section-title">
@@ -821,5 +1326,20 @@ export function bindDocenciaEvents({ app, state, setStatus, render, saveDocencia
     const saveBtn = document.getElementById("save-docencia-btn");
     if (saveBtn) {
         saveBtn.onclick = saveDocencia;
+    }
+
+    const pdfBtn = document.getElementById("download-docencia-pdf-btn");
+    if (pdfBtn) {
+        pdfBtn.onclick = () => downloadDocenciaPdf(state);
+    }
+
+    const profesoresPdfBtn = document.getElementById("download-profesores-pdf-btn");
+    if (profesoresPdfBtn) {
+        profesoresPdfBtn.onclick = () => downloadProfesoresPdf(state);
+    }
+
+    const gradosPdfBtn = document.getElementById("download-grados-pdf-btn");
+    if (gradosPdfBtn) {
+        gradosPdfBtn.onclick = () => downloadGradosPdf(state);
     }
 }

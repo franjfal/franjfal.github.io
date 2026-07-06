@@ -358,6 +358,17 @@ function guessAnyoFinCurso(selectedCourse) {
     return "";
 }
 
+function buildUvAsignaturaUrl(asignatura, selectedCourse) {
+    const codigoAsignatura = String(asignatura?.codigoReferencia || "").trim();
+    const idTitulacion = String(asignatura?.codigoTitulacion || "").trim();
+    const anyoFinCurso = guessAnyoFinCurso(selectedCourse);
+    if (!codigoAsignatura || !idTitulacion || !anyoFinCurso) {
+        return "";
+    }
+    const idT = `${idTitulacion};${anyoFinCurso}`;
+    return `https://www.uv.es/fatwirepub/Satellite/universitat/es/asignaturas-1285846094474.html?idA=${encodeURIComponent(codigoAsignatura)}&idT=${encodeURIComponent(idT)}`;
+}
+
 function inferTipoSubgrupoFromUv(group) {
     const text = `${group.tipo || ""} ${group.id || ""}`.toLowerCase();
     const suffix = String(group.id || "").split("-").pop()?.charAt(0).toUpperCase() || "";
@@ -1059,6 +1070,7 @@ export function renderAsignaturasSection(state) {
                         ` : visibleAsignaturas.map(({ asignatura: a, originalIndex }) => {
         const categoria = categoriaById(state, a.categoriaId);
         const warnings = asignaturaWarnings(state, a);
+        const uvUrl = buildUvAsignaturaUrl(a, state.selectedCourse);
         return `
                                 <tr class="${originalIndex === state.selectedAsignaturaIndex ? "row-active" : ""} ${warnings.length ? "row-warning" : ""}">
                                     <td>
@@ -1086,6 +1098,15 @@ export function renderAsignaturasSection(state) {
                                     <td><span class="num-pill muted-pill">${Array.isArray(a.subgrupos) ? a.subgrupos.length : 0}</span></td>
                                     <td><span class="num-pill">${totalCreditosAsignatura(a)}</span></td>
                                     <td class="table-actions">
+                                        ${uvUrl ? `
+                                            <a class="secondary mini icon-button web-link-button" href="${escapeHtml(uvUrl)}" target="_blank" rel="noopener noreferrer" title="Abrir informacion web de ${escapeHtml(a.nombre || a.id || "la asignatura")}" aria-label="Abrir informacion web de ${escapeHtml(a.nombre || a.id || "la asignatura")}">
+                                                <span class="web-mini-icon" aria-hidden="true"></span>
+                                            </a>
+                                        ` : `
+                                            <span class="mini icon-button web-link-button disabled" title="Completa codigo de referencia, titulacion y curso para abrir la web" aria-label="Web de asignatura no disponible">
+                                                <span class="web-mini-icon" aria-hidden="true"></span>
+                                            </span>
+                                        `}
                                         <button class="secondary mini" data-edit-asig="${originalIndex}" type="button">Editar</button>
                                         <button class="warn mini" data-remove-asig="${originalIndex}" type="button">Eliminar</button>
                                     </td>
