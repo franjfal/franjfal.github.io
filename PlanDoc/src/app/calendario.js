@@ -484,13 +484,16 @@ export function renderCalendarioSection(state) {
             </div>
 
             <section class="calendar-overlap-panel">
-                <label class="switch-row">
-                    <span>
-                        <strong>Comprobar solapamientos</strong>
-                        <small>${state.calendarCheckOverlaps ? `${diagnostics.overlaps.length} solapamientos encontrados` : "Analiza las asignaturas y subgrupos visibles"}</small>
-                    </span>
-                    <input id="calendar-overlap-toggle" type="checkbox" ${state.calendarCheckOverlaps ? "checked" : ""} />
-                </label>
+                <div class="calendar-overlap-actions">
+                    <label class="switch-row">
+                        <span>
+                            <strong>Comprobar solapamientos</strong>
+                            <small>${state.calendarCheckOverlaps ? `${diagnostics.overlaps.length} solapamientos encontrados` : "Analiza las asignaturas y subgrupos visibles"}</small>
+                        </span>
+                        <input id="calendar-overlap-toggle" type="checkbox" ${state.calendarCheckOverlaps ? "checked" : ""} />
+                    </label>
+                    <button id="calendar-clear-selection-btn" class="secondary" type="button">Deseleccionar todo</button>
+                </div>
                 ${state.calendarCheckOverlaps ? renderOverlapSummary(diagnostics) : ""}
             </section>
 
@@ -520,6 +523,15 @@ export function bindCalendarioEvents({ state, setStatus, render, saveAsignaturas
     if (overlapToggle) {
         overlapToggle.onchange = () => {
             state.calendarCheckOverlaps = overlapToggle.checked;
+            render();
+        };
+    }
+
+    const clearSelectionBtn = document.getElementById("calendar-clear-selection-btn");
+    if (clearSelectionBtn) {
+        clearSelectionBtn.onclick = () => {
+            state.asignaturas.forEach((asignatura) => setAsignaturaVisibility(asignatura, false));
+            setStatus("Todas las asignaturas del calendario quedan deseleccionadas.");
             render();
         };
     }

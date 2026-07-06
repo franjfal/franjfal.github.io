@@ -654,6 +654,13 @@ button.mini {
     padding: 12px;
 }
 
+.calendar-overlap-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+}
+
 .switch-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
@@ -1708,6 +1715,7 @@ pre {
     .allocation-form,
     .filter-bar,
     .calendar-layout,
+    .calendar-overlap-actions,
     .public-calendar-workspace.with-sidebar,
     .public-link-card,
     .course-toolbar {
