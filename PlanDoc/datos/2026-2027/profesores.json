@@ -101,9 +101,16 @@
     "nombre": "Jesus",
     "apellidos": "Garcia Falset",
     "nombreCompleto": "Jesus Garcia Falset",
-    "creditosObjetivo": 160,
+    "creditosObjetivo": 230,
     "docenciaAjustable": true,
-    "reducciones": []
+    "reducciones": [
+      {
+        "id": "red_t6hnb3f4",
+        "tipo": "Sexenios",
+        "creditos": 70,
+        "descripcion": ""
+      }
+    ]
   },
   {
     "id": "domingo-garcia",
