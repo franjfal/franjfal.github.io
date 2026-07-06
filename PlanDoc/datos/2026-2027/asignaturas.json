@@ -15842,5 +15842,82 @@
         "sesiones": []
       }
     ]
+  },
+  {
+    "id": "36581",
+    "nombre": "Anàlisi Matemàtica I F-M",
+    "categoriaId": "Matematicas",
+    "codigoReferencia": "36581",
+    "codigoTitulacion": "1928",
+    "color": "",
+    "cuatrimestre": "anual",
+    "subgrupos": [
+      {
+        "id": "FM-T-1",
+        "nombre": "Teoría FM-T - primer cuatrimestre",
+        "codigoUv": "FM-T",
+        "color": "",
+        "tipo": "teoria",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 30,
+        "sesiones": []
+      },
+      {
+        "id": "FM-P1-1",
+        "nombre": "Prácticas a l'aula FM-P1 - primer cuatrimestre",
+        "codigoUv": "FM-P1",
+        "color": "",
+        "tipo": "practicas",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 22.5,
+        "sesiones": []
+      },
+      {
+        "id": "FM-O1-1",
+        "nombre": "Seminario FM-O1 - primer cuatrimestre",
+        "codigoUv": "FM-O1",
+        "color": "",
+        "tipo": "seminario",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 7.5,
+        "sesiones": []
+      },
+      {
+        "id": "FM-T-2",
+        "nombre": "Teoría FM-T - segundo cuatrimestre",
+        "codigoUv": "FM-T",
+        "color": "",
+        "tipo": "teoria",
+        "idioma": "castellano",
+        "cuatrimestre": "segundo",
+        "creditos": 30,
+        "sesiones": []
+      },
+      {
+        "id": "FM-P1-2",
+        "nombre": "Prácticas a l'aula FM-P1 - segundo cuatrimestre",
+        "codigoUv": "FM-P1",
+        "color": "",
+        "tipo": "practicas",
+        "idioma": "castellano",
+        "cuatrimestre": "segundo",
+        "creditos": 22.5,
+        "sesiones": []
+      },
+      {
+        "id": "FM-O1-2",
+        "nombre": "Seminario FM-O1 - segundo cuatrimestre",
+        "codigoUv": "FM-O1",
+        "color": "",
+        "tipo": "seminario",
+        "idioma": "castellano",
+        "cuatrimestre": "segundo",
+        "creditos": 7.5,
+        "sesiones": []
+      }
+    ]
   }
 ]
