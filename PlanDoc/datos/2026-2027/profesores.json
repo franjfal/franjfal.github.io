@@ -117,7 +117,7 @@
     "nombre": "Domingo",
     "apellidos": "Garcia Rodriguez",
     "nombreCompleto": "Domingo Garcia Rodriguez",
-    "creditosObjetivo": 160,
+    "creditosObjetivo": 230,
     "docenciaAjustable": true,
     "reducciones": [
       {
@@ -131,6 +131,12 @@
         "tipo": "Gestion",
         "creditos": 10,
         "descripcion": "Reduccion por proyectos de investigacion"
+      },
+      {
+        "id": "red_ik9aavt7",
+        "tipo": "Sexenios",
+        "creditos": 70,
+        "descripcion": ""
       }
     ]
   },
