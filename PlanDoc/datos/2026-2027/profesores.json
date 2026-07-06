@@ -263,7 +263,7 @@
     "nombre": "Sergio",
     "apellidos": "Segura De Leon",
     "nombreCompleto": "Sergio Segura De Leon",
-    "creditosObjetivo": 140,
+    "creditosObjetivo": 230,
     "docenciaAjustable": true,
     "reducciones": [
       {
@@ -271,6 +271,12 @@
         "tipo": "Gestion",
         "creditos": 20,
         "descripcion": "Reduccion discrecional"
+      },
+      {
+        "id": "red_zsm1hkug",
+        "tipo": "Sexenios",
+        "creditos": 70,
+        "descripcion": ""
       }
     ]
   },
