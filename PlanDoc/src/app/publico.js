@@ -909,7 +909,7 @@ function renderPublicHorarioTree(state) {
                 ${expanded ? `
                     <div class="calendar-subject-list">
                         ${category.asignaturas.map((asignatura) => `
-                            <label class="calendar-subgroup-row public-horario-subject-row">
+                            <label class="public-horario-subject-row">
                                 <input data-public-horario-asignatura="${escapeHtml(asignatura.id)}" type="checkbox" ${publicHorarioAsignaturaVisible(state, asignatura) ? "checked" : ""} />
                                 <span>
                                     <strong>${escapeHtml(asignatura.nombre || asignatura.id || "Asignatura")}</strong>
@@ -1465,7 +1465,6 @@ export function renderPublicView(state) {
                     <p class="public-refresh-notice">Para ver datos actualizados, recarga esta pagina. La vista publica no se actualiza automaticamente.</p>
                     <p class="status">${escapeHtml(state.status)}</p>
                 </div>
-                <a class="button-link secondary" href="./">Acceso admin</a>
             </header>
 
             <div class="teacher-summary subject-summary">

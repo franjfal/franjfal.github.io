@@ -550,9 +550,23 @@ button.mini {
 }
 
 .public-horario-subject-row {
+    display: grid;
     grid-template-columns: 18px minmax(0, 1fr);
+    gap: 8px;
     align-items: start;
-    padding-left: 10px;
+    margin: 0;
+    padding: 9px 10px;
+    border-top: 1px solid var(--line);
+    background: #f8fafc;
+}
+
+.public-horario-subject-row input[type="checkbox"] {
+    width: auto;
+    margin-top: 2px;
+}
+
+.public-horario-subject-row > span {
+    min-width: 0;
 }
 
 .public-simulation-panel .calendar-event-control {
