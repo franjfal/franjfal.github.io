@@ -52,5 +52,13 @@
     "asignaciones": {
       "JFalco": 1
     }
+  },
+  {
+    "id": "tfg-gcd",
+    "tipo": "tfg",
+    "titulo": "TFG GCD",
+    "totalTrabajos": 1,
+    "peso": 9.6,
+    "asignaciones": {}
   }
 ]
