@@ -42,5 +42,15 @@
     "asignaciones": {
       "francisco-falco": 7
     }
+  },
+  {
+    "id": "practicas-empresa-gcd",
+    "tipo": "practicas",
+    "titulo": "PRácticas Empresa GCD",
+    "totalTrabajos": 1,
+    "peso": 3,
+    "asignaciones": {
+      "JFalco": 1
+    }
   }
 ]
