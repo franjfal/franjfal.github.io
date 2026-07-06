@@ -20,11 +20,19 @@ function resolveApiBase() {
 const API_BASE = resolveApiBase();
 
 export async function api(path, options = {}) {
-    const res = await fetch(`${API_BASE}${path}`, {
-        credentials: "include",
-        headers: { "content-type": "application/json", ...(options.headers || {}) },
-        ...options,
-    });
+    let res;
+    try {
+        res = await fetch(`${API_BASE}${path}`, {
+            credentials: "include",
+            headers: { "content-type": "application/json", ...(options.headers || {}) },
+            ...options,
+        });
+    } catch (cause) {
+        const target = API_BASE || "la misma URL de la web";
+        const err = new Error(`No se pudo conectar con la API (${target}). Revisa PLANDOC_API_BASE, que el Worker este desplegado y que ALLOWED_ORIGIN incluya esta web.`);
+        err.cause = cause;
+        throw err;
+    }
 
     const text = await res.text();
     let body = {};
