@@ -329,6 +329,128 @@ async function copyTextToClipboard(text) {
     document.body.removeChild(fallback);
 }
 
+function formatHours(value) {
+    return Number(toPositiveNumber(value, 0).toFixed(2));
+}
+
+function hoursToCredits(value) {
+    return formatHours(toPositiveNumber(value, 0) / 10);
+}
+
+function openPrintableHtml(html) {
+    const popup = window.open("", "_blank");
+    if (!popup) {
+        window.print();
+        return;
+    }
+    popup.document.open();
+    popup.document.write(html);
+    popup.document.close();
+    popup.focus();
+    setTimeout(() => popup.print(), 400);
+}
+
+function printableBaseStyles() {
+    return `
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; color: #17242b; font-family: Arial, sans-serif; }
+        body { background: #fff; }
+        .pdf-page { width: 100%; padding: 0; break-after: page; page-break-after: always; }
+        .pdf-page:last-child { break-after: auto; page-break-after: auto; }
+        h1 { margin: 0 0 5mm; font-size: 18px; line-height: 1.15; }
+        .pdf-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9px; }
+        .pdf-table th, .pdf-table td { border: 1px solid #cbd5e1; padding: 4px; vertical-align: top; overflow-wrap: anywhere; }
+        .pdf-table th { background: #e2e8f0; color: #0f172a; text-align: left; }
+        .pdf-table thead { display: table-header-group; }
+        .pdf-table tr { break-inside: avoid; page-break-inside: avoid; }
+        .total-cell { background: #f8fafc; font-weight: 700; }
+        .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4mm; margin: 0 0 5mm; }
+        .summary-box { border: 1px solid #cbd5e1; border-radius: 7px; padding: 4mm; background: #f8fafc; }
+        .summary-box span { display: block; color: #64748b; font-size: 9px; margin-bottom: 1mm; }
+        .summary-box strong { display: block; color: #0f172a; font-size: 15px; }
+        .muted { color: #64748b; }
+        @page { size: A4 portrait; margin: 8mm; }
+    `;
+}
+
+function printableProfesoresPdfHtml(state) {
+    const profesores = [...state.profesores].sort((a, b) => compareValues(a.apellidos || a.nombreCompleto || a.id, b.apellidos || b.nombreCompleto || b.id));
+    const rows = profesores.map((profesor) => {
+        const originalHours = formatHours(profesor.creditosObjetivo);
+        const reductionHours = totalReducciones(profesor);
+        const finalHours = formatHours(Math.max(0, originalHours - reductionHours));
+        return {
+            profesor,
+            originalHours,
+            originalCredits: hoursToCredits(originalHours),
+            reductionHours,
+            reductionCredits: hoursToCredits(reductionHours),
+            finalHours,
+            finalCredits: hoursToCredits(finalHours),
+        };
+    });
+    const totals = rows.reduce((acc, row) => ({
+        originalHours: formatHours(acc.originalHours + row.originalHours),
+        originalCredits: formatHours(acc.originalCredits + row.originalCredits),
+        reductionHours: formatHours(acc.reductionHours + row.reductionHours),
+        reductionCredits: formatHours(acc.reductionCredits + row.reductionCredits),
+        finalHours: formatHours(acc.finalHours + row.finalHours),
+        finalCredits: formatHours(acc.finalCredits + row.finalCredits),
+    }), { originalHours: 0, originalCredits: 0, reductionHours: 0, reductionCredits: 0, finalHours: 0, finalCredits: 0 });
+    const title = `Carga de profesores · ${state.selectedCourse || "curso"}`;
+
+    return `
+        <!doctype html>
+        <html lang="es">
+        <head>
+            <meta charset="utf-8" />
+            <title>${escapeHtml(title)}</title>
+            <style>${printableBaseStyles()}</style>
+        </head>
+        <body>
+            <section class="pdf-page">
+                <h1>${escapeHtml(title)}</h1>
+                <div class="summary-grid">
+                    <div class="summary-box"><span>Horas originales</span><strong>${totals.originalHours}</strong></div>
+                    <div class="summary-box"><span>Horas por reducciones</span><strong>${totals.reductionHours}</strong></div>
+                    <div class="summary-box"><span>Horas finales</span><strong>${totals.finalHours}</strong></div>
+                </div>
+                <table class="pdf-table">
+                    <thead>
+                        <tr><th>Nombre</th><th>Apellidos</th><th>Carga original</th><th>Reducciones</th><th>Carga final</th></tr>
+                    </thead>
+                    <tbody>
+                        ${rows.length === 0 ? `
+                            <tr><td colspan="5">No hay profesores cargados.</td></tr>
+                        ` : rows.map((row) => `
+                            <tr>
+                                <td><strong>${escapeHtml(row.profesor.nombre || row.profesor.id)}</strong><br><span class="muted">${escapeHtml(row.profesor.id)}</span></td>
+                                <td>${escapeHtml(row.profesor.apellidos || "")}</td>
+                                <td>${row.originalHours} horas<br><strong>${row.originalCredits} creditos</strong></td>
+                                <td>${row.reductionHours} horas<br><strong>${row.reductionCredits} creditos</strong></td>
+                                <td>${row.finalHours} horas<br><strong>${row.finalCredits} creditos</strong></td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="total-cell" colspan="2">Total</td>
+                            <td class="total-cell">${totals.originalHours} horas · ${totals.originalCredits} creditos</td>
+                            <td class="total-cell">${totals.reductionHours} horas · ${totals.reductionCredits} creditos</td>
+                            <td class="total-cell">${totals.finalHours} horas · ${totals.finalCredits} creditos</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </section>
+        </body>
+        </html>
+    `;
+}
+
+function downloadProfesoresPdf(state) {
+    openPrintableHtml(printableProfesoresPdfHtml(state));
+}
+
 export function renderProfesoresSection(state) {
     const stats = profesoresStats(state.profesores);
     const reajuste = calcularReajusteDocente(state);
@@ -349,6 +471,10 @@ export function renderProfesoresSection(state) {
                 <div class="metric-box"><span>Total objetivo</span><strong>${stats.objetivo}</strong></div>
                 <div class="metric-box"><span>Total reducciones</span><strong>${stats.reducciones}</strong></div>
                 <div class="metric-box"><span>Total disponible</span><strong>${stats.disponibles}</strong></div>
+            </div>
+
+            <div class="export-actions">
+                <button id="download-profesores-pdf-btn" class="secondary" type="button">Exportar profesores a PDF</button>
             </div>
 
             <div class="filter-bar">
@@ -618,6 +744,11 @@ export function bindProfesoresEvents({ app, state, setStatus, render, saveProfes
             state.profesoresFilterAjustable = "";
             render();
         };
+    }
+
+    const profesoresPdfBtn = document.getElementById("download-profesores-pdf-btn");
+    if (profesoresPdfBtn) {
+        profesoresPdfBtn.onclick = () => downloadProfesoresPdf(state);
     }
 
     app.querySelectorAll("[data-sort-profesores]").forEach((btn) => {
