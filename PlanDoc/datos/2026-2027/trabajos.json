@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "id": "tfg-matex-concertado",
+    "tipo": "tfg",
+    "titulo": "TFG Mates Concertados",
+    "totalTrabajos": 16,
+    "peso": 9.6,
+    "asignaciones": {}
+  }
+]
