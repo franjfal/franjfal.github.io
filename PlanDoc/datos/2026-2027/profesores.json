@@ -313,7 +313,7 @@
     "nombre": "Jose Julian",
     "apellidos": "Toledo Melero",
     "nombreCompleto": "Jose Julian Toledo Melero",
-    "creditosObjetivo": 155,
+    "creditosObjetivo": 230,
     "docenciaAjustable": true,
     "reducciones": [
       {
@@ -321,6 +321,12 @@
         "tipo": "Gestion",
         "creditos": 5,
         "descripcion": "Reduccion por proyectos de investigacion"
+      },
+      {
+        "id": "red_dxv51poj",
+        "tipo": "Sexenios",
+        "creditos": 70,
+        "descripcion": ""
       }
     ]
   },
