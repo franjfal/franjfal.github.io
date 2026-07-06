@@ -337,10 +337,10 @@
           y reconstruye la cronología hasta encontrar a la persona culpable.
         </p>
         <p>
-          Selecciona el nombre del profesor, la fecha, la hora a la que termina la
-          clase y el género de cada sospechoso. La muerte se situará diez minutos
-          después del final de la clase y todos los documentos se regenerarán con
-          esa información.
+          Selecciona el nombre del profesor, la clase impartida, la fecha, las horas
+          de inicio y fin de la clase y el género de cada sospechoso. La muerte se
+          situará diez minutos después del final de la clase y todos los documentos
+          se regenerarán con esa información.
         </p>
         <p>
           Al generar los documentos verás dos pestañas: documentos separados, para
@@ -359,9 +359,17 @@
             Nombre del profesor
             <input id="teacher-name" name="teacherName" type="text" value="Javier Falcó" required>
           </label>
+          <label class="full">
+            Clase impartida
+            <input id="class-name" name="className" type="text" value="ecuaciones diferenciales y transformadas de Laplace" required>
+          </label>
           <label>
-            Fecha del asesinato
+            Fecha del caso
             <input id="case-date" name="caseDate" type="date" value="2026-07-02" required>
+          </label>
+          <label>
+            Inicio de la clase
+            <input id="class-start-time" name="classStartTime" type="time" value="10:30" required>
           </label>
           <label>
             Fin de la clase

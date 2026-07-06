@@ -46,8 +46,10 @@
   function init() {
     els.form = document.getElementById("case-form");
     els.teacherName = document.getElementById("teacher-name");
+    els.className = document.getElementById("class-name");
     els.date = document.getElementById("case-date");
-    els.time = document.getElementById("class-end-time");
+    els.startTime = document.getElementById("class-start-time");
+    els.endTime = document.getElementById("class-end-time");
     els.g1 = document.getElementById("suspect-1-gender");
     els.g2 = document.getElementById("suspect-2-gender");
     els.g3 = document.getElementById("suspect-3-gender");
@@ -67,12 +69,23 @@
       button.addEventListener("click", () => activateTab(button.dataset.tabTarget));
     });
 
-    [els.teacherName, els.date, els.time, els.g1, els.g2, els.g3].forEach((input) => {
-      input.addEventListener("input", updateSummary);
-      input.addEventListener("change", updateSummary);
+    [els.teacherName, els.className, els.date, els.startTime, els.endTime, els.g1, els.g2, els.g3].forEach((input) => {
+      input.addEventListener("input", handleInputChange);
+      input.addEventListener("change", handleInputChange);
     });
 
+    syncTimeConstraints();
     updateSummary();
+  }
+
+  function handleInputChange() {
+    syncTimeConstraints();
+    updateSummary();
+  }
+
+  function syncTimeConstraints() {
+    els.startTime.max = els.endTime.value || "";
+    els.endTime.min = els.startTime.value || "";
   }
 
   async function handleGenerate(event) {
@@ -97,7 +110,7 @@
       const bundleFiles = bundleSpecs.map((spec) => buildPdfFile(spec, images));
 
       setStatus("Preparando archivos ZIP...");
-      const stamp = `${caseData.dateValue}_${caseData.timeValue.replace(":", "-")}`;
+      const stamp = `${caseData.dateValue}_${caseData.endTimeValue.replace(":", "-")}`;
       const separateZip = {
         fileName: `juicio_${caseData.teacherFileStem}_documentos_separados_${stamp}.zip`,
         label: "ZIP documentos separados",
@@ -133,17 +146,27 @@
 
   function readCaseData() {
     const teacherFullName = normalizeName(els.teacherName.value);
+    const className = normalizeName(els.className.value);
     const dateValue = els.date.value;
-    const timeValue = els.time.value;
+    const startTimeValue = els.startTime.value;
+    const endTimeValue = els.endTime.value;
     if (!teacherFullName) {
       throw new Error("Escribe el nombre del profesor.");
     }
-    if (!dateValue || !timeValue) {
-      throw new Error("Selecciona una fecha y una hora de fin de clase.");
+    if (!className) {
+      throw new Error("Escribe el nombre de la clase impartida.");
+    }
+    if (!dateValue || !startTimeValue || !endTimeValue) {
+      throw new Error("Selecciona la fecha, la hora de inicio y la hora de fin de clase.");
     }
 
-    const classEnd = parseLocalDateTime(dateValue, timeValue);
-    const timeline = buildTimeline(classEnd);
+    const classStart = parseLocalDateTime(dateValue, startTimeValue);
+    const classEnd = parseLocalDateTime(dateValue, endTimeValue);
+    if (classStart >= classEnd) {
+      throw new Error("La hora de inicio de la clase debe ser anterior a la hora de fin.");
+    }
+
+    const timeline = buildTimeline(classStart, classEnd);
     const temps = calculateTemperatures();
     const suspects = [
       buildSuspect(1, els.g1.value),
@@ -155,8 +178,11 @@
       teacherFullName,
       teacherShortName: shortName(teacherFullName),
       teacherFileStem: fileStem(teacherFullName),
+      className,
       dateValue,
-      timeValue,
+      startTimeValue,
+      endTimeValue,
+      classStart,
       classEnd,
       timeline,
       temps,
@@ -164,13 +190,14 @@
     };
   }
 
-  function buildTimeline(classEnd) {
+  function buildTimeline(classStart, classEnd) {
     const death = addMinutes(classEnd, 10);
     const discovery = addMinutes(death, 135);
     const firstMeasurement = addMinutes(death, 150);
 
     return {
-      normalTemp: addMinutes(classEnd, -130),
+      classStart,
+      normalTemp: classStart,
       classEnd,
       death,
       suspect2Return: addMinutes(classEnd, 20),
@@ -345,7 +372,7 @@
   }
 
   function commonContextDoc(data) {
-    const { timeline, teacherFullName } = data;
+    const { timeline, teacherFullName, className } = data;
     const labels = data.suspects.map((suspect) => suspect.label).join(", ");
 
     return makeSpec(
@@ -357,7 +384,7 @@
         block.image("cover", "Aula de la actividad y escena del caso.", { maxHeight: 190 }),
         block.heading("Historia de fondo"),
         block.paragraph(
-          `El ${formatDate(timeline.classEnd)}, el profesor ${teacherFullName} impartió una clase especialmente tensa de ecuaciones diferenciales y transformadas de Laplace. La clase terminó a las ${formatTime(timeline.classEnd)}, después de un examen sorpresa que dejó al grupo inquieto.`
+          `El ${formatDate(timeline.classEnd)}, el profesor ${teacherFullName} impartió una clase especialmente tensa de ${className}, desde las ${formatTime(timeline.classStart)} hasta las ${formatTime(timeline.classEnd)}. La clase terminó después de un examen sorpresa que dejó al grupo inquieto.`
         ),
         block.paragraph(
           `Más tarde, a las ${formatEventTime(timeline.discovery, timeline.classEnd)}, el cuerpo del profesor fue encontrado en el aula. La policía acordonó la zona y comenzó una investigación que ha llevado a juicio a tres personas sospechosas.`
@@ -691,7 +718,7 @@
 
   function suspectOneDoc(data) {
     const { timeline } = data;
-    const { teacherFullName } = data;
+    const { teacherFullName, className } = data;
     const s1 = data.suspects[0];
 
     return makeSpec(
@@ -702,7 +729,7 @@
       [
         block.heading("Hechos privados"),
         block.bullets([
-          `Eres ${s1.un} estudiante ${s1.applied} de la clase del profesor ${teacherFullName}.`,
+          `Eres ${s1.un} estudiante ${s1.applied} de la clase de ${className} del profesor ${teacherFullName}.`,
           `Te enfadaste por el examen sorpresa y te quedaste ${s1.alone} con el profesor cuando la clase terminó a las ${formatTime(timeline.classEnd)}.`,
           `Durante una discusión acalorada, mataste al profesor con una inyección oculta. La muerte fue instantánea, aproximadamente a las ${formatEventTime(timeline.death, timeline.classEnd)}.`,
           `Saliste del edificio justo después, a las ${formatEventTime(timeline.death, timeline.classEnd)}.`,
@@ -712,7 +739,7 @@
         block.bullets([
           "Reconoce que hubo un desacuerdo por el examen, pero afirma que terminó sin más conflicto.",
           "Di que cuando saliste del aula el profesor seguía vivo y parecía encontrarse bien.",
-          "Insiste en que disfrutabas la asignatura y que una discusión académica no es motivo para matar a nadie.",
+          `Insiste en que disfrutabas ${className} y que una discusión académica no es motivo para matar a nadie.`,
           "Si te presionan, cuestiona la precisión de los cálculos de temperatura y sugiere que el sistema del aula podría no haber sido constante."
         ]),
         block.heading("Objetivo"),
@@ -725,7 +752,7 @@
 
   function suspectTwoDoc(data) {
     const { timeline } = data;
-    const { teacherShortName } = data;
+    const { teacherShortName, className } = data;
     const s2 = data.suspects[1];
 
     return makeSpec(
@@ -736,7 +763,7 @@
       [
         block.heading("Hechos"),
         block.bullets([
-          `Eres ${s2.un} estudiante ${s2.attentive} y puntual de la clase del profesor ${teacherShortName}.`,
+          `Eres ${s2.un} estudiante ${s2.attentive} y puntual de la clase de ${className} del profesor ${teacherShortName}.`,
           `Saliste del aula con la mayoría de la clase a las ${formatTime(timeline.classEnd)}.`,
           "Al llegar a la estación de metro, te diste cuenta de que habías olvidado una chaqueta y volviste al edificio.",
           `Entraste de nuevo sobre las ${formatEventTime(timeline.suspect2Return, timeline.classEnd)}, recogiste la chaqueta cerca de la entrada del aula y saliste unos minutos después, hacia las ${formatEventTime(timeline.suspect2Leave, timeline.classEnd)}.`,
@@ -760,6 +787,7 @@
 
   function suspectThreeDoc(data) {
     const { timeline } = data;
+    const { className } = data;
     const s3 = data.suspects[2];
 
     return makeSpec(
@@ -770,7 +798,7 @@
       [
         block.heading("Hechos"),
         block.bullets([
-          `Eres ${s3.un} estudiante ${s3.responsible} que asiste regularmente a las clases de la mañana y de la tarde.`,
+          `Eres ${s3.un} estudiante ${s3.responsible} que asiste regularmente a las clases de ${className} de la mañana y de la tarde.`,
           `Saliste con el resto del grupo cuando la clase terminó a las ${formatTime(timeline.classEnd)}.`,
           "Fuiste a casa y comiste con tu familia.",
           `Regresaste para una clase de la tarde prevista a las ${formatEventTime(timeline.afternoonClass, timeline.classEnd)}.`,
@@ -1502,7 +1530,7 @@
     } catch (error) {
       els.summary.innerHTML = "";
       const item = document.createElement("li");
-      item.innerHTML = "<strong>Resumen</strong><span>Completa fecha y hora</span>";
+      item.innerHTML = "<strong>Resumen</strong><span>Completa los datos del caso</span>";
       els.summary.appendChild(item);
       return;
     }
@@ -1510,7 +1538,9 @@
     const { timeline } = data;
     const rows = [
       ["Profesor", data.teacherFullName],
+      ["Clase", data.className],
       ["Fecha", formatDate(timeline.classEnd)],
+      ["Inicio de clase", formatTime(timeline.classStart)],
       ["Fin de clase", formatTime(timeline.classEnd)],
       ["Muerte estimada", formatEventTime(timeline.death, timeline.classEnd)],
       ["Descubrimiento", formatEventTime(timeline.discovery, timeline.classEnd)],
@@ -1530,8 +1560,8 @@
     const { timeline, temps } = data;
     return [
       {
-        time: formatEventTime(timeline.normalTemp, timeline.classEnd),
-        label: `Temperatura normal ${formatNumber(temps.bodyAtDeath)} C`,
+        time: formatTime(timeline.classStart),
+        label: `Inicio de clase; temperatura normal ${formatNumber(temps.bodyAtDeath)} C`,
         color: [96, 127, 97]
       },
       {

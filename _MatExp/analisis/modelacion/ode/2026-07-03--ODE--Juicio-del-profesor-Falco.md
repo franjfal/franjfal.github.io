@@ -16,7 +16,7 @@ feature: "/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/feature.s
 ---
 Esta actividad convierte la ley de enfriamiento de Newton en un juicio. El alumnado recibe papeles separados, interroga a testigos y sospechosos, y reconstruye la cronología hasta encontrar a la persona culpable.
 
-El generador permite elegir el nombre del profesor, la fecha del caso, la hora de finalización de la clase y el género de cada sospechoso. A partir de esos datos produce los documentos necesarios para repartir la actividad en el aula, tanto por piezas separadas como en paquetes completos por rol.
+El generador permite elegir el nombre del profesor, la clase impartida, la fecha del caso, las horas de inicio y fin de la clase y el género de cada sospechoso. A partir de esos datos produce los documentos necesarios para repartir la actividad en el aula, tanto por piezas separadas como en paquetes completos por rol.
 
 <figure>
   <img src="{{ site.baseurl }}/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/assets/cover_scene.png" alt="Aula preparada como escena del caso">
@@ -314,9 +314,17 @@ El generador permite elegir el nombre del profesor, la fecha del caso, la hora d
           Nombre del profesor
           <input id="teacher-name" name="teacherName" type="text" value="Javier Falcó" required>
         </label>
+        <label class="full">
+          Clase impartida
+          <input id="class-name" name="className" type="text" value="ecuaciones diferenciales y transformadas de Laplace" required>
+        </label>
         <label>
-          Fecha del asesinato
+          Fecha del caso
           <input id="case-date" name="caseDate" type="date" value="2026-07-02" required>
+        </label>
+        <label>
+          Inicio de la clase
+          <input id="class-start-time" name="classStartTime" type="time" value="10:30" required>
         </label>
         <label>
           Fin de la clase
