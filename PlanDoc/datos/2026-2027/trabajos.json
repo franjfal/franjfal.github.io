@@ -24,5 +24,13 @@
     "asignaciones": {
       "jose-martinez": 0.5
     }
+  },
+  {
+    "id": "tfg-mates-fisica-libres",
+    "tipo": "tfg",
+    "titulo": "TFG Mates Física Libres",
+    "totalTrabajos": 6,
+    "peso": 9.6,
+    "asignaciones": {}
   }
 ]
