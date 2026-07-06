@@ -32,5 +32,15 @@
     "totalTrabajos": 6,
     "peso": 9.6,
     "asignaciones": {}
+  },
+  {
+    "id": "practicas-empresa-mates",
+    "tipo": "practicas",
+    "titulo": "Prácticas Empresa Mates",
+    "totalTrabajos": 7,
+    "peso": 3,
+    "asignaciones": {
+      "francisco-falco": 7
+    }
   }
 ]
