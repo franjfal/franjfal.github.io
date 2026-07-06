@@ -305,7 +305,7 @@
     "nombre": "Ayudante",
     "apellidos": "Doctor",
     "nombreCompleto": "Ayudante Doctor",
-    "creditosObjetivo": 18,
+    "creditosObjetivo": 180,
     "docenciaAjustable": true,
     "reducciones": []
   }
