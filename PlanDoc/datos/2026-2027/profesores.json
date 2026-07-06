@@ -299,5 +299,14 @@
     "creditosObjetivo": 80,
     "docenciaAjustable": false,
     "reducciones": []
+  },
+  {
+    "id": "ayudanteDoctor",
+    "nombre": "Ayudante",
+    "apellidos": "Doctor",
+    "nombreCompleto": "Ayudante Doctor",
+    "creditosObjetivo": 18,
+    "docenciaAjustable": true,
+    "reducciones": []
   }
 ]
