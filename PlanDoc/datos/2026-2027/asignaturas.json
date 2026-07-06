@@ -15919,5 +15919,49 @@
         "sesiones": []
       }
     ]
+  },
+  {
+    "id": "36584",
+    "nombre": "Càlcul Vectorial",
+    "categoriaId": "doble-grado-mat-fisica",
+    "codigoReferencia": "36584",
+    "codigoTitulacion": "1928",
+    "color": "",
+    "cuatrimestre": "segundo",
+    "subgrupos": [
+      {
+        "id": "FM-T",
+        "nombre": "Teoría FM-T",
+        "codigoUv": "FM-T",
+        "color": "",
+        "tipo": "teoria",
+        "idioma": "castellano",
+        "cuatrimestre": "segundo",
+        "creditos": 30,
+        "sesiones": []
+      },
+      {
+        "id": "FM-P1",
+        "nombre": "Prácticas a l'aula FM-P1",
+        "codigoUv": "FM-P1",
+        "color": "",
+        "tipo": "practicas",
+        "idioma": "castellano",
+        "cuatrimestre": "segundo",
+        "creditos": 22.5,
+        "sesiones": []
+      },
+      {
+        "id": "FM-O1",
+        "nombre": "Seminario FM-O1",
+        "codigoUv": "FM-O1",
+        "color": "",
+        "tipo": "seminario",
+        "idioma": "castellano",
+        "cuatrimestre": "segundo",
+        "creditos": 7.5,
+        "sesiones": []
+      }
+    ]
   }
 ]
