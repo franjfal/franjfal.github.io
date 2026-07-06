@@ -16044,7 +16044,7 @@
   {
     "id": "44076",
     "nombre": "Fonaments de matemàtica avançada",
-    "categoriaId": "Matematicas",
+    "categoriaId": "master-investmat",
     "codigoReferencia": "44076",
     "codigoTitulacion": "2183",
     "color": "",
@@ -16081,6 +16081,72 @@
         "idioma": "castellano",
         "cuatrimestre": "segundo",
         "creditos": 30,
+        "sesiones": []
+      }
+    ]
+  },
+  {
+    "id": "44078",
+    "nombre": "Seminario de Análisis Matemático",
+    "categoriaId": "master-investmat",
+    "codigoReferencia": "44078",
+    "codigoTitulacion": "2183",
+    "color": "",
+    "cuatrimestre": "primer",
+    "subgrupos": [
+      {
+        "id": "A-T",
+        "nombre": "Teoría A",
+        "codigoUv": "A-T",
+        "color": "",
+        "tipo": "teoria",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 30,
+        "sesiones": []
+      }
+    ]
+  },
+  {
+    "id": "36877",
+    "nombre": "Espais de Hilbert i Anàlisi de Fourier",
+    "categoriaId": "Matemáticas-Informática",
+    "codigoReferencia": "36877",
+    "codigoTitulacion": "1936",
+    "color": "",
+    "cuatrimestre": "primer",
+    "subgrupos": [
+      {
+        "id": "A-T",
+        "nombre": "Teoría A",
+        "codigoUv": "A-T",
+        "color": "",
+        "tipo": "teoria",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 30,
+        "sesiones": []
+      },
+      {
+        "id": "A-P",
+        "nombre": "Prácticas a l'aula A-P",
+        "codigoUv": "A-P",
+        "color": "",
+        "tipo": "practicas",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 22.5,
+        "sesiones": []
+      },
+      {
+        "id": "A-O",
+        "nombre": "Seminario A-O",
+        "codigoUv": "A-O",
+        "color": "",
+        "tipo": "seminario",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 7.5,
         "sesiones": []
       }
     ]
