@@ -238,9 +238,16 @@
     "nombre": "Maria Pilar",
     "apellidos": "Rueda Segado",
     "nombreCompleto": "Maria Pilar Rueda Segado",
-    "creditosObjetivo": 160,
+    "creditosObjetivo": 230,
     "docenciaAjustable": true,
-    "reducciones": []
+    "reducciones": [
+      {
+        "id": "red_devzn02c",
+        "tipo": "Sexenios",
+        "creditos": 70,
+        "descripcion": ""
+      }
+    ]
   },
   {
     "id": "daniel-santacreu",
