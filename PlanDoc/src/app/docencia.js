@@ -502,7 +502,7 @@ function renderReajusteResumen(state) {
             <div class="calculation-note calculation-breakdown">
                 <h4>Como se calcula</h4>
                 <ol>
-                    <li><strong>Total a repartir:</strong> suma de las horas de todos los subgrupos = <strong>${reajuste.totalCarga}</strong>.</li>
+                    <li><strong>Total a repartir:</strong> ${reajuste.totalCargaAsignaturas} horas de subgrupos + ${reajuste.totalCargaTrabajosRepartibles} horas de TFG y practicas = <strong>${reajuste.totalCarga}</strong>.</li>
                     <li><strong>TFM previos:</strong> los TFM ya asignados se descuentan antes del reajuste = <strong>${reajuste.totalTfm}</strong> horas.</li>
                     <li><strong>Profesores fijos:</strong> ${reajuste.profesoresFijos} profesores no reajustables conservan su capacidad restante tras TFM = <strong>${reajuste.capacidadFija}</strong>.</li>
                     <li><strong>Horas reajustables:</strong> ${reajuste.totalCarga} - ${reajuste.capacidadFija} = <strong>${reajuste.cargaReajustable}</strong>.</li>
@@ -1008,12 +1008,12 @@ function printableGradosPdfHtml(state) {
                 </section>
                 <section class="grade-section">
                     <div class="grade-title">
-                        <h2>Resumen por grados</h2>
-                        <strong>${subjectCredits} horas · ${hoursToCredits(subjectCredits)} creditos</strong>
+                        <h2>Resumen por grados y extras</h2>
+                        <strong>${totalCredits} horas · ${hoursToCredits(totalCredits)} creditos</strong>
                     </div>
                     <table class="pdf-table">
                         <thead>
-                            <tr><th>Grado</th><th>Asignaturas</th><th>Horas</th><th>Creditos</th></tr>
+                            <tr><th>Bloque</th><th>Elementos</th><th>Horas</th><th>Creditos</th></tr>
                         </thead>
                         <tbody>
                             ${categories.length === 0 ? `
@@ -1026,13 +1026,21 @@ function printableGradosPdfHtml(state) {
                                     <td><strong>${hoursToCredits(total)}</strong></td>
                                 </tr>
                             `).join("")}
+                            ${specialWorks.length === 0 ? "" : `
+                                <tr>
+                                    <td>TFG, TFM y practicas de empresa</td>
+                                    <td>${formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.totalWorks, 0))} trabajos</td>
+                                    <td><strong>${extraCredits}</strong></td>
+                                    <td><strong>${hoursToCredits(extraCredits)}</strong></td>
+                                </tr>
+                            `}
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td class="total-cell">Total grados</td>
-                                <td class="total-cell">${categories.reduce((sum, group) => sum + group.asignaturas.length, 0)}</td>
-                                <td class="total-cell">${subjectCredits} horas</td>
-                                <td class="total-cell">${hoursToCredits(subjectCredits)} creditos</td>
+                                <td class="total-cell">Total departamento</td>
+                                <td class="total-cell">${categories.reduce((sum, group) => sum + group.asignaturas.length, 0)} asignaturas${specialWorks.length > 0 ? ` · ${formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.totalWorks, 0))} trabajos` : ""}</td>
+                                <td class="total-cell">${totalCredits} horas</td>
+                                <td class="total-cell">${hoursToCredits(totalCredits)} creditos</td>
                             </tr>
                         </tfoot>
                     </table>

@@ -1,4 +1,4 @@
-import { calcularReajusteDocente, totalHorasAsignaturas } from "./reajuste.js";
+import { calcularReajusteDocente } from "./reajuste.js";
 import { escapeHtml, toPositiveNumber } from "./utils.js";
 
 const PUBLIC_TABS = [
@@ -1357,7 +1357,6 @@ function renderActivePublicTab(state) {
 
 export function renderPublicView(state) {
     const selectedCourse = state.courses.find((course) => course.id === state.selectedCourse);
-    const totalHoras = totalHorasAsignaturas(state.asignaturas);
     const reajuste = calcularReajusteDocente(state);
     return `
         <div class="container grid public-container">
@@ -1373,7 +1372,7 @@ export function renderPublicView(state) {
             <div class="teacher-summary subject-summary">
                 <div class="metric-box"><span>Profesores</span><strong>${state.profesores.length}</strong></div>
                 <div class="metric-box"><span>Asignaturas</span><strong>${state.asignaturas.length}</strong></div>
-                <div class="metric-box"><span>Horas a repartir</span><strong>${totalHoras}</strong></div>
+                <div class="metric-box"><span>Horas a repartir</span><strong>${reajuste.totalCarga}</strong></div>
                 <div class="metric-box"><span>Horas asignadas</span><strong>${reajuste.totalAsignado}</strong></div>
             </div>
 

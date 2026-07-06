@@ -561,12 +561,12 @@ function printableGradosPdfHtml(state, mode = "expanded") {
                 </section>
                 <section class="grade-section">
                     <div class="grade-title">
-                        <h2>Resumen por grados</h2>
-                        <strong>${subjectCredits} horas · ${hoursToCredits(subjectCredits)} creditos</strong>
+                        <h2>Resumen por grados y extras</h2>
+                        <strong>${totalCredits} horas · ${hoursToCredits(totalCredits)} creditos</strong>
                     </div>
                     <table class="pdf-table">
                         <thead>
-                            <tr><th>Grado</th><th>Asignaturas</th><th>Horas</th><th>Creditos</th></tr>
+                            <tr><th>Bloque</th><th>Elementos</th><th>Horas</th><th>Creditos</th></tr>
                         </thead>
                         <tbody>
                             ${categories.length === 0 ? `
@@ -579,13 +579,21 @@ function printableGradosPdfHtml(state, mode = "expanded") {
                                     <td><strong>${hoursToCredits(total)}</strong></td>
                                 </tr>
                             `).join("")}
+                            ${specialWorks.length === 0 ? "" : `
+                                <tr>
+                                    <td>TFG, TFM y practicas de empresa</td>
+                                    <td>${formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.totalWorks, 0))} trabajos</td>
+                                    <td><strong>${extraCredits}</strong></td>
+                                    <td><strong>${hoursToCredits(extraCredits)}</strong></td>
+                                </tr>
+                            `}
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td class="total-cell">Total grados</td>
-                                <td class="total-cell">${categories.reduce((sum, group) => sum + group.asignaturas.length, 0)}</td>
-                                <td class="total-cell">${subjectCredits} horas</td>
-                                <td class="total-cell">${hoursToCredits(subjectCredits)} creditos</td>
+                                <td class="total-cell">Total departamento</td>
+                                <td class="total-cell">${categories.reduce((sum, group) => sum + group.asignaturas.length, 0)} asignaturas${specialWorks.length > 0 ? ` · ${formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.totalWorks, 0))} trabajos` : ""}</td>
+                                <td class="total-cell">${totalCredits} horas</td>
+                                <td class="total-cell">${hoursToCredits(totalCredits)} creditos</td>
                             </tr>
                         </tfoot>
                     </table>

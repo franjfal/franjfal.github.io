@@ -25,6 +25,21 @@ export function cargaTfmPorProfesor(trabajos) {
     return byProfesor;
 }
 
+function trabajosRepartibles(trabajos) {
+    return (trabajos || []).filter((trabajo) => ["tfg", "practicas"].includes(trabajo?.tipo));
+}
+
+function totalTrabajosAsignados(trabajo) {
+    return Object.values(trabajo?.asignaciones || {}).reduce((sum, count) => sum + toPositiveNumber(count, 0), 0);
+}
+
+export function totalHorasTrabajosRepartibles(trabajos) {
+    return Number(trabajosRepartibles(trabajos).reduce((sum, trabajo) => {
+        const totalTrabajos = toPositiveNumber(trabajo.totalTrabajos, 0) || totalTrabajosAsignados(trabajo);
+        return sum + (totalTrabajos * toPositiveNumber(trabajo.peso, 0));
+    }, 0).toFixed(2));
+}
+
 export function totalHorasAsignaturas(asignaturas) {
     return Number((asignaturas || []).reduce((sum, asignatura) => (
         sum + (asignatura.subgrupos || []).reduce((subSum, subgrupo) => subSum + toPositiveNumber(subgrupo.creditos, 0), 0)
@@ -42,8 +57,25 @@ export function horasAsignadasPorProfesor(docencia) {
     return byProfesor;
 }
 
+export function horasTrabajosRepartiblesPorProfesor(trabajos) {
+    const byProfesor = new Map();
+    trabajosRepartibles(trabajos).forEach((trabajo) => {
+        const peso = toPositiveNumber(trabajo.peso, 0);
+        Object.entries(trabajo.asignaciones || {}).forEach(([profesorId, count]) => {
+            if (!profesorId) {
+                return;
+            }
+            const carga = toPositiveNumber(count, 0) * peso;
+            byProfesor.set(profesorId, Number(((byProfesor.get(profesorId) || 0) + carga).toFixed(2)));
+        });
+    });
+    return byProfesor;
+}
+
 export function calcularReajusteDocente(state) {
-    const totalCarga = totalHorasAsignaturas(state.asignaturas);
+    const totalCargaAsignaturas = totalHorasAsignaturas(state.asignaturas);
+    const totalCargaTrabajosRepartibles = totalHorasTrabajosRepartibles(state.trabajos);
+    const totalCarga = Number((totalCargaAsignaturas + totalCargaTrabajosRepartibles).toFixed(2));
     const profesores = state.profesores || [];
     const tfmAsignados = cargaTfmPorProfesor(state.trabajos);
     const profesoresConCapacidad = profesores.map((profesor) => {
@@ -68,6 +100,7 @@ export function calcularReajusteDocente(state) {
     const profesorIds = new Set(profesores.map((profesor) => profesor.id));
     const docenciaValida = (state.docencia || []).filter((item) => profesorIds.has(item.profesorId));
     const asignadas = horasAsignadasPorProfesor(docenciaValida);
+    const trabajosAsignados = horasTrabajosRepartiblesPorProfesor(state.trabajos);
 
     const profesoresDetalle = profesoresConCapacidad.map(({ profesor, capacidadBase, cargaTfm, capacidad, esAjustable }) => {
         const proporcion = esAjustable && capacidadAjustable > 0
@@ -76,7 +109,7 @@ export function calcularReajusteDocente(state) {
         const objetivoReal = esAjustable && capacidadAjustable > 0
             ? Number((proporcion * cargaReajustable).toFixed(2))
             : capacidad;
-        const asignado = asignadas.get(profesor.id) || 0;
+        const asignado = Number(((asignadas.get(profesor.id) || 0) + (trabajosAsignados.get(profesor.id) || 0)).toFixed(2));
         return {
             profesor,
             esAjustable,
@@ -95,6 +128,8 @@ export function calcularReajusteDocente(state) {
     const totalAsignado = Number(profesoresDetalle.reduce((sum, item) => sum + item.asignado, 0).toFixed(2));
     return {
         totalCarga,
+        totalCargaAsignaturas,
+        totalCargaTrabajosRepartibles,
         totalAsignado,
         pendiente: Number(Math.max(0, totalCarga - totalAsignado).toFixed(2)),
         capacidadFija,
