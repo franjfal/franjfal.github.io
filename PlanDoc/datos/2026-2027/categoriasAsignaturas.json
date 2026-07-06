@@ -38,5 +38,9 @@
   {
     "id": "doble-grado-mat-telematica",
     "nombre": "Doble Grado en Matemáticas y en Ingeniería Telemática"
+  },
+  {
+    "id": "doble-grado-mat-informatica",
+    "nombre": "Doble Grado en Matemáticas y en Ingeniería Informática"
   }
 ]
