@@ -358,8 +358,14 @@ function renderProfesorModal(state) {
         <div class="modal-backdrop" id="prof-modal-backdrop">
             <section class="card modal professor-modal" role="dialog" aria-modal="true" aria-labelledby="prof-modal-title">
                 <div class="modal-header">
-                    <h2 id="prof-modal-title">${title}</h2>
-                    <button class="secondary mini" id="close-prof-modal-btn" type="button">Cerrar</button>
+                    <div>
+                        <h2 id="prof-modal-title">${title}</h2>
+                        ${isEdit ? "" : `<p class="status">Tambien puedes importar varios profesores de una vez desde JSON.</p>`}
+                    </div>
+                    <div class="header-actions">
+                        ${isEdit ? "" : `<button id="open-prof-import-modal-btn" class="secondary mini" type="button">Importar profesores</button>`}
+                        <button class="secondary mini" id="close-prof-modal-btn" type="button">Cerrar</button>
+                    </div>
                 </div>
                 <div class="grid">
                     <section class="form-section">
@@ -368,7 +374,6 @@ function renderProfesorModal(state) {
                                 <span class="section-kicker">Datos personales</span>
                                 <h3>Identificaci&oacute;n del profesor</h3>
                             </div>
-                            ${isEdit ? "" : `<button id="open-prof-import-modal-btn" class="secondary mini" type="button">Importar profesores</button>`}
                         </div>
                         <div class="grid grid-2">
                         <label>
