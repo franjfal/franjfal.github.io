@@ -13,9 +13,16 @@
     "nombre": "Oscar",
     "apellidos": "Blasco De La Cruz",
     "nombreCompleto": "Oscar Blasco De La Cruz",
-    "creditosObjetivo": 160,
+    "creditosObjetivo": 230,
     "docenciaAjustable": true,
-    "reducciones": []
+    "reducciones": [
+      {
+        "id": "red_w0rzs2pe",
+        "tipo": "Sexenios",
+        "creditos": 70,
+        "descripcion": ""
+      }
+    ]
   },
   {
     "id": "francisco-falco",
