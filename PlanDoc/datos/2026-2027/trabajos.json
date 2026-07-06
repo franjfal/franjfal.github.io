@@ -6,5 +6,13 @@
     "totalTrabajos": 16,
     "peso": 9.6,
     "asignaciones": {}
+  },
+  {
+    "id": "tfg-mates-libres",
+    "tipo": "tfg",
+    "titulo": "TFG Mates Libres",
+    "totalTrabajos": 7,
+    "peso": 9.6,
+    "asignaciones": {}
   }
 ]
