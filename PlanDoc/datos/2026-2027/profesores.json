@@ -1,0 +1,23 @@
+[
+  {
+    "id": "JFalco",
+    "nombre": "Javier",
+    "apellidos": "Falcó",
+    "nombreCompleto": "Javier Falcó",
+    "creditosObjetivo": 230,
+    "reducciones": [
+      {
+        "id": "red_0635s67z",
+        "tipo": "Sexenios",
+        "creditos": 20,
+        "descripcion": ""
+      },
+      {
+        "id": "red_d5n37p5u",
+        "tipo": "Direccion de tesis",
+        "creditos": 10,
+        "descripcion": ""
+      }
+    ]
+  }
+]
