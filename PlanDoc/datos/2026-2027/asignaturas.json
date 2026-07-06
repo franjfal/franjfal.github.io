@@ -14621,5 +14621,115 @@
         "sesiones": []
       }
     ]
+  },
+  {
+    "id": "34787",
+    "nombre": "Matemáticas II",
+    "categoriaId": "doble-grado-mat-telematica",
+    "codigoReferencia": "34787",
+    "codigoTitulacion": "1402",
+    "color": "",
+    "cuatrimestre": "segundo",
+    "subgrupos": [
+      {
+        "id": "A-T",
+        "nombre": "Teoría A",
+        "codigoUv": "A-T",
+        "color": "",
+        "tipo": "teoria",
+        "idioma": "castellano",
+        "cuatrimestre": "segundo",
+        "creditos": 30,
+        "sesiones": []
+      },
+      {
+        "id": "A-P1",
+        "nombre": "Prácticas A1",
+        "codigoUv": "A-P1",
+        "color": "",
+        "tipo": "practicas",
+        "idioma": "castellano",
+        "cuatrimestre": "segundo",
+        "creditos": 20,
+        "sesiones": []
+      },
+      {
+        "id": "A-P2",
+        "nombre": "Prácticas A2",
+        "codigoUv": "A-P2",
+        "color": "",
+        "tipo": "practicas",
+        "idioma": "valenciano",
+        "cuatrimestre": "segundo",
+        "creditos": 20,
+        "sesiones": []
+      },
+      {
+        "id": "A-L1",
+        "nombre": "Laboratorio A-L1",
+        "codigoUv": "A-L1",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "valenciano",
+        "cuatrimestre": "segundo",
+        "creditos": 10,
+        "sesiones": []
+      },
+      {
+        "id": "A-L2",
+        "nombre": "Laboratorio A-L2",
+        "codigoUv": "A-L2",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "castellano",
+        "cuatrimestre": "segundo",
+        "creditos": 10,
+        "sesiones": []
+      },
+      {
+        "id": "A-L3",
+        "nombre": "Laboratorio A-L3",
+        "codigoUv": "A-L3",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "valenciano",
+        "cuatrimestre": "segundo",
+        "creditos": 10,
+        "sesiones": []
+      },
+      {
+        "id": "A-L4",
+        "nombre": "Laboratorio A-L4",
+        "codigoUv": "A-L4",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "castellano",
+        "cuatrimestre": "segundo",
+        "creditos": 10,
+        "sesiones": []
+      },
+      {
+        "id": "A-L5",
+        "nombre": "Laboratorio A-L5",
+        "codigoUv": "A-L5",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "valenciano",
+        "cuatrimestre": "segundo",
+        "creditos": 10,
+        "sesiones": []
+      },
+      {
+        "id": "A-L6",
+        "nombre": "Laboratorio A-L6",
+        "codigoUv": "A-L6",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "castellano",
+        "cuatrimestre": "segundo",
+        "creditos": 10,
+        "sesiones": []
+      }
+    ]
   }
 ]
