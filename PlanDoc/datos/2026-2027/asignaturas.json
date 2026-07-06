@@ -8301,5 +8301,126 @@
         ]
       }
     ]
+  },
+  {
+    "id": "34157",
+    "nombre": "Anàlisi matemàtica III",
+    "categoriaId": "Matematicas",
+    "codigoReferencia": "34157",
+    "codigoTitulacion": "1107",
+    "color": "",
+    "cuatrimestre": "segundo",
+    "subgrupos": [
+      {
+        "id": "A-T",
+        "nombre": "Teoría A",
+        "codigoUv": "A-T",
+        "color": "",
+        "tipo": "teoria",
+        "idioma": "valenciano",
+        "cuatrimestre": "segundo",
+        "creditos": 45,
+        "sesiones": []
+      },
+      {
+        "id": "B-T",
+        "nombre": "Teoría B",
+        "codigoUv": "B-T",
+        "color": "",
+        "tipo": "teoria",
+        "idioma": "castellano",
+        "cuatrimestre": "segundo",
+        "creditos": 45,
+        "sesiones": []
+      },
+      {
+        "id": "A-P1",
+        "nombre": "Prácticas a l'aula A-P1",
+        "codigoUv": "A-P1",
+        "color": "",
+        "tipo": "practicas",
+        "idioma": "valenciano",
+        "cuatrimestre": "segundo",
+        "creditos": 34,
+        "sesiones": []
+      },
+      {
+        "id": "A-P2",
+        "nombre": "Prácticas a l'aula A-P2",
+        "codigoUv": "A-P2",
+        "color": "",
+        "tipo": "practicas",
+        "idioma": "valenciano",
+        "cuatrimestre": "segundo",
+        "creditos": 34,
+        "sesiones": []
+      },
+      {
+        "id": "B-P1",
+        "nombre": "Prácticas a l'aula B-P1",
+        "codigoUv": "B-P1",
+        "color": "",
+        "tipo": "practicas",
+        "idioma": "castellano",
+        "cuatrimestre": "segundo",
+        "creditos": 34,
+        "sesiones": []
+      },
+      {
+        "id": "B-P2",
+        "nombre": "Prácticas a l'aula B-P2",
+        "codigoUv": "B-P2",
+        "color": "",
+        "tipo": "practicas",
+        "idioma": "castellano",
+        "cuatrimestre": "segundo",
+        "creditos": 34,
+        "sesiones": []
+      },
+      {
+        "id": "A-O1",
+        "nombre": "Seminario A-O1",
+        "codigoUv": "A-O1",
+        "color": "",
+        "tipo": "seminario",
+        "idioma": "valenciano",
+        "cuatrimestre": "segundo",
+        "creditos": 11,
+        "sesiones": []
+      },
+      {
+        "id": "A-O2",
+        "nombre": "Seminario A-O2",
+        "codigoUv": "A-O2",
+        "color": "",
+        "tipo": "seminario",
+        "idioma": "valenciano",
+        "cuatrimestre": "segundo",
+        "creditos": 11,
+        "sesiones": []
+      },
+      {
+        "id": "B-O1",
+        "nombre": "Seminario B-O1",
+        "codigoUv": "B-O1",
+        "color": "",
+        "tipo": "seminario",
+        "idioma": "castellano",
+        "cuatrimestre": "segundo",
+        "creditos": 11,
+        "sesiones": []
+      },
+      {
+        "id": "B-O2",
+        "nombre": "Seminario B-O2",
+        "codigoUv": "B-O2",
+        "color": "",
+        "tipo": "seminario",
+        "idioma": "castellano",
+        "cuatrimestre": "segundo",
+        "creditos": 11,
+        "sesiones": []
+      }
+    ]
   }
 ]
