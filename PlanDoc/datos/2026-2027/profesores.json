@@ -79,7 +79,7 @@
     "nombre": "Antonio",
     "apellidos": "Galbis Verdu",
     "nombreCompleto": "Antonio Galbis Verdu",
-    "creditosObjetivo": 160,
+    "creditosObjetivo": 230,
     "docenciaAjustable": true,
     "reducciones": [
       {
@@ -87,6 +87,12 @@
         "tipo": "Direccion de tesis",
         "creditos": 10,
         "descripcion": "Reduccion por tesis"
+      },
+      {
+        "id": "red_xnyplk6a",
+        "tipo": "Sexenios",
+        "creditos": 70,
+        "descripcion": ""
       }
     ]
   },
