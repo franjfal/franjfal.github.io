@@ -19644,5 +19644,49 @@
         ]
       }
     ]
+  },
+  {
+    "id": "36590",
+    "nombre": "Variable Complexa",
+    "categoriaId": "Matematicas",
+    "codigoReferencia": "36590",
+    "codigoTitulacion": "1928",
+    "color": "",
+    "cuatrimestre": "primer",
+    "subgrupos": [
+      {
+        "id": "FM-T",
+        "nombre": "Teoría FM-T",
+        "codigoUv": "FM-T",
+        "color": "",
+        "tipo": "teoria",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 38,
+        "sesiones": []
+      },
+      {
+        "id": "FM-P",
+        "nombre": "Prácticas a l'aula FM-P",
+        "codigoUv": "FM-P",
+        "color": "",
+        "tipo": "practicas",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 28,
+        "sesiones": []
+      },
+      {
+        "id": "FM-O",
+        "nombre": "Seminario FM-O",
+        "codigoUv": "FM-O",
+        "color": "",
+        "tipo": "seminario",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 9,
+        "sesiones": []
+      }
+    ]
   }
 ]
