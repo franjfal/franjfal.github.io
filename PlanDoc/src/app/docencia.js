@@ -604,15 +604,6 @@ function exportCategories(state) {
     return categories;
 }
 
-function exportSubgrupos(asignatura) {
-    return [...(asignatura.subgrupos || [])]
-        .sort((a, b) => compareText(subgrupoSortValue(a), subgrupoSortValue(b)))
-        .map((subgrupo) => ({
-            subgrupo,
-            credits: toPositiveNumber(subgrupo.creditos, 0),
-        }));
-}
-
 function renderSpecialWorkPdfPages(state) {
     const works = sortedSpecialWorks(state);
     const professors = [...state.profesores].sort((a, b) => compareText(a.nombreCompleto || a.id, b.nombreCompleto || b.id));
@@ -917,7 +908,7 @@ function specialWorkTotalCredits(trabajo) {
     return formatCredits(Object.values(trabajo.asignaciones || {}).reduce((sum, count) => sum + toPositiveNumber(count, 0), 0) * toPositiveNumber(trabajo.peso, 0));
 }
 
-function printableGradosPdfHtml(state, mode = "expanded") {
+function printableGradosPdfHtml(state) {
     const categories = exportCategories(state);
     const specialWorks = sortedSpecialWorks(state).map((trabajo) => ({
         label: specialWorkLabel(trabajo),
@@ -927,75 +918,6 @@ function printableGradosPdfHtml(state, mode = "expanded") {
     const extraCredits = formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.credits, 0));
     const totalCredits = formatCredits(subjectCredits + extraCredits);
     const title = `Horas por grados y extras · ${state.selectedCourse || "curso"}`;
-    const compactMode = mode === "compact";
-
-    const renderSubject = compactMode ? (asignatura, status) => {
-        const subgrupos = exportSubgrupos(asignatura);
-        return `
-            <article class="grade-subject grade-subject-compact">
-                <header>
-                    <div>
-                        <h2>${escapeHtml(asignatura.nombre || asignatura.id)}</h2>
-                        <span>${escapeHtml(asignatura.codigoReferencia || asignatura.id || "")}</span>
-                    </div>
-                    <strong>${status.assigned} / ${status.total}</strong>
-                </header>
-                ${subgrupos.length === 0 ? `
-                    <p class="pdf-empty">Sin subgrupos definidos.</p>
-                ` : `
-                    <p class="grade-subgroup-summary">
-                        ${subgrupos.map(({ subgrupo, credits }) => `
-                            <span class="grade-subgroup-pill">
-                                <strong>${escapeHtml(subgrupo.nombre || subgrupo.id)}</strong>
-                                <span>${escapeHtml(subgrupo.id)} · ${credits} cr</span>
-                            </span>
-                        `).join("")}
-                    </p>
-                `}
-            </article>
-        `;
-    } : (asignatura, status) => {
-        const subgrupos = exportSubgrupos(asignatura);
-        return `
-            <article class="grade-subject grade-subject-expanded">
-                <header>
-                    <div>
-                        <h2>${escapeHtml(asignatura.nombre || asignatura.id)}</h2>
-                        <span>${escapeHtml(asignatura.codigoReferencia || asignatura.id || "")}</span>
-                    </div>
-                    <strong>${status.assigned} / ${status.total}</strong>
-                </header>
-                ${subgrupos.length === 0 ? `
-                    <p class="pdf-empty">Sin subgrupos definidos.</p>
-                ` : `
-                    <table class="pdf-table grade-subgroup-table">
-                        <thead>
-                            <tr><th>Subgrupo</th><th>Creditos</th><th>Horas</th></tr>
-                        </thead>
-                        <tbody>
-                            ${subgrupos.map(({ subgrupo, credits }) => `
-                                <tr>
-                                    <td>
-                                        <strong>${escapeHtml(subgrupo.nombre || subgrupo.id)}</strong>
-                                        <span>${escapeHtml(subgrupo.id)}${subgrupo.codigoUv ? ` · UV ${escapeHtml(subgrupo.codigoUv)}` : ""}</span>
-                                    </td>
-                                    <td>${credits}</td>
-                                    <td><strong>${creditsToHours(credits)}</strong></td>
-                                </tr>
-                            `).join("")}
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td class="total-cell">Total</td>
-                                <td class="total-cell">${status.total} creditos</td>
-                                <td class="total-cell">${creditsToHours(status.total)} horas</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                `}
-            </article>
-        `;
-    };
 
     return `
         <!doctype html>
@@ -1008,16 +930,6 @@ function printableGradosPdfHtml(state, mode = "expanded") {
                 .grade-section { margin: 0 0 5mm; }
                 .grade-title { display: flex; justify-content: space-between; gap: 5mm; align-items: baseline; margin: 0 0 2mm; padding-bottom: 2mm; border-bottom: 2px solid #0f766e; break-after: avoid; page-break-after: avoid; }
                 .grade-title strong { white-space: nowrap; }
-                .grade-subject { margin: 0 0 4mm; border: 1px solid #cbd5e1; border-radius: 7px; overflow: hidden; break-inside: avoid; page-break-inside: avoid; }
-                .grade-subject > header { display: flex; justify-content: space-between; gap: 5mm; padding: 3mm; background: #f8fafc; border-bottom: 1px solid #cbd5e1; break-after: avoid; page-break-after: avoid; }
-                .grade-subject > header span { display: block; margin-top: 1mm; color: #64748b; font-size: 9px; }
-                .grade-subject > header strong { white-space: nowrap; font-size: 12px; }
-                .grade-subject-compact .grade-subgroup-summary { display: flex; flex-wrap: wrap; gap: 2mm; padding: 3mm; margin: 0; }
-                .grade-subgroup-pill { display: inline-flex; flex-direction: column; gap: 1mm; padding: 1.8mm 2.2mm; border-radius: 999px; background: #eefcf9; color: #0f172a; font-size: 9px; }
-                .grade-subgroup-pill strong { font-size: 9px; }
-                .grade-subgroup-pill span { color: #475569; }
-                .grade-subgroup-table th:nth-child(2), .grade-subgroup-table td:nth-child(2) { width: 20mm; }
-                .grade-subgroup-table th:nth-child(3), .grade-subgroup-table td:nth-child(3) { width: 22mm; }
             </style>
         </head>
         <body>
@@ -1036,10 +948,24 @@ function printableGradosPdfHtml(state, mode = "expanded") {
                             <h2>${escapeHtml(categoria.nombre)}</h2>
                             <strong>${total} creditos · ${creditsToHours(total)} horas</strong>
                         </div>
-                        ${asignaturas.map((asignatura) => {
-        const status = asignaturaStatus(state, asignatura);
-        return renderSubject(asignatura, status);
+                        <table class="pdf-table">
+                            <thead>
+                                <tr><th>Asignatura</th><th>Codigo</th><th>Creditos</th><th>Horas</th></tr>
+                            </thead>
+                            <tbody>
+                                ${asignaturas.map((asignatura) => {
+        const credits = subjectTotalCredits(asignatura);
+        return `
+                                        <tr>
+                                            <td>${escapeHtml(asignatura.nombre || asignatura.id)}</td>
+                                            <td>${escapeHtml(asignatura.codigoReferencia || asignatura.id || "")}</td>
+                                            <td>${credits}</td>
+                                            <td><strong>${creditsToHours(credits)}</strong></td>
+                                        </tr>
+                                    `;
     }).join("")}
+                            </tbody>
+                        </table>
                     </section>
                 `).join("")}
                 <section class="grade-section">
@@ -1082,11 +1008,7 @@ function downloadProfesoresPdf(state) {
 }
 
 function downloadGradosPdf(state) {
-    openPrintableHtml(printableGradosPdfHtml(state, "expanded"));
-}
-
-function downloadGradosPdfCompact(state) {
-    openPrintableHtml(printableGradosPdfHtml(state, "compact"));
+    openPrintableHtml(printableGradosPdfHtml(state));
 }
 
 function renderDocenciaExport(state) {
@@ -1109,8 +1031,7 @@ function renderDocenciaExport(state) {
             <div class="export-actions">
                 <button id="download-docencia-pdf-btn" type="button">Exportar reparto a PDF</button>
                 <button id="download-profesores-pdf-btn" class="secondary" type="button">Exportar profesores</button>
-                <button id="download-grados-pdf-btn" class="secondary" type="button">Exportar grados y extras ampliado</button>
-                <button id="download-grados-pdf-compact-btn" class="secondary" type="button">Exportar grados y extras compacto</button>
+                <button id="download-grados-pdf-btn" class="secondary" type="button">Exportar grados y extras</button>
             </div>
         </section>
     `;
@@ -1420,10 +1341,5 @@ export function bindDocenciaEvents({ app, state, setStatus, render, saveDocencia
     const gradosPdfBtn = document.getElementById("download-grados-pdf-btn");
     if (gradosPdfBtn) {
         gradosPdfBtn.onclick = () => downloadGradosPdf(state);
-    }
-
-    const gradosPdfCompactBtn = document.getElementById("download-grados-pdf-compact-btn");
-    if (gradosPdfCompactBtn) {
-        gradosPdfCompactBtn.onclick = () => downloadGradosPdfCompact(state);
     }
 }
