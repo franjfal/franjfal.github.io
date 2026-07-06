@@ -26,5 +26,9 @@
   {
     "id": "grado-teleco",
     "nombre": "Grado en Ingeniería Electrónica de Telecomunicación"
+  },
+  {
+    "id": "master-investmat",
+    "nombre": "Máster Universitario en Investigación Matemática"
   }
 ]
