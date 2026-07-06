@@ -5,6 +5,7 @@
     "apellidos": "Falcó",
     "nombreCompleto": "Javier Falcó",
     "creditosObjetivo": 230,
+    "docenciaAjustable": true,
     "reducciones": [
       {
         "id": "red_0635s67z",
@@ -17,6 +18,261 @@
         "tipo": "Direccion de tesis",
         "creditos": 10,
         "descripcion": ""
+      }
+    ]
+  },
+  {
+    "id": "pablo-andujar",
+    "nombre": "Pablo Jose",
+    "apellidos": "Andujar Guerrero",
+    "nombreCompleto": "Pablo Jose Andujar Guerrero",
+    "creditosObjetivo": 180,
+    "docenciaAjustable": true,
+    "reducciones": []
+  },
+  {
+    "id": "oscar-blasco",
+    "nombre": "Oscar",
+    "apellidos": "Blasco De La Cruz",
+    "nombreCompleto": "Oscar Blasco De La Cruz",
+    "creditosObjetivo": 160,
+    "docenciaAjustable": true,
+    "reducciones": []
+  },
+  {
+    "id": "francisco-falco",
+    "nombre": "Francisco Javier",
+    "apellidos": "Falco Benavent",
+    "nombreCompleto": "Francisco Javier Falco Benavent",
+    "creditosObjetivo": 180,
+    "docenciaAjustable": true,
+    "reducciones": [
+      {
+        "id": "red_wrd97pld",
+        "tipo": "Direccion de tesis",
+        "creditos": 10,
+        "descripcion": "Reduccion por tesis"
+      },
+      {
+        "id": "red_qju66cd5",
+        "tipo": "Cargos",
+        "creditos": 20,
+        "descripcion": "Reduccion por cargo"
+      }
+    ]
+  },
+  {
+    "id": "carmen-fernandez",
+    "nombre": "Carmen",
+    "apellidos": "Fernandez Rosell",
+    "nombreCompleto": "Carmen Fernandez Rosell",
+    "creditosObjetivo": 150,
+    "docenciaAjustable": true,
+    "reducciones": [
+      {
+        "id": "red_t2vr1wn8",
+        "tipo": "Direccion de tesis",
+        "creditos": 10,
+        "descripcion": "Reduccion por tesis"
+      }
+    ]
+  },
+  {
+    "id": "antonio-galbis",
+    "nombre": "Antonio",
+    "apellidos": "Galbis Verdu",
+    "nombreCompleto": "Antonio Galbis Verdu",
+    "creditosObjetivo": 150,
+    "docenciaAjustable": true,
+    "reducciones": [
+      {
+        "id": "red_bw41896m",
+        "tipo": "Direccion de tesis",
+        "creditos": 10,
+        "descripcion": "Reduccion por tesis"
+      }
+    ]
+  },
+  {
+    "id": "jesus-garcia",
+    "nombre": "Jesus",
+    "apellidos": "Garcia Falset",
+    "nombreCompleto": "Jesus Garcia Falset",
+    "creditosObjetivo": 160,
+    "docenciaAjustable": true,
+    "reducciones": []
+  },
+  {
+    "id": "domingo-garcia",
+    "nombre": "Domingo",
+    "apellidos": "Garcia Rodriguez",
+    "nombreCompleto": "Domingo Garcia Rodriguez",
+    "creditosObjetivo": 90,
+    "docenciaAjustable": true,
+    "reducciones": [
+      {
+        "id": "red_4h5cg83i",
+        "tipo": "Cargos",
+        "creditos": 60,
+        "descripcion": "Reduccion por cargo"
+      },
+      {
+        "id": "red_j407mozf",
+        "tipo": "Gestion",
+        "creditos": 10,
+        "descripcion": "Reduccion por proyectos de investigacion"
+      }
+    ]
+  },
+  {
+    "id": "daniel-isert",
+    "nombre": "Daniel",
+    "apellidos": "Isert Sales",
+    "nombreCompleto": "Daniel Isert Sales",
+    "creditosObjetivo": 180,
+    "docenciaAjustable": true,
+    "reducciones": []
+  },
+  {
+    "id": "jose-martinez",
+    "nombre": "Jose Mª",
+    "apellidos": "Martinez Centelles",
+    "nombreCompleto": "Jose Mª Martinez Centelles",
+    "creditosObjetivo": 190,
+    "docenciaAjustable": true,
+    "reducciones": [
+      {
+        "id": "red_bh0jir5p",
+        "tipo": "Discapacidad",
+        "creditos": 40,
+        "descripcion": "Reduccion por discapacidad"
+      }
+    ]
+  },
+  {
+    "id": "alejandro-miralles",
+    "nombre": "Alejandro",
+    "apellidos": "Miralles Montolio",
+    "nombreCompleto": "Alejandro Miralles Montolio",
+    "creditosObjetivo": 170,
+    "docenciaAjustable": true,
+    "reducciones": []
+  },
+  {
+    "id": "jose-moll",
+    "nombre": "José Salvador",
+    "apellidos": "Moll Cebolla",
+    "nombreCompleto": "José Salvador Moll Cebolla",
+    "creditosObjetivo": 25,
+    "docenciaAjustable": true,
+    "reducciones": [
+      {
+        "id": "red_mv6k0vqz",
+        "tipo": "Direccion de tesis",
+        "creditos": 10,
+        "descripcion": "Reduccion por tesis"
+      },
+      {
+        "id": "red_cfrx4b26",
+        "tipo": "Cargos",
+        "creditos": 130,
+        "descripcion": "Reduccion por cargo"
+      },
+      {
+        "id": "red_ozh8s824",
+        "tipo": "Gestion",
+        "creditos": 5,
+        "descripcion": "Reduccion por proyectos de investigacion"
+      }
+    ]
+  },
+  {
+    "id": "alicia-quero",
+    "nombre": "Alicia",
+    "apellidos": "Quero De La Rosa",
+    "nombreCompleto": "Alicia Quero De La Rosa",
+    "creditosObjetivo": 180,
+    "docenciaAjustable": true,
+    "reducciones": []
+  },
+  {
+    "id": "oscar-roldan",
+    "nombre": "Oscar",
+    "apellidos": "Roldan Blay",
+    "nombreCompleto": "Oscar Roldan Blay",
+    "creditosObjetivo": 180,
+    "docenciaAjustable": true,
+    "reducciones": []
+  },
+  {
+    "id": "maria-rueda",
+    "nombre": "Maria Pilar",
+    "apellidos": "Rueda Segado",
+    "nombreCompleto": "Maria Pilar Rueda Segado",
+    "creditosObjetivo": 160,
+    "docenciaAjustable": true,
+    "reducciones": []
+  },
+  {
+    "id": "daniel-santacreu",
+    "nombre": "Daniel",
+    "apellidos": "Santacreu Ferra",
+    "nombreCompleto": "Daniel Santacreu Ferra",
+    "creditosObjetivo": 180,
+    "docenciaAjustable": true,
+    "reducciones": []
+  },
+  {
+    "id": "sergio-segura",
+    "nombre": "Sergio",
+    "apellidos": "Segura De Leon",
+    "nombreCompleto": "Sergio Segura De Leon",
+    "creditosObjetivo": 140,
+    "docenciaAjustable": true,
+    "reducciones": [
+      {
+        "id": "red_c9r0pubf",
+        "tipo": "Gestion",
+        "creditos": 20,
+        "descripcion": "Reduccion discrecional"
+      }
+    ]
+  },
+  {
+    "id": "marcos-solera",
+    "nombre": "Marcos",
+    "apellidos": "Solera Diana",
+    "nombreCompleto": "Marcos Solera Diana",
+    "creditosObjetivo": 180,
+    "docenciaAjustable": true,
+    "reducciones": [
+      {
+        "id": "red_im1ytcre",
+        "tipo": "Gestion",
+        "creditos": 10,
+        "descripcion": "Reduccion por proyectos de investigacion"
+      },
+      {
+        "id": "red_qnuvd1lb",
+        "tipo": "Gestion",
+        "creditos": 30,
+        "descripcion": "Reduccion por tareas de centro"
+      }
+    ]
+  },
+  {
+    "id": "jose-toledo",
+    "nombre": "Jose Julian",
+    "apellidos": "Toledo Melero",
+    "nombreCompleto": "Jose Julian Toledo Melero",
+    "creditosObjetivo": 155,
+    "docenciaAjustable": true,
+    "reducciones": [
+      {
+        "id": "red_6c367for",
+        "tipo": "Gestion",
+        "creditos": 5,
+        "descripcion": "Reduccion por proyectos de investigacion"
       }
     ]
   }
