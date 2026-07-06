@@ -34,5 +34,9 @@
   {
     "id": "doble-grado-mat-fisica",
     "nombre": "Doble Grado en Física y Matemáticas"
+  },
+  {
+    "id": "doble-grado-mat-telematica",
+    "nombre": "Doble Grado en Matemáticas y en Ingeniería Telemática"
   }
 ]
