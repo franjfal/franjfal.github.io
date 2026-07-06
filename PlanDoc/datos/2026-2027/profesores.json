@@ -170,9 +170,16 @@
     "nombre": "Alejandro",
     "apellidos": "Miralles Montolio",
     "nombreCompleto": "Alejandro Miralles Montolio",
-    "creditosObjetivo": 170,
+    "creditosObjetivo": 230,
     "docenciaAjustable": true,
-    "reducciones": []
+    "reducciones": [
+      {
+        "id": "red_vmei7x4i",
+        "tipo": "Sexenios",
+        "creditos": 60,
+        "descripcion": ""
+      }
+    ]
   },
   {
     "id": "jose-moll",
