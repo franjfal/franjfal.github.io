@@ -281,5 +281,14 @@
         "descripcion": "Reduccion por proyectos de investigacion"
       }
     ]
+  },
+  {
+    "id": "mazon",
+    "nombre": "José M.",
+    "apellidos": "Mazón Ruiz",
+    "nombreCompleto": "José M. Mazón Ruiz",
+    "creditosObjetivo": 30,
+    "docenciaAjustable": false,
+    "reducciones": []
   }
 ]
