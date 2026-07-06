@@ -904,18 +904,23 @@ function printableProfesoresPdfHtml(state) {
     `;
 }
 
-function specialWorkTotalCredits(trabajo) {
-    return formatCredits(Object.values(trabajo.asignaciones || {}).reduce((sum, count) => sum + toPositiveNumber(count, 0), 0) * toPositiveNumber(trabajo.peso, 0));
+function specialWorkExportSummary(trabajo) {
+    const assignedWorks = Object.values(trabajo.asignaciones || {}).reduce((sum, count) => sum + toPositiveNumber(count, 0), 0);
+    const totalWorks = toPositiveNumber(trabajo.totalTrabajos, 0) || assignedWorks;
+    const hoursPerWork = toPositiveNumber(trabajo.peso, 0);
+    return {
+        label: specialWorkLabel(trabajo),
+        hoursPerWork,
+        totalWorks,
+        totalHours: formatCredits(totalWorks * hoursPerWork),
+    };
 }
 
 function printableGradosPdfHtml(state) {
     const categories = exportCategories(state);
-    const specialWorks = sortedSpecialWorks(state).map((trabajo) => ({
-        label: specialWorkLabel(trabajo),
-        credits: specialWorkTotalCredits(trabajo),
-    }));
+    const specialWorks = sortedSpecialWorks(state).map(specialWorkExportSummary);
     const subjectCredits = formatCredits(categories.reduce((sum, group) => sum + group.total, 0));
-    const extraCredits = formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.credits, 0));
+    const extraCredits = formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.totalHours, 0));
     const totalCredits = formatCredits(subjectCredits + extraCredits);
     const title = `Horas por grados y extras · ${state.selectedCourse || "curso"}`;
 
@@ -975,24 +980,28 @@ function printableGradosPdfHtml(state) {
                     </div>
                     <table class="pdf-table">
                         <thead>
-                            <tr><th>Elemento</th><th>Horas</th><th>Creditos</th></tr>
+                            <tr><th>Elemento</th><th>Horas/trabajo</th><th>Trabajos</th><th>Total horas</th><th>Creditos</th></tr>
                         </thead>
                         <tbody>
                             ${specialWorks.length === 0 ? `
-                                <tr><td colspan="3">No hay TFG, TFM ni practicas de empresa configuradas.</td></tr>
+                                <tr><td colspan="5">No hay TFG, TFM ni practicas de empresa configuradas.</td></tr>
                             ` : specialWorks.map((trabajo) => `
                                 <tr>
                                     <td>${escapeHtml(trabajo.label)}</td>
-                                    <td>${trabajo.credits}</td>
-                                    <td><strong>${hoursToCredits(trabajo.credits)}</strong></td>
+                                    <td>${trabajo.hoursPerWork}</td>
+                                    <td>${trabajo.totalWorks}</td>
+                                    <td><strong>${trabajo.totalHours}</strong></td>
+                                    <td><strong>${hoursToCredits(trabajo.totalHours)}</strong></td>
                                 </tr>
                             `).join("")}
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td class="total-cell">Total departamento</td>
-                                <td class="total-cell">${totalCredits} horas</td>
-                                <td class="total-cell">${hoursToCredits(totalCredits)} creditos</td>
+                                <td class="total-cell">Total extras</td>
+                                <td class="total-cell"></td>
+                                <td class="total-cell">${formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.totalWorks, 0))} trabajos</td>
+                                <td class="total-cell">${extraCredits} horas</td>
+                                <td class="total-cell">${hoursToCredits(extraCredits)} creditos</td>
                             </tr>
                         </tfoot>
                     </table>
