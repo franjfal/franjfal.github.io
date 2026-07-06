@@ -14819,5 +14819,82 @@
         "sesiones": []
       }
     ]
+  },
+  {
+    "id": "36407",
+    "nombre": "Anàlisi matemàtica",
+    "categoriaId": "grado-datos",
+    "codigoReferencia": "36407",
+    "codigoTitulacion": "1406",
+    "color": "",
+    "cuatrimestre": "primer",
+    "subgrupos": [
+      {
+        "id": "A-T",
+        "nombre": "Teoría A",
+        "codigoUv": "A-T",
+        "color": "",
+        "tipo": "teoria",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 40,
+        "sesiones": []
+      },
+      {
+        "id": "A-P",
+        "nombre": "Prácticas a l'aula A-P",
+        "codigoUv": "A-P",
+        "color": "",
+        "tipo": "practicas",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 20,
+        "sesiones": []
+      },
+      {
+        "id": "A-L1",
+        "nombre": "Laboratorio A-L1",
+        "codigoUv": "A-L1",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "ingles",
+        "cuatrimestre": "primer",
+        "creditos": 20,
+        "sesiones": []
+      },
+      {
+        "id": "A-L2",
+        "nombre": "Laboratorio A-L2",
+        "codigoUv": "A-L2",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "valenciano",
+        "cuatrimestre": "primer",
+        "creditos": 20,
+        "sesiones": []
+      },
+      {
+        "id": "A-L3",
+        "nombre": "Laboratorio A-L3",
+        "codigoUv": "A-L3",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "castellano",
+        "cuatrimestre": "primer",
+        "creditos": 20,
+        "sesiones": []
+      },
+      {
+        "id": "A-L4",
+        "nombre": "Laboratorio A-L4",
+        "codigoUv": "A-L4",
+        "color": "",
+        "tipo": "practicas-informaticas",
+        "idioma": "valenciano",
+        "cuatrimestre": "primer",
+        "creditos": 20,
+        "sesiones": []
+      }
+    ]
   }
 ]
