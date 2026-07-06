@@ -12793,7 +12793,7 @@
         "tipo": "teoria",
         "idioma": "ingles",
         "cuatrimestre": "primer",
-        "creditos": 30,
+        "creditos": 37.5,
         "sesiones": [
           {
             "id": "uv-A-T-1",
@@ -13000,7 +13000,7 @@
         "tipo": "practicas",
         "idioma": "ingles",
         "cuatrimestre": "primer",
-        "creditos": 14,
+        "creditos": 15,
         "sesiones": [
           {
             "id": "uv-A-P-1",
@@ -13103,7 +13103,7 @@
         "tipo": "seminario",
         "idioma": "ingles",
         "cuatrimestre": "primer",
-        "creditos": 6,
+        "creditos": 7.5,
         "sesiones": [
           {
             "id": "uv-A-O-1",
