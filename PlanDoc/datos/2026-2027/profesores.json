@@ -290,5 +290,14 @@
     "creditosObjetivo": 30,
     "docenciaAjustable": false,
     "reducciones": []
+  },
+  {
+    "id": "davidBeltran",
+    "nombre": "David",
+    "apellidos": "Beltran Portalés",
+    "nombreCompleto": "David Beltran Portalés",
+    "creditosObjetivo": 80,
+    "docenciaAjustable": false,
+    "reducciones": []
   }
 ]
