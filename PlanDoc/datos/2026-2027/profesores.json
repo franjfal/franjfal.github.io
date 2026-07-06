@@ -18,6 +18,12 @@
         "tipo": "Direccion de tesis",
         "creditos": 10,
         "descripcion": ""
+      },
+      {
+        "id": "red_jav8p4k4",
+        "tipo": "Gestion",
+        "creditos": 20,
+        "descripcion": "Secretario departamento"
       }
     ]
   },
