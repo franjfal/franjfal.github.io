@@ -607,7 +607,7 @@ function renderAsignaturasTab(state) {
                         <option value="nombre" ${state.publicAsignaturaSort === "nombre" ? "selected" : ""}>Nombre</option>
                         <option value="categoria" ${state.publicAsignaturaSort === "categoria" ? "selected" : ""}>Titulacion</option>
                         <option value="horas" ${state.publicAsignaturaSort === "horas" ? "selected" : ""}>Horas</option>
-                        <option value="pendientes" ${state.publicAsignaturaSort === "pendientes" ? "selected" : ""}>Pendientes</option>
+                        <option value="pendientes" ${state.publicAsignaturaSort === "pendientes" ? "selected" : ""}>Horas pendientes</option>
                     </select>
                 </label>
             </div>
@@ -619,7 +619,7 @@ function renderAsignaturasTab(state) {
             <div class="table-shell">
                 <table class="table teacher-table">
                     <thead>
-                        <tr><th>Asignatura</th><th>Codigo</th><th>Titulacion</th><th>Horas</th><th>Repartidas</th><th>Calendario</th><th>Estado</th></tr>
+                        <tr><th>Asignatura</th><th>Codigo</th><th>Titulacion</th><th>Horas</th><th>Repartidas</th><th>Numero de sesiones</th><th>Estado</th></tr>
                     </thead>
                     <tbody>
                         ${rows.length === 0 ? `<tr><td colspan="7" class="empty-cell">No hay asignaturas visibles.</td></tr>` : rows.map((asignatura) => {
@@ -636,7 +636,7 @@ function renderAsignaturasTab(state) {
                                 <td><span class="num-pill">${status.total}</span></td>
                                 <td><span class="num-pill muted-pill">${status.assigned}</span></td>
                                 <td><span class="num-pill muted-pill">${totalSesionesAsignatura(asignatura)}</span></td>
-                                <td><span class="badge ${status.complete ? "" : "danger-badge"}">${status.complete ? "Completa" : `${status.pending} pendientes`}</span></td>
+                                <td><span class="badge ${status.complete ? "" : "danger-badge"}">${status.complete ? "Completa" : `${status.pending} horas pendientes de repartir`}</span></td>
                             </tr>
                         `;
     }).join("")}
@@ -842,9 +842,94 @@ function renderSubjectAssignmentCard({ asignatura, items }) {
     `;
 }
 
+function publicHorarioAsignaturasConSesiones(state) {
+    return (state.asignaturas || []).filter((asignatura) => totalSesionesAsignatura(asignatura) > 0);
+}
+
+function publicHorarioSelectionMap(state) {
+    return state.publicHorarioSelectedAsignaturas && typeof state.publicHorarioSelectedAsignaturas === "object"
+        ? state.publicHorarioSelectedAsignaturas
+        : null;
+}
+
+function ensurePublicHorarioSelection(state) {
+    if (!publicHorarioSelectionMap(state)) {
+        state.publicHorarioSelectedAsignaturas = Object.fromEntries(
+            publicHorarioAsignaturasConSesiones(state).map((asignatura) => [asignatura.id, true]),
+        );
+    }
+    return state.publicHorarioSelectedAsignaturas;
+}
+
+function publicHorarioAsignaturaVisible(state, asignatura) {
+    const selection = publicHorarioSelectionMap(state);
+    return selection ? selection[asignatura.id] === true : true;
+}
+
+function publicHorarioTree(state) {
+    const byCategory = new Map();
+    publicHorarioAsignaturasConSesiones(state).forEach((asignatura) => {
+        const categoriaId = asignatura.categoriaId || "__sin_categoria__";
+        if (!byCategory.has(categoriaId)) {
+            byCategory.set(categoriaId, {
+                id: categoriaId,
+                nombre: categoriaNombre(state, asignatura.categoriaId),
+                asignaturas: [],
+            });
+        }
+        byCategory.get(categoriaId).asignaturas.push(asignatura);
+    });
+
+    return [...byCategory.values()]
+        .map((category) => ({
+            ...category,
+            asignaturas: category.asignaturas.sort((a, b) => String(a.nombre || "").localeCompare(String(b.nombre || ""), "es", { sensitivity: "base" })),
+        }))
+        .sort((a, b) => String(a.nombre).localeCompare(String(b.nombre), "es", { sensitivity: "base" }));
+}
+
+function renderPublicHorarioTree(state) {
+    const tree = publicHorarioTree(state);
+    if (tree.length === 0) {
+        return `<p class="empty-cell">No hay asignaturas con sesiones importadas.</p>`;
+    }
+
+    return tree.map((category) => {
+        const expanded = state.publicHorarioExpandedCategorias?.[category.id] !== false;
+        const selectedCount = category.asignaturas.filter((asignatura) => publicHorarioAsignaturaVisible(state, asignatura)).length;
+        return `
+            <section class="calendar-category">
+                <div class="public-horario-category-row">
+                    <button class="calendar-expand" data-public-horario-category="${escapeHtml(category.id)}" type="button" aria-label="${expanded ? "Contraer" : "Expandir"} grado">${expanded ? "⌄" : "›"}</button>
+                    <span>
+                        <strong>${escapeHtml(category.nombre)}</strong>
+                        <small>${selectedCount} / ${category.asignaturas.length} asignaturas visibles</small>
+                    </span>
+                </div>
+                ${expanded ? `
+                    <div class="calendar-subject-list">
+                        ${category.asignaturas.map((asignatura) => `
+                            <label class="calendar-subgroup-row public-horario-subject-row">
+                                <input data-public-horario-asignatura="${escapeHtml(asignatura.id)}" type="checkbox" ${publicHorarioAsignaturaVisible(state, asignatura) ? "checked" : ""} />
+                                <span>
+                                    <strong>${escapeHtml(asignatura.nombre || asignatura.id || "Asignatura")}</strong>
+                                    <small>${totalSesionesAsignatura(asignatura)} sesiones</small>
+                                </span>
+                            </label>
+                        `).join("")}
+                    </div>
+                ` : ""}
+            </section>
+        `;
+    }).join("");
+}
+
 function publicCalendarEvents(state) {
     const events = [];
     state.asignaturas.forEach((asignatura) => {
+        if (!publicHorarioAsignaturaVisible(state, asignatura)) {
+            return;
+        }
         (asignatura.subgrupos || []).forEach((subgrupo) => {
             sesionesSubgrupo(subgrupo).forEach((sesion, index) => {
                 const date = sessionDate(sesion);
@@ -1329,20 +1414,33 @@ function downloadProfessorCalendarIcs(state) {
 
 function renderHorariosTab(state) {
     const events = publicCalendarEvents(state);
+    const totalSubjects = publicHorarioAsignaturasConSesiones(state).length;
     return `
         <section class="card public-section">
             <div class="section-header">
                 <div>
                     <h2>Horarios</h2>
-                    <p class="status">${events.length} eventos de calendario importados.</p>
+                    <p class="status">${events.length} eventos visibles · ${totalSubjects} asignaturas con sesiones importadas.</p>
                 </div>
                 <div class="nav-tabs embedded-tabs public-calendar-tabs">
                     ${CALENDAR_VIEWS.map((view) => `<button class="tab ${state.publicCalendarView === view.value ? "active" : ""}" data-public-calendar-view="${view.value}" type="button">${view.label}</button>`).join("")}
                 </div>
             </div>
-            <div class="calendar-shell">
-                <div id="public-calendar"></div>
-                ${events.length === 0 ? `<p class="empty-cell">No hay eventos importados.</p>` : ""}
+            <div class="public-calendar-workspace with-sidebar">
+                <aside class="form-section public-horario-panel">
+                    <div class="form-section-title">
+                        <span class="section-kicker">Asignaturas</span>
+                        <h3>Filtrar horarios</h3>
+                    </div>
+                    <button id="public-horario-clear-selection-btn" class="secondary" type="button">Limpiar seleccion</button>
+                    <div class="calendar-event-list">
+                        ${renderPublicHorarioTree(state)}
+                    </div>
+                </aside>
+                <div class="calendar-shell">
+                    <div id="public-calendar"></div>
+                    ${events.length === 0 ? `<p class="empty-cell">No hay eventos visibles.</p>` : ""}
+                </div>
             </div>
         </section>
     `;
@@ -1364,6 +1462,7 @@ export function renderPublicView(state) {
                 <div>
                     <h1>PlanDoc publico</h1>
                     <p class="course-loaded">Curso: <strong>${escapeHtml(selectedCourse?.nombre || state.selectedCourse || "Sin curso")}</strong></p>
+                    <p class="public-refresh-notice">Para ver datos actualizados, recarga esta pagina. La vista publica no se actualiza automaticamente.</p>
                     <p class="status">${escapeHtml(state.status)}</p>
                 </div>
                 <a class="button-link secondary" href="./">Acceso admin</a>
@@ -1567,6 +1666,33 @@ export function bindPublicEvents({ state, render }) {
     const repartoMode = document.getElementById("public-reparto-mode");
     if (repartoMode) repartoMode.onchange = () => { state.publicRepartoMode = repartoMode.value; render(); };
     bindFilter("public-reparto-filter", (value) => { state.publicRepartoFilter = value; });
+
+    const clearHorarioSelectionBtn = document.getElementById("public-horario-clear-selection-btn");
+    if (clearHorarioSelectionBtn) {
+        clearHorarioSelectionBtn.onclick = () => {
+            state.publicHorarioSelectedAsignaturas = {};
+            render();
+        };
+    }
+
+    document.querySelectorAll("[data-public-horario-category]").forEach((btn) => {
+        btn.onclick = () => {
+            const id = btn.dataset.publicHorarioCategory;
+            state.publicHorarioExpandedCategorias = {
+                ...(state.publicHorarioExpandedCategorias || {}),
+                [id]: state.publicHorarioExpandedCategorias?.[id] === false,
+            };
+            render();
+        };
+    });
+
+    document.querySelectorAll("[data-public-horario-asignatura]").forEach((input) => {
+        input.onchange = () => {
+            const selection = ensurePublicHorarioSelection(state);
+            selection[input.dataset.publicHorarioAsignatura] = input.checked;
+            render();
+        };
+    });
 
     document.querySelectorAll("[data-public-calendar-view]").forEach((btn) => {
         btn.onclick = () => {

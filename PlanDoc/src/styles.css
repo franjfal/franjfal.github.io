@@ -78,6 +78,18 @@ h2 {
     color: var(--ink);
 }
 
+.public-refresh-notice {
+    display: inline-block;
+    margin: 0 0 6px;
+    padding: 6px 10px;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    background: #fffbeb;
+    color: #92400e;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
 .grid {
     display: grid;
     gap: 16px;
@@ -494,8 +506,53 @@ button.mini {
     background: #f8fafc;
 }
 
+.public-horario-panel {
+    margin: 0;
+    background: #f8fafc;
+}
+
 .public-simulation-panel .calendar-event-list {
     max-height: 650px;
+}
+
+.public-horario-panel .calendar-event-list {
+    max-height: 720px;
+}
+
+.public-horario-panel > button {
+    width: 100%;
+    margin: 0 0 12px;
+}
+
+.public-horario-category-row {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+    margin-bottom: 8px;
+}
+
+.public-horario-category-row strong,
+.public-horario-category-row small,
+.public-horario-subject-row strong,
+.public-horario-subject-row small {
+    display: block;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+.public-horario-category-row small {
+    color: var(--muted);
+    margin-top: 2px;
+    font-size: 0.76rem;
+}
+
+.public-horario-subject-row {
+    grid-template-columns: 18px minmax(0, 1fr);
+    align-items: start;
+    padding-left: 10px;
 }
 
 .public-simulation-panel .calendar-event-control {
@@ -504,10 +561,29 @@ button.mini {
 
 .simulation-subject-row {
     grid-template-columns: 26px 18px minmax(0, 1fr);
+    align-items: start;
 }
 
 .simulation-subgroup-row {
     grid-template-columns: 18px minmax(0, 1fr);
+    align-items: start;
+    padding-left: 18px;
+}
+
+.simulation-subject-row > span,
+.simulation-subgroup-row > span {
+    min-width: 0;
+}
+
+.simulation-subject-row strong,
+.simulation-subject-row small,
+.simulation-subgroup-row strong,
+.simulation-subgroup-row small {
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: auto;
 }
 
 .printable-calendar {
