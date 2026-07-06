@@ -1006,6 +1006,37 @@ function printableGradosPdfHtml(state) {
                         </tfoot>
                     </table>
                 </section>
+                <section class="grade-section">
+                    <div class="grade-title">
+                        <h2>Resumen por grados</h2>
+                        <strong>${subjectCredits} horas · ${hoursToCredits(subjectCredits)} creditos</strong>
+                    </div>
+                    <table class="pdf-table">
+                        <thead>
+                            <tr><th>Grado</th><th>Asignaturas</th><th>Horas</th><th>Creditos</th></tr>
+                        </thead>
+                        <tbody>
+                            ${categories.length === 0 ? `
+                                <tr><td colspan="4">No hay grados/asignaturas cargados.</td></tr>
+                            ` : categories.map(({ categoria, asignaturas, total }) => `
+                                <tr>
+                                    <td>${escapeHtml(categoria.nombre)}</td>
+                                    <td>${asignaturas.length}</td>
+                                    <td><strong>${total}</strong></td>
+                                    <td><strong>${hoursToCredits(total)}</strong></td>
+                                </tr>
+                            `).join("")}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="total-cell">Total grados</td>
+                                <td class="total-cell">${categories.reduce((sum, group) => sum + group.asignaturas.length, 0)}</td>
+                                <td class="total-cell">${subjectCredits} horas</td>
+                                <td class="total-cell">${hoursToCredits(subjectCredits)} creditos</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </section>
             </section>
         </body>
         </html>
