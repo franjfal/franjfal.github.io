@@ -285,7 +285,7 @@
     "nombre": "Marcos",
     "apellidos": "Solera Diana",
     "nombreCompleto": "Marcos Solera Diana",
-    "creditosObjetivo": 180,
+    "creditosObjetivo": 230,
     "docenciaAjustable": true,
     "reducciones": [
       {
@@ -299,6 +299,12 @@
         "tipo": "Gestion",
         "creditos": 30,
         "descripcion": "Reduccion por tareas de centro"
+      },
+      {
+        "id": "red_li3b3ugv",
+        "tipo": "Sexenios",
+        "creditos": 10,
+        "descripcion": ""
       }
     ]
   },
