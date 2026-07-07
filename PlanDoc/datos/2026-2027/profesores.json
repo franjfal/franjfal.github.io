@@ -365,5 +365,14 @@
     "creditosObjetivo": 120,
     "docenciaAjustable": true,
     "reducciones": []
+  },
+  {
+    "id": "sustituto2",
+    "nombre": "Profesor",
+    "apellidos": "Sustituto - 5",
+    "nombreCompleto": "Profesor Sustituto - 5",
+    "creditosObjetivo": 150,
+    "docenciaAjustable": true,
+    "reducciones": []
   }
 ]
