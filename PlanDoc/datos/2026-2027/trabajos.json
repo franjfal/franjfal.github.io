@@ -5,7 +5,18 @@
     "titulo": "TFG Mates Concertados",
     "totalTrabajos": 16,
     "peso": 9.6,
-    "asignaciones": {}
+    "asignaciones": {
+      "pablo-andujar": 2,
+      "francisco-falco": 3.5,
+      "carmen-fernandez": 1,
+      "antonio-galbis": 2,
+      "jesus-garcia": 1,
+      "daniel-isert": 1.5,
+      "alejandro-miralles": 1,
+      "oscar-roldan": 1,
+      "marcos-solera": 2,
+      "mazon": 1
+    }
   },
   {
     "id": "tfg-mates-libres",
