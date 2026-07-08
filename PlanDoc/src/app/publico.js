@@ -108,6 +108,15 @@ function profesorAssignments(state, profesorId) {
         .filter((entry) => entry.asignatura && entry.subgrupo);
 }
 
+function profesorSpecialWorkCredits(state, profesorId) {
+    return Number((state.trabajos || []).reduce((sum, trabajo) => {
+        if (!trabajo || !["tfg", "tfm", "practicas"].includes(trabajo.tipo)) {
+            return sum;
+        }
+        return sum + (toPositiveNumber(trabajo.asignaciones?.[profesorId], 0) * toPositiveNumber(trabajo.peso, 0));
+    }, 0).toFixed(2));
+}
+
 function simulatedAssignments(state) {
     const selected = new Set(state.publicSimulatedSubgroups || []);
     return [...selected].map((key) => {
@@ -757,7 +766,8 @@ function assignmentsByProfessor(state) {
                 return { item, asignatura, subgrupo };
             })
             .filter((entry) => entry.asignatura && entry.subgrupo);
-        return { profesor, items };
+        const specialCredits = profesorSpecialWorkCredits(state, profesor.id);
+        return { profesor, items, specialCredits };
     });
 }
 
@@ -779,8 +789,9 @@ function renderRepartoTab(state) {
     const text = (state.publicRepartoFilter || "").trim().toLowerCase();
     const byProfessor = state.publicRepartoMode !== "asignatura";
     const rows = byProfessor
-        ? assignmentsByProfessor(state).filter(({ profesor, items }) => {
-            const haystack = [professorName(profesor), profesor.id, ...items.map(({ asignatura }) => asignatura.nombre)].join(" ").toLowerCase();
+        ? assignmentsByProfessor(state).filter(({ profesor, items, specialCredits }) => {
+            const specialLabel = toPositiveNumber(specialCredits, 0) > 0 ? "TFG TFM practicas de empresa" : "";
+            const haystack = [professorName(profesor), profesor.id, specialLabel, ...items.map(({ asignatura }) => asignatura.nombre)].join(" ").toLowerCase();
             return !text || haystack.includes(text);
         }).sort((a, b) => professorName(a.profesor).localeCompare(professorName(b.profesor), "es", { sensitivity: "base" }))
         : assignmentsBySubject(state).filter(({ asignatura, items }) => {
@@ -810,16 +821,20 @@ function renderRepartoTab(state) {
     `;
 }
 
-function renderProfessorAssignmentCard({ profesor, items }) {
-    const total = Number(items.reduce((sum, { item }) => sum + toPositiveNumber(item.creditos, 0), 0).toFixed(2));
+function renderProfessorAssignmentCard({ profesor, items, specialCredits }) {
+    const teachingCredits = Number(items.reduce((sum, { item }) => sum + toPositiveNumber(item.creditos, 0), 0).toFixed(2));
+    const total = Number((teachingCredits + toPositiveNumber(specialCredits, 0)).toFixed(2));
     return `
         <article class="public-assignment-card">
             <header><strong>${escapeHtml(professorName(profesor))}</strong><span>${total} horas</span></header>
-            ${items.length === 0 ? `<p class="status">Sin docencia asignada.</p>` : `
+            ${items.length === 0 && toPositiveNumber(specialCredits, 0) <= 0 ? `<p class="status">Sin docencia asignada.</p>` : `
                 <ul>
                     ${items.map(({ item, asignatura, subgrupo }) => `
                         <li><span>${escapeHtml(asignatura.nombre)} · ${escapeHtml(subgrupo.nombre || subgrupo.id)}</span><strong>${toPositiveNumber(item.creditos, 0)}</strong></li>
                     `).join("")}
+                    ${toPositiveNumber(specialCredits, 0) > 0 ? `
+                        <li><span>TFG, TFM y practicas de empresa</span><strong>${toPositiveNumber(specialCredits, 0)}</strong></li>
+                    ` : ""}
                 </ul>
             `}
         </article>
