@@ -687,8 +687,11 @@
     const firstDelta = temps.firstMeasurement - temps.ambient;
     const secondDelta = temps.secondMeasurement - temps.ambient;
     const second = formatNumber(temps.secondMeasurement);
+    const coolingRatio = secondDelta / firstDelta;
+    const deathRatio = (temps.bodyAtDeath - temps.ambient) / firstDelta;
     const k = temps.k.toFixed(4);
     const deathOffset = temps.estimatedHoursBeforeFirst.toFixed(2);
+    const deathOffsetSigned = (-temps.estimatedHoursBeforeFirst).toFixed(2);
 
     return makeSpec(
       "forensicMath",
@@ -700,6 +703,7 @@
         block.paragraph(
           "La ley de enfriamiento de Newton establece que la tasa de pérdida de calor de un cuerpo es proporcional a la diferencia de temperatura entre el cuerpo y su entorno."
         ),
+        block.paragraph("En forma diferencial:"),
         block.paragraph("dT(t)/dt = -k(T(t) - Ta)"),
         block.bullets([
           "t es la variable temporal, medida en horas desde la primera medición forense.",
@@ -723,25 +727,69 @@
         block.numbered([
           "Ecuación de enfriamiento de Newton: dT(t)/dt = -k(T(t) - Ta).",
           `Reescribiendo con Ta = ${formatNumber(temps.ambient)}: dT(t)/(T(t) - ${formatNumber(temps.ambient)}) = -k dt.`,
-          `Al integrar se obtiene ln(T(t) - ${formatNumber(temps.ambient)}) = -kt + C.`,
-          `Forma exponencial: T(t) = ${formatNumber(temps.ambient)} + A e^(-kt).`
+          `Integración: integral dT(t)/(T(t) - ${formatNumber(temps.ambient)}) = integral -k dt.`,
+          `Por tanto, ln(T(t) - ${formatNumber(temps.ambient)}) = -kt + C.`,
+          `Pasando a forma exponencial: T(t) - ${formatNumber(temps.ambient)} = A e^(-kt).`,
+          `Forma final del modelo: T(t) = ${formatNumber(temps.ambient)} + A e^(-kt).`
         ]),
-        block.heading("Uso de las mediciones"),
+        block.heading("Cálculo de las constantes A y k"),
         block.paragraph(
-          `En t = 0, a las ${formatTime(timeline.firstMeasurement)}, T(0) = ${formatCelsius(temps.firstMeasurement)}, por lo que A = ${formatNumber(temps.firstMeasurement)} - ${formatNumber(temps.ambient)} = ${formatNumber(firstDelta)}.`
+          `Tomamos t = 0 en la primera medición forense, realizada a las ${formatTime(timeline.firstMeasurement)}. En ese instante T(0) = ${formatCelsius(temps.firstMeasurement)}.`
+        ),
+        block.paragraph(
+          `${formatNumber(temps.firstMeasurement)} = ${formatNumber(temps.ambient)} + A e^0 = ${formatNumber(temps.ambient)} + A.`
+        ),
+        block.paragraph(
+          `De aquí se obtiene A = ${formatNumber(temps.firstMeasurement)} - ${formatNumber(temps.ambient)} = ${formatNumber(firstDelta)}.`
         ),
         block.paragraph(
           `Por tanto, T(t) = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-kt).`
         ),
         block.paragraph(
-          `En t = 1, a las ${formatTime(timeline.secondMeasurement)}, ${second} = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-k), de modo que e^(-k) = ${formatNumber(secondDelta)} / ${formatNumber(firstDelta)} y k = ${k} h^-1.`
+          `Una hora después, a las ${formatTime(timeline.secondMeasurement)}, se mide T(1) = ${formatCelsius(temps.secondMeasurement)}. Sustituyendo en el modelo:`
+        ),
+        block.paragraph(
+          `${second} = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-k).`
+        ),
+        block.paragraph(
+          `${second} - ${formatNumber(temps.ambient)} = ${formatNumber(firstDelta)} e^(-k), es decir, ${formatNumber(secondDelta)} = ${formatNumber(firstDelta)} e^(-k).`
+        ),
+        block.paragraph(
+          `Por tanto, e^(-k) = ${formatNumber(secondDelta)} / ${formatNumber(firstDelta)} = ${formatNumber(coolingRatio)}.`
+        ),
+        block.paragraph(
+          `Tomando logaritmos: -k = ln(${formatNumber(coolingRatio)}), así que k = -ln(${formatNumber(coolingRatio)}) = ${k} h^-1.`
+        ),
+        block.paragraph(
+          `El modelo queda T(t) = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-${k}t).`
         ),
         block.heading("Determinación de la hora de muerte"),
         block.paragraph(
-          `En el momento de la muerte se asume que la temperatura corporal era ${formatCelsius(temps.bodyAtDeath)}. Al resolver ${formatNumber(temps.bodyAtDeath)} = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-${k}t), se obtiene t = -${deathOffset} horas respecto a la primera medición forense.`
+          `En el momento de la muerte se asume que la temperatura corporal era ${formatCelsius(temps.bodyAtDeath)}. Buscamos el instante t_a, medido respecto a la primera medición forense, tal que T(t_a) = ${formatCelsius(temps.bodyAtDeath)}.`
         ),
         block.paragraph(
-          `La hora de muerte es, por tanto, aproximadamente ${deathOffset} horas antes de las ${formatTime(timeline.firstMeasurement)}, es decir, alrededor de las ${formatTime(timeline.death)}.`
+          `${formatNumber(temps.bodyAtDeath)} = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-${k}t_a).`
+        ),
+        block.paragraph(
+          `${formatNumber(temps.bodyAtDeath)} - ${formatNumber(temps.ambient)} = ${formatNumber(firstDelta)} e^(-${k}t_a).`
+        ),
+        block.paragraph(
+          `(${formatNumber(temps.bodyAtDeath)} - ${formatNumber(temps.ambient)}) / ${formatNumber(firstDelta)} = e^(-${k}t_a).`
+        ),
+        block.paragraph(
+          `${formatNumber(temps.bodyAtDeath - temps.ambient)} / ${formatNumber(firstDelta)} = ${formatNumber(deathRatio)} = e^(-${k}t_a).`
+        ),
+        block.paragraph(
+          `Tomando logaritmos: ln(${formatNumber(deathRatio)}) = -${k}t_a.`
+        ),
+        block.paragraph(
+          `Así, t_a = ln(${formatNumber(deathRatio)}) / (-${k}) = ${deathOffsetSigned} horas.`
+        ),
+        block.paragraph(
+          `El signo negativo indica que la muerte ocurrió antes de la primera medición. En valor absoluto, la diferencia es de ${deathOffset} horas.`
+        ),
+        block.paragraph(
+          `${formatTime(timeline.firstMeasurement)} - ${deathOffset} horas = aproximadamente ${formatTime(timeline.death)}.`
         ),
         block.heading("Resumen"),
         block.paragraph(
