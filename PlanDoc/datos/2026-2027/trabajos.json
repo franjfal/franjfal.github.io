@@ -24,7 +24,12 @@
     "titulo": "TFG Mates Libres",
     "totalTrabajos": 7,
     "peso": 9.6,
-    "asignaciones": {}
+    "asignaciones": {
+      "oscar-blasco": 2,
+      "sergio-segura": 2,
+      "marcos-solera": 2,
+      "mazon": 1
+    }
   },
   {
     "id": "tfg-mates-fisica",
