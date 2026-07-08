@@ -39,6 +39,7 @@
     coolingCurve: (timeline, temps) => ({ type: "coolingCurve", timeline, temps }),
     evidenceCards: (cards) => ({ type: "evidenceCards", cards }),
     suspectTable: (rows) => ({ type: "suspectTable", rows }),
+    caseFile: (meta, sections) => ({ type: "caseFile", meta, sections }),
     pageBreak: () => ({ type: "pageBreak" }),
     spacer: (height = 10) => ({ type: "spacer", height })
   };
@@ -284,6 +285,7 @@
       evidenceBoardDoc(data),
       judgeDoc(data),
       prosecutionDoc(data),
+      forensicRoleDoc(data),
       forensicReportDoc(data),
       forensicMathDoc(data),
       janitorDoc(data),
@@ -305,56 +307,56 @@
         fileName: "ROL_Juez_paquete_completo.pdf",
         label: "El juez",
         title: "El juez",
-        ids: ["context", "visualDossier", "trialGuide", "evidenceBoard", "judge"]
+        ids: ["context", "trialGuide", "visualDossier", "evidenceBoard", "judge"]
       },
       {
         id: "bundle_prosecution",
         fileName: "ROL_Fiscalia_paquete_completo.pdf",
         label: "La Fiscalía",
         title: "La Fiscalía",
-        ids: ["context", "visualDossier", "trialGuide", "evidenceBoard", "prosecution", "forensicMath"]
+        ids: ["context", "trialGuide", "visualDossier", "evidenceBoard", "forensicReport", "forensicMath", "prosecution"]
       },
       {
         id: "bundle_forensic",
         fileName: "ROL_Medico_forense_paquete_completo.pdf",
         label: "El médico forense",
         title: "El médico forense",
-        ids: ["context", "visualDossier", "trialGuide", "forensicReport", "forensicMath"]
+        ids: ["context", "trialGuide", "visualDossier", "forensicRole", "forensicReport", "forensicMath"]
       },
       {
         id: "bundle_janitor",
         fileName: "ROL_Conserje_paquete_completo.pdf",
         label: "La conserje",
         title: "La conserje",
-        ids: ["context", "visualDossier", "trialGuide", "evidenceBoard", "janitor"]
+        ids: ["context", "trialGuide", "visualDossier", "evidenceBoard", "janitor"]
       },
       {
         id: "bundle_jury",
         fileName: "ROL_Jurado_popular_paquete_completo.pdf",
         label: "El jurado popular",
         title: "El jurado popular",
-        ids: ["context", "visualDossier", "jury"]
+        ids: ["context", "jury"]
       },
       {
         id: "bundle_suspect1",
         fileName: `ROL_${s1.fileStem}_paquete_completo.pdf`,
         label: s1.withArticleCap,
         title: s1.withArticleCap,
-        ids: ["context", "visualDossier", "suspect1"]
+        ids: ["context", "suspect1"]
       },
       {
         id: "bundle_suspect2",
         fileName: `ROL_${s2.fileStem}_paquete_completo.pdf`,
         label: s2.withArticleCap,
         title: s2.withArticleCap,
-        ids: ["context", "visualDossier", "suspect2"]
+        ids: ["context", "suspect2"]
       },
       {
         id: "bundle_suspect3",
         fileName: `ROL_${s3.fileStem}_paquete_completo.pdf`,
         label: s3.withArticleCap,
         title: s3.withArticleCap,
-        ids: ["context", "visualDossier", "suspect3"]
+        ids: ["context", "suspect3"]
       },
       {
         id: "bundle_teacher",
@@ -372,8 +374,8 @@
   }
 
   function commonContextDoc(data) {
-    const { timeline, teacherFullName, className } = data;
-    const labels = data.suspects.map((suspect) => suspect.label).join(", ");
+    const { timeline, temps, teacherFullName, teacherShortName, className } = data;
+    const second = formatNumber(temps.secondMeasurement);
 
     return makeSpec(
       "context",
@@ -381,33 +383,35 @@
       "La historia del caso",
       "",
       [
-        block.image("cover", "Aula de la actividad y escena del caso.", { maxHeight: 190 }),
-        block.heading("Historia de fondo"),
+        block.image("cover", "", { maxHeight: 190 }),
+        block.heading("Historia base"),
         block.paragraph(
-          `El ${formatDate(timeline.classEnd)}, el profesor ${teacherFullName} impartió una clase especialmente tensa de ${className}, desde las ${formatTime(timeline.classStart)} hasta las ${formatTime(timeline.classEnd)}. La clase terminó después de un examen sorpresa que dejó al grupo inquieto.`
+          `Professor ${teacherFullName} was known for his infamous surprise exams in "${className}" at the University of Valencia.`
         ),
         block.paragraph(
-          `Más tarde, a las ${formatEventTime(timeline.discovery, timeline.classEnd)}, el cuerpo del profesor fue encontrado en el aula. La policía acordonó la zona y comenzó una investigación que ha llevado a juicio a tres personas sospechosas.`
+          `On ${formatEnglishDate(timeline.classEnd)}, during a particularly tense class, Professor ${teacherShortName} announced yet another surprise exam. Groans filled the lecture hall as students exchanged worried glances. The tension was palpable as papers were handed out, and the timed exam began. The surprise exam felt like a cruel twist of fate.`
         ),
-        block.heading("Información común"),
-        block.bullets([
-          "Cada participante debe leer este documento y su paquete de rol.",
-          "Nadie debe conocer la solución antes de que se desarrollen los interrogatorios.",
-          "Los motivos, coartadas y movimientos concretos deben aparecer durante el juicio.",
-          "La hora de la muerte se estimará con datos forenses y la ley de enfriamiento de Newton."
-        ]),
-        block.heading("Roles del juicio"),
-        block.bullets([
-          "Juez: preside la sesión, mantiene el orden y guía la deliberación.",
-          "Fiscalía: construye la acusación mediante pruebas, preguntas y razonamiento.",
-          "Médico forense: presenta la causa de muerte, las mediciones y el cálculo científico.",
-          "Conserje: aporta registros del edificio, condiciones del aula y movimientos observados.",
-          "Jurado popular: escucha, toma notas y decide un veredicto justificado.",
-          `Personas sospechosas: ${labels}.`
-        ]),
-        block.heading("Objetivo de la actividad"),
         block.paragraph(
-          "Reconstruir la cronología del caso a partir de testimonios, datos de temperatura y razonamiento matemático. El juicio debe permitir que la verdad se descubra en clase, no antes."
+          "As the minutes ticked by, students could feel their anxiety mounting. Their mind raced, trying to recall the solutions to the differential equations and the steps for the Laplace transforms. Sweat dripped down their forehead as they scribbled down their answers, hoping against hope that they had gotten it right."
+        ),
+        block.paragraph(
+          "Finally, the exam ended with a sense of relief mixed with dread. Students filed out of the lecture hall, some discussing answers, others silently contemplating their performance. Later that afternoon, news spread like wildfire across campus. A shocking incident had occurred, leaving the university community in disbelief."
+        ),
+        block.paragraph(
+          "Police arrived, cordoning off the area as they began their investigation. As the investigation began, the police could not ignore the whispers among the students."
+        ),
+        block.paragraph(
+          "The investigation into the shocking incident that had rocked the University of Valencia led to the trial of three main suspects."
+        ),
+        block.heading("Resumen policial"),
+        block.paragraph(
+          `On the morning of ${formatEnglishDate(timeline.classEnd)}, Professor ${teacherShortName} was conducting the usual class. The class ended at ${formatEnglishTime(timeline.classEnd)}, but several students remained in or near the building for different lengths of time. It was around ${formatEnglishTime(timeline.discovery)} when the body of Professor ${teacherShortName} was discovered in the classroom by a student, Suspect 3, who immediately alerted the building custodian.`
+        ),
+        block.paragraph(
+          `Upon arrival at ${formatEnglishTime(timeline.firstMeasurement)}, the forensic doctor recorded the body temperature of the deceased as ${formatNumber(temps.firstMeasurement)}°C. An hour later, the temperature was measured again and found to be ${second}°C. Using Newton's Law of Cooling, these measurements were used to determine that the time of death was approximately ${formatEnglishTime(timeline.death)}.`
+        ),
+        block.paragraph(
+          `The suspects include students who had interactions with Professor ${teacherShortName} or were in the building around the estimated time of death. Suspect 1 stayed behind with the professor and left at approximately ${formatEnglishTime(timeline.death)}. Suspect 2 returned later to collect a forgotten jacket near the classroom entrance, but did not go to the front of the room, where the body was partly hidden behind the professor's desk. Suspect 3 returned only for the afternoon class and discovered the body. The forensic evidence, combined with their testimonies, will help to establish the guilt or innocence of each suspect.`
         )
       ]
     );
@@ -502,98 +506,182 @@
       "El juez",
       "Responsabilidades, preguntas y normas de moderación",
       [
-        block.heading("Objetivo"),
+        block.heading("Objetivo del juez"),
         block.paragraph(
           "Presidir el juicio con imparcialidad, garantizar que todas las partes puedan hablar y ayudar al jurado a llegar a un veredicto razonado."
         ),
-        block.heading("Responsabilidades"),
+        block.heading("Dirigir el desarrollo del juicio"),
         block.bullets([
-          "Presentar brevemente el caso al jurado y recordar que nadie debe salirse de su papel.",
+          "Presentar brevemente el caso al jurado, que representa al conjunto de la clase.",
           "Mantener el orden y el respeto durante las declaraciones.",
-          "Gestionar los tiempos para que todos los testigos y sospechosos puedan intervenir.",
-          "Pedir aclaraciones cuando una afirmación no esté apoyada en pruebas.",
-          "Cerrar la fase de pruebas y abrir la deliberación del jurado."
+          "Gestionar el tiempo de intervención de cada participante.",
+          "Moderar las discusiones y asegurar que se escuchen todos los puntos de vista.",
+          "Pedir aclaraciones cuando una afirmación no esté apoyada en pruebas."
         ]),
-        block.heading("Preguntas útiles"),
+        block.heading("Supervisar la presentación de pruebas"),
         block.bullets([
-          "Al forense: qué datos midió, qué modelo usó y qué margen de interpretación tiene.",
-          "A la conserje: quién entró o salió, a qué hora y qué datos del aula conoce.",
-          "A cada sospechoso: dónde estaba al terminar la clase, qué hizo después y si tenía algún conflicto con el profesor.",
-          "A la Fiscalía: qué pruebas son hechos y qué partes son interpretaciones."
+          "Llamar al médico forense para que presente sus conclusiones sobre la causa y la hora estimada de muerte.",
+          "Preguntar a la conserje por sus observaciones, registros y conocimiento de la escena.",
+          "Interrogar a cada sospechoso sobre su coartada, sus movimientos y sus posibles motivos.",
+          "Permitir que la Fiscalía presente sus argumentos y conecte pruebas con cronología.",
+          "Dar oportunidad a las personas sospechosas de responder o refutar las acusaciones."
         ]),
-        block.heading("Cierre"),
-        block.paragraph(
-          "Antes de la deliberación, resume solo los hechos que se hayan presentado en voz alta. No sugieras un culpable: tu papel es ordenar el proceso."
-        )
+        block.heading("Facilitar la deliberación del jurado"),
+        block.bullets([
+          "Resumir los puntos clave del caso y las pruebas presentadas, sin sugerir una persona culpable.",
+          "Recordar al jurado que debe decidir a partir de hechos, testimonios y razonamiento científico.",
+          "Asegurar que el jurado tenga tiempo para discutir y deliberar.",
+          "Recoger los votos del jurado y anunciar el veredicto final."
+        ]),
+        block.heading("Consejos de moderación"),
+        block.bullets([
+          "Mantente neutral e imparcial durante todo el juicio.",
+          "Trata con respeto a todas las personas participantes, incluidas las sospechosas.",
+          "Asegúrate de que se sigan las normas del procedimiento.",
+          "Favorece un diálogo abierto, ordenado y constructivo."
+        ])
       ]
     );
   }
 
-  function prosecutionDoc() {
+  function prosecutionDoc(data) {
+    const { timeline, temps } = data;
+    const [s1, s2, s3] = data.suspects;
+    const second = formatNumber(temps.secondMeasurement);
+
     return makeSpec(
       "prosecution",
       "05_Papel_Fiscalia.pdf",
       "La Fiscalía",
       "Guía para construir la acusación mediante interrogatorios",
       [
-        block.heading("Objetivo"),
+        block.heading("Alegato inicial"),
         block.paragraph(
-          "Demostrar, si las pruebas lo permiten, quién tuvo motivo, oportunidad y presencia compatible con la hora de la muerte. Debes obtener la cronología completa durante el juicio."
+          "Comienza presentando el caso contra las personas sospechosas. Explica que la acusación usará pruebas forenses, razonamiento lógico y testimonios para establecer la hora de la muerte y situar a cada sospechoso en relación con esa cronología."
         ),
-        block.heading("Estrategia"),
-        block.numbered([
-          "Abrir con una explicación breve: el caso se resolverá combinando testimonios y la ley de enfriamiento de Newton.",
-          "Pedir al forense que explique las mediciones y calcule la hora aproximada de la muerte.",
-          "Pedir a la conserje que aporte registros de temperatura, funcionamiento del aula y entradas o salidas.",
-          "Interrogar a cada sospechoso por separado y comparar su versión con los datos ya presentados.",
-          "Cerrar separando hechos demostrados, contradicciones y conclusión."
-        ]),
-        block.heading("Preguntas para preparar"),
+        block.heading("Presentación de la prueba forense"),
         block.bullets([
-          "Forense: cuándo llegó, qué temperaturas midió, qué ecuación usó y qué significa que la muerte fuera instantánea.",
-          "Conserje: qué personas permanecieron o volvieron al edificio, dónde estaban y quién encontró el cuerpo.",
-          "Sospechosos: cuándo salieron, si volvieron, qué relación tenían con el profesor y qué explicación dan de sus movimientos.",
-          "Jurado: qué hechos son compatibles con la hora de muerte y cuáles dejan dudas."
+          "Explica la ley de enfriamiento de Newton y por qué permite estimar la hora de la muerte.",
+          `Presenta las mediciones del forense: ${formatNumber(temps.firstMeasurement)} C a las ${formatEventTime(timeline.firstMeasurement, timeline.classEnd)} y ${second} C a las ${formatEventTime(timeline.secondMeasurement, timeline.classEnd)}.`,
+          `Muestra que esos datos llevan a una hora de muerte aproximada de ${formatEventTime(timeline.death, timeline.classEnd)}.`,
+          "Deja claro que la prueba científica fija una ventana temporal, pero no identifica por sí sola a la persona culpable."
         ]),
-        block.heading("Cuidado con la información"),
+        block.heading("Examen de las cronologías"),
         block.bullets([
-          "No afirmes la culpabilidad antes de que las pruebas aparezcan públicamente.",
-          "No inventes datos que no estén en testimonios o documentos presentados.",
-          "Tu fuerza está en hacer preguntas claras y ordenar las respuestas."
+          `Presenta el testimonio de ${s1.withArticle}: se quedó tras la clase y salió aproximadamente a las ${formatEventTime(timeline.death, timeline.classEnd)}.`,
+          `Presenta el testimonio de ${s2.withArticle}: salió con el grupo, volvió a las ${formatEventTime(timeline.suspect2Return, timeline.classEnd)} para recoger una chaqueta y se marchó hacia las ${formatEventTime(timeline.suspect2Leave, timeline.classEnd)}.`,
+          `Presenta el testimonio de ${s3.withArticle}: regresó para la clase de la tarde y encontró el cuerpo a las ${formatEventTime(timeline.discovery, timeline.classEnd)}.`,
+          "Interroga a cada sospechoso para detectar inconsistencias, motivos o detalles que no encajen con la cronología."
+        ]),
+        block.heading("Conexión entre pruebas y sospechosos"),
+        block.paragraph(
+          "Usa la hora de muerte estimada y los movimientos declarados para argumentar qué presencia era compatible con el momento crítico. Señala comportamientos sospechosos, contradicciones o motivos, pero separa siempre los hechos comprobados de las hipótesis."
+        ),
+        block.heading("Alegato final"),
+        block.bullets([
+          "Resume la hora de muerte calculada mediante el método científico.",
+          "Recuerda qué sospechosos estaban cerca del aula o del edificio en el intervalo crítico.",
+          "Destaca los motivos, contradicciones o comportamientos sospechosos que hayan aparecido durante el juicio.",
+          "Concluye pidiendo al juez y al jurado que valoren conjuntamente la evidencia lógica y científica antes de emitir veredicto."
         ])
       ]
     );
   }
 
-  function forensicReportDoc(data) {
+  function forensicRoleDoc(data) {
     const { timeline, temps } = data;
-    const second = formatNumber(temps.secondMeasurement);
+
+    return makeSpec(
+      "forensicRole",
+      "06_Papel_Medico_forense.pdf",
+      "El médico forense",
+      "Objetivo, hallazgos y responsabilidades durante el juicio",
+      [
+        block.heading("Objetivo"),
+        block.paragraph(
+          "Presentar la evidencia forense y determinar la hora y causa de la muerte mediante análisis científico."
+        ),
+        block.heading("Resumen de hallazgos"),
+        block.numbered([
+          `Llamada inicial: recibiste el aviso a las ${formatEventTime(timeline.forensicCall, timeline.classEnd)} y llegaste a la universidad a las ${formatEventTime(timeline.firstMeasurement, timeline.classEnd)}.`,
+          `Observaciones: el examen preliminar indicó muerte no natural; la temperatura corporal se midió a las ${formatEventTime(timeline.firstMeasurement, timeline.classEnd)} (${formatCelsius(temps.firstMeasurement)}) y a las ${formatEventTime(timeline.secondMeasurement, timeline.classEnd)} (${formatCelsius(temps.secondMeasurement)}).`,
+          "Conclusión: la autopsia reveló homicidio premeditado mediante una inyección que provocó muerte instantánea.",
+          "Recomendaciones: investigar a fondo, analizar la inyección utilizada y construir una cronología detallada de las actividades del profesor.",
+          "Notas adicionales: no se encontraron señales de entrada forzada ni un arma homicida evidente en la escena."
+        ]),
+        block.heading("Responsabilidades del rol"),
+        block.bullets([
+          "Presentar las temperaturas registradas y explicar qué información aportan.",
+          "Discutir la causa de muerte y las implicaciones de que se trate de un homicidio premeditado.",
+          "Usar los datos de temperatura para estimar la hora de muerte.",
+          "Relacionar la estimación temporal con las acciones declaradas por las personas sospechosas.",
+          "Responder preguntas sobre los métodos forenses utilizados y los hallazgos de la autopsia."
+        ]),
+        block.heading("Meta durante el juicio"),
+        block.paragraph(
+          "Ofrecer una explicación clara y científica de la hora y causa de muerte, ayudando a identificar qué testimonios son compatibles con la evidencia forense."
+        )
+      ]
+    );
+  }
+
+  function forensicReportDoc(data) {
+    const { timeline, temps, teacherFullName, teacherShortName } = data;
 
     return makeSpec(
       "forensicReport",
-      "06_Informe_forense.pdf",
-      "El informe forense",
-      "Causa de muerte, observaciones y conclusiones iniciales",
+      "07_Informe_forense.pdf",
+      "Forensic Report",
+      `Professor ${teacherShortName}'s case`,
       [
-        block.heading("Resumen"),
-        block.bullets([
-          `Recibiste la llamada de la conserje a las ${formatEventTime(timeline.forensicCall, timeline.classEnd)}.`,
-          `Llegaste a la universidad a las ${formatEventTime(timeline.firstMeasurement, timeline.classEnd)} y examinaste el cuerpo.`,
-          `La primera temperatura corporal registrada fue ${formatNumber(temps.firstMeasurement)} C.`,
-          `Una hora después, a las ${formatEventTime(timeline.secondMeasurement, timeline.classEnd)}, la temperatura fue ${second} C.`,
-          "El examen preliminar indicó signos de muerte no natural.",
-          "La autopsia reveló una inyección que provocó la muerte instantánea."
-        ]),
-        block.heading("Observaciones"),
-        block.bullets([
-          "No se encontraron señales de entrada forzada.",
-          "No se encontró ningún arma homicida evidente en la escena.",
-          "La sala se mantuvo a temperatura constante según los registros del edificio.",
-          "La causa de muerte es compatible con un homicidio premeditado."
-        ]),
-        block.heading("Conclusión forense"),
-        block.paragraph(
-          `Usando las mediciones de temperatura y la ley de enfriamiento de Newton, la hora estimada de muerte es aproximadamente las ${formatEventTime(timeline.death, timeline.classEnd)}. El informe no identifica a la persona culpable.`
+        block.caseFile(
+          [
+            ["Case", `Murder of Professor ${teacherShortName}`],
+            ["Victim", `Professor ${teacherFullName}`],
+            ["Date", formatEnglishDate(timeline.classEnd)],
+            ["Prepared by", "Forensic Doctor"],
+            ["Status", "Initial forensic findings"]
+          ],
+          [
+            {
+              title: "Summary",
+              body: `On ${formatEnglishDate(timeline.classEnd)}, at ${formatEnglishTime(timeline.forensicCall)}, I received a call from the building custodian informing me that the body of Professor ${teacherShortName} had been found in one of the classrooms. I arrived at the university at ${formatEnglishTime(timeline.firstMeasurement)} and proceeded to examine the body.`
+            },
+            {
+              title: "Observations",
+              bullets: [
+                "A preliminary examination indicated signs of an unnatural death, likely caused by an external agent.",
+                `Upon initial examination, the body temperature of Professor ${teacherShortName} was recorded at ${formatCelsius(temps.firstMeasurement)}. This suggests that some time had elapsed since the professor's death and the discovery of the body.`,
+                `At ${formatEnglishTime(timeline.secondMeasurement)}, the body temperature of Professor ${teacherShortName} was re-measured, recording ${formatCelsius(temps.secondMeasurement)}.`,
+                "A detailed autopsy of the deceased revealed that the cause of death was premeditated homicide.",
+                "The professor's death resulted from an injection that caused instantaneous death."
+              ]
+            },
+            {
+              title: "Conclusion",
+              body: `Based on the forensic evidence, it is concluded that Professor ${teacherShortName} was the victim of a homicide. The cause of death was an injection that caused instantaneous death. Using Newton's Law of Cooling and the two temperature measurements, the time of death is estimated at approximately ${formatEnglishTime(timeline.death)} on ${formatEnglishDate(timeline.death)}.`
+            },
+            {
+              title: "Recommendations",
+              bullets: [
+                "A thorough investigation should be conducted to identify the perpetrator or perpetrators of this crime.",
+                `The injection used to kill Professor ${teacherShortName} should be analyzed to determine its origin and potential suspects.`,
+                `A detailed timeline of Professor ${teacherShortName}'s activities leading up to death should be constructed to identify any potential motives or suspects.`
+              ]
+            },
+            {
+              title: "Additional Notes",
+              bullets: [
+                "No signs of forced entry were found, indicating that the victim may have known the perpetrator.",
+                "A search of the crime scene revealed no obvious murder weapon, suggesting that the injection was administered using a small, concealed device.",
+                "This report is a summary of the initial forensic findings. Further investigation may reveal additional details and conclusions."
+              ]
+            },
+            {
+              title: "Visual Support",
+              body: "Use the shared case dossier and the mathematical handout for the classroom plan, cooling curve, timeline evidence and comparison of testimonies."
+            }
+          ]
         )
       ]
     );
@@ -602,41 +690,67 @@
   function forensicMathDoc(data) {
     const { timeline, temps } = data;
     const firstDelta = temps.firstMeasurement - temps.ambient;
+    const secondDelta = temps.secondMeasurement - temps.ambient;
     const second = formatNumber(temps.secondMeasurement);
     const k = temps.k.toFixed(4);
+    const deathOffset = temps.estimatedHoursBeforeFirst.toFixed(2);
 
     return makeSpec(
       "forensicMath",
-      "07_Informe_forense_matematico.pdf",
-      "La estimación matemática",
-      "Ley de enfriamiento de Newton aplicada al caso",
+      "08_Informe_forense_matematico.pdf",
+      "Case Preparation Handout",
+      "Newton's Law of Cooling applied to the forensic evidence",
       [
-        block.heading("Modelo visual generado"),
-        block.coolingCurve(timeline, temps),
-        block.heading("Ley de enfriamiento de Newton"),
+        block.heading("Newton's Law of Cooling"),
         block.paragraph(
-          "La ley de enfriamiento de Newton establece que la tasa de pérdida de calor es proporcional a la diferencia entre la temperatura del cuerpo y la temperatura ambiente."
+          "Newton's Law of Cooling states that the rate of heat loss of a body is proportional to the difference in temperature between the body and its surroundings."
         ),
-        block.paragraph("dT/dt = -k(T - Ta)"),
+        block.paragraph("dT(t)/dt = -k(T(t) - Ta)"),
         block.bullets([
-          `Temperatura ambiente: Ta = ${formatNumber(temps.ambient)} C.`,
-          `Temperatura normal del profesor en el momento de la muerte: ${formatNumber(temps.bodyAtDeath)} C.`,
-          `Primera medición: ${formatNumber(temps.firstMeasurement)} C a las ${formatEventTime(timeline.firstMeasurement, timeline.classEnd)}.`,
-          `Segunda medición: ${second} C a las ${formatEventTime(timeline.secondMeasurement, timeline.classEnd)}.`
+          "t is the time variable, measured in hours from the first forensic measurement.",
+          "T(t) is the body temperature at time t.",
+          `Ta is the ambient temperature, here Ta = ${formatCelsius(temps.ambient)}.`,
+          "k is the proportionality constant depending on the cooling conditions."
         ]),
-        block.heading("Cálculo"),
+        block.heading("Information Available"),
+        block.numbered([
+          `Temperature at time of death: the professor's normal body temperature is assumed to be ${formatCelsius(temps.bodyAtDeath)}.`,
+          `Room temperature: the classroom temperature was constant at ${formatCelsius(temps.ambient)}.`,
+          `Forensic measurements: at ${formatEnglishTime(timeline.firstMeasurement)}, the body temperature was ${formatCelsius(temps.firstMeasurement)}; one hour later, at ${formatEnglishTime(timeline.secondMeasurement)}, it was ${formatCelsius(temps.secondMeasurement)}.`
+        ]),
+        block.pageBreak(),
+        block.heading("Visual Model"),
         block.paragraph(
-          `Tomando t = 0 en la primera medición, T(0) = ${formatNumber(temps.firstMeasurement)} C. Por tanto, T(t) = 22 + ${formatNumber(firstDelta)} e^(-kt).`
+          "The cooling curve below turns the differential equation into a visual piece of evidence. It connects the two forensic measurements with the estimated time of death."
+        ),
+        block.coolingCurve(timeline, temps),
+        block.heading("Solving the Differential Equation"),
+        block.numbered([
+          "Newton's cooling equation: dT(t)/dt = -k(T(t) - Ta).",
+          `Rewriting with Ta = ${formatNumber(temps.ambient)}: dT(t)/(T(t) - ${formatNumber(temps.ambient)}) = -k dt.`,
+          `Integration gives ln(T(t) - ${formatNumber(temps.ambient)}) = -kt + C.`,
+          `Exponential form: T(t) = ${formatNumber(temps.ambient)} + A e^(-kt).`
+        ]),
+        block.heading("Using the Measurements"),
+        block.paragraph(
+          `At t = 0 (${formatEnglishTime(timeline.firstMeasurement)}), T(0) = ${formatCelsius(temps.firstMeasurement)}, so A = ${formatNumber(temps.firstMeasurement)} - ${formatNumber(temps.ambient)} = ${formatNumber(firstDelta)}.`
         ),
         block.paragraph(
-          `Con la segunda medición: ${second} = 22 + ${formatNumber(firstDelta)} e^(-k), de donde k = ${k} h^-1.`
+          `Therefore, T(t) = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-kt).`
         ),
         block.paragraph(
-          `Al imponer T = ${formatNumber(temps.bodyAtDeath)} C, se obtiene t = -${temps.estimatedHoursBeforeFirst.toFixed(2)} h. La muerte ocurrió unas 2 h 30 min antes de la primera medición.`
+          `At t = 1 (${formatEnglishTime(timeline.secondMeasurement)}), ${second} = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-k), so e^(-k) = ${formatNumber(secondDelta)} / ${formatNumber(firstDelta)} and k = ${k} h^-1.`
         ),
-        block.heading("Resultado"),
+        block.heading("Determining Time of Death"),
         block.paragraph(
-          `Hora estimada de la muerte: ${formatEventTime(timeline.death, timeline.classEnd)}.`
+          `At the time of death, the body temperature is assumed to be ${formatCelsius(temps.bodyAtDeath)}. Solving ${formatNumber(temps.bodyAtDeath)} = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-${k}t) gives t = -${deathOffset} hours relative to the first forensic measurement.`
+        ),
+        block.paragraph(
+          `The time of death is therefore approximately ${deathOffset} hours before ${formatEnglishTime(timeline.firstMeasurement)}, which gives ${formatEnglishTime(timeline.death)}.`
+        ),
+        block.heading("Summary"),
+        block.paragraph(
+          `Time of death: approximately ${formatEnglishTime(timeline.death)} on ${formatEnglishDate(timeline.death)}.`
         )
       ]
     );
@@ -649,7 +763,7 @@
 
     return makeSpec(
       "janitor",
-      "08_Registro_Conserje.pdf",
+      "09_Registro_Conserje.pdf",
       "La conserje",
       "Registros del edificio y observaciones",
       [
@@ -658,14 +772,26 @@
         }),
         block.heading("Objetivo"),
         block.paragraph(
-          "Aportar información fiable sobre el aula, los registros de temperatura y los movimientos que observaste en el edificio. No debes especular sobre la culpabilidad."
+          "Aportar información fiable sobre el aula, los registros del edificio, la incidencia sanitaria previa a la clase y los movimientos que observaste. No debes especular sobre la culpabilidad."
         ),
-        block.heading("Datos del aula"),
+        block.heading("Guardiana del edificio"),
+        block.paragraph(
+          "Llevas años trabajando en la facultad y conoces los pasillos, aulas, accesos y rutinas del edificio. Parte de tu trabajo consiste en abrir y cerrar aulas, controlar incidencias, custodiar objetos perdidos y registrar entradas fuera del horario habitual."
+        ),
+        block.heading("Una rutina interrumpida"),
+        block.paragraph(
+          `El ${formatDate(timeline.classEnd)}, ${s3.withArticle} regresó para una clase de la tarde y encontró el cuerpo del profesor ${teacherShortName} parcialmente oculto detrás de la mesa del profesor a las ${formatEventTime(timeline.discovery, timeline.classEnd)}. Te avisó inmediatamente y llamaste a las autoridades. El médico forense recibió el aviso a las ${formatEventTime(timeline.forensicCall, timeline.classEnd)} y llegó a la facultad a las ${formatEventTime(timeline.firstMeasurement, timeline.classEnd)}.`
+        ),
+        block.heading("Por qué existe una temperatura previa"),
+        block.paragraph(
+          `Antes de comenzar la clase, el profesor ${teacherShortName} pasó por conserjería para recoger unas llaves y comentar que se sentía acalorado después de subir material al aula. Siguiendo el protocolo básico de incidencias del edificio, le ofreciste agua y comprobaste con el termómetro de primeros auxilios que no tenía fiebre. Registraste una temperatura normal de ${formatCelsius(temps.bodyAtDeath)} a las ${formatEventTime(timeline.normalTemp, timeline.classEnd)}.`
+        ),
+        block.heading("Temperaturas y aula"),
         block.bullets([
-          `A las ${formatEventTime(timeline.normalTemp, timeline.classEnd)}, el profesor ${teacherShortName} tenía una temperatura normal de ${formatNumber(temps.bodyAtDeath)} C.`,
-          `El sistema de climatización del aula funcionaba correctamente y mantenía la sala a ${formatNumber(temps.ambient)} C.`,
-          `${s3.withArticleCap} encontró el cuerpo a las ${formatEventTime(timeline.discovery, timeline.classEnd)} y te avisó inmediatamente.`,
-          `Llamaste a las autoridades y al médico forense, que recibió el aviso a las ${formatEventTime(timeline.forensicCall, timeline.classEnd)}.`
+          `La medición previa indica que el profesor ${teacherShortName} no tenía fiebre antes de la clase.`,
+          `El sistema de climatización del aula funcionaba correctamente y mantenía la sala a ${formatCelsius(temps.ambient)}.`,
+          "No viste señales de manipulación del termostato ni avisos de avería esa mañana.",
+          "Este dato ayuda a interpretar el enfriamiento del cuerpo sin atribuirlo a una fiebre previa o a una temperatura anómala del aula."
         ]),
         block.heading("Registro de movimientos"),
         block.bullets([
@@ -677,7 +803,7 @@
         block.bullets([
           "Responde con calma y separa lo que viste de lo que deduces.",
           "Si te preguntan por el culpable, explica que tus registros solo establecen movimientos.",
-          "Insiste en que la información de temperatura de sala procede del sistema de climatización."
+          "Insiste en que la temperatura corporal previa procede de una incidencia menor registrada antes de clase, y que la temperatura de sala procede del sistema de climatización."
         ])
       ]
     );
@@ -686,31 +812,46 @@
   function juryDoc() {
     return makeSpec(
       "jury",
-      "09_Papel_Jurado_popular.pdf",
+      "10_Papel_Jurado_popular.pdf",
       "El jurado popular",
       "Instrucciones para escuchar y deliberar",
       [
+        block.paragraph(
+          "Este documento resume tus responsabilidades y recursos como miembro del jurado popular en el juicio por el asesinato del profesor."
+        ),
         block.heading("Objetivo"),
         block.paragraph(
-          "Escuchar el juicio con atención, tomar notas y decidir si las pruebas muestran la culpabilidad de alguna persona sospechosa más allá de una duda razonable."
+          "Escuchar con atención los argumentos y pruebas presentados durante el juicio y trabajar con el resto del jurado para alcanzar un veredicto justo y justificado."
         ),
-        block.heading("Durante el juicio"),
+        block.heading("Responsabilidades"),
+        block.numbered([
+          "Escucha atentamente todos los testimonios: médico forense, conserje, sospechosos y Fiscalía.",
+          "Toma notas sobre hechos importantes, contradicciones y pruebas que puedan influir en tu decisión.",
+          "Permanece en silencio e imparcial durante el juicio: no interrumpas ni muestres favoritismo.",
+          "Evalúa la credibilidad de cada testigo y la solidez de las pruebas presentadas.",
+          "Compara coartadas, motivos, cronologías, evidencias físicas y contradicciones.",
+          "Participa en la deliberación con respeto, compartiendo tu interpretación y escuchando la de los demás.",
+          "Vota honestamente según tu comprensión del caso y las instrucciones del juez."
+        ]),
+        block.heading("Recursos"),
         block.bullets([
-          "No intervengas durante los interrogatorios salvo que el juez lo permita.",
-          "Anota hechos, horas, contradicciones y dudas.",
-          "Distingue entre pruebas presentadas y suposiciones.",
+          "Todo testimonio presentado durante el juicio.",
+          "Las pruebas forenses explicadas por el médico forense.",
+          "Los registros y observaciones de la conserje.",
+          "Las preguntas y argumentos de la Fiscalía.",
+          "Las respuestas, coartadas y posibles contradicciones de las personas sospechosas."
+        ]),
+        block.heading("Consejos"),
+        block.bullets([
+          "Mantente imparcial: no dejes que opiniones personales influyan en tu juicio.",
+          "Céntrate en hechos, no en emociones ni suposiciones.",
+          "Sé respetuoso durante la deliberación, incluso si otras personas no están de acuerdo contigo.",
+          "Pregúntate qué explicación tiene más sentido a partir de la evidencia.",
           "Recuerda que la carga de la prueba recae en la Fiscalía."
         ]),
-        block.heading("Pistas que debes observar"),
-        block.bullets([
-          "Qué hora de muerte estima el forense y cómo llega a ella.",
-          "Qué registros aporta la conserje sobre entradas, salidas y condiciones del aula.",
-          "Qué explica cada sospechoso sobre su presencia, su relación con el profesor y su coartada.",
-          "Qué versiones encajan con la prueba científica y cuáles dejan huecos."
-        ]),
-        block.heading("Deliberación"),
+        block.heading("Importante"),
         block.paragraph(
-          "Cuando el juez abra la deliberación, comparad las notas, acordad qué hechos están probados y votad el veredicto. El veredicto debe poder explicarse con pruebas presentadas durante el juicio."
+          "Tu papel es esencial para que se haga justicia. Tómate la responsabilidad en serio, piensa de forma crítica y contribuye cuidadosamente a la decisión del grupo."
         )
       ]
     );
@@ -723,28 +864,45 @@
 
     return makeSpec(
       "suspect1",
-      `10_${s1.fileStem}.pdf`,
+      `11_${s1.fileStem}.pdf`,
       `${s1.label} - Culpable de asesinato`,
       "Papel privado de la primera persona sospechosa",
       [
-        block.heading("Hechos privados"),
+        block.heading("Antecedentes"),
         block.bullets([
           `Eres ${s1.un} estudiante ${s1.applied} de la clase de ${className} del profesor ${teacherFullName}.`,
-          `Te enfadaste por el examen sorpresa y te quedaste ${s1.alone} con el profesor cuando la clase terminó a las ${formatTime(timeline.classEnd)}.`,
-          `Durante una discusión acalorada, mataste al profesor con una inyección oculta. La muerte fue instantánea, aproximadamente a las ${formatEventTime(timeline.death, timeline.classEnd)}.`,
-          `Saliste del edificio justo después, a las ${formatEventTime(timeline.death, timeline.classEnd)}.`,
+          "Siempre has sido una persona diligente y con buen rendimiento académico.",
+          "Te molestó profundamente que el profesor anunciara otro examen sorpresa."
+        ]),
+        block.heading("Hechos privados"),
+        block.bullets([
+          `La clase terminó a las ${formatTime(timeline.classEnd)} y te quedaste ${s1.alone} con el profesor durante unos diez minutos.`,
+          `Durante una discusión acalorada sobre el examen sorpresa, mataste al profesor con una inyección oculta. La muerte fue instantánea, aproximadamente a las ${formatEventTime(timeline.death, timeline.classEnd)}.`,
+          `Saliste del edificio justo después, aproximadamente a las ${formatEventTime(timeline.death, timeline.classEnd)}.`,
           "Después fuiste a casa a comer con tu familia."
         ]),
         block.heading("Versión pública"),
         block.bullets([
-          "Reconoce que hubo un desacuerdo por el examen, pero afirma que terminó sin más conflicto.",
+          "Reconoce que hubo un desacuerdo por el examen, pero afirma que aceptaste la decisión a regañadientes y sin más conflicto.",
           "Di que cuando saliste del aula el profesor seguía vivo y parecía encontrarse bien.",
-          `Insiste en que disfrutabas ${className} y que una discusión académica no es motivo para matar a nadie.`,
-          "Si te presionan, cuestiona la precisión de los cálculos de temperatura y sugiere que el sistema del aula podría no haber sido constante."
+          `Insiste en que disfrutabas ${className} y que una discusión académica no es motivo para matar a nadie.`
+        ]),
+        block.heading("Argumentos de defensa"),
+        block.numbered([
+          "Presencia en el aula: admite que te quedaste después de clase, pero sostiene que el profesor seguía vivo cuando te marchaste.",
+          "Ausencia de motivo suficiente: presenta el desacuerdo como una discusión académica, no como una razón para cometer un asesinato.",
+          "Dudas sobre el cálculo forense: cuestiona la precisión de la estimación de la hora de muerte y su dependencia de una temperatura ambiente constante.",
+          "Sistema del aula: sugiere que la climatización pudo cambiar después de clase o que cualquier variación afectaría a los cálculos de enfriamiento."
+        ]),
+        block.heading("Conclusión"),
+        block.bullets([
+          "Afirma tu inocencia y desafía las conclusiones de la Fiscalía.",
+          "Repite que los cálculos de temperatura no bastan por sí solos para acusarte.",
+          "No reveles tu culpabilidad salvo que el desarrollo del juicio te acorrale de forma inevitable."
         ]),
         block.heading("Objetivo"),
         block.paragraph(
-          "Defiende tu inocencia con convicción. No reveles que eres culpable salvo que el desarrollo del juicio te acorrale de forma inevitable."
+          "Convencer al juez y al jurado de que eres inocente y de que los cálculos de temperatura son insuficientes para atribuirte el crimen."
         )
       ]
     );
@@ -757,25 +915,36 @@
 
     return makeSpec(
       "suspect2",
-      `11_${s2.fileStem}.pdf`,
+      `12_${s2.fileStem}.pdf`,
       `${s2.label} - Inocente`,
       "Papel privado de la segunda persona sospechosa",
       [
-        block.heading("Hechos"),
+        block.heading("Antecedentes"),
         block.bullets([
           `Eres ${s2.un} estudiante ${s2.attentive} y puntual de la clase de ${className} del profesor ${teacherShortName}.`,
-          `Saliste del aula con la mayoría de la clase a las ${formatTime(timeline.classEnd)}.`,
+          "Normalmente tienes buena relación con tus compañeros y con el profesor.",
+          "No tenías ningún conflicto serio con el profesor ni motivo para hacerle daño."
+        ]),
+        block.heading("Hechos"),
+        block.bullets([
+          `Cuando la clase terminó a las ${formatTime(timeline.classEnd)}, saliste del aula con la mayoría del grupo.`,
           "Al llegar a la estación de metro, te diste cuenta de que habías olvidado una chaqueta y volviste al edificio.",
-          `Entraste de nuevo sobre las ${formatEventTime(timeline.suspect2Return, timeline.classEnd)}, recogiste la chaqueta cerca de la entrada del aula y saliste unos minutos después, hacia las ${formatEventTime(timeline.suspect2Leave, timeline.classEnd)}.`,
-          "No viste al profesor porque no te acercaste a la mesa delantera ni a la zona donde quedó oculto el cuerpo.",
+          `Entraste de nuevo sobre las ${formatEventTime(timeline.suspect2Return, timeline.classEnd)}, fuiste solo hasta la entrada del aula para recoger la chaqueta y saliste unos minutos después, hacia las ${formatEventTime(timeline.suspect2Leave, timeline.classEnd)}.`,
+          "No viste al profesor porque permaneciste cerca de la entrada; desde allí no se veía la parte delantera del aula ni la zona detrás de la mesa.",
           "Después fuiste a casa a comer con tu familia."
         ]),
-        block.heading("Defensa"),
+        block.heading("Argumentos de defensa"),
+        block.numbered([
+          "Salida con el grupo: subraya que abandonaste el aula con el resto de estudiantes al terminar la clase.",
+          "Regreso breve y limitado: explica que volviste solo por la chaqueta y no avanzaste hacia la mesa del profesor.",
+          "Desconocimiento de la muerte: recalca que no sabías nada de lo ocurrido hasta que se informó más tarde.",
+          `Falta de motivo: insiste en que disfrutabas ${className} y que no tenías razones para dañar al profesor.`
+        ]),
+        block.heading("Conclusión"),
         block.bullets([
-          "Subraya que saliste inicialmente con el resto del grupo.",
-          "Explica con claridad que volviste solo por la chaqueta.",
-          "Aclara que permaneciste cerca de la entrada y que desde allí no se veía la zona del cuerpo.",
-          "Insiste en que no tenías motivo para hacer daño al profesor y que no sabías nada de su muerte."
+          "Afirma tu inocencia.",
+          "Enfatiza que tu comportamiento encaja con alguien que olvidó un objeto y volvió brevemente a recogerlo.",
+          "Señala que no tenías motivo ni oportunidad real para cometer el crimen."
         ]),
         block.heading("Objetivo"),
         block.paragraph(
@@ -792,28 +961,41 @@
 
     return makeSpec(
       "suspect3",
-      `12_${s3.fileStem}.pdf`,
+      `13_${s3.fileStem}.pdf`,
       `${s3.label} - Inocente`,
       "Papel privado de la tercera persona sospechosa",
       [
-        block.heading("Hechos"),
+        block.heading("Antecedentes"),
         block.bullets([
           `Eres ${s3.un} estudiante ${s3.responsible} que asiste regularmente a las clases de ${className} de la mañana y de la tarde.`,
-          `Saliste con el resto del grupo cuando la clase terminó a las ${formatTime(timeline.classEnd)}.`,
+          "Tienes buena relación con el profesor y con el resto del grupo.",
+          "No tenías ningún motivo para hacer daño al profesor."
+        ]),
+        block.heading("Hechos"),
+        block.bullets([
+          `Cuando la clase terminó a las ${formatTime(timeline.classEnd)}, saliste del aula con el resto de estudiantes.`,
           "Fuiste a casa y comiste con tu familia.",
-          `Regresaste para una clase de la tarde prevista a las ${formatEventTime(timeline.afternoonClass, timeline.classEnd)}.`,
+          `Regresaste a la facultad para una clase de la tarde prevista a las ${formatEventTime(timeline.afternoonClass, timeline.classEnd)}.`,
           `Llegaste unos minutos antes, a las ${formatEventTime(timeline.discovery, timeline.classEnd)}, y encontraste el cuerpo del profesor en el aula.`,
           "Avisaste inmediatamente a la conserje, que contactó con las autoridades."
         ]),
-        block.heading("Defensa"),
+        block.heading("Argumentos de defensa"),
+        block.numbered([
+          "Salida con el grupo: recalca que saliste con el resto de estudiantes cuando acabó la clase.",
+          "Descubrimiento del cuerpo: explica que al llegar para la clase de la tarde el profesor ya estaba muerto.",
+          "Acción inmediata: destaca que actuaste de forma responsable avisando a la conserje en cuanto encontraste el cuerpo.",
+          `Falta de motivo: insiste en que disfrutabas ${className} y que no tenías razones para dañar al profesor.`
+        ]),
+        block.heading("Conclusión"),
         block.bullets([
-          "Subraya que actuaste de forma responsable al avisar de inmediato.",
-          "Explica que el cuerpo ya estaba frío cuando llegaste.",
-          "Insiste en que no tenías motivo para hacer daño al profesor.",
-          "Tu cronología debe mostrar que no estabas en el aula en el intervalo crítico."
+          "Afirma tu inocencia.",
+          "Subraya que tu cronología indica que no estabas presente en el momento de la muerte.",
+          "Destaca tu comportamiento responsable al informar inmediatamente del hallazgo."
         ]),
         block.heading("Objetivo"),
-        block.paragraph("Mostrar que fuiste la persona que descubrió el cuerpo, no quien provocó la muerte.")
+        block.paragraph(
+          "Convencer al juez y al jurado de tu inocencia presentando con claridad tus acciones, tu cronología y tu falta de motivo."
+        )
       ]
     );
   }
@@ -855,12 +1037,13 @@
         ),
         block.heading("Reparto de información"),
         block.bullets([
-          "La historia del caso y el plano del aula: se incluyen en todos los paquetes por rol.",
+          "La historia del caso: se incluye en todos los paquetes por rol.",
           "Guía de desarrollo del juicio: juez, Fiscalía, médico forense y conserje.",
+          "Plano: juez, Fiscalía, médico forense y conserje.",
           "Tablero de pruebas: juez, Fiscalía, conserje y docente.",
-          "Informe forense e informe matemático: médico forense; el informe matemático también ayuda a la Fiscalía.",
-          `${s1.label}: conoce su culpabilidad y su versión pública.`,
-          `${s2.label} y ${s3.label}: conocen solo sus propias coartadas.`
+          "Informe forense e informe matemático: médico forense y Fiscalía.",
+          `${s1.withArticleCap}: conoce su culpabilidad y su versión pública.`,
+          `${s2.withArticleCap} y ${s3.withArticle}: conocen solo sus propias coartadas.`
         ])
       ]
     );
@@ -1032,9 +1215,74 @@
       return;
     }
 
+    if (item.type === "caseFile") {
+      addCaseFileBlock(doc, page, cursor, item);
+      return;
+    }
+
     if (item.type === "spacer") {
       cursor.y += item.height;
     }
+  }
+
+  function addCaseFileBlock(doc, page, cursor, item) {
+    const width = page.width - page.marginX * 2;
+    ensureSpace(doc, page, cursor, 94);
+    doc.setFillColor(247, 245, 239);
+    doc.setDrawColor(32, 42, 51);
+    doc.roundedRect(page.marginX, cursor.y, width, 82, 4, 4, "FD");
+    doc.setFillColor(32, 42, 51);
+    doc.rect(page.marginX, cursor.y, width, 24, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.setTextColor(255, 255, 255);
+    doc.text("FORENSIC CASE FILE", page.marginX + 12, cursor.y + 16);
+    cursor.y += 38;
+
+    const colWidth = width / 2;
+    item.meta.forEach(([label, value], index) => {
+      const x = page.marginX + (index % 2) * colWidth + 12;
+      const y = cursor.y + Math.floor(index / 2) * 18;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(8);
+      doc.setTextColor(90, 101, 112);
+      doc.text(String(label).toUpperCase(), x, y);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9.5);
+      doc.setTextColor(32, 42, 51);
+      doc.text(String(value), x + 70, y);
+    });
+    cursor.y += 58;
+
+    item.sections.forEach((section) => {
+      const bodyLines = section.body ? doc.splitTextToSize(section.body, width - 28) : [];
+      const bulletLines = [];
+      (section.bullets || []).forEach((bullet) => {
+        bulletLines.push(...doc.splitTextToSize(`- ${bullet}`, width - 34));
+      });
+      const sectionHeight = 34 + bodyLines.length * 13 + bulletLines.length * 13 + 12;
+      ensureSpace(doc, page, cursor, sectionHeight);
+      doc.setFillColor(255, 255, 255);
+      doc.setDrawColor(216, 222, 228);
+      doc.roundedRect(page.marginX, cursor.y, width, sectionHeight - 8, 4, 4, "FD");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.setTextColor(32, 42, 51);
+      doc.text(section.title, page.marginX + 12, cursor.y + 18);
+      let y = cursor.y + 38;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9.5);
+      doc.setTextColor(32, 42, 51);
+      bodyLines.forEach((line) => {
+        doc.text(line, page.marginX + 14, y);
+        y += 13;
+      });
+      bulletLines.forEach((line) => {
+        doc.text(line, page.marginX + 18, y);
+        y += 13;
+      });
+      cursor.y += sectionHeight;
+    });
   }
 
   function addWrappedText(doc, page, cursor, text, options = {}) {
@@ -1636,6 +1884,23 @@
     }).format(date);
   }
 
+  function formatEnglishDate(date) {
+    return new Intl.DateTimeFormat("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric"
+    }).format(date);
+  }
+
+  function formatEnglishTime(date) {
+    return new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true
+    }).format(date);
+  }
+
   function formatEventTime(date, baseDate) {
     if (sameCalendarDay(date, baseDate)) {
       return formatTime(date);
@@ -1645,6 +1910,10 @@
 
   function formatNumber(value) {
     return Number(value).toFixed(2);
+  }
+
+  function formatCelsius(value) {
+    return `${formatNumber(value)}°C`;
   }
 
   function normalizeName(value) {
