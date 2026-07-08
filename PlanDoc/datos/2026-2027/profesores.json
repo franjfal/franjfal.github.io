@@ -363,7 +363,7 @@
     "apellidos": "Sustituto - 4",
     "nombreCompleto": "Profesor Sustituto - 4",
     "creditosObjetivo": 120,
-    "docenciaAjustable": true,
+    "docenciaAjustable": false,
     "reducciones": []
   },
   {
