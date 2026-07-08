@@ -491,38 +491,22 @@ function renderSimulationTree(state) {
                                 <small>${subgrupos.length} subgrupos pendientes · ${subgrupos.reduce((sum, item) => sum + item.pending, 0).toFixed(2)} horas</small>
                             </span>
                         </div>
+                        <div class="calendar-subgroup-list simulation-subgroup-list">
+                            ${subgrupos.map(({ subgrupo, pending }) => `
+                                <div class="calendar-subgroup-row simulation-subgroup-row readonly">
+                                    <span>
+                                        <strong>${escapeHtml(subgrupo.nombre || subgrupo.id || "Subgrupo")}</strong>
+                                        <small>${escapeHtml(subgrupo.id || "")} · ${pending} horas pendientes · ${sesionesSubgrupo(subgrupo).length} eventos</small>
+                                    </span>
+                                </div>
+                            `).join("")}
+                        </div>
                     </div>
                 `;
     }).join("")}
             </div>
         </section>
     `).join("");
-}
-
-function renderSimulationSelectorModal(state) {
-    const totalSelected = new Set(state.publicSimulatedSubgroups || []).size;
-    return `
-        <div class="modal-backdrop" id="public-sim-selector-backdrop">
-            <section class="card modal professor-modal public-simulation-selector-modal" role="dialog" aria-modal="true" aria-labelledby="public-sim-selector-title">
-                <div class="modal-header">
-                    <div>
-                        <h2 id="public-sim-selector-title">Seleccionar asignaturas para la simulacion</h2>
-                        <p class="status">Marca las asignaturas pendientes que quieres sumar al calendario de este profesor. Ahora hay ${totalSelected} grupos simulados seleccionados.</p>
-                    </div>
-                    <button class="secondary mini" id="close-public-sim-selector-btn" type="button">Cerrar</button>
-                </div>
-                <section class="form-section public-simulation-panel public-simulation-panel-modal">
-                    <div class="form-section-title">
-                        <span class="section-kicker">Simulacion</span>
-                        <h3>Asignaturas disponibles</h3>
-                    </div>
-                    <div class="calendar-event-list">
-                        ${renderSimulationTree(state)}
-                    </div>
-                </section>
-            </section>
-        </div>
-    `;
 }
 
 function renderProfessorCalendarModal(state) {
@@ -571,19 +555,31 @@ function renderProfessorCalendarModal(state) {
                     </div>
                     <div class="public-calendar-action-buttons">
                         <button class="secondary" id="public-prof-sim-toggle" type="button">${state.publicSimulationMode ? "Cerrar simulacion" : "Simular docencia"}</button>
-                        ${state.publicSimulationMode ? `<button class="secondary" id="open-public-sim-selector-btn" type="button">Seleccionar asignaturas</button>` : ""}
                         <button class="secondary" id="download-prof-calendar-pdf" type="button">Descargar PDF (${escapeHtml(viewLabel)})</button>
                         <button class="secondary" id="download-prof-calendar-ics" type="button">Descargar ICS</button>
                     </div>
                 </div>
 
                 <div class="public-calendar-workspace">
+                    ${state.publicSimulationMode ? `
+                        <section class="form-section public-simulation-panel public-simulation-panel-inline">
+                            <div class="form-section-title">
+                                <div>
+                                    <span class="section-kicker">Simulacion</span>
+                                    <h3>Asignaturas disponibles</h3>
+                                </div>
+                                <small class="muted-line">Selecciona asignaturas completas; debajo se muestran sus subgrupos pendientes.</small>
+                            </div>
+                            <div class="calendar-event-list">
+                                ${renderSimulationTree(state)}
+                            </div>
+                        </section>
+                    ` : ""}
                     <div class="calendar-shell printable-calendar">
                         <div id="public-prof-calendar"></div>
                     </div>
                 </div>
             </section>
-            ${state.publicSimulationMode && state.publicSimulationSelectorOpen ? renderSimulationSelectorModal(state) : ""}
         </div>
     `;
 }
@@ -1576,37 +1572,11 @@ export function bindPublicEvents({ state, render }) {
     if (simToggle) {
         simToggle.onclick = () => {
             state.publicSimulationMode = !state.publicSimulationMode;
-            if (state.publicSimulationMode) {
-                state.publicSimulationSelectorOpen = true;
-            } else {
-                state.publicSimulationSelectorOpen = false;
+            if (!state.publicSimulationMode) {
                 state.publicSimulatedSubgroups = [];
                 state.publicSimulationExpandedAsignaturas = {};
             }
             render();
-        };
-    }
-    const openSimSelectorBtn = document.getElementById("open-public-sim-selector-btn");
-    if (openSimSelectorBtn) {
-        openSimSelectorBtn.onclick = () => {
-            state.publicSimulationSelectorOpen = true;
-            render();
-        };
-    }
-    const closeSimSelectorBtn = document.getElementById("close-public-sim-selector-btn");
-    if (closeSimSelectorBtn) {
-        closeSimSelectorBtn.onclick = () => {
-            state.publicSimulationSelectorOpen = false;
-            render();
-        };
-    }
-    const simSelectorBackdrop = document.getElementById("public-sim-selector-backdrop");
-    if (simSelectorBackdrop) {
-        simSelectorBackdrop.onclick = (e) => {
-            if (e.target === simSelectorBackdrop) {
-                state.publicSimulationSelectorOpen = false;
-                render();
-            }
         };
     }
     document.querySelectorAll("[data-public-sim-asignatura]").forEach((input) => {

@@ -506,7 +506,7 @@ button.mini {
     background: #f8fafc;
 }
 
-.public-simulation-panel-modal {
+.public-simulation-panel-inline {
     margin: 0;
 }
 
@@ -588,6 +588,13 @@ button.mini {
     padding-left: 18px;
 }
 
+.simulation-subgroup-row.readonly {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 8px 10px 8px 28px;
+    border-top: 1px solid var(--line);
+    background: #fff;
+}
+
 .simulation-subject-row>span,
 .simulation-subgroup-row>span {
     min-width: 0;
@@ -602,6 +609,11 @@ button.mini {
     overflow-wrap: break-word;
     word-break: normal;
     hyphens: none;
+}
+
+.simulation-subgroup-list {
+    gap: 0;
+    background: #fff;
 }
 
 .printable-calendar {
@@ -1651,9 +1663,6 @@ pre {
     overflow: auto;
 }
 
-.public-simulation-selector-modal {
-    width: min(980px, calc(100vw - 40px));
-}
 
 .loading-modal-backdrop {
     position: fixed;
