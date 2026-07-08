@@ -22,6 +22,7 @@ const TIPOS_SUBGRUPO = [
 
 const UV_TARGET_CREATE = "__create__";
 const UV_TARGET_SKIP = "__skip__";
+const HOURS_PER_CREDIT = 10;
 
 const DAY_INDEX = {
     domingo: 0,
@@ -306,6 +307,309 @@ function totalCreditosAsignatura(asignatura) {
 
 function totalCreditosAsignaturas(asignaturas) {
     return Number(asignaturas.reduce((sum, a) => sum + totalCreditosAsignatura(a), 0).toFixed(2));
+}
+
+function compareText(a, b) {
+    return String(a || "").localeCompare(String(b || ""), "es", { numeric: true, sensitivity: "base" });
+}
+
+function formatCredits(value) {
+    return Number(toPositiveNumber(value, 0).toFixed(2));
+}
+
+function hoursToCredits(value) {
+    return formatCredits(toPositiveNumber(value, 0) / HOURS_PER_CREDIT);
+}
+
+function subjectSortValue(asignatura) {
+    return asignatura.nombre || asignatura.id || "";
+}
+
+function exportSubgrupos(asignatura) {
+    return [...(asignatura.subgrupos || [])]
+        .sort((a, b) => compareText(subgrupoSortValue(a, "nombre"), subgrupoSortValue(b, "nombre")))
+        .map((subgrupo) => ({
+            subgrupo,
+            credits: toPositiveNumber(subgrupo.creditos, 0),
+        }));
+}
+
+function specialWorkLabel(trabajo) {
+    const labels = {
+        tfg: "TFG",
+        tfm: "TFM",
+        practicas: "Practicas de empresa",
+    };
+    return [labels[trabajo.tipo] || trabajo.tipo || "Trabajo", trabajo.titulo || trabajo.id].filter(Boolean).join(" · ");
+}
+
+function exportSpecialWorks(state) {
+    return (state.trabajos || [])
+        .filter((trabajo) => ["tfg", "tfm", "practicas"].includes(trabajo.tipo))
+        .map((trabajo) => {
+            const assignedWorks = Object.values(trabajo.asignaciones || {}).reduce((sum, count) => sum + toPositiveNumber(count, 0), 0);
+            const totalWorks = toPositiveNumber(trabajo.totalTrabajos, 0) || assignedWorks;
+            const hoursPerWork = toPositiveNumber(trabajo.peso, 0);
+            return {
+                label: specialWorkLabel(trabajo),
+                hoursPerWork,
+                totalWorks,
+                totalHours: formatCredits(totalWorks * hoursPerWork),
+            };
+        })
+        .sort((a, b) => compareText(a.label, b.label));
+}
+
+function exportCategories(state) {
+    return [...state.categoriasAsignaturas]
+        .sort((a, b) => compareText(a.nombre || a.id, b.nombre || b.id))
+        .map((categoria) => {
+            const asignaturas = state.asignaturas
+                .filter((asignatura) => asignatura.categoriaId === categoria.id)
+                .sort((a, b) => compareText(subjectSortValue(a), subjectSortValue(b)));
+            const total = formatCredits(asignaturas.reduce((sum, asignatura) => sum + totalCreditosAsignatura(asignatura), 0));
+            return { categoria, asignaturas, total };
+        })
+        .filter((group) => group.asignaturas.length > 0);
+}
+
+function openPrintableHtml(html) {
+    const popup = window.open("", "_blank");
+    if (!popup) {
+        window.print();
+        return;
+    }
+    popup.document.open();
+    popup.document.write(html);
+    popup.document.close();
+    popup.focus();
+    setTimeout(() => popup.print(), 400);
+}
+
+function printableGradosPdfHtml(state, mode = "expanded") {
+    const categories = exportCategories(state);
+    const specialWorks = exportSpecialWorks(state);
+    const subjectCredits = formatCredits(categories.reduce((sum, group) => sum + group.total, 0));
+    const extraCredits = formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.totalHours, 0));
+    const totalCredits = formatCredits(subjectCredits + extraCredits);
+    const title = `Grados y extras · ${state.selectedCourse || "curso"}`;
+    const compactMode = mode === "compact";
+
+    const renderSubject = compactMode ? (asignatura) => {
+        const subgrupos = exportSubgrupos(asignatura);
+        const total = totalCreditosAsignatura(asignatura);
+        return `
+            <article class="grade-subject grade-subject-compact">
+                <header>
+                    <div>
+                        <h2>${escapeHtml(asignatura.nombre || asignatura.id)}</h2>
+                        <span>${escapeHtml(asignatura.codigoReferencia || asignatura.id || "")}</span>
+                    </div>
+                    <strong>${total} h</strong>
+                </header>
+                ${subgrupos.length === 0 ? `
+                    <p class="grade-empty">Sin subgrupos definidos.</p>
+                ` : `
+                    <p class="grade-subgroup-summary">
+                        ${subgrupos.map(({ subgrupo, credits }) => `
+                            <span class="grade-subgroup-pill">
+                                <strong>${escapeHtml(subgrupo.nombre || subgrupo.id)}</strong>
+                                <span>${escapeHtml(subgrupo.id)} · ${credits} h</span>
+                            </span>
+                        `).join("")}
+                    </p>
+                `}
+            </article>
+        `;
+    } : (asignatura) => {
+        const subgrupos = exportSubgrupos(asignatura);
+        const total = totalCreditosAsignatura(asignatura);
+        return `
+            <article class="grade-subject grade-subject-expanded">
+                <header>
+                    <div>
+                        <h2>${escapeHtml(asignatura.nombre || asignatura.id)}</h2>
+                        <span>${escapeHtml(asignatura.codigoReferencia || asignatura.id || "")}</span>
+                    </div>
+                    <strong>${total} h</strong>
+                </header>
+                ${subgrupos.length === 0 ? `
+                    <p class="grade-empty">Sin subgrupos definidos.</p>
+                ` : `
+                    <table class="pdf-table grade-subgroup-table">
+                        <thead>
+                            <tr><th>Subgrupo</th><th>Horas</th><th>Creditos</th></tr>
+                        </thead>
+                        <tbody>
+                            ${subgrupos.map(({ subgrupo, credits }) => `
+                                <tr>
+                                    <td>
+                                        <strong>${escapeHtml(subgrupo.nombre || subgrupo.id)}</strong>
+                                        <span>${escapeHtml(subgrupo.id)}${subgrupo.codigoUv ? ` · UV ${escapeHtml(subgrupo.codigoUv)}` : ""}</span>
+                                    </td>
+                                    <td>${credits}</td>
+                                    <td><strong>${hoursToCredits(credits)}</strong></td>
+                                </tr>
+                            `).join("")}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="total-cell">Total</td>
+                                <td class="total-cell">${total} horas</td>
+                                <td class="total-cell">${hoursToCredits(total)} creditos</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                `}
+            </article>
+        `;
+    };
+
+    return `
+        <!doctype html>
+        <html lang="es">
+        <head>
+            <meta charset="utf-8" />
+            <title>${escapeHtml(title)}</title>
+            <style>
+                * { box-sizing: border-box; }
+                html, body { margin: 0; padding: 0; color: #17242b; font-family: Arial, sans-serif; }
+                body { background: #fff; }
+                .pdf-page { width: 100%; padding: 0; break-after: page; page-break-after: always; }
+                .pdf-page:last-child { break-after: auto; page-break-after: auto; }
+                h1 { margin: 0 0 5mm; font-size: 18px; line-height: 1.15; }
+                h2 { margin: 0 0 3mm; font-size: 13px; line-height: 1.2; }
+                p { margin: 0 0 4mm; color: #475569; }
+                .pdf-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9px; }
+                .pdf-table th, .pdf-table td { border: 1px solid #cbd5e1; padding: 4px; vertical-align: top; overflow-wrap: anywhere; }
+                .pdf-table th { background: #e2e8f0; color: #0f172a; text-align: left; }
+                .pdf-table thead { display: table-header-group; }
+                .pdf-table tr { break-inside: avoid; page-break-inside: avoid; }
+                .total-cell { background: #f8fafc; font-weight: 700; }
+                .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4mm; margin: 0 0 5mm; }
+                .summary-box { border: 1px solid #cbd5e1; border-radius: 7px; padding: 4mm; background: #f8fafc; }
+                .summary-box span { display: block; color: #64748b; font-size: 9px; margin-bottom: 1mm; }
+                .summary-box strong { display: block; color: #0f172a; font-size: 15px; }
+                .grade-section { margin: 0 0 5mm; }
+                .grade-title { display: flex; justify-content: space-between; gap: 5mm; align-items: baseline; margin: 0 0 2mm; padding-bottom: 2mm; border-bottom: 2px solid #0f766e; break-after: avoid; page-break-after: avoid; }
+                .grade-title strong { white-space: nowrap; }
+                .grade-subject { margin: 0 0 4mm; border: 1px solid #cbd5e1; border-radius: 7px; overflow: hidden; break-inside: avoid; page-break-inside: avoid; }
+                .grade-subject > header { display: flex; justify-content: space-between; gap: 5mm; padding: 3mm; background: #f8fafc; border-bottom: 1px solid #cbd5e1; break-after: avoid; page-break-after: avoid; }
+                .grade-subject > header span { display: block; margin-top: 1mm; color: #64748b; font-size: 9px; }
+                .grade-subject > header strong { white-space: nowrap; font-size: 12px; }
+                .grade-subject-compact .grade-subgroup-summary { display: flex; flex-wrap: wrap; gap: 2mm; padding: 3mm; margin: 0; }
+                .grade-subgroup-pill { display: inline-flex; flex-direction: column; gap: 1mm; padding: 1.8mm 2.2mm; border-radius: 999px; background: #eefcf9; color: #0f172a; font-size: 9px; }
+                .grade-subgroup-pill strong { font-size: 9px; }
+                .grade-subgroup-pill span { color: #475569; }
+                .grade-subgroup-table th:nth-child(2), .grade-subgroup-table td:nth-child(2) { width: 20mm; }
+                .grade-subgroup-table th:nth-child(3), .grade-subgroup-table td:nth-child(3) { width: 22mm; }
+                .grade-empty { color: #64748b; font-style: italic; font-size: 9px; }
+                @page { size: A4 portrait; margin: 8mm; }
+            </style>
+        </head>
+        <body>
+            <section class="pdf-page">
+                <h1>${escapeHtml(title)}</h1>
+                <div class="summary-grid">
+                    <div class="summary-box"><span>Grados</span><strong>${categories.length}</strong></div>
+                    <div class="summary-box"><span>Asignaturas</span><strong>${state.asignaturas.length}</strong></div>
+                    <div class="summary-box"><span>Total horas</span><strong>${totalCredits} h</strong></div>
+                </div>
+                ${categories.length === 0 ? `
+                    <p>No hay grados/asignaturas cargados.</p>
+                ` : categories.map(({ categoria, asignaturas, total }) => `
+                    <section class="grade-section">
+                        <div class="grade-title">
+                            <h2>${escapeHtml(categoria.nombre)}</h2>
+                            <strong>${total} horas · ${hoursToCredits(total)} creditos</strong>
+                        </div>
+                        ${asignaturas.map((asignatura) => renderSubject(asignatura)).join("")}
+                    </section>
+                `).join("")}
+                <section class="grade-section">
+                    <div class="grade-title">
+                        <h2>Extras</h2>
+                        <strong>${extraCredits} horas · ${hoursToCredits(extraCredits)} creditos</strong>
+                    </div>
+                    <table class="pdf-table">
+                        <thead>
+                            <tr><th>Elemento</th><th>Horas/trabajo</th><th>Trabajos</th><th>Total horas</th><th>Creditos</th></tr>
+                        </thead>
+                        <tbody>
+                            ${specialWorks.length === 0 ? `
+                                <tr><td colspan="5">No hay TFG, TFM ni practicas de empresa configuradas.</td></tr>
+                            ` : specialWorks.map((trabajo) => `
+                                <tr>
+                                    <td>${escapeHtml(trabajo.label)}</td>
+                                    <td>${trabajo.hoursPerWork}</td>
+                                    <td>${trabajo.totalWorks}</td>
+                                    <td><strong>${trabajo.totalHours}</strong></td>
+                                    <td><strong>${hoursToCredits(trabajo.totalHours)}</strong></td>
+                                </tr>
+                            `).join("")}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="total-cell">Total extras</td>
+                                <td class="total-cell"></td>
+                                <td class="total-cell">${formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.totalWorks, 0))} trabajos</td>
+                                <td class="total-cell">${extraCredits} horas</td>
+                                <td class="total-cell">${hoursToCredits(extraCredits)} creditos</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </section>
+                <section class="grade-section">
+                    <div class="grade-title">
+                        <h2>Resumen por grados y extras</h2>
+                        <strong>${totalCredits} horas · ${hoursToCredits(totalCredits)} creditos</strong>
+                    </div>
+                    <table class="pdf-table">
+                        <thead>
+                            <tr><th>Bloque</th><th>Elementos</th><th>Horas</th><th>Creditos</th></tr>
+                        </thead>
+                        <tbody>
+                            ${categories.length === 0 ? `
+                                <tr><td colspan="4">No hay grados/asignaturas cargados.</td></tr>
+                            ` : categories.map(({ categoria, asignaturas, total }) => `
+                                <tr>
+                                    <td>${escapeHtml(categoria.nombre)}</td>
+                                    <td>${asignaturas.length}</td>
+                                    <td><strong>${total}</strong></td>
+                                    <td><strong>${hoursToCredits(total)}</strong></td>
+                                </tr>
+                            `).join("")}
+                            ${specialWorks.length === 0 ? "" : `
+                                <tr>
+                                    <td>TFG, TFM y practicas de empresa</td>
+                                    <td>${formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.totalWorks, 0))} trabajos</td>
+                                    <td><strong>${extraCredits}</strong></td>
+                                    <td><strong>${hoursToCredits(extraCredits)}</strong></td>
+                                </tr>
+                            `}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="total-cell">Total departamento</td>
+                                <td class="total-cell">${categories.reduce((sum, group) => sum + group.asignaturas.length, 0)} asignaturas${specialWorks.length > 0 ? ` · ${formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.totalWorks, 0))} trabajos` : ""}</td>
+                                <td class="total-cell">${totalCredits} horas</td>
+                                <td class="total-cell">${hoursToCredits(totalCredits)} creditos</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </section>
+            </section>
+        </body>
+        </html>
+    `;
+}
+
+function downloadGradosPdf(state) {
+    openPrintableHtml(printableGradosPdfHtml(state, "expanded"));
+}
+
+function downloadGradosPdfCompact(state) {
+    openPrintableHtml(printableGradosPdfHtml(state, "compact"));
 }
 
 function asignaturaWarnings(state, asignatura) {
@@ -1017,6 +1321,24 @@ export function renderAsignaturasSection(state) {
                 <div class="metric-box"><span>Horas visibles</span><strong>${totalCreditosAsignaturas(visibleAsignaturas.map((item) => item.asignatura))}</strong></div>
             </div>
 
+            <section class="form-section allocation-summary-panel export-panel">
+                <div class="form-section-title">
+                    <div>
+                        <span class="section-kicker">Exportacion</span>
+                        <h3>Grados y extras</h3>
+                    </div>
+                </div>
+                <div class="teacher-summary">
+                    <div class="metric-box"><span>Asignaturas</span><strong>${state.asignaturas.length}</strong></div>
+                    <div class="metric-box"><span>Extras</span><strong>${(state.trabajos || []).filter((trabajo) => ["tfg", "tfm", "practicas"].includes(trabajo.tipo)).length}</strong></div>
+                    <div class="metric-box"><span>Horas visibles</span><strong>${totalCreditosAsignaturas(visibleAsignaturas.map((item) => item.asignatura))}</strong></div>
+                </div>
+                <div class="export-actions">
+                    <button id="download-grados-pdf-btn" type="button">Exportar ampliado</button>
+                    <button id="download-grados-pdf-compact-btn" class="secondary" type="button">Exportar compacto</button>
+                </div>
+            </section>
+
             <div class="filter-bar subject-filters">
                 <label>
                     Buscar
@@ -1052,7 +1374,7 @@ export function renderAsignaturasSection(state) {
                             <th><button class="table-sort" data-sort-asignaturas="categoria" type="button">Grado / facultad${asignaturaSortArrow(state, "categoria")}</button></th>
                             <th><button class="table-sort" data-sort-asignaturas="cuatrimestre" type="button">Cuatrimestre${asignaturaSortArrow(state, "cuatrimestre")}</button></th>
                             <th><button class="table-sort" data-sort-asignaturas="subgrupos" type="button">Subgrupos${asignaturaSortArrow(state, "subgrupos")}</button></th>
-                            <th><button class="table-sort" data-sort-asignaturas="creditos" type="button">Horas${asignaturaSortArrow(state, "creditos")}</button></th>
+                            <th><button class="table-sort" data-sort-asignaturas="creditos" type="button">Horas totales / calendario${asignaturaSortArrow(state, "creditos")}</button></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -1096,7 +1418,7 @@ export function renderAsignaturasSection(state) {
                                     </td>
                                     <td><span class="subject-code">${cuatrimestreLabel(a.cuatrimestre)}</span></td>
                                     <td><span class="num-pill muted-pill">${Array.isArray(a.subgrupos) ? a.subgrupos.length : 0}</span></td>
-                                    <td><span class="num-pill">${totalCreditosAsignatura(a)}</span></td>
+                                    <td><span class="num-pill">${totalCreditosAsignatura(a)} / ${totalHorasSubgrupos(a.subgrupos || [])}</span></td>
                                     <td class="table-actions">
                                         ${uvUrl ? `
                                             <a class="secondary mini icon-button web-link-button" href="${escapeHtml(uvUrl)}" target="_blank" rel="noopener noreferrer" title="Abrir informacion web de ${escapeHtml(a.nombre || a.id || "la asignatura")}" aria-label="Abrir informacion web de ${escapeHtml(a.nombre || a.id || "la asignatura")}">
@@ -1471,7 +1793,14 @@ function renderAsignaturaDetailModal(state) {
                 <div class="table-shell compact-table">
                     <table class="table teacher-table">
                         <thead>
-                            <tr><th>Subgrupo</th><th>Tipo</th><th>Idioma</th><th>Cuatrimestre</th><th>Horas carga</th><th>Sesiones</th><th>Horas calendario</th></tr>
+                            <tr>
+                                <th><button class="table-sort" data-sort-subgrupos="nombre" type="button">Subgrupo${sortArrow(state, "nombre")}</button></th>
+                                <th><button class="table-sort" data-sort-subgrupos="tipo" type="button">Tipo${sortArrow(state, "tipo")}</button></th>
+                                <th><button class="table-sort" data-sort-subgrupos="idioma" type="button">Idioma${sortArrow(state, "idioma")}</button></th>
+                                <th><button class="table-sort" data-sort-subgrupos="cuatrimestre" type="button">Cuatrimestre${sortArrow(state, "cuatrimestre")}</button></th>
+                                <th><button class="table-sort" data-sort-subgrupos="creditos" type="button">Horas carga${sortArrow(state, "creditos")}</button></th>
+                                <th>Sesiones</th><th>Horas calendario</th>
+                            </tr>
                         </thead>
                         <tbody>
                             ${subgrupos.length === 0 ? `
@@ -2015,6 +2344,16 @@ export function bindAsignaturasEvents({ app, state, setStatus, render, saveAsign
             render();
         };
     });
+
+    const gradosPdfBtn = document.getElementById("download-grados-pdf-btn");
+    if (gradosPdfBtn) {
+        gradosPdfBtn.onclick = () => downloadGradosPdf(state);
+    }
+
+    const gradosPdfCompactBtn = document.getElementById("download-grados-pdf-compact-btn");
+    if (gradosPdfCompactBtn) {
+        gradosPdfCompactBtn.onclick = () => downloadGradosPdfCompact(state);
+    }
 
     const clearAllSubgrupoCalendarsBtn = document.getElementById("clear-all-subgrupo-calendars-btn");
     if (clearAllSubgrupoCalendarsBtn) {

@@ -1,5 +1,5 @@
-import { escapeHtml, toPositiveNumber, uid } from "./utils.js";
 import { calcularReajusteDocente } from "./reajuste.js";
+import { escapeHtml, toPositiveNumber, uid } from "./utils.js";
 
 const SPECIAL_WORK_TYPES = [
     { value: "tfg", label: "TFG" },
@@ -147,8 +147,8 @@ function formatCredits(value) {
     return Number(toPositiveNumber(value, 0).toFixed(2));
 }
 
-function creditsToHours(value) {
-    return formatCredits(toPositiveNumber(value, 0) * HOURS_PER_CREDIT);
+function hoursToCredits(value) {
+    return formatCredits(toPositiveNumber(value, 0) / HOURS_PER_CREDIT);
 }
 
 function totalReduccionesProfesorLocal(profesor) {
@@ -423,10 +423,10 @@ function renderSubgrupoAllocation(state, asignatura, subgrupo) {
 
             ${canAdd ? renderAssignmentForm(state, asignatura, subgrupo, editingItem) : `
                 <p class="allocation-locked">${state.profesores.length === 0
-                    ? "Crea profesores antes de repartir horas."
-                    : total <= 0
-                        ? "Este subgrupo no tiene horas para repartir."
-                        : "Subgrupo completamente repartido. Edita o elimina una asignacion para cambiarlo."}</p>
+                ? "Crea profesores antes de repartir horas."
+                : total <= 0
+                    ? "Este subgrupo no tiene horas para repartir."
+                    : "Subgrupo completamente repartido. Edita o elimina una asignacion para cambiarlo."}</p>
             `}
         </section>
     `;
@@ -446,8 +446,8 @@ function renderProfesorLoad(state) {
                     ${state.profesores.length === 0 ? `
                         <tr><td colspan="4" class="empty-cell">No hay profesores cargados.</td></tr>
                     ` : state.profesores.map((profesor) => {
-                        const calc = byProfesor.get(profesor.id) || { asignado: 0, objetivoReal: 0, diferencia: 0 };
-                        return `
+        const calc = byProfesor.get(profesor.id) || { asignado: 0, objetivoReal: 0, diferencia: 0 };
+        return `
                         <tr>
                             <td>
                                 <strong>${escapeHtml(profesor.nombreCompleto)}</strong>
@@ -458,7 +458,7 @@ function renderProfesorLoad(state) {
                             <td><span class="num-pill ${calc.diferencia < 0 ? "danger-pill" : "muted-pill"}">${calc.diferencia}</span></td>
                         </tr>
                     `;
-                    }).join("")}
+    }).join("")}
                 </tbody>
             </table>
         </div>
@@ -502,7 +502,7 @@ function renderReajusteResumen(state) {
             <div class="calculation-note calculation-breakdown">
                 <h4>Como se calcula</h4>
                 <ol>
-                    <li><strong>Total a repartir:</strong> suma de las horas de todos los subgrupos = <strong>${reajuste.totalCarga}</strong>.</li>
+                    <li><strong>Total a repartir:</strong> ${reajuste.totalCargaAsignaturas} horas de subgrupos + ${reajuste.totalCargaTrabajosRepartibles} horas de TFG y practicas = <strong>${reajuste.totalCarga}</strong>.</li>
                     <li><strong>TFM previos:</strong> los TFM ya asignados se descuentan antes del reajuste = <strong>${reajuste.totalTfm}</strong> horas.</li>
                     <li><strong>Profesores fijos:</strong> ${reajuste.profesoresFijos} profesores no reajustables conservan su capacidad restante tras TFM = <strong>${reajuste.capacidadFija}</strong>.</li>
                     <li><strong>Horas reajustables:</strong> ${reajuste.totalCarga} - ${reajuste.capacidadFija} = <strong>${reajuste.cargaReajustable}</strong>.</li>
@@ -544,8 +544,8 @@ function renderReajusteResumen(state) {
                                 <td><span class="num-pill muted-pill">${item.esAjustable ? `${item.proporcionPct}%` : "-"}</span></td>
                                 <td>
                                     <small class="muted-line">${item.esAjustable && reajuste.capacidadAjustable > 0
-        ? `${item.capacidad} / ${reajuste.capacidadAjustable} x ${reajuste.cargaReajustable}`
-        : "Capacidad fija"}</small>
+            ? `${item.capacidad} / ${reajuste.capacidadAjustable} x ${reajuste.cargaReajustable}`
+            : "Capacidad fija"}</small>
                                 </td>
                                 <td><span class="num-pill">${item.objetivoReal}</span></td>
                                 <td><span class="num-pill ${item.reajuste < 0 ? "danger-pill" : "muted-pill"}">${item.reajuste}</span></td>
@@ -637,21 +637,21 @@ function renderSpecialWorkPdfPages(state) {
                     ${professors.length === 0 ? `
                         <tr><td colspan="${workChunk.length + 2}">No hay profesores cargados.</td></tr>
                     ` : professors.map((profesor) => {
-                        const rowTotal = formatCredits(workChunk.reduce((sum, trabajo) => sum + specialWorkCreditsForProfesor(trabajo, profesor.id), 0));
-                        return `
+        const rowTotal = formatCredits(workChunk.reduce((sum, trabajo) => sum + specialWorkCreditsForProfesor(trabajo, profesor.id), 0));
+        return `
                             <tr>
                                 <td class="sticky-name">
                                     <strong>${escapeHtml(profesor.nombreCompleto || profesor.id)}</strong>
                                     <span>${escapeHtml(profesor.id)}</span>
                                 </td>
                                 ${workChunk.map((trabajo) => {
-                                    const credits = specialWorkCreditsForProfesor(trabajo, profesor.id);
-                                    return `<td class="${credits > 0 ? "has-value" : ""}">${credits || ""}</td>`;
-                                }).join("")}
+            const credits = specialWorkCreditsForProfesor(trabajo, profesor.id);
+            return `<td class="${credits > 0 ? "has-value" : ""}">${credits || ""}</td>`;
+        }).join("")}
                                 <td class="total-cell">${rowTotal}</td>
                             </tr>
                         `;
-                    }).join("")}
+    }).join("")}
                 </tbody>
             </table>
         </section>
@@ -679,9 +679,9 @@ function renderAssignmentPdfPages(state) {
                 <strong>${assigned} / ${total}</strong>
             </header>
             ${asignaturas.map((asignatura) => {
-                const status = asignaturaStatus(state, asignatura);
-                const subgrupos = [...(asignatura.subgrupos || [])].sort((a, b) => compareText(subgrupoSortValue(a), subgrupoSortValue(b)));
-                return `
+        const status = asignaturaStatus(state, asignatura);
+        const subgrupos = [...(asignatura.subgrupos || [])].sort((a, b) => compareText(subgrupoSortValue(a), subgrupoSortValue(b)));
+        return `
                     <section class="pdf-subject">
                         <header>
                             <div>
@@ -693,11 +693,11 @@ function renderAssignmentPdfPages(state) {
                         ${subgrupos.length === 0 ? `
                             <p class="pdf-empty">Sin subgrupos definidos.</p>
                         ` : subgrupos.map((subgrupo) => {
-                            const items = assignmentsForSubgroup(state, asignatura.id, subgrupo.id)
-                                .sort((a, b) => compareText(profesorName(state, a.profesorId), profesorName(state, b.profesorId)));
-                            const assigned = assignmentCredits(items);
-                            const total = toPositiveNumber(subgrupo.creditos, 0);
-                            return `
+            const items = assignmentsForSubgroup(state, asignatura.id, subgrupo.id)
+                .sort((a, b) => compareText(profesorName(state, a.profesorId), profesorName(state, b.profesorId)));
+            const assigned = assignmentCredits(items);
+            const total = toPositiveNumber(subgrupo.creditos, 0);
+            return `
                                 <div class="pdf-subgroup">
                                     <div class="pdf-subgroup-title">
                                         <strong>${escapeHtml(subgrupo.nombre || subgrupo.id)}</strong>
@@ -715,10 +715,10 @@ function renderAssignmentPdfPages(state) {
                                     </div>
                                 </div>
                             `;
-                        }).join("")}
+        }).join("")}
                     </section>
                 `;
-            }).join("")}
+    }).join("")}
         </section>
     `).join("");
 }
@@ -829,17 +829,17 @@ function printableBaseStyles() {
 function printableProfesoresPdfHtml(state) {
     const profesores = [...state.profesores].sort((a, b) => compareText(a.nombreCompleto || a.id, b.nombreCompleto || b.id));
     const rows = profesores.map((profesor) => {
-        const originalCredits = formatCredits(profesor.creditosObjetivo);
-        const reductionCredits = totalReduccionesProfesorLocal(profesor);
-        const finalCredits = formatCredits(Math.max(0, originalCredits - reductionCredits));
+        const originalHours = formatCredits(profesor.creditosObjetivo);
+        const reductionHours = totalReduccionesProfesorLocal(profesor);
+        const finalHours = formatCredits(Math.max(0, originalHours - reductionHours));
         return {
             profesor,
-            originalCredits,
-            originalHours: creditsToHours(originalCredits),
-            reductionCredits,
-            reductionHours: creditsToHours(reductionCredits),
-            finalCredits,
-            finalHours: creditsToHours(finalCredits),
+            originalCredits: hoursToCredits(originalHours),
+            originalHours,
+            reductionCredits: hoursToCredits(reductionHours),
+            reductionHours,
+            finalCredits: hoursToCredits(finalHours),
+            finalHours,
         };
     });
     const totals = rows.reduce((acc, row) => ({
@@ -904,18 +904,23 @@ function printableProfesoresPdfHtml(state) {
     `;
 }
 
-function specialWorkTotalCredits(trabajo) {
-    return formatCredits(Object.values(trabajo.asignaciones || {}).reduce((sum, count) => sum + toPositiveNumber(count, 0), 0) * toPositiveNumber(trabajo.peso, 0));
+function specialWorkExportSummary(trabajo) {
+    const assignedWorks = Object.values(trabajo.asignaciones || {}).reduce((sum, count) => sum + toPositiveNumber(count, 0), 0);
+    const totalWorks = toPositiveNumber(trabajo.totalTrabajos, 0) || assignedWorks;
+    const hoursPerWork = toPositiveNumber(trabajo.peso, 0);
+    return {
+        label: specialWorkLabel(trabajo),
+        hoursPerWork,
+        totalWorks,
+        totalHours: formatCredits(totalWorks * hoursPerWork),
+    };
 }
 
 function printableGradosPdfHtml(state) {
     const categories = exportCategories(state);
-    const specialWorks = sortedSpecialWorks(state).map((trabajo) => ({
-        label: specialWorkLabel(trabajo),
-        credits: specialWorkTotalCredits(trabajo),
-    }));
+    const specialWorks = sortedSpecialWorks(state).map(specialWorkExportSummary);
     const subjectCredits = formatCredits(categories.reduce((sum, group) => sum + group.total, 0));
-    const extraCredits = formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.credits, 0));
+    const extraCredits = formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.totalHours, 0));
     const totalCredits = formatCredits(subjectCredits + extraCredits);
     const title = `Horas por grados y extras · ${state.selectedCourse || "curso"}`;
 
@@ -937,8 +942,8 @@ function printableGradosPdfHtml(state) {
                 <h1>${escapeHtml(title)}</h1>
                 <div class="summary-grid">
                     <div class="summary-box"><span>Grados</span><strong>${categories.length}</strong></div>
-                    <div class="summary-box"><span>Docencia asignaturas</span><strong>${creditsToHours(subjectCredits)} h</strong></div>
-                    <div class="summary-box"><span>Total departamento</span><strong>${creditsToHours(totalCredits)} h</strong></div>
+                    <div class="summary-box"><span>Docencia asignaturas</span><strong>${subjectCredits} h</strong></div>
+                    <div class="summary-box"><span>Total departamento</span><strong>${totalCredits} h</strong></div>
                 </div>
                 ${categories.length === 0 ? `
                     <p>No hay grados/asignaturas cargados.</p>
@@ -946,24 +951,24 @@ function printableGradosPdfHtml(state) {
                     <section class="grade-section">
                         <div class="grade-title">
                             <h2>${escapeHtml(categoria.nombre)}</h2>
-                            <strong>${total} creditos · ${creditsToHours(total)} horas</strong>
+                            <strong>${total} horas · ${hoursToCredits(total)} creditos</strong>
                         </div>
                         <table class="pdf-table">
                             <thead>
-                                <tr><th>Asignatura</th><th>Codigo</th><th>Creditos</th><th>Horas</th></tr>
+                                <tr><th>Asignatura</th><th>Codigo</th><th>Horas</th><th>Creditos</th></tr>
                             </thead>
                             <tbody>
                                 ${asignaturas.map((asignatura) => {
-                                    const credits = subjectTotalCredits(asignatura);
-                                    return `
+        const credits = subjectTotalCredits(asignatura);
+        return `
                                         <tr>
                                             <td>${escapeHtml(asignatura.nombre || asignatura.id)}</td>
                                             <td>${escapeHtml(asignatura.codigoReferencia || asignatura.id || "")}</td>
                                             <td>${credits}</td>
-                                            <td><strong>${creditsToHours(credits)}</strong></td>
+                                            <td><strong>${hoursToCredits(credits)}</strong></td>
                                         </tr>
                                     `;
-                                }).join("")}
+    }).join("")}
                             </tbody>
                         </table>
                     </section>
@@ -971,28 +976,71 @@ function printableGradosPdfHtml(state) {
                 <section class="grade-section">
                     <div class="grade-title">
                         <h2>Extras</h2>
-                        <strong>${extraCredits} creditos · ${creditsToHours(extraCredits)} horas</strong>
+                        <strong>${extraCredits} horas · ${hoursToCredits(extraCredits)} creditos</strong>
                     </div>
                     <table class="pdf-table">
                         <thead>
-                            <tr><th>Elemento</th><th>Creditos</th><th>Horas</th></tr>
+                            <tr><th>Elemento</th><th>Horas/trabajo</th><th>Trabajos</th><th>Total horas</th><th>Creditos</th></tr>
                         </thead>
                         <tbody>
                             ${specialWorks.length === 0 ? `
-                                <tr><td colspan="3">No hay TFG, TFM ni practicas de empresa configuradas.</td></tr>
+                                <tr><td colspan="5">No hay TFG, TFM ni practicas de empresa configuradas.</td></tr>
                             ` : specialWorks.map((trabajo) => `
                                 <tr>
                                     <td>${escapeHtml(trabajo.label)}</td>
-                                    <td>${trabajo.credits}</td>
-                                    <td><strong>${creditsToHours(trabajo.credits)}</strong></td>
+                                    <td>${trabajo.hoursPerWork}</td>
+                                    <td>${trabajo.totalWorks}</td>
+                                    <td><strong>${trabajo.totalHours}</strong></td>
+                                    <td><strong>${hoursToCredits(trabajo.totalHours)}</strong></td>
                                 </tr>
                             `).join("")}
                         </tbody>
                         <tfoot>
                             <tr>
+                                <td class="total-cell">Total extras</td>
+                                <td class="total-cell"></td>
+                                <td class="total-cell">${formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.totalWorks, 0))} trabajos</td>
+                                <td class="total-cell">${extraCredits} horas</td>
+                                <td class="total-cell">${hoursToCredits(extraCredits)} creditos</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </section>
+                <section class="grade-section">
+                    <div class="grade-title">
+                        <h2>Resumen por grados y extras</h2>
+                        <strong>${totalCredits} horas · ${hoursToCredits(totalCredits)} creditos</strong>
+                    </div>
+                    <table class="pdf-table">
+                        <thead>
+                            <tr><th>Bloque</th><th>Elementos</th><th>Horas</th><th>Creditos</th></tr>
+                        </thead>
+                        <tbody>
+                            ${categories.length === 0 ? `
+                                <tr><td colspan="4">No hay grados/asignaturas cargados.</td></tr>
+                            ` : categories.map(({ categoria, asignaturas, total }) => `
+                                <tr>
+                                    <td>${escapeHtml(categoria.nombre)}</td>
+                                    <td>${asignaturas.length}</td>
+                                    <td><strong>${total}</strong></td>
+                                    <td><strong>${hoursToCredits(total)}</strong></td>
+                                </tr>
+                            `).join("")}
+                            ${specialWorks.length === 0 ? "" : `
+                                <tr>
+                                    <td>TFG, TFM y practicas de empresa</td>
+                                    <td>${formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.totalWorks, 0))} trabajos</td>
+                                    <td><strong>${extraCredits}</strong></td>
+                                    <td><strong>${hoursToCredits(extraCredits)}</strong></td>
+                                </tr>
+                            `}
+                        </tbody>
+                        <tfoot>
+                            <tr>
                                 <td class="total-cell">Total departamento</td>
-                                <td class="total-cell">${totalCredits} creditos</td>
-                                <td class="total-cell">${creditsToHours(totalCredits)} horas</td>
+                                <td class="total-cell">${categories.reduce((sum, group) => sum + group.asignaturas.length, 0)} asignaturas${specialWorks.length > 0 ? ` · ${formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.totalWorks, 0))} trabajos` : ""}</td>
+                                <td class="total-cell">${totalCredits} horas</td>
+                                <td class="total-cell">${hoursToCredits(totalCredits)} creditos</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -1003,12 +1051,162 @@ function printableGradosPdfHtml(state) {
     `;
 }
 
-function downloadProfesoresPdf(state) {
-    openPrintableHtml(printableProfesoresPdfHtml(state));
+function printableReajustePdfHtml(state) {
+    const reajuste = calcularReajusteDocente(state);
+    const categories = exportCategories(state);
+    const specialWorks = sortedSpecialWorks(state).map(specialWorkExportSummary);
+    const subjectCredits = formatCredits(categories.reduce((sum, group) => sum + group.total, 0));
+    const extraCredits = formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.totalHours, 0));
+    const totalCredits = formatCredits(subjectCredits + extraCredits);
+    const formulaAjustable = reajuste.capacidadAjustable > 0
+        ? "Objetivo real = capacidad individual / capacidad ajustable total x horas reajustables"
+        : "No hay profesores reajustables con capacidad disponible.";
+    const diferenciaLabel = reajuste.diferenciaGlobal === 0
+        ? "La capacidad total coincide con las horas a repartir."
+        : reajuste.diferenciaGlobal > 0
+            ? `Hay ${reajuste.diferenciaGlobal} horas mas de carga que capacidad disponible.`
+            : `Hay ${Math.abs(reajuste.diferenciaGlobal)} horas mas de capacidad que carga a repartir.`;
+    const professorTotals = reajuste.profesoresDetalle.reduce((acc, item) => ({
+        capacidadBase: formatCredits(acc.capacidadBase + item.capacidadBase),
+        cargaTfm: formatCredits(acc.cargaTfm + item.cargaTfm),
+        capacidad: formatCredits(acc.capacidad + item.capacidad),
+        objetivoReal: formatCredits(acc.objetivoReal + item.objetivoReal),
+        asignado: formatCredits(acc.asignado + item.asignado),
+        diferencia: formatCredits(acc.diferencia + item.diferencia),
+    }), { capacidadBase: 0, cargaTfm: 0, capacidad: 0, objetivoReal: 0, asignado: 0, diferencia: 0 });
+    const totalWorks = formatCredits(specialWorks.reduce((sum, trabajo) => sum + trabajo.totalWorks, 0));
+    const title = `Calculos del reajuste docente · ${state.selectedCourse || "curso"}`;
+
+    return `
+        <!doctype html>
+        <html lang="es">
+        <head>
+            <meta charset="utf-8" />
+            <title>${escapeHtml(title)}</title>
+            <style>
+                ${printableBaseStyles()}
+                h2 { margin: 0 0 3mm; font-size: 13px; line-height: 1.2; }
+                p { margin: 0 0 4mm; color: #475569; }
+                ol { margin: 0 0 5mm 5mm; padding-left: 5mm; color: #17242b; font-size: 10px; }
+                li { margin-bottom: 1.5mm; }
+                .section-title { display: flex; justify-content: space-between; gap: 5mm; align-items: baseline; margin: 0 0 3mm; padding-bottom: 2mm; border-bottom: 2px solid #0f766e; }
+                .section-title strong { white-space: nowrap; }
+                .pdf-section { margin: 0 0 6mm; break-inside: avoid; page-break-inside: avoid; }
+            </style>
+        </head>
+        <body>
+            <section class="pdf-page">
+                <h1>${escapeHtml(title)}</h1>
+                <div class="summary-grid">
+                    <div class="summary-box"><span>Total a repartir</span><strong>${reajuste.totalCarga}</strong></div>
+                    <div class="summary-box"><span>A repartir ajustable</span><strong>${reajuste.cargaReajustable}</strong></div>
+                    <div class="summary-box"><span>Capacidad ajustable</span><strong>${reajuste.capacidadAjustable}</strong></div>
+                </div>
+
+                <section class="pdf-section">
+                    <div class="section-title">
+                        <h2>Como se calcula</h2>
+                        <strong>${reajuste.totalCarga} horas</strong>
+                    </div>
+                    <ol>
+                        <li><strong>Total a repartir:</strong> ${reajuste.totalCargaAsignaturas} horas de subgrupos + ${reajuste.totalCargaTrabajosRepartibles} horas de TFG y practicas = <strong>${reajuste.totalCarga}</strong>.</li>
+                        <li><strong>TFM previos:</strong> los TFM ya asignados se descuentan antes del reajuste = <strong>${reajuste.totalTfm}</strong> horas.</li>
+                        <li><strong>Profesores fijos:</strong> ${reajuste.profesoresFijos} profesores no reajustables conservan su capacidad restante tras TFM = <strong>${reajuste.capacidadFija}</strong>.</li>
+                        <li><strong>Horas reajustables:</strong> ${reajuste.totalCarga} - ${reajuste.capacidadFija} = <strong>${reajuste.cargaReajustable}</strong>.</li>
+                        <li><strong>Base proporcional:</strong> suma de capacidades restantes de ${reajuste.profesoresAjustables} profesores reajustables = <strong>${reajuste.capacidadAjustable}</strong>.</li>
+                        <li><strong>Formula:</strong> ${formulaAjustable}.</li>
+                        <li><strong>Control global:</strong> capacidad total ${reajuste.capacidadTotal}. ${diferenciaLabel}</li>
+                    </ol>
+                </section>
+
+                <section class="pdf-section">
+                    <div class="section-title">
+                        <h2>Carga docente por profesor</h2>
+                        <strong>${professorTotals.objetivoReal} horas objetivo</strong>
+                    </div>
+                    <p>La tabla compara la capacidad de partida de cada profesor con su objetivo real tras descontar TFM previos, respetar profesores fijos y repartir proporcionalmente la carga ajustable.</p>
+                    <table class="pdf-table">
+                        <thead>
+                            <tr><th>Profesor</th><th>Modo</th><th>Capacidad inicial</th><th>TFM previos</th><th>Capacidad</th><th>Objetivo real</th><th>Asignadas</th><th>Diferencia</th></tr>
+                        </thead>
+                        <tbody>
+                            ${reajuste.profesoresDetalle.length === 0 ? `
+                                <tr><td colspan="8">No hay profesores cargados.</td></tr>
+                            ` : reajuste.profesoresDetalle.map((item) => `
+                                <tr>
+                                    <td><strong>${escapeHtml(item.profesor.nombreCompleto || item.profesor.id)}</strong><br><span>${escapeHtml(item.profesor.id)}</span></td>
+                                    <td>${item.esAjustable ? "Reajustable" : "Fijo"}</td>
+                                    <td>${item.capacidadBase}</td>
+                                    <td>${item.cargaTfm}</td>
+                                    <td>${item.capacidad}</td>
+                                    <td><strong>${item.objetivoReal}</strong></td>
+                                    <td>${item.asignado}</td>
+                                    <td>${item.diferencia}</td>
+                                </tr>
+                            `).join("")}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="total-cell" colspan="2">Total profesores</td>
+                                <td class="total-cell">${professorTotals.capacidadBase}</td>
+                                <td class="total-cell">${professorTotals.cargaTfm}</td>
+                                <td class="total-cell">${professorTotals.capacidad}</td>
+                                <td class="total-cell">${professorTotals.objetivoReal}</td>
+                                <td class="total-cell">${professorTotals.asignado}</td>
+                                <td class="total-cell">${professorTotals.diferencia}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </section>
+
+                <section class="pdf-section">
+                    <div class="section-title">
+                        <h2>Carga docente por grados y extras</h2>
+                        <strong>${totalCredits} horas · ${hoursToCredits(totalCredits)} creditos</strong>
+                    </div>
+                    <p>La carga por grados agrupa las horas de sus asignaturas. Los TFG, TFM y practicas aparecen como bloque separado para que el total del departamento cuadre con la exportacion de asignaturas.</p>
+                    <table class="pdf-table">
+                        <thead>
+                            <tr><th>Bloque</th><th>Elementos</th><th>Horas</th><th>Creditos</th></tr>
+                        </thead>
+                        <tbody>
+                            ${categories.length === 0 ? `
+                                <tr><td colspan="4">No hay grados/asignaturas cargados.</td></tr>
+                            ` : categories.map(({ categoria, asignaturas, total }) => `
+                                <tr>
+                                    <td>${escapeHtml(categoria.nombre)}</td>
+                                    <td>${asignaturas.length} asignaturas</td>
+                                    <td><strong>${total}</strong></td>
+                                    <td><strong>${hoursToCredits(total)}</strong></td>
+                                </tr>
+                            `).join("")}
+                            ${specialWorks.length === 0 ? "" : `
+                                <tr>
+                                    <td>TFG, TFM y practicas de empresa</td>
+                                    <td>${totalWorks} trabajos</td>
+                                    <td><strong>${extraCredits}</strong></td>
+                                    <td><strong>${hoursToCredits(extraCredits)}</strong></td>
+                                </tr>
+                            `}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="total-cell">Total departamento</td>
+                                <td class="total-cell">${categories.reduce((sum, group) => sum + group.asignaturas.length, 0)} asignaturas${specialWorks.length > 0 ? ` · ${totalWorks} trabajos` : ""}</td>
+                                <td class="total-cell">${totalCredits} horas</td>
+                                <td class="total-cell">${hoursToCredits(totalCredits)} creditos</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </section>
+            </section>
+        </body>
+        </html>
+    `;
 }
 
-function downloadGradosPdf(state) {
-    openPrintableHtml(printableGradosPdfHtml(state));
+function downloadReajustePdf(state) {
+    openPrintableHtml(printableReajustePdfHtml(state));
 }
 
 function renderDocenciaExport(state) {
@@ -1020,7 +1218,7 @@ function renderDocenciaExport(state) {
             <div class="form-section-title">
                 <div>
                     <span class="section-kicker">Exportacion</span>
-                    <h3>PDF del reparto completo</h3>
+                    <h3>PDF del reparto y reajuste</h3>
                 </div>
             </div>
             <div class="teacher-summary">
@@ -1030,8 +1228,7 @@ function renderDocenciaExport(state) {
             </div>
             <div class="export-actions">
                 <button id="download-docencia-pdf-btn" type="button">Exportar reparto a PDF</button>
-                <button id="download-profesores-pdf-btn" class="secondary" type="button">Exportar profesores</button>
-                <button id="download-grados-pdf-btn" class="secondary" type="button">Exportar grados y extras</button>
+                <button id="download-reajuste-pdf-btn" class="secondary" type="button">Exportar calculos del reajuste</button>
             </div>
         </section>
     `;
@@ -1333,13 +1530,8 @@ export function bindDocenciaEvents({ app, state, setStatus, render, saveDocencia
         pdfBtn.onclick = () => downloadDocenciaPdf(state);
     }
 
-    const profesoresPdfBtn = document.getElementById("download-profesores-pdf-btn");
-    if (profesoresPdfBtn) {
-        profesoresPdfBtn.onclick = () => downloadProfesoresPdf(state);
-    }
-
-    const gradosPdfBtn = document.getElementById("download-grados-pdf-btn");
-    if (gradosPdfBtn) {
-        gradosPdfBtn.onclick = () => downloadGradosPdf(state);
+    const reajustePdfBtn = document.getElementById("download-reajuste-pdf-btn");
+    if (reajustePdfBtn) {
+        reajustePdfBtn.onclick = () => downloadReajustePdf(state);
     }
 }

@@ -1,4 +1,4 @@
-import { calcularReajusteDocente, totalHorasAsignaturas } from "./reajuste.js";
+import { calcularReajusteDocente } from "./reajuste.js";
 import { escapeHtml, toPositiveNumber } from "./utils.js";
 
 const PUBLIC_TABS = [
@@ -106,6 +106,15 @@ function profesorAssignments(state, profesorId) {
             return { item, asignatura, subgrupo, simulated: false };
         })
         .filter((entry) => entry.asignatura && entry.subgrupo);
+}
+
+function profesorSpecialWorkCredits(state, profesorId) {
+    return Number((state.trabajos || []).reduce((sum, trabajo) => {
+        if (!trabajo || !["tfg", "tfm", "practicas"].includes(trabajo.tipo)) {
+            return sum;
+        }
+        return sum + (toPositiveNumber(trabajo.asignaciones?.[profesorId], 0) * toPositiveNumber(trabajo.peso, 0));
+    }, 0).toFixed(2));
 }
 
 function simulatedAssignments(state) {
@@ -380,6 +389,7 @@ function renderProfesorTab(state) {
                         ${rows.length === 0 ? `<tr><td colspan="8" class="empty-cell">No hay profesores visibles.</td></tr>` : rows.map((item) => {
         const inicial = toPositiveNumber(item.profesor.creditosObjetivo, 0);
         const reducciones = Number((inicial - item.capacidadBase).toFixed(2));
+        const pendientes = Number(Math.max(0, item.objetivoReal - item.asignado).toFixed(2));
         return `
                             <tr>
                                 <td><strong>${escapeHtml(professorName(item.profesor))}</strong><small class="muted-line">${escapeHtml(item.profesor.id)}</small></td>
@@ -388,7 +398,10 @@ function renderProfesorTab(state) {
                                 <td><span class="num-pill ${item.cargaTfm > 0 ? "danger-pill" : "muted-pill"}">${item.cargaTfm}</span></td>
                                 <td><span class="num-pill muted-pill">${item.capacidad}</span></td>
                                 <td><span class="num-pill">${item.objetivoReal}</span></td>
-                                <td><span class="num-pill ${item.asignado < item.objetivoReal ? "danger-pill" : "muted-pill"}">${item.asignado}</span></td>
+                                <td>
+                                    <span class="num-pill ${item.asignado < item.objetivoReal ? "danger-pill" : "muted-pill"}">${item.asignado}</span>
+                                    <small class="muted-line">Faltan ${pendientes}</small>
+                                </td>
                                 <td>
                                     <button class="secondary icon-button calendar-row-btn" data-public-prof-calendar="${escapeHtml(item.profesor.id)}" type="button" title="Ver calendario" aria-label="Ver calendario de ${escapeHtml(professorName(item.profesor))}">
                                         <span class="calendar-mini-icon" aria-hidden="true"></span>
@@ -467,32 +480,30 @@ function renderSimulationTree(state) {
             <h3>${escapeHtml(category.nombre)}</h3>
             <div class="calendar-subject-list">
                 ${category.asignaturas.map(({ asignatura, subgrupos }) => {
-        const expanded = state.publicSimulationExpandedAsignaturas?.[asignatura.id] === true;
         const selectedCount = subgrupos.filter(({ key }) => selected.has(key)).length;
         const allSelected = selectedCount === subgrupos.length;
+        const expanded = state.publicSimulationExpandedAsignaturas?.[asignatura.id] === true;
         return `
                     <div class="calendar-subject">
                         <div class="calendar-subject-row simulation-subject-row">
-                            <button class="calendar-expand" data-public-sim-expand="${escapeHtml(asignatura.id)}" type="button" aria-label="${expanded ? "Contraer" : "Expandir"} asignatura">${expanded ? "⌄" : "›"}</button>
+                            <button class="calendar-expand" data-public-sim-expand-asignatura="${escapeHtml(asignatura.id)}" type="button" aria-label="${expanded ? "Contraer" : "Expandir"} asignatura">${expanded ? "⌄" : "›"}</button>
                             <input data-public-sim-asignatura="${escapeHtml(asignatura.id)}" type="checkbox" ${allSelected ? "checked" : ""} />
                             <span>
                                 <strong>${escapeHtml(asignatura.nombre || asignatura.id || "Asignatura")}</strong>
                                 <small>${subgrupos.length} subgrupos pendientes · ${subgrupos.reduce((sum, item) => sum + item.pending, 0).toFixed(2)} horas</small>
                             </span>
                         </div>
-                        ${expanded ? `
-                            <div class="calendar-subgroup-list">
-                                ${subgrupos.map(({ subgrupo, key, pending }) => `
-                                    <label class="calendar-subgroup-row simulation-subgroup-row">
-                                        <input data-public-sim-subgroup="${escapeHtml(key)}" type="checkbox" ${selected.has(key) ? "checked" : ""} />
-                                        <span>
-                                            <strong>${escapeHtml(subgrupo.nombre || subgrupo.id || "Subgrupo")}</strong>
-                                            <small>${escapeHtml(subgrupo.id || "")} · ${pending} horas pendientes · ${sesionesSubgrupo(subgrupo).length} eventos</small>
-                                        </span>
-                                    </label>
-                                `).join("")}
-                            </div>
-                        ` : ""}
+                        ${expanded ? `<div class="calendar-subgroup-list simulation-subgroup-list">
+                            ${subgrupos.map(({ subgrupo, pending }) => `
+                                <label class="calendar-subgroup-row simulation-subgroup-row">
+                                    <input data-public-sim-subgrupo="${escapeHtml(`${asignatura.id}::${subgrupo.id}`)}" type="checkbox" ${selected.has(`${asignatura.id}::${subgrupo.id}`) ? "checked" : ""} />
+                                    <span>
+                                        <strong>${escapeHtml(subgrupo.nombre || subgrupo.id || "Subgrupo")}</strong>
+                                        <small>${escapeHtml(subgrupo.id || "")} · ${pending} horas pendientes · ${sesionesSubgrupo(subgrupo).length} eventos</small>
+                                    </span>
+                                </label>
+                            `).join("")}
+                        </div>` : ""}
                     </div>
                 `;
     }).join("")}
@@ -552,19 +563,21 @@ function renderProfessorCalendarModal(state) {
                     </div>
                 </div>
 
-                <div class="public-calendar-workspace ${state.publicSimulationMode ? "with-sidebar" : ""}">
+                <div class="public-calendar-workspace">
                     ${state.publicSimulationMode ? `
-                        <aside class="form-section public-simulation-panel">
+                        <section class="form-section public-simulation-panel public-simulation-panel-inline">
                             <div class="form-section-title">
-                                <span class="section-kicker">Simulacion</span>
-                                <h3>Grupos disponibles</h3>
+                                <div>
+                                    <span class="section-kicker">Simulacion</span>
+                                    <h3>Asignaturas disponibles</h3>
+                                </div>
+                                <small class="muted-line">Selecciona asignaturas completas; debajo se muestran sus subgrupos pendientes.</small>
                             </div>
                             <div class="calendar-event-list">
                                 ${renderSimulationTree(state)}
                             </div>
-                        </aside>
+                        </section>
                     ` : ""}
-
                     <div class="calendar-shell printable-calendar">
                         <div id="public-prof-calendar"></div>
                     </div>
@@ -607,7 +620,7 @@ function renderAsignaturasTab(state) {
                         <option value="nombre" ${state.publicAsignaturaSort === "nombre" ? "selected" : ""}>Nombre</option>
                         <option value="categoria" ${state.publicAsignaturaSort === "categoria" ? "selected" : ""}>Titulacion</option>
                         <option value="horas" ${state.publicAsignaturaSort === "horas" ? "selected" : ""}>Horas</option>
-                        <option value="pendientes" ${state.publicAsignaturaSort === "pendientes" ? "selected" : ""}>Pendientes</option>
+                        <option value="pendientes" ${state.publicAsignaturaSort === "pendientes" ? "selected" : ""}>Horas pendientes</option>
                     </select>
                 </label>
             </div>
@@ -619,7 +632,7 @@ function renderAsignaturasTab(state) {
             <div class="table-shell">
                 <table class="table teacher-table">
                     <thead>
-                        <tr><th>Asignatura</th><th>Codigo</th><th>Titulacion</th><th>Horas</th><th>Repartidas</th><th>Calendario</th><th>Estado</th></tr>
+                        <tr><th>Asignatura</th><th>Codigo</th><th>Titulacion</th><th>Horas</th><th>Repartidas</th><th>Numero de sesiones</th><th>Estado</th></tr>
                     </thead>
                     <tbody>
                         ${rows.length === 0 ? `<tr><td colspan="7" class="empty-cell">No hay asignaturas visibles.</td></tr>` : rows.map((asignatura) => {
@@ -636,7 +649,7 @@ function renderAsignaturasTab(state) {
                                 <td><span class="num-pill">${status.total}</span></td>
                                 <td><span class="num-pill muted-pill">${status.assigned}</span></td>
                                 <td><span class="num-pill muted-pill">${totalSesionesAsignatura(asignatura)}</span></td>
-                                <td><span class="badge ${status.complete ? "" : "danger-badge"}">${status.complete ? "Completa" : `${status.pending} pendientes`}</span></td>
+                                <td><span class="badge ${status.complete ? "" : "danger-badge"}">${status.complete ? "Completa" : `${status.pending} horas pendientes de repartir`}</span></td>
                             </tr>
                         `;
     }).join("")}
@@ -748,6 +761,8 @@ function renderPublicAsignaturaDetailModal(state) {
 }
 
 function assignmentsByProfessor(state) {
+    const reajuste = calcularReajusteDocente(state);
+    const objetivosByProfesor = new Map(reajuste.profesoresDetalle.map((item) => [item.profesor.id, item.objetivoReal]));
     return state.profesores.map((profesor) => {
         const items = state.docencia
             .filter((item) => item.profesorId === profesor.id)
@@ -757,7 +772,9 @@ function assignmentsByProfessor(state) {
                 return { item, asignatura, subgrupo };
             })
             .filter((entry) => entry.asignatura && entry.subgrupo);
-        return { profesor, items };
+        const specialCredits = profesorSpecialWorkCredits(state, profesor.id);
+        const targetCredits = Number(toPositiveNumber(objetivosByProfesor.get(profesor.id), 0).toFixed(2));
+        return { profesor, items, specialCredits, targetCredits };
     });
 }
 
@@ -779,8 +796,9 @@ function renderRepartoTab(state) {
     const text = (state.publicRepartoFilter || "").trim().toLowerCase();
     const byProfessor = state.publicRepartoMode !== "asignatura";
     const rows = byProfessor
-        ? assignmentsByProfessor(state).filter(({ profesor, items }) => {
-            const haystack = [professorName(profesor), profesor.id, ...items.map(({ asignatura }) => asignatura.nombre)].join(" ").toLowerCase();
+        ? assignmentsByProfessor(state).filter(({ profesor, items, specialCredits, targetCredits }) => {
+            const specialLabel = toPositiveNumber(specialCredits, 0) > 0 ? "TFG TFM practicas de empresa" : "";
+            const haystack = [professorName(profesor), profesor.id, specialLabel, String(targetCredits), ...items.map(({ asignatura }) => asignatura.nombre)].join(" ").toLowerCase();
             return !text || haystack.includes(text);
         }).sort((a, b) => professorName(a.profesor).localeCompare(professorName(b.profesor), "es", { sensitivity: "base" }))
         : assignmentsBySubject(state).filter(({ asignatura, items }) => {
@@ -810,16 +828,20 @@ function renderRepartoTab(state) {
     `;
 }
 
-function renderProfessorAssignmentCard({ profesor, items }) {
-    const total = Number(items.reduce((sum, { item }) => sum + toPositiveNumber(item.creditos, 0), 0).toFixed(2));
+function renderProfessorAssignmentCard({ profesor, items, specialCredits, targetCredits }) {
+    const teachingCredits = Number(items.reduce((sum, { item }) => sum + toPositiveNumber(item.creditos, 0), 0).toFixed(2));
+    const total = Number((teachingCredits + toPositiveNumber(specialCredits, 0)).toFixed(2));
     return `
         <article class="public-assignment-card">
-            <header><strong>${escapeHtml(professorName(profesor))}</strong><span>${total} horas</span></header>
-            ${items.length === 0 ? `<p class="status">Sin docencia asignada.</p>` : `
+            <header><strong>${escapeHtml(professorName(profesor))}</strong><span>${total} horas / ${targetCredits} horas</span></header>
+            ${items.length === 0 && toPositiveNumber(specialCredits, 0) <= 0 ? `<p class="status">Sin docencia asignada.</p>` : `
                 <ul>
                     ${items.map(({ item, asignatura, subgrupo }) => `
                         <li><span>${escapeHtml(asignatura.nombre)} · ${escapeHtml(subgrupo.nombre || subgrupo.id)}</span><strong>${toPositiveNumber(item.creditos, 0)}</strong></li>
                     `).join("")}
+                    ${toPositiveNumber(specialCredits, 0) > 0 ? `
+                        <li><span>TFG, TFM y practicas de empresa</span><strong>${toPositiveNumber(specialCredits, 0)}</strong></li>
+                    ` : ""}
                 </ul>
             `}
         </article>
@@ -842,10 +864,145 @@ function renderSubjectAssignmentCard({ asignatura, items }) {
     `;
 }
 
+function publicHorarioAsignaturasConSesiones(state) {
+    return (state.asignaturas || []).filter((asignatura) => totalSesionesAsignatura(asignatura) > 0);
+}
+
+function publicHorarioSubgruposConSesiones(asignatura) {
+    return (asignatura.subgrupos || []).filter((subgrupo) => sesionesSubgrupo(subgrupo).length > 0);
+}
+
+function publicHorarioSubgrupoKey(asignatura, subgrupo) {
+    return `${asignatura.id}::${subgrupo.id}`;
+}
+
+function publicHorarioSelectionMap(state) {
+    return state.publicHorarioSelectedSubgrupos && typeof state.publicHorarioSelectedSubgrupos === "object"
+        ? state.publicHorarioSelectedSubgrupos
+        : null;
+}
+
+function ensurePublicHorarioSelection(state) {
+    if (!publicHorarioSelectionMap(state)) {
+        const legacySelection = state.publicHorarioSelectedAsignaturas && typeof state.publicHorarioSelectedAsignaturas === "object"
+            ? state.publicHorarioSelectedAsignaturas
+            : null;
+        state.publicHorarioSelectedSubgrupos = Object.fromEntries(
+            publicHorarioAsignaturasConSesiones(state).flatMap((asignatura) => {
+                const asignaturaSelected = legacySelection ? legacySelection[asignatura.id] === true : true;
+                return publicHorarioSubgruposConSesiones(asignatura)
+                    .map((subgrupo) => [publicHorarioSubgrupoKey(asignatura, subgrupo), asignaturaSelected]);
+            }),
+        );
+    }
+    return state.publicHorarioSelectedSubgrupos;
+}
+
+function publicHorarioSubgrupoVisible(state, asignatura, subgrupo) {
+    const selection = publicHorarioSelectionMap(state);
+    return selection ? selection[publicHorarioSubgrupoKey(asignatura, subgrupo)] === true : true;
+}
+
+function publicHorarioAsignaturaVisible(state, asignatura) {
+    const subgrupos = publicHorarioSubgruposConSesiones(asignatura);
+    return subgrupos.length > 0 && subgrupos.every((subgrupo) => publicHorarioSubgrupoVisible(state, asignatura, subgrupo));
+}
+
+function publicHorarioAsignaturaIndeterminate(state, asignatura) {
+    const subgrupos = publicHorarioSubgruposConSesiones(asignatura);
+    const selectedCount = subgrupos.filter((subgrupo) => publicHorarioSubgrupoVisible(state, asignatura, subgrupo)).length;
+    return selectedCount > 0 && selectedCount < subgrupos.length;
+}
+
+function publicHorarioAsignaturaHasVisibleSubgrupo(state, asignatura) {
+    return publicHorarioSubgruposConSesiones(asignatura).some((subgrupo) => publicHorarioSubgrupoVisible(state, asignatura, subgrupo));
+}
+
+function publicHorarioTree(state) {
+    const byCategory = new Map();
+    publicHorarioAsignaturasConSesiones(state).forEach((asignatura) => {
+        const categoriaId = asignatura.categoriaId || "__sin_categoria__";
+        if (!byCategory.has(categoriaId)) {
+            byCategory.set(categoriaId, {
+                id: categoriaId,
+                nombre: categoriaNombre(state, asignatura.categoriaId),
+                asignaturas: [],
+            });
+        }
+        byCategory.get(categoriaId).asignaturas.push(asignatura);
+    });
+
+    return [...byCategory.values()]
+        .map((category) => ({
+            ...category,
+            asignaturas: category.asignaturas.sort((a, b) => String(a.nombre || "").localeCompare(String(b.nombre || ""), "es", { sensitivity: "base" })),
+        }))
+        .sort((a, b) => String(a.nombre).localeCompare(String(b.nombre), "es", { sensitivity: "base" }));
+}
+
+function renderPublicHorarioTree(state) {
+    const tree = publicHorarioTree(state);
+    if (tree.length === 0) {
+        return `<p class="empty-cell">No hay asignaturas con sesiones importadas.</p>`;
+    }
+
+    return tree.map((category) => {
+        const expanded = state.publicHorarioExpandedCategorias?.[category.id] !== false;
+        const selectedCount = category.asignaturas.filter((asignatura) => publicHorarioAsignaturaHasVisibleSubgrupo(state, asignatura)).length;
+        return `
+            <section class="calendar-category">
+                <div class="public-horario-category-row">
+                    <button class="calendar-expand" data-public-horario-category="${escapeHtml(category.id)}" type="button" aria-label="${expanded ? "Contraer" : "Expandir"} grado">${expanded ? "⌄" : "›"}</button>
+                    <span>
+                        <strong>${escapeHtml(category.nombre)}</strong>
+                        <small>${selectedCount} / ${category.asignaturas.length} asignaturas visibles</small>
+                    </span>
+                </div>
+                ${expanded ? `
+                    <div class="calendar-subject-list">
+                        ${category.asignaturas.map((asignatura) => {
+            const asignaturaExpanded = state.publicHorarioExpandedAsignaturas?.[asignatura.id] === true;
+            const subgrupos = publicHorarioSubgruposConSesiones(asignatura);
+            return `
+                            <div class="calendar-subject">
+                                <div class="calendar-subject-row public-horario-subject-row">
+                                    <button class="calendar-expand" data-public-horario-asignatura-expand="${escapeHtml(asignatura.id)}" type="button" aria-label="${asignaturaExpanded ? "Contraer" : "Expandir"} asignatura">${asignaturaExpanded ? "⌄" : "›"}</button>
+                                    <input data-public-horario-asignatura="${escapeHtml(asignatura.id)}" type="checkbox" ${publicHorarioAsignaturaVisible(state, asignatura) ? "checked" : ""} />
+                                    <span>
+                                        <strong>${escapeHtml(asignatura.nombre || asignatura.id || "Asignatura")}</strong>
+                                        <small>${subgrupos.length} subgrupos · ${totalSesionesAsignatura(asignatura)} sesiones</small>
+                                    </span>
+                                </div>
+                                ${asignaturaExpanded ? `
+                                    <div class="calendar-subgroup-list public-horario-subgroup-list">
+                                        ${subgrupos.map((subgrupo) => `
+                                            <label class="calendar-subgroup-row public-horario-subgroup-row">
+                                                <input data-public-horario-subgrupo="${escapeHtml(publicHorarioSubgrupoKey(asignatura, subgrupo))}" type="checkbox" ${publicHorarioSubgrupoVisible(state, asignatura, subgrupo) ? "checked" : ""} />
+                                                <span>
+                                                    <strong>${escapeHtml(subgrupo.nombre || subgrupo.id || "Subgrupo")}</strong>
+                                                    <small>${escapeHtml(subgrupo.id || "")} · ${sesionesSubgrupo(subgrupo).length} sesiones</small>
+                                                </span>
+                                            </label>
+                                        `).join("")}
+                                    </div>
+                                ` : ""}
+                            </div>
+                        `;
+        }).join("")}
+                    </div>
+                ` : ""}
+            </section>
+        `;
+    }).join("");
+}
+
 function publicCalendarEvents(state) {
     const events = [];
     state.asignaturas.forEach((asignatura) => {
         (asignatura.subgrupos || []).forEach((subgrupo) => {
+            if (!publicHorarioSubgrupoVisible(state, asignatura, subgrupo)) {
+                return;
+            }
             sesionesSubgrupo(subgrupo).forEach((sesion, index) => {
                 const date = sessionDate(sesion);
                 if (!date || !sesion.horaInicio || !sesion.horaFin) return;
@@ -1329,20 +1486,33 @@ function downloadProfessorCalendarIcs(state) {
 
 function renderHorariosTab(state) {
     const events = publicCalendarEvents(state);
+    const totalSubjects = publicHorarioAsignaturasConSesiones(state).length;
     return `
         <section class="card public-section">
             <div class="section-header">
                 <div>
                     <h2>Horarios</h2>
-                    <p class="status">${events.length} eventos de calendario importados.</p>
+                    <p class="status">${events.length} eventos visibles · ${totalSubjects} asignaturas con sesiones importadas.</p>
                 </div>
                 <div class="nav-tabs embedded-tabs public-calendar-tabs">
                     ${CALENDAR_VIEWS.map((view) => `<button class="tab ${state.publicCalendarView === view.value ? "active" : ""}" data-public-calendar-view="${view.value}" type="button">${view.label}</button>`).join("")}
                 </div>
             </div>
-            <div class="calendar-shell">
-                <div id="public-calendar"></div>
-                ${events.length === 0 ? `<p class="empty-cell">No hay eventos importados.</p>` : ""}
+            <div class="public-calendar-workspace with-sidebar">
+                <aside class="form-section public-horario-panel">
+                    <div class="form-section-title">
+                        <span class="section-kicker">Asignaturas</span>
+                        <h3>Filtrar horarios</h3>
+                    </div>
+                    <button id="public-horario-clear-selection-btn" class="secondary" type="button">Limpiar seleccion</button>
+                    <div class="calendar-event-list">
+                        ${renderPublicHorarioTree(state)}
+                    </div>
+                </aside>
+                <div class="calendar-shell">
+                    <div id="public-calendar"></div>
+                    ${events.length === 0 ? `<p class="empty-cell">No hay eventos visibles.</p>` : ""}
+                </div>
             </div>
         </section>
     `;
@@ -1357,7 +1527,6 @@ function renderActivePublicTab(state) {
 
 export function renderPublicView(state) {
     const selectedCourse = state.courses.find((course) => course.id === state.selectedCourse);
-    const totalHoras = totalHorasAsignaturas(state.asignaturas);
     const reajuste = calcularReajusteDocente(state);
     return `
         <div class="container grid public-container">
@@ -1365,15 +1534,15 @@ export function renderPublicView(state) {
                 <div>
                     <h1>PlanDoc publico</h1>
                     <p class="course-loaded">Curso: <strong>${escapeHtml(selectedCourse?.nombre || state.selectedCourse || "Sin curso")}</strong></p>
+                    <p class="public-refresh-notice">Para ver datos actualizados, recarga esta pagina. La vista publica no se actualiza automaticamente.</p>
                     <p class="status">${escapeHtml(state.status)}</p>
                 </div>
-                <a class="button-link secondary" href="./">Acceso admin</a>
             </header>
 
             <div class="teacher-summary subject-summary">
                 <div class="metric-box"><span>Profesores</span><strong>${state.profesores.length}</strong></div>
                 <div class="metric-box"><span>Asignaturas</span><strong>${state.asignaturas.length}</strong></div>
-                <div class="metric-box"><span>Horas a repartir</span><strong>${totalHoras}</strong></div>
+                <div class="metric-box"><span>Horas a repartir</span><strong>${reajuste.totalCarga}</strong></div>
                 <div class="metric-box"><span>Horas asignadas</span><strong>${reajuste.totalAsignado}</strong></div>
             </div>
 
@@ -1463,22 +1632,9 @@ export function bindPublicEvents({ state, render }) {
             render();
         };
     }
-    document.querySelectorAll("[data-public-sim-subgroup]").forEach((input) => {
-        input.onchange = () => {
-            const key = input.dataset.publicSimSubgroup;
-            const selected = new Set(state.publicSimulatedSubgroups || []);
-            if (input.checked) {
-                selected.add(key);
-            } else {
-                selected.delete(key);
-            }
-            state.publicSimulatedSubgroups = [...selected];
-            render();
-        };
-    });
-    document.querySelectorAll("[data-public-sim-expand]").forEach((btn) => {
+    document.querySelectorAll("[data-public-sim-expand-asignatura]").forEach((btn) => {
         btn.onclick = () => {
-            const id = btn.dataset.publicSimExpand;
+            const id = btn.dataset.publicSimExpandAsignatura || "";
             state.publicSimulationExpandedAsignaturas = {
                 ...(state.publicSimulationExpandedAsignaturas || {}),
                 [id]: state.publicSimulationExpandedAsignaturas?.[id] !== true,
@@ -1503,6 +1659,19 @@ export function bindPublicEvents({ state, render }) {
                     next.delete(key);
                 }
             });
+            state.publicSimulatedSubgroups = [...next];
+            render();
+        };
+    });
+    document.querySelectorAll("[data-public-sim-subgrupo]").forEach((input) => {
+        input.onchange = () => {
+            const key = input.dataset.publicSimSubgrupo || "";
+            const next = new Set(state.publicSimulatedSubgroups || []);
+            if (input.checked) {
+                next.add(key);
+            } else {
+                next.delete(key);
+            }
             state.publicSimulatedSubgroups = [...next];
             render();
         };
@@ -1568,6 +1737,67 @@ export function bindPublicEvents({ state, render }) {
     const repartoMode = document.getElementById("public-reparto-mode");
     if (repartoMode) repartoMode.onchange = () => { state.publicRepartoMode = repartoMode.value; render(); };
     bindFilter("public-reparto-filter", (value) => { state.publicRepartoFilter = value; });
+
+    const clearHorarioSelectionBtn = document.getElementById("public-horario-clear-selection-btn");
+    if (clearHorarioSelectionBtn) {
+        clearHorarioSelectionBtn.onclick = () => {
+            state.publicHorarioSelectedAsignaturas = {};
+            state.publicHorarioSelectedSubgrupos = {};
+            render();
+        };
+    }
+
+    document.querySelectorAll("[data-public-horario-category]").forEach((btn) => {
+        btn.onclick = () => {
+            const id = btn.dataset.publicHorarioCategory;
+            state.publicHorarioExpandedCategorias = {
+                ...(state.publicHorarioExpandedCategorias || {}),
+                [id]: state.publicHorarioExpandedCategorias?.[id] === false,
+            };
+            render();
+        };
+    });
+
+    document.querySelectorAll("[data-public-horario-asignatura-expand]").forEach((btn) => {
+        btn.onclick = () => {
+            const id = btn.dataset.publicHorarioAsignaturaExpand || "";
+            state.publicHorarioExpandedAsignaturas = {
+                ...(state.publicHorarioExpandedAsignaturas || {}),
+                [id]: state.publicHorarioExpandedAsignaturas?.[id] !== true,
+            };
+            render();
+        };
+    });
+
+    document.querySelectorAll("[data-public-horario-asignatura]").forEach((input) => {
+        const asignatura = state.asignaturas.find((item) => item.id === input.dataset.publicHorarioAsignatura);
+        if (asignatura) {
+            input.indeterminate = publicHorarioAsignaturaIndeterminate(state, asignatura);
+        }
+        input.onchange = () => {
+            const asignatura = state.asignaturas.find((item) => item.id === input.dataset.publicHorarioAsignatura);
+            if (!asignatura) {
+                return;
+            }
+            const selection = ensurePublicHorarioSelection(state);
+            publicHorarioSubgruposConSesiones(asignatura).forEach((subgrupo) => {
+                selection[publicHorarioSubgrupoKey(asignatura, subgrupo)] = input.checked;
+            });
+            state.publicHorarioSelectedAsignaturas = {
+                ...(state.publicHorarioSelectedAsignaturas || {}),
+                [asignatura.id]: input.checked,
+            };
+            render();
+        };
+    });
+
+    document.querySelectorAll("[data-public-horario-subgrupo]").forEach((input) => {
+        input.onchange = () => {
+            const selection = ensurePublicHorarioSelection(state);
+            selection[input.dataset.publicHorarioSubgrupo] = input.checked;
+            render();
+        };
+    });
 
     document.querySelectorAll("[data-public-calendar-view]").forEach((btn) => {
         btn.onclick = () => {

@@ -78,6 +78,18 @@ h2 {
     color: var(--ink);
 }
 
+.public-refresh-notice {
+    display: inline-block;
+    margin: 0 0 6px;
+    padding: 6px 10px;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    background: #fffbeb;
+    color: #92400e;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
 .grid {
     display: grid;
     gap: 16px;
@@ -494,20 +506,126 @@ button.mini {
     background: #f8fafc;
 }
 
+.public-simulation-panel-inline {
+    margin: 0;
+}
+
+.public-horario-panel {
+    margin: 0;
+    background: #f8fafc;
+}
+
 .public-simulation-panel .calendar-event-list {
     max-height: 650px;
+}
+
+.public-horario-panel .calendar-event-list {
+    max-height: 720px;
+}
+
+.public-horario-panel>button {
+    width: 100%;
+    margin: 0 0 12px;
+}
+
+.public-horario-category-row {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+    margin-bottom: 8px;
+}
+
+.public-horario-category-row strong,
+.public-horario-category-row small,
+.calendar-subject-row.public-horario-subject-row strong,
+.calendar-subject-row.public-horario-subject-row small,
+.calendar-subgroup-row.public-horario-subgroup-row strong,
+.calendar-subgroup-row.public-horario-subgroup-row small {
+    display: block;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+.public-horario-category-row small {
+    color: var(--muted);
+    margin-top: 2px;
+    font-size: 0.76rem;
+}
+
+.calendar-subject-row.public-horario-subject-row {
+    display: grid;
+    grid-template-columns: 26px 18px minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+    margin: 0;
+    padding: 9px 10px;
+    border-top: 1px solid var(--line);
+    background: #f8fafc;
+}
+
+.public-horario-subject-row input[type="checkbox"] {
+    width: auto;
+    margin-top: 2px;
+}
+
+.public-horario-subject-row>span {
+    min-width: 0;
+}
+
+.calendar-subgroup-row.public-horario-subgroup-row {
+    grid-template-columns: 18px minmax(0, 1fr);
+    align-items: start;
+    padding-left: 44px;
+}
+
+.public-horario-subgroup-row>span {
+    min-width: 0;
 }
 
 .public-simulation-panel .calendar-event-control {
     border-radius: 8px;
 }
 
-.simulation-subject-row {
+.calendar-subject-row.simulation-subject-row {
     grid-template-columns: 26px 18px minmax(0, 1fr);
+    align-items: start;
 }
 
-.simulation-subgroup-row {
+.calendar-subgroup-row.simulation-subgroup-row {
     grid-template-columns: 18px minmax(0, 1fr);
+    align-items: start;
+    padding-left: 18px;
+}
+
+.calendar-subgroup-row.simulation-subgroup-row.readonly {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 8px 10px 8px 28px;
+    border-top: 1px solid var(--line);
+    background: #fff;
+}
+
+.calendar-subject-row.simulation-subject-row>span,
+.calendar-subgroup-row.simulation-subgroup-row>span {
+    min-width: 0;
+}
+
+.calendar-subject-row.simulation-subject-row strong,
+.calendar-subject-row.simulation-subject-row small,
+.calendar-subgroup-row.simulation-subgroup-row strong,
+.calendar-subgroup-row.simulation-subgroup-row small {
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: none;
+}
+
+.simulation-subgroup-list {
+    gap: 0;
+    background: #fff;
 }
 
 .printable-calendar {
@@ -518,11 +636,6 @@ button.mini {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 14px;
-}
-
-.public-calendar-workspace.with-sidebar {
-    grid-template-columns: minmax(270px, 330px) minmax(0, 1fr);
-    align-items: start;
 }
 
 .inline-form {
@@ -652,6 +765,13 @@ button.mini {
     border-radius: 8px;
     background: #fff;
     padding: 12px;
+}
+
+.calendar-overlap-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
 }
 
 .switch-row {
@@ -1135,15 +1255,7 @@ button.mini {
 .inline-form-subgroup {
     display: grid;
     grid-template-columns:
-        minmax(82px, 0.7fr)
-        minmax(160px, 1.2fr)
-        minmax(140px, 0.9fr)
-        minmax(130px, 0.9fr)
-        minmax(130px, 0.9fr)
-        minmax(170px, 1fr)
-        minmax(110px, 0.7fr)
-        max-content
-        max-content;
+        minmax(82px, 0.7fr) minmax(160px, 1.2fr) minmax(140px, 0.9fr) minmax(130px, 0.9fr) minmax(130px, 0.9fr) minmax(170px, 1fr) minmax(110px, 0.7fr) max-content max-content;
     gap: 10px;
 }
 
@@ -1563,6 +1675,7 @@ pre {
     overflow: auto;
 }
 
+
 .loading-modal-backdrop {
     position: fixed;
     inset: 0;
@@ -1708,6 +1821,7 @@ pre {
     .allocation-form,
     .filter-bar,
     .calendar-layout,
+    .calendar-overlap-actions,
     .public-calendar-workspace.with-sidebar,
     .public-link-card,
     .course-toolbar {

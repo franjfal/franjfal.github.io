@@ -11,6 +11,7 @@ export const state = {
     publicProfesorCalendarId: "",
     publicProfesorCalendarView: "timeGridWeek",
     publicSimulationMode: false,
+    publicSimulationSelectorOpen: false,
     publicSimulatedSubgroups: [],
     publicSimulationExpandedAsignaturas: {},
     publicAsignaturaFilter: "",
@@ -26,11 +27,20 @@ export const state = {
     publicRepartoMode: "profesor",
     publicRepartoFilter: "",
     publicCalendarView: "timeGridWeek",
+    publicHorarioSelectedAsignaturas: null,
+    publicHorarioSelectedSubgrupos: null,
+    publicHorarioExpandedCategorias: {},
+    publicHorarioExpandedAsignaturas: {},
     courses: [],
     selectedCourse: "",
     isCourseModalOpen: false,
     profesores: [],
     profesoresVersion: "",
+    profesoresFilterText: "",
+    profesoresFilterReducciones: "",
+    profesoresFilterAjustable: "",
+    profesoresSortKey: "nombre",
+    profesoresSortDir: "asc",
     isProfesorModalOpen: false,
     profesorModalMode: "create",
     editingProfesorIndex: -1,
@@ -42,6 +52,9 @@ export const state = {
         docenciaAjustable: true,
         reducciones: [],
     },
+    isProfesorImportModalOpen: false,
+    showProfesorImportHelp: false,
+    profesorImportText: "",
     asignaturas: [],
     asignaturasVersion: "",
     isAsignaturaModalOpen: false,
@@ -117,6 +130,11 @@ export const state = {
 export function resetCourseSlices() {
     state.profesores = [];
     state.profesoresVersion = "";
+    state.profesoresFilterText = "";
+    state.profesoresFilterReducciones = "";
+    state.profesoresFilterAjustable = "";
+    state.profesoresSortKey = "nombre";
+    state.profesoresSortDir = "asc";
     state.isProfesorModalOpen = false;
     state.profesorModalMode = "create";
     state.editingProfesorIndex = -1;
@@ -128,6 +146,9 @@ export function resetCourseSlices() {
         docenciaAjustable: true,
         reducciones: [],
     };
+    state.isProfesorImportModalOpen = false;
+    state.showProfesorImportHelp = false;
+    state.profesorImportText = "";
     state.asignaturas = [];
     state.asignaturasVersion = "";
     state.isAsignaturaModalOpen = false;
@@ -196,6 +217,11 @@ export function resetCourseSlices() {
     state.calendarDate = "";
     state.calendarExpandedAsignaturas = {};
     state.calendarCheckOverlaps = false;
+    state.publicHorarioSelectedAsignaturas = null;
+    state.publicHorarioSelectedSubgrupos = null;
+    state.publicHorarioExpandedCategorias = {};
+    state.publicHorarioExpandedAsignaturas = {};
+    state.publicSimulationSelectorOpen = false;
     state.selectedProfesorIndex = -1;
     state.selectedAsignaturaIndex = -1;
 }

@@ -1,5 +1,5 @@
-import { escapeHtml, toPositiveNumber, uid } from "./utils.js";
 import { calcularReajusteDocente, capacidadProfesor, totalReduccionesProfesor } from "./reajuste.js";
+import { escapeHtml, toPositiveNumber, uid } from "./utils.js";
 
 const REDUCCION_TIPOS = [
     { value: "Sexenios", label: "Sexenios" },
@@ -90,6 +90,12 @@ function closeProfesorModal(state) {
     state.profesorDraft = emptyProfesorDraft();
 }
 
+function closeProfesorImportModal(state) {
+    state.isProfesorImportModalOpen = false;
+    state.showProfesorImportHelp = false;
+    state.profesorImportText = "";
+}
+
 function updateProfesorDraftFromModal(state) {
     state.profesorDraft = {
         id: (document.getElementById("prof-new-id")?.value || "").trim(),
@@ -146,10 +152,310 @@ function profesorInitials(profesor) {
     return `${first}${second}`.toUpperCase() || "P";
 }
 
+function compareValues(a, b, dir = 1) {
+    if (typeof a === "number" || typeof b === "number") {
+        return (toPositiveNumber(a, 0) - toPositiveNumber(b, 0)) * dir;
+    }
+    return String(a || "").localeCompare(String(b || ""), "es", { numeric: true, sensitivity: "base" }) * dir;
+}
+
+function profesorSortArrow(state, key) {
+    if (state.profesoresSortKey !== key) {
+        return "";
+    }
+    return state.profesoresSortDir === "desc" ? " v" : " ^";
+}
+
+function profesorSortValue(profesor, calc, key) {
+    if (key === "nombre") return profesor.nombre || profesor.nombreCompleto || profesor.id || "";
+    if (key === "apellidos") return profesor.apellidos || profesor.nombreCompleto || profesor.id || "";
+    if (key === "objetivo") return toPositiveNumber(profesor.creditosObjetivo, 0);
+    if (key === "reducciones") return totalReducciones(profesor);
+    if (key === "tfm") return toPositiveNumber(calc.cargaTfm, 0);
+    if (key === "capacidad") return toPositiveNumber(calc.capacidad, 0);
+    if (key === "reales") return toPositiveNumber(calc.objetivoReal, 0);
+    if (key === "reajuste") return toPositiveNumber(calc.reajuste, 0);
+    if (key === "ajustable") return calc.esAjustable ? 1 : 0;
+    return profesor.nombreCompleto || [profesor.nombre, profesor.apellidos].filter(Boolean).join(" ") || profesor.id || "";
+}
+
+function visibleProfesoresWithIndex(state, reajusteByProfesor) {
+    const text = (state.profesoresFilterText || "").trim().toLowerCase();
+    const reduccionesFilter = state.profesoresFilterReducciones || "";
+    const ajustableFilter = state.profesoresFilterAjustable || "";
+    const key = state.profesoresSortKey || "nombre";
+    const dir = state.profesoresSortDir === "desc" ? -1 : 1;
+
+    return state.profesores
+        .map((profesor, originalIndex) => {
+            const calc = reajusteByProfesor.get(profesor.id) || {
+                objetivoReal: creditosDisponibles(profesor),
+                reajuste: 0,
+                esAjustable: profesor.docenciaAjustable !== false,
+                cargaTfm: 0,
+                capacidad: creditosDisponibles(profesor),
+            };
+            return { profesor, originalIndex, calc };
+        })
+        .filter(({ profesor, calc }) => {
+            const reducciones = totalReducciones(profesor);
+            const haystack = [
+                profesor.id,
+                profesor.nombre,
+                profesor.apellidos,
+                profesor.nombreCompleto,
+                ...(profesor.reducciones || []).flatMap((reduccion) => [reduccion.tipo, reduccion.descripcion]),
+            ].filter(Boolean).join(" ").toLowerCase();
+            return (!text || haystack.includes(text))
+                && (!reduccionesFilter || (reduccionesFilter === "con" ? reducciones > 0 : reducciones <= 0))
+                && (!ajustableFilter || (ajustableFilter === "si" ? calc.esAjustable : !calc.esAjustable));
+        })
+        .sort((a, b) => compareValues(
+            profesorSortValue(a.profesor, a.calc, key),
+            profesorSortValue(b.profesor, b.calc, key),
+            dir,
+        ));
+}
+
+function renderProfesorImportInstructions() {
+    const tipos = REDUCCION_TIPOS.map((tipo) => tipo.value).join(", ");
+    return `Instrucciones para el LLM:
+- Convierte la informacion que te pase el usuario sobre profesores a un array JSON valido.
+- Devuelve solo JSON valido, sin texto alrededor.
+- Puedes devolver uno o varios profesores en el mismo array.
+- Cada profesor debe incluir: id, nombre, apellidos, creditosObjetivo, docenciaAjustable y reducciones.
+- creditosObjetivo debe ser un numero igual o mayor que 0.
+- docenciaAjustable debe ser true o false.
+- reducciones debe ser un array. Cada reduccion debe incluir: tipo, creditos y descripcion.
+- creditos de cada reduccion debe ser un numero igual o mayor que 0.
+- Usa uno de estos tipos de reduccion cuando encaje: ${tipos}.
+- Si no hay reducciones, devuelve reducciones: [].
+- Manten ids estables y cortos, por ejemplo jperez o maria-garcia.
+
+Ejemplo:
+[
+  {
+    "id": "jperez",
+    "nombre": "Juan",
+    "apellidos": "Perez Lopez",
+    "creditosObjetivo": 180,
+    "docenciaAjustable": true,
+    "reducciones": [
+      {
+        "tipo": "Cargos",
+        "creditos": 12,
+        "descripcion": "Coordinacion de titulacion"
+      }
+    ]
+  },
+  {
+    "id": "mgarcia",
+    "nombre": "Maria",
+    "apellidos": "Garcia Ruiz",
+    "creditosObjetivo": 160,
+    "docenciaAjustable": false,
+    "reducciones": []
+  }
+]`;
+}
+
+function isNonNegativeNumber(value) {
+    if (value === "" || value === null || value === undefined) {
+        return false;
+    }
+    const num = Number.parseFloat(String(value).replace(",", "."));
+    return Number.isFinite(num) && num >= 0;
+}
+
+function validateImportedProfesores(state, profesores) {
+    if (!Array.isArray(profesores) || profesores.length === 0) {
+        return "El importador espera un array JSON con uno o varios profesores.";
+    }
+
+    const seenIds = new Set();
+    for (const profesor of profesores) {
+        if (!profesor || typeof profesor !== "object" || Array.isArray(profesor)) {
+            return "Cada profesor importado debe ser un objeto JSON.";
+        }
+        if (!profesor.id || !profesor.nombre || !profesor.apellidos) {
+            return "Cada profesor debe incluir id, nombre y apellidos.";
+        }
+        if (seenIds.has(profesor.id)) {
+            return `El id de profesor ${profesor.id} esta repetido dentro de la importacion.`;
+        }
+        if (state.profesores.some((existing) => existing.id === profesor.id)) {
+            return `El id de profesor ${profesor.id} ya existe en este curso.`;
+        }
+        if (!isNonNegativeNumber(profesor.creditosObjetivo)) {
+            return `El profesor ${profesor.id} debe incluir creditosObjetivo con un numero igual o mayor que 0.`;
+        }
+        if (profesor.docenciaAjustable !== undefined && typeof profesor.docenciaAjustable !== "boolean") {
+            return `El profesor ${profesor.id} debe indicar docenciaAjustable como true o false.`;
+        }
+        if (profesor.reducciones !== undefined && !Array.isArray(profesor.reducciones)) {
+            return `El profesor ${profesor.id} debe incluir reducciones como array.`;
+        }
+        for (const reduccion of profesor.reducciones || []) {
+            if (!reduccion || typeof reduccion !== "object" || Array.isArray(reduccion)) {
+                return `Las reducciones del profesor ${profesor.id} deben ser objetos JSON.`;
+            }
+            if (!reduccion.tipo) {
+                return `Cada reduccion del profesor ${profesor.id} debe incluir tipo.`;
+            }
+            if (!isNonNegativeNumber(reduccion.creditos)) {
+                return `Cada reduccion del profesor ${profesor.id} debe incluir creditos con un numero igual o mayor que 0.`;
+            }
+        }
+        seenIds.add(profesor.id);
+    }
+
+    return "";
+}
+
+async function copyTextToClipboard(text) {
+    if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return;
+    }
+
+    const fallback = document.createElement("textarea");
+    fallback.value = text;
+    fallback.setAttribute("readonly", "readonly");
+    fallback.style.position = "fixed";
+    fallback.style.opacity = "0";
+    document.body.appendChild(fallback);
+    fallback.select();
+    document.execCommand("copy");
+    document.body.removeChild(fallback);
+}
+
+function formatHours(value) {
+    return Number(toPositiveNumber(value, 0).toFixed(2));
+}
+
+function hoursToCredits(value) {
+    return formatHours(toPositiveNumber(value, 0) / 10);
+}
+
+function openPrintableHtml(html) {
+    const popup = window.open("", "_blank");
+    if (!popup) {
+        window.print();
+        return;
+    }
+    popup.document.open();
+    popup.document.write(html);
+    popup.document.close();
+    popup.focus();
+    setTimeout(() => popup.print(), 400);
+}
+
+function printableBaseStyles() {
+    return `
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; color: #17242b; font-family: Arial, sans-serif; }
+        body { background: #fff; }
+        .pdf-page { width: 100%; padding: 0; break-after: page; page-break-after: always; }
+        .pdf-page:last-child { break-after: auto; page-break-after: auto; }
+        h1 { margin: 0 0 5mm; font-size: 18px; line-height: 1.15; }
+        .pdf-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9px; }
+        .pdf-table th, .pdf-table td { border: 1px solid #cbd5e1; padding: 4px; vertical-align: top; overflow-wrap: anywhere; }
+        .pdf-table th { background: #e2e8f0; color: #0f172a; text-align: left; }
+        .pdf-table thead { display: table-header-group; }
+        .pdf-table tr { break-inside: avoid; page-break-inside: avoid; }
+        .total-cell { background: #f8fafc; font-weight: 700; }
+        .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4mm; margin: 0 0 5mm; }
+        .summary-box { border: 1px solid #cbd5e1; border-radius: 7px; padding: 4mm; background: #f8fafc; }
+        .summary-box span { display: block; color: #64748b; font-size: 9px; margin-bottom: 1mm; }
+        .summary-box strong { display: block; color: #0f172a; font-size: 15px; }
+        .muted { color: #64748b; }
+        @page { size: A4 portrait; margin: 8mm; }
+    `;
+}
+
+function printableProfesoresPdfHtml(state) {
+    const profesores = [...state.profesores].sort((a, b) => compareValues(a.apellidos || a.nombreCompleto || a.id, b.apellidos || b.nombreCompleto || b.id));
+    const rows = profesores.map((profesor) => {
+        const originalHours = formatHours(profesor.creditosObjetivo);
+        const reductionHours = totalReducciones(profesor);
+        const finalHours = formatHours(Math.max(0, originalHours - reductionHours));
+        return {
+            profesor,
+            originalHours,
+            originalCredits: hoursToCredits(originalHours),
+            reductionHours,
+            reductionCredits: hoursToCredits(reductionHours),
+            finalHours,
+            finalCredits: hoursToCredits(finalHours),
+        };
+    });
+    const totals = rows.reduce((acc, row) => ({
+        originalHours: formatHours(acc.originalHours + row.originalHours),
+        originalCredits: formatHours(acc.originalCredits + row.originalCredits),
+        reductionHours: formatHours(acc.reductionHours + row.reductionHours),
+        reductionCredits: formatHours(acc.reductionCredits + row.reductionCredits),
+        finalHours: formatHours(acc.finalHours + row.finalHours),
+        finalCredits: formatHours(acc.finalCredits + row.finalCredits),
+    }), { originalHours: 0, originalCredits: 0, reductionHours: 0, reductionCredits: 0, finalHours: 0, finalCredits: 0 });
+    const title = `Carga de profesores · ${state.selectedCourse || "curso"}`;
+
+    return `
+        <!doctype html>
+        <html lang="es">
+        <head>
+            <meta charset="utf-8" />
+            <title>${escapeHtml(title)}</title>
+            <style>${printableBaseStyles()}</style>
+        </head>
+        <body>
+            <section class="pdf-page">
+                <h1>${escapeHtml(title)}</h1>
+                <div class="summary-grid">
+                    <div class="summary-box"><span>Horas originales</span><strong>${totals.originalHours}</strong></div>
+                    <div class="summary-box"><span>Horas por reducciones</span><strong>${totals.reductionHours}</strong></div>
+                    <div class="summary-box"><span>Horas finales</span><strong>${totals.finalHours}</strong></div>
+                </div>
+                <table class="pdf-table">
+                    <thead>
+                        <tr><th>Nombre</th><th>Apellidos</th><th>Carga original</th><th>Reducciones</th><th>Carga final</th></tr>
+                    </thead>
+                    <tbody>
+                        ${rows.length === 0 ? `
+                            <tr><td colspan="5">No hay profesores cargados.</td></tr>
+                        ` : rows.map((row) => `
+                            <tr>
+                                <td><strong>${escapeHtml(row.profesor.nombre || row.profesor.id)}</strong><br><span class="muted">${escapeHtml(row.profesor.id)}</span></td>
+                                <td>${escapeHtml(row.profesor.apellidos || "")}</td>
+                                <td>${row.originalHours} horas<br><strong>${row.originalCredits} creditos</strong></td>
+                                <td>${row.reductionHours} horas<br><strong>${row.reductionCredits} creditos</strong></td>
+                                <td>${row.finalHours} horas<br><strong>${row.finalCredits} creditos</strong></td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="total-cell" colspan="2">Total</td>
+                            <td class="total-cell">${totals.originalHours} horas · ${totals.originalCredits} creditos</td>
+                            <td class="total-cell">${totals.reductionHours} horas · ${totals.reductionCredits} creditos</td>
+                            <td class="total-cell">${totals.finalHours} horas · ${totals.finalCredits} creditos</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </section>
+        </body>
+        </html>
+    `;
+}
+
+function downloadProfesoresPdf(state) {
+    openPrintableHtml(printableProfesoresPdfHtml(state));
+}
+
 export function renderProfesoresSection(state) {
     const stats = profesoresStats(state.profesores);
     const reajuste = calcularReajusteDocente(state);
     const reajusteByProfesor = new Map(reajuste.profesoresDetalle.map((item) => [item.profesor.id, item]));
+    const visibleProfesores = visibleProfesoresWithIndex(state, reajusteByProfesor);
 
     return `
         <div class="card teacher-panel">
@@ -167,41 +473,74 @@ export function renderProfesoresSection(state) {
                 <div class="metric-box"><span>Total disponible</span><strong>${stats.disponibles}</strong></div>
             </div>
 
+            <div class="export-actions">
+                <button id="download-profesores-pdf-btn" class="secondary" type="button">Exportar profesores a PDF</button>
+            </div>
+
+            <div class="filter-bar">
+                <label>
+                    Buscar
+                    <input id="prof-filter-text" placeholder="Nombre, identificador o reduccion" value="${escapeHtml(state.profesoresFilterText || "")}" />
+                </label>
+                <label>
+                    Reducciones
+                    <select id="prof-filter-reducciones">
+                        <option value="">Todos</option>
+                        <option value="con" ${state.profesoresFilterReducciones === "con" ? "selected" : ""}>Con reducciones</option>
+                        <option value="sin" ${state.profesoresFilterReducciones === "sin" ? "selected" : ""}>Sin reducciones</option>
+                    </select>
+                </label>
+                <label>
+                    Ajustable
+                    <select id="prof-filter-ajustable">
+                        <option value="">Todos</option>
+                        <option value="si" ${state.profesoresFilterAjustable === "si" ? "selected" : ""}>Si</option>
+                        <option value="no" ${state.profesoresFilterAjustable === "no" ? "selected" : ""}>No</option>
+                    </select>
+                </label>
+                <button id="clear-prof-filters-btn" class="secondary" type="button">Limpiar filtros</button>
+            </div>
+
             <div class="table-shell">
                 <table class="table teacher-table">
                     <thead>
                         <tr>
-                            <th>Profesor</th>
-                            <th>Objetivo</th>
-                            <th>Reducciones</th>
-                            <th>TFM</th>
-                            <th>Capacidad reajuste</th>
-                            <th>Horas reales</th>
-                            <th>Reajuste</th>
-                            <th>Ajustable</th>
+                            <th><button class="table-sort" data-sort-profesores="nombre" type="button">Nombre${profesorSortArrow(state, "nombre")}</button></th>
+                            <th><button class="table-sort" data-sort-profesores="apellidos" type="button">Apellidos${profesorSortArrow(state, "apellidos")}</button></th>
+                            <th><button class="table-sort" data-sort-profesores="objetivo" type="button">Objetivo${profesorSortArrow(state, "objetivo")}</button></th>
+                            <th><button class="table-sort" data-sort-profesores="reducciones" type="button">Reducciones${profesorSortArrow(state, "reducciones")}</button></th>
+                            <th><button class="table-sort" data-sort-profesores="tfm" type="button">TFM${profesorSortArrow(state, "tfm")}</button></th>
+                            <th><button class="table-sort" data-sort-profesores="capacidad" type="button">Capacidad reajuste${profesorSortArrow(state, "capacidad")}</button></th>
+                            <th><button class="table-sort" data-sort-profesores="reales" type="button">Horas reales${profesorSortArrow(state, "reales")}</button></th>
+                            <th><button class="table-sort" data-sort-profesores="reajuste" type="button">Reajuste${profesorSortArrow(state, "reajuste")}</button></th>
+                            <th><button class="table-sort" data-sort-profesores="ajustable" type="button">Ajustable${profesorSortArrow(state, "ajustable")}</button></th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         ${state.profesores.length === 0 ? `
                             <tr>
-                                <td colspan="9" class="empty-cell">
+                                <td colspan="10" class="empty-cell">
                                     No hay profesores en este curso. Usa el bot&oacute;n + para crear el primero.
                                 </td>
                             </tr>
-                        ` : state.profesores.map((p, i) => {
-                            const calc = reajusteByProfesor.get(p.id) || { objetivoReal: creditosDisponibles(p), reajuste: 0, esAjustable: p.docenciaAjustable !== false, cargaTfm: 0, capacidad: creditosDisponibles(p) };
-                            return `
-                            <tr class="${i === state.selectedProfesorIndex ? "row-active" : ""}">
+                        ` : visibleProfesores.length === 0 ? `
+                            <tr>
+                                <td colspan="10" class="empty-cell">No hay profesores que coincidan con los filtros.</td>
+                            </tr>
+                        ` : visibleProfesores.map(({ profesor: p, originalIndex, calc }) => {
+        return `
+                            <tr class="${originalIndex === state.selectedProfesorIndex ? "row-active" : ""}">
                                 <td>
                                     <div class="teacher-cell">
                                         <span class="avatar">${escapeHtml(profesorInitials(p))}</span>
                                         <span>
-                                            <strong>${escapeHtml(p.nombreCompleto)}</strong>
+                                            <strong>${escapeHtml(p.nombre || p.nombreCompleto || p.id)}</strong>
                                             <small>${escapeHtml(p.id)}</small>
                                         </span>
                                     </div>
                                 </td>
+                                <td><strong>${escapeHtml(p.apellidos || "")}</strong></td>
                                 <td><span class="num-pill">${toPositiveNumber(p.creditosObjetivo, 0)}</span></td>
                                 <td><span class="num-pill muted-pill">${totalReducciones(p)}</span></td>
                                 <td><span class="num-pill ${calc.cargaTfm > 0 ? "danger-pill" : "muted-pill"}">${calc.cargaTfm}</span></td>
@@ -210,12 +549,12 @@ export function renderProfesoresSection(state) {
                                 <td><span class="num-pill ${calc.reajuste < 0 ? "danger-pill" : "muted-pill"}">${calc.reajuste}</span></td>
                                 <td><span class="badge ${calc.esAjustable ? "" : "muted-badge"}">${calc.esAjustable ? "Si" : "No"}</span></td>
                                 <td class="table-actions">
-                                    <button class="secondary mini" data-edit-prof="${i}">Editar</button>
-                                    <button class="warn mini" data-remove-prof="${i}">Eliminar</button>
+                                    <button class="secondary mini" data-edit-prof="${originalIndex}">Editar</button>
+                                    <button class="warn mini" data-remove-prof="${originalIndex}">Eliminar</button>
                                 </td>
                             </tr>
                             `;
-                        }).join("")}
+    }).join("")}
                     </tbody>
                 </table>
             </div>
@@ -223,6 +562,7 @@ export function renderProfesoresSection(state) {
 
         <button id="open-prof-modal-btn" class="fab" type="button" aria-label="Anadir profesor" title="Anadir profesor">+</button>
         ${state.isProfesorModalOpen ? renderProfesorModal(state) : ""}
+        ${state.isProfesorImportModalOpen ? renderProfesorImportModal(state) : ""}
     `;
 }
 
@@ -239,14 +579,22 @@ function renderProfesorModal(state) {
         <div class="modal-backdrop" id="prof-modal-backdrop">
             <section class="card modal professor-modal" role="dialog" aria-modal="true" aria-labelledby="prof-modal-title">
                 <div class="modal-header">
-                    <h2 id="prof-modal-title">${title}</h2>
-                    <button class="secondary mini" id="close-prof-modal-btn" type="button">Cerrar</button>
+                    <div>
+                        <h2 id="prof-modal-title">${title}</h2>
+                        ${isEdit ? "" : `<p class="status">Tambien puedes importar varios profesores de una vez desde JSON.</p>`}
+                    </div>
+                    <div class="header-actions">
+                        ${isEdit ? "" : `<button id="open-prof-import-modal-btn" class="secondary mini" type="button">Importar profesores</button>`}
+                        <button class="secondary mini" id="close-prof-modal-btn" type="button">Cerrar</button>
+                    </div>
                 </div>
                 <div class="grid">
                     <section class="form-section">
                         <div class="form-section-title">
-                            <span class="section-kicker">Datos personales</span>
-                            <h3>Identificaci&oacute;n del profesor</h3>
+                            <div>
+                                <span class="section-kicker">Datos personales</span>
+                                <h3>Identificaci&oacute;n del profesor</h3>
+                            </div>
                         </div>
                         <div class="grid grid-2">
                         <label>
@@ -319,8 +667,102 @@ function renderProfesorModal(state) {
     `;
 }
 
+function renderProfesorImportModal(state) {
+    return `
+        <div class="modal-backdrop" id="prof-import-modal-backdrop">
+            <section class="card modal professor-modal" role="dialog" aria-modal="true" aria-labelledby="prof-import-modal-title">
+                <div class="modal-header">
+                    <div>
+                        <h2 id="prof-import-modal-title">Importar profesores</h2>
+                        <p class="status">Pega un array JSON con uno o varios profesores y sus reducciones.</p>
+                    </div>
+                    <button class="secondary mini" id="close-prof-import-modal-btn" type="button">Cerrar</button>
+                </div>
+                <div class="grid">
+                    <section class="form-section">
+                        <div class="form-section-title import-title-row">
+                            <div>
+                                <span class="section-kicker">Importacion</span>
+                                <h3>Datos generados por LLM</h3>
+                            </div>
+                            <div class="header-actions">
+                                <button id="copy-prof-import-help-btn" class="secondary mini" type="button">Copiar instrucciones</button>
+                                <button id="toggle-prof-import-help-btn" class="secondary mini icon-button" type="button" title="Instrucciones para LLM" aria-label="Instrucciones para LLM">?</button>
+                            </div>
+                        </div>
+                        ${state.showProfesorImportHelp ? `<pre class="help-panel">${escapeHtml(renderProfesorImportInstructions())}</pre>` : ""}
+                        <label>
+                            JSON de profesores
+                            <textarea id="prof-import-text" class="import-textarea" placeholder='[{"id":"jperez","nombre":"Juan","apellidos":"Perez","creditosObjetivo":180,"docenciaAjustable":true,"reducciones":[]}]'>${escapeHtml(state.profesorImportText || "")}</textarea>
+                        </label>
+                    </section>
+                    <button id="apply-prof-import-btn" type="button">Importar profesores</button>
+                </div>
+            </section>
+        </div>
+    `;
+}
+
 export function bindProfesoresEvents({ app, state, setStatus, render, saveProfesores }) {
     bindManualReduccionToggle("new-red-tipo", "new-red-tipo-manual");
+
+    const filterText = document.getElementById("prof-filter-text");
+    if (filterText) {
+        const applyTextFilter = () => {
+            state.profesoresFilterText = filterText.value || "";
+            render();
+        };
+        filterText.onchange = applyTextFilter;
+        filterText.onkeydown = (e) => {
+            if (e.key === "Enter") {
+                applyTextFilter();
+            }
+        };
+    }
+
+    const filterReducciones = document.getElementById("prof-filter-reducciones");
+    if (filterReducciones) {
+        filterReducciones.onchange = () => {
+            state.profesoresFilterReducciones = filterReducciones.value;
+            render();
+        };
+    }
+
+    const filterAjustable = document.getElementById("prof-filter-ajustable");
+    if (filterAjustable) {
+        filterAjustable.onchange = () => {
+            state.profesoresFilterAjustable = filterAjustable.value;
+            render();
+        };
+    }
+
+    const clearFiltersBtn = document.getElementById("clear-prof-filters-btn");
+    if (clearFiltersBtn) {
+        clearFiltersBtn.onclick = () => {
+            state.profesoresFilterText = "";
+            state.profesoresFilterReducciones = "";
+            state.profesoresFilterAjustable = "";
+            render();
+        };
+    }
+
+    const profesoresPdfBtn = document.getElementById("download-profesores-pdf-btn");
+    if (profesoresPdfBtn) {
+        profesoresPdfBtn.onclick = () => downloadProfesoresPdf(state);
+    }
+
+    app.querySelectorAll("[data-sort-profesores]").forEach((btn) => {
+        btn.onclick = () => {
+            const key = btn.dataset.sortProfesores;
+            if (state.profesoresSortKey === key) {
+                state.profesoresSortDir = state.profesoresSortDir === "asc" ? "desc" : "asc";
+            } else {
+                state.profesoresSortKey = key;
+                state.profesoresSortDir = ["objetivo", "reducciones", "tfm", "capacidad", "reales", "reajuste"].includes(key) ? "desc" : "asc";
+            }
+            render();
+        };
+    });
 
     const openProfModalBtn = document.getElementById("open-prof-modal-btn");
     if (openProfModalBtn) {
@@ -333,10 +775,29 @@ export function bindProfesoresEvents({ app, state, setStatus, render, saveProfes
         };
     }
 
+    const openProfImportBtn = document.getElementById("open-prof-import-modal-btn");
+    if (openProfImportBtn) {
+        openProfImportBtn.onclick = () => {
+            updateProfesorDraftFromModal(state);
+            state.isProfesorImportModalOpen = true;
+            state.showProfesorImportHelp = false;
+            state.profesorImportText = "";
+            render();
+        };
+    }
+
     const closeProfModalBtn = document.getElementById("close-prof-modal-btn");
     if (closeProfModalBtn) {
         closeProfModalBtn.onclick = () => {
             closeProfesorModal(state);
+            render();
+        };
+    }
+
+    const closeProfImportBtn = document.getElementById("close-prof-import-modal-btn");
+    if (closeProfImportBtn) {
+        closeProfImportBtn.onclick = () => {
+            closeProfesorImportModal(state);
             render();
         };
     }
@@ -347,6 +808,74 @@ export function bindProfesoresEvents({ app, state, setStatus, render, saveProfes
             if (e.target === profModalBackdrop) {
                 closeProfesorModal(state);
                 render();
+            }
+        };
+    }
+
+    const profImportBackdrop = document.getElementById("prof-import-modal-backdrop");
+    if (profImportBackdrop) {
+        profImportBackdrop.onclick = (e) => {
+            if (e.target === profImportBackdrop) {
+                closeProfesorImportModal(state);
+                render();
+            }
+        };
+    }
+
+    const toggleProfImportHelpBtn = document.getElementById("toggle-prof-import-help-btn");
+    if (toggleProfImportHelpBtn) {
+        toggleProfImportHelpBtn.onclick = () => {
+            state.profesorImportText = document.getElementById("prof-import-text")?.value || "";
+            state.showProfesorImportHelp = !state.showProfesorImportHelp;
+            render();
+        };
+    }
+
+    const copyProfImportHelpBtn = document.getElementById("copy-prof-import-help-btn");
+    if (copyProfImportHelpBtn) {
+        copyProfImportHelpBtn.onclick = async () => {
+            try {
+                await copyTextToClipboard(renderProfesorImportInstructions());
+                setStatus("Instrucciones de importacion de profesores copiadas al portapapeles.");
+            } catch {
+                setStatus("No se pudieron copiar automaticamente las instrucciones de importacion.");
+            }
+        };
+    }
+
+    const applyProfImportBtn = document.getElementById("apply-prof-import-btn");
+    if (applyProfImportBtn) {
+        applyProfImportBtn.onclick = async () => {
+            const rawText = (document.getElementById("prof-import-text")?.value || "").trim();
+            if (!rawText) {
+                setStatus("Pega el JSON de profesores antes de importar.");
+                return;
+            }
+
+            let parsed;
+            try {
+                parsed = JSON.parse(rawText);
+            } catch (err) {
+                setStatus(`JSON no valido: ${err.message}`);
+                return;
+            }
+
+            const importedProfesores = Array.isArray(parsed) ? parsed : [parsed];
+            const validationError = validateImportedProfesores(state, importedProfesores);
+            if (validationError) {
+                setStatus(validationError);
+                return;
+            }
+
+            const nextProfesores = importedProfesores.map((profesor) => normalizeProfesor(profesor));
+            state.profesores.push(...nextProfesores);
+            state.selectedProfesorIndex = state.profesores.length - 1;
+            closeProfesorImportModal(state);
+            closeProfesorModal(state);
+            const previousVersion = state.profesoresVersion;
+            await saveProfesores();
+            if (state.profesoresVersion !== previousVersion) {
+                setStatus(nextProfesores.length === 1 ? "1 profesor importado." : `${nextProfesores.length} profesores importados.`);
             }
         };
     }
@@ -441,7 +970,11 @@ export function bindProfesoresEvents({ app, state, setStatus, render, saveProfes
         btn.onclick = async () => {
             const idx = Number(btn.dataset.removeProf);
             state.profesores.splice(idx, 1);
-            if (state.selectedProfesorIndex >= state.profesores.length) {
+            if (state.selectedProfesorIndex === idx) {
+                state.selectedProfesorIndex = -1;
+            } else if (state.selectedProfesorIndex > idx) {
+                state.selectedProfesorIndex -= 1;
+            } else if (state.selectedProfesorIndex >= state.profesores.length) {
                 state.selectedProfesorIndex = state.profesores.length - 1;
             }
             closeProfesorModal(state);

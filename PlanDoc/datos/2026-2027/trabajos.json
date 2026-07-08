@@ -1,0 +1,97 @@
+[
+  {
+    "id": "tfg-matex-concertado",
+    "tipo": "tfg",
+    "titulo": "TFG Mates Concertados",
+    "totalTrabajos": 16,
+    "peso": 9.6,
+    "asignaciones": {
+      "pablo-andujar": 2,
+      "francisco-falco": 3.5,
+      "carmen-fernandez": 1,
+      "antonio-galbis": 2,
+      "jesus-garcia": 1,
+      "daniel-isert": 1.5,
+      "alejandro-miralles": 1,
+      "oscar-roldan": 1,
+      "marcos-solera": 2,
+      "mazon": 1
+    }
+  },
+  {
+    "id": "tfg-mates-libres",
+    "tipo": "tfg",
+    "titulo": "TFG Mates Libres",
+    "totalTrabajos": 7,
+    "peso": 9.6,
+    "asignaciones": {
+      "oscar-blasco": 2,
+      "sergio-segura": 2,
+      "marcos-solera": 2,
+      "mazon": 1
+    }
+  },
+  {
+    "id": "tfg-mates-fisica",
+    "tipo": "tfg",
+    "titulo": "TFG Mates Física Concertados",
+    "totalTrabajos": 1,
+    "peso": 9.6,
+    "asignaciones": {
+      "jose-martinez": 1
+    }
+  },
+  {
+    "id": "tfg-mates-fisica-libres",
+    "tipo": "tfg",
+    "titulo": "TFG Mates Física Libres",
+    "totalTrabajos": 5.5,
+    "peso": 9.6,
+    "asignaciones": {
+      "oscar-blasco": 2.5,
+      "jose-martinez": 1.5,
+      "mazon": 1,
+      "davidBeltran": 0.5
+    }
+  },
+  {
+    "id": "practicas-empresa-mates",
+    "tipo": "practicas",
+    "titulo": "Prácticas Empresa Mates",
+    "totalTrabajos": 7,
+    "peso": 3,
+    "asignaciones": {
+      "francisco-falco": 7
+    }
+  },
+  {
+    "id": "practicas-empresa-gcd",
+    "tipo": "practicas",
+    "titulo": "PRácticas Empresa GCD",
+    "totalTrabajos": 1,
+    "peso": 3,
+    "asignaciones": {
+      "francisco-falco": 1
+    }
+  },
+  {
+    "id": "tfg-gcd",
+    "tipo": "tfg",
+    "titulo": "TFG GCD",
+    "totalTrabajos": 1,
+    "peso": 9.6,
+    "asignaciones": {
+      "francisco-falco": 1
+    }
+  },
+  {
+    "id": "tfg-cta",
+    "tipo": "tfg",
+    "titulo": "TFG CTA",
+    "totalTrabajos": 1,
+    "peso": 9.6,
+    "asignaciones": {
+      "francisco-falco": 1
+    }
+  }
+]

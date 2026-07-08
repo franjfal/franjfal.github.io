@@ -1,0 +1,50 @@
+[
+  {
+    "id": "Matematicas",
+    "nombre": "Gradon en Matemáticas"
+  },
+  {
+    "id": "Matemáticas-Informática",
+    "nombre": "Gradon en Matemáticas e informática"
+  },
+  {
+    "id": "grado-quimica",
+    "nombre": "Grado en Química"
+  },
+  {
+    "id": "grado-datos",
+    "nombre": "Grado en Ciencia de Datos"
+  },
+  {
+    "id": "grado-alimentos",
+    "nombre": "Grado en Ciencia y Tecnología de los Alimentos"
+  },
+  {
+    "id": "grado-telematica",
+    "nombre": "Grado en Ingeniería Telemática"
+  },
+  {
+    "id": "grado-teleco",
+    "nombre": "Grado en Ingeniería Electrónica de Telecomunicación"
+  },
+  {
+    "id": "master-investmat",
+    "nombre": "Máster Universitario en Investigación Matemática"
+  },
+  {
+    "id": "doble-grado-mat-fisica",
+    "nombre": "Doble Grado en Física y Matemáticas"
+  },
+  {
+    "id": "doble-grado-mat-telematica",
+    "nombre": "Doble Grado en Matemáticas y en Ingeniería Telemática"
+  },
+  {
+    "id": "doble-grado-mat-informatica",
+    "nombre": "Doble Grado en Matemáticas y en Ingeniería Informática"
+  },
+  {
+    "id": "doble-grado-mat-telematica-o-inf",
+    "nombre": "Doble Grado en Matemáticas y en Ingeniería Telemática/Ingeniería Informática"
+  }
+]
