@@ -47,7 +47,12 @@
     "titulo": "TFG Mates Física Libres",
     "totalTrabajos": 6,
     "peso": 9.6,
-    "asignaciones": {}
+    "asignaciones": {
+      "oscar-blasco": 2.5,
+      "jose-martinez": 1.5,
+      "mazon": 1,
+      "davidBeltran": 0.5
+    }
   },
   {
     "id": "practicas-empresa-mates",
