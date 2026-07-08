@@ -482,25 +482,28 @@ function renderSimulationTree(state) {
                 ${category.asignaturas.map(({ asignatura, subgrupos }) => {
         const selectedCount = subgrupos.filter(({ key }) => selected.has(key)).length;
         const allSelected = selectedCount === subgrupos.length;
+        const expanded = state.publicSimulationExpandedAsignaturas?.[asignatura.id] === true;
         return `
                     <div class="calendar-subject">
                         <div class="calendar-subject-row simulation-subject-row">
+                            <button class="calendar-expand" data-public-sim-expand-asignatura="${escapeHtml(asignatura.id)}" type="button" aria-label="${expanded ? "Contraer" : "Expandir"} asignatura">${expanded ? "⌄" : "›"}</button>
                             <input data-public-sim-asignatura="${escapeHtml(asignatura.id)}" type="checkbox" ${allSelected ? "checked" : ""} />
                             <span>
                                 <strong>${escapeHtml(asignatura.nombre || asignatura.id || "Asignatura")}</strong>
                                 <small>${subgrupos.length} subgrupos pendientes · ${subgrupos.reduce((sum, item) => sum + item.pending, 0).toFixed(2)} horas</small>
                             </span>
                         </div>
-                        <div class="calendar-subgroup-list simulation-subgroup-list">
+                        ${expanded ? `<div class="calendar-subgroup-list simulation-subgroup-list">
                             ${subgrupos.map(({ subgrupo, pending }) => `
-                                <div class="calendar-subgroup-row simulation-subgroup-row readonly">
+                                <label class="calendar-subgroup-row simulation-subgroup-row">
+                                    <input data-public-sim-subgrupo="${escapeHtml(`${asignatura.id}::${subgrupo.id}`)}" type="checkbox" ${selected.has(`${asignatura.id}::${subgrupo.id}`) ? "checked" : ""} />
                                     <span>
                                         <strong>${escapeHtml(subgrupo.nombre || subgrupo.id || "Subgrupo")}</strong>
                                         <small>${escapeHtml(subgrupo.id || "")} · ${pending} horas pendientes · ${sesionesSubgrupo(subgrupo).length} eventos</small>
                                     </span>
-                                </div>
+                                </label>
                             `).join("")}
-                        </div>
+                        </div>` : ""}
                     </div>
                 `;
     }).join("")}
@@ -865,24 +868,54 @@ function publicHorarioAsignaturasConSesiones(state) {
     return (state.asignaturas || []).filter((asignatura) => totalSesionesAsignatura(asignatura) > 0);
 }
 
+function publicHorarioSubgruposConSesiones(asignatura) {
+    return (asignatura.subgrupos || []).filter((subgrupo) => sesionesSubgrupo(subgrupo).length > 0);
+}
+
+function publicHorarioSubgrupoKey(asignatura, subgrupo) {
+    return `${asignatura.id}::${subgrupo.id}`;
+}
+
 function publicHorarioSelectionMap(state) {
-    return state.publicHorarioSelectedAsignaturas && typeof state.publicHorarioSelectedAsignaturas === "object"
-        ? state.publicHorarioSelectedAsignaturas
+    return state.publicHorarioSelectedSubgrupos && typeof state.publicHorarioSelectedSubgrupos === "object"
+        ? state.publicHorarioSelectedSubgrupos
         : null;
 }
 
 function ensurePublicHorarioSelection(state) {
     if (!publicHorarioSelectionMap(state)) {
-        state.publicHorarioSelectedAsignaturas = Object.fromEntries(
-            publicHorarioAsignaturasConSesiones(state).map((asignatura) => [asignatura.id, true]),
+        const legacySelection = state.publicHorarioSelectedAsignaturas && typeof state.publicHorarioSelectedAsignaturas === "object"
+            ? state.publicHorarioSelectedAsignaturas
+            : null;
+        state.publicHorarioSelectedSubgrupos = Object.fromEntries(
+            publicHorarioAsignaturasConSesiones(state).flatMap((asignatura) => {
+                const asignaturaSelected = legacySelection ? legacySelection[asignatura.id] === true : true;
+                return publicHorarioSubgruposConSesiones(asignatura)
+                    .map((subgrupo) => [publicHorarioSubgrupoKey(asignatura, subgrupo), asignaturaSelected]);
+            }),
         );
     }
-    return state.publicHorarioSelectedAsignaturas;
+    return state.publicHorarioSelectedSubgrupos;
+}
+
+function publicHorarioSubgrupoVisible(state, asignatura, subgrupo) {
+    const selection = publicHorarioSelectionMap(state);
+    return selection ? selection[publicHorarioSubgrupoKey(asignatura, subgrupo)] === true : true;
 }
 
 function publicHorarioAsignaturaVisible(state, asignatura) {
-    const selection = publicHorarioSelectionMap(state);
-    return selection ? selection[asignatura.id] === true : true;
+    const subgrupos = publicHorarioSubgruposConSesiones(asignatura);
+    return subgrupos.length > 0 && subgrupos.every((subgrupo) => publicHorarioSubgrupoVisible(state, asignatura, subgrupo));
+}
+
+function publicHorarioAsignaturaIndeterminate(state, asignatura) {
+    const subgrupos = publicHorarioSubgruposConSesiones(asignatura);
+    const selectedCount = subgrupos.filter((subgrupo) => publicHorarioSubgrupoVisible(state, asignatura, subgrupo)).length;
+    return selectedCount > 0 && selectedCount < subgrupos.length;
+}
+
+function publicHorarioAsignaturaHasVisibleSubgrupo(state, asignatura) {
+    return publicHorarioSubgruposConSesiones(asignatura).some((subgrupo) => publicHorarioSubgrupoVisible(state, asignatura, subgrupo));
 }
 
 function publicHorarioTree(state) {
@@ -915,7 +948,7 @@ function renderPublicHorarioTree(state) {
 
     return tree.map((category) => {
         const expanded = state.publicHorarioExpandedCategorias?.[category.id] !== false;
-        const selectedCount = category.asignaturas.filter((asignatura) => publicHorarioAsignaturaVisible(state, asignatura)).length;
+        const selectedCount = category.asignaturas.filter((asignatura) => publicHorarioAsignaturaHasVisibleSubgrupo(state, asignatura)).length;
         return `
             <section class="calendar-category">
                 <div class="public-horario-category-row">
@@ -927,15 +960,35 @@ function renderPublicHorarioTree(state) {
                 </div>
                 ${expanded ? `
                     <div class="calendar-subject-list">
-                        ${category.asignaturas.map((asignatura) => `
-                            <label class="public-horario-subject-row">
-                                <input data-public-horario-asignatura="${escapeHtml(asignatura.id)}" type="checkbox" ${publicHorarioAsignaturaVisible(state, asignatura) ? "checked" : ""} />
-                                <span>
-                                    <strong>${escapeHtml(asignatura.nombre || asignatura.id || "Asignatura")}</strong>
-                                    <small>${totalSesionesAsignatura(asignatura)} sesiones</small>
-                                </span>
-                            </label>
-                        `).join("")}
+                        ${category.asignaturas.map((asignatura) => {
+            const asignaturaExpanded = state.publicHorarioExpandedAsignaturas?.[asignatura.id] === true;
+            const subgrupos = publicHorarioSubgruposConSesiones(asignatura);
+            return `
+                            <div class="calendar-subject">
+                                <div class="calendar-subject-row public-horario-subject-row">
+                                    <button class="calendar-expand" data-public-horario-asignatura-expand="${escapeHtml(asignatura.id)}" type="button" aria-label="${asignaturaExpanded ? "Contraer" : "Expandir"} asignatura">${asignaturaExpanded ? "⌄" : "›"}</button>
+                                    <input data-public-horario-asignatura="${escapeHtml(asignatura.id)}" type="checkbox" ${publicHorarioAsignaturaVisible(state, asignatura) ? "checked" : ""} />
+                                    <span>
+                                        <strong>${escapeHtml(asignatura.nombre || asignatura.id || "Asignatura")}</strong>
+                                        <small>${subgrupos.length} subgrupos · ${totalSesionesAsignatura(asignatura)} sesiones</small>
+                                    </span>
+                                </div>
+                                ${asignaturaExpanded ? `
+                                    <div class="calendar-subgroup-list public-horario-subgroup-list">
+                                        ${subgrupos.map((subgrupo) => `
+                                            <label class="calendar-subgroup-row public-horario-subgroup-row">
+                                                <input data-public-horario-subgrupo="${escapeHtml(publicHorarioSubgrupoKey(asignatura, subgrupo))}" type="checkbox" ${publicHorarioSubgrupoVisible(state, asignatura, subgrupo) ? "checked" : ""} />
+                                                <span>
+                                                    <strong>${escapeHtml(subgrupo.nombre || subgrupo.id || "Subgrupo")}</strong>
+                                                    <small>${escapeHtml(subgrupo.id || "")} · ${sesionesSubgrupo(subgrupo).length} sesiones</small>
+                                                </span>
+                                            </label>
+                                        `).join("")}
+                                    </div>
+                                ` : ""}
+                            </div>
+                        `;
+        }).join("")}
                     </div>
                 ` : ""}
             </section>
@@ -946,10 +999,10 @@ function renderPublicHorarioTree(state) {
 function publicCalendarEvents(state) {
     const events = [];
     state.asignaturas.forEach((asignatura) => {
-        if (!publicHorarioAsignaturaVisible(state, asignatura)) {
-            return;
-        }
         (asignatura.subgrupos || []).forEach((subgrupo) => {
+            if (!publicHorarioSubgrupoVisible(state, asignatura, subgrupo)) {
+                return;
+            }
             sesionesSubgrupo(subgrupo).forEach((sesion, index) => {
                 const date = sessionDate(sesion);
                 if (!date || !sesion.horaInicio || !sesion.horaFin) return;
@@ -1579,6 +1632,16 @@ export function bindPublicEvents({ state, render }) {
             render();
         };
     }
+    document.querySelectorAll("[data-public-sim-expand-asignatura]").forEach((btn) => {
+        btn.onclick = () => {
+            const id = btn.dataset.publicSimExpandAsignatura || "";
+            state.publicSimulationExpandedAsignaturas = {
+                ...(state.publicSimulationExpandedAsignaturas || {}),
+                [id]: state.publicSimulationExpandedAsignaturas?.[id] !== true,
+            };
+            render();
+        };
+    });
     document.querySelectorAll("[data-public-sim-asignatura]").forEach((input) => {
         const asignaturaId = input.dataset.publicSimAsignatura;
         const keys = availableSimulationSubgroups(state)
@@ -1596,6 +1659,19 @@ export function bindPublicEvents({ state, render }) {
                     next.delete(key);
                 }
             });
+            state.publicSimulatedSubgroups = [...next];
+            render();
+        };
+    });
+    document.querySelectorAll("[data-public-sim-subgrupo]").forEach((input) => {
+        input.onchange = () => {
+            const key = input.dataset.publicSimSubgrupo || "";
+            const next = new Set(state.publicSimulatedSubgroups || []);
+            if (input.checked) {
+                next.add(key);
+            } else {
+                next.delete(key);
+            }
             state.publicSimulatedSubgroups = [...next];
             render();
         };
@@ -1666,6 +1742,7 @@ export function bindPublicEvents({ state, render }) {
     if (clearHorarioSelectionBtn) {
         clearHorarioSelectionBtn.onclick = () => {
             state.publicHorarioSelectedAsignaturas = {};
+            state.publicHorarioSelectedSubgrupos = {};
             render();
         };
     }
@@ -1681,10 +1758,43 @@ export function bindPublicEvents({ state, render }) {
         };
     });
 
+    document.querySelectorAll("[data-public-horario-asignatura-expand]").forEach((btn) => {
+        btn.onclick = () => {
+            const id = btn.dataset.publicHorarioAsignaturaExpand || "";
+            state.publicHorarioExpandedAsignaturas = {
+                ...(state.publicHorarioExpandedAsignaturas || {}),
+                [id]: state.publicHorarioExpandedAsignaturas?.[id] !== true,
+            };
+            render();
+        };
+    });
+
     document.querySelectorAll("[data-public-horario-asignatura]").forEach((input) => {
+        const asignatura = state.asignaturas.find((item) => item.id === input.dataset.publicHorarioAsignatura);
+        if (asignatura) {
+            input.indeterminate = publicHorarioAsignaturaIndeterminate(state, asignatura);
+        }
+        input.onchange = () => {
+            const asignatura = state.asignaturas.find((item) => item.id === input.dataset.publicHorarioAsignatura);
+            if (!asignatura) {
+                return;
+            }
+            const selection = ensurePublicHorarioSelection(state);
+            publicHorarioSubgruposConSesiones(asignatura).forEach((subgrupo) => {
+                selection[publicHorarioSubgrupoKey(asignatura, subgrupo)] = input.checked;
+            });
+            state.publicHorarioSelectedAsignaturas = {
+                ...(state.publicHorarioSelectedAsignaturas || {}),
+                [asignatura.id]: input.checked,
+            };
+            render();
+        };
+    });
+
+    document.querySelectorAll("[data-public-horario-subgrupo]").forEach((input) => {
         input.onchange = () => {
             const selection = ensurePublicHorarioSelection(state);
-            selection[input.dataset.publicHorarioAsignatura] = input.checked;
+            selection[input.dataset.publicHorarioSubgrupo] = input.checked;
             render();
         };
     });

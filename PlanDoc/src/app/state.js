@@ -28,7 +28,9 @@ export const state = {
     publicRepartoFilter: "",
     publicCalendarView: "timeGridWeek",
     publicHorarioSelectedAsignaturas: null,
+    publicHorarioSelectedSubgrupos: null,
     publicHorarioExpandedCategorias: {},
+    publicHorarioExpandedAsignaturas: {},
     courses: [],
     selectedCourse: "",
     isCourseModalOpen: false,
@@ -216,7 +218,9 @@ export function resetCourseSlices() {
     state.calendarExpandedAsignaturas = {};
     state.calendarCheckOverlaps = false;
     state.publicHorarioSelectedAsignaturas = null;
+    state.publicHorarioSelectedSubgrupos = null;
     state.publicHorarioExpandedCategorias = {};
+    state.publicHorarioExpandedAsignaturas = {};
     state.publicSimulationSelectorOpen = false;
     state.selectedProfesorIndex = -1;
     state.selectedAsignaturaIndex = -1;

@@ -538,8 +538,10 @@ button.mini {
 
 .public-horario-category-row strong,
 .public-horario-category-row small,
-.public-horario-subject-row strong,
-.public-horario-subject-row small {
+.calendar-subject-row.public-horario-subject-row strong,
+.calendar-subject-row.public-horario-subject-row small,
+.calendar-subgroup-row.public-horario-subgroup-row strong,
+.calendar-subgroup-row.public-horario-subgroup-row small {
     display: block;
     overflow: visible;
     text-overflow: clip;
@@ -553,9 +555,9 @@ button.mini {
     font-size: 0.76rem;
 }
 
-.public-horario-subject-row {
+.calendar-subject-row.public-horario-subject-row {
     display: grid;
-    grid-template-columns: 18px minmax(0, 1fr);
+    grid-template-columns: 26px 18px minmax(0, 1fr);
     gap: 8px;
     align-items: start;
     margin: 0;
@@ -573,37 +575,47 @@ button.mini {
     min-width: 0;
 }
 
+.calendar-subgroup-row.public-horario-subgroup-row {
+    grid-template-columns: 18px minmax(0, 1fr);
+    align-items: start;
+    padding-left: 44px;
+}
+
+.public-horario-subgroup-row>span {
+    min-width: 0;
+}
+
 .public-simulation-panel .calendar-event-control {
     border-radius: 8px;
 }
 
-.simulation-subject-row {
-    grid-template-columns: 18px minmax(0, 1fr);
+.calendar-subject-row.simulation-subject-row {
+    grid-template-columns: 26px 18px minmax(0, 1fr);
     align-items: start;
 }
 
-.simulation-subgroup-row {
+.calendar-subgroup-row.simulation-subgroup-row {
     grid-template-columns: 18px minmax(0, 1fr);
     align-items: start;
     padding-left: 18px;
 }
 
-.simulation-subgroup-row.readonly {
+.calendar-subgroup-row.simulation-subgroup-row.readonly {
     grid-template-columns: minmax(0, 1fr);
     padding: 8px 10px 8px 28px;
     border-top: 1px solid var(--line);
     background: #fff;
 }
 
-.simulation-subject-row>span,
-.simulation-subgroup-row>span {
+.calendar-subject-row.simulation-subject-row>span,
+.calendar-subgroup-row.simulation-subgroup-row>span {
     min-width: 0;
 }
 
-.simulation-subject-row strong,
-.simulation-subject-row small,
-.simulation-subgroup-row strong,
-.simulation-subgroup-row small {
+.calendar-subject-row.simulation-subject-row strong,
+.calendar-subject-row.simulation-subject-row small,
+.calendar-subgroup-row.simulation-subgroup-row strong,
+.calendar-subgroup-row.simulation-subgroup-row small {
     overflow: visible;
     text-overflow: clip;
     overflow-wrap: break-word;
