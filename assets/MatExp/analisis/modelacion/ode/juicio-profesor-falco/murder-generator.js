@@ -375,7 +375,6 @@
 
   function commonContextDoc(data) {
     const { timeline, temps, teacherFullName, teacherShortName, className } = data;
-    const second = formatNumber(temps.secondMeasurement);
 
     return makeSpec(
       "context",
@@ -386,32 +385,32 @@
         block.image("cover", "", { maxHeight: 190 }),
         block.heading("Historia base"),
         block.paragraph(
-          `Professor ${teacherFullName} was known for his infamous surprise exams in "${className}" at the University of Valencia.`
+          `El profesor ${teacherFullName} era conocido en la Universidad de Valencia por sus temidos exámenes sorpresa en "${className}".`
         ),
         block.paragraph(
-          `On ${formatEnglishDate(timeline.classEnd)}, during a particularly tense class, Professor ${teacherShortName} announced yet another surprise exam. Groans filled the lecture hall as students exchanged worried glances. The tension was palpable as papers were handed out, and the timed exam began. The surprise exam felt like a cruel twist of fate.`
+          `El ${formatDate(timeline.classEnd)}, durante una clase especialmente tensa, el profesor ${teacherShortName} anunció otro examen sorpresa. Los murmullos llenaron el aula mientras el alumnado intercambiaba miradas de preocupación. La tensión era palpable cuando se repartieron los enunciados y comenzó la prueba cronometrada.`
         ),
         block.paragraph(
-          "As the minutes ticked by, students could feel their anxiety mounting. Their mind raced, trying to recall the solutions to the differential equations and the steps for the Laplace transforms. Sweat dripped down their forehead as they scribbled down their answers, hoping against hope that they had gotten it right."
+          "A medida que pasaban los minutos, la ansiedad aumentaba. Cada estudiante intentaba recordar las soluciones de las ecuaciones diferenciales y los pasos de las transformadas de Laplace, escribiendo respuestas a toda prisa con la esperanza de acertar."
         ),
         block.paragraph(
-          "Finally, the exam ended with a sense of relief mixed with dread. Students filed out of the lecture hall, some discussing answers, others silently contemplating their performance. Later that afternoon, news spread like wildfire across campus. A shocking incident had occurred, leaving the university community in disbelief."
+          "Finalmente, el examen terminó con una mezcla de alivio y temor. El alumnado salió del aula; algunos comentaban respuestas, otros caminaban en silencio pensando en su rendimiento. Más tarde, aquella tarde, la noticia se extendió rápidamente por el campus: había ocurrido un incidente estremecedor."
         ),
         block.paragraph(
-          "Police arrived, cordoning off the area as they began their investigation. As the investigation began, the police could not ignore the whispers among the students."
+          "La policía llegó y acordonó la zona para iniciar la investigación. Desde el primer momento, los agentes no pudieron ignorar los rumores y susurros que circulaban entre los estudiantes."
         ),
         block.paragraph(
-          "The investigation into the shocking incident that had rocked the University of Valencia led to the trial of three main suspects."
+          "La investigación del incidente que sacudió a la Universidad de Valencia condujo al juicio de tres personas sospechosas principales."
         ),
         block.heading("Resumen policial"),
         block.paragraph(
-          `On the morning of ${formatEnglishDate(timeline.classEnd)}, Professor ${teacherShortName} was conducting the usual class. The class ended at ${formatEnglishTime(timeline.classEnd)}, but several students remained in or near the building for different lengths of time. It was around ${formatEnglishTime(timeline.discovery)} when the body of Professor ${teacherShortName} was discovered in the classroom by a student, Suspect 3, who immediately alerted the building custodian.`
+          `La mañana del ${formatDate(timeline.classEnd)}, el profesor ${teacherShortName} impartía su clase habitual. La clase terminó a las ${formatTime(timeline.classEnd)}, pero varios estudiantes permanecieron en el edificio o cerca de él durante distintos intervalos de tiempo. Hacia las ${formatTime(timeline.discovery)}, ${data.suspects[2].withArticle} encontró el cuerpo del profesor ${teacherShortName} en el aula y avisó inmediatamente a la conserje.`
         ),
         block.paragraph(
-          `Upon arrival at ${formatEnglishTime(timeline.firstMeasurement)}, the forensic doctor recorded the body temperature of the deceased as ${formatNumber(temps.firstMeasurement)}°C. An hour later, the temperature was measured again and found to be ${second}°C. Using Newton's Law of Cooling, these measurements were used to determine that the time of death was approximately ${formatEnglishTime(timeline.death)}.`
+          `Al llegar a las ${formatTime(timeline.firstMeasurement)}, el médico forense registró una temperatura corporal de ${formatCelsius(temps.firstMeasurement)}. Una hora después, la temperatura se midió de nuevo y fue de ${formatCelsius(temps.secondMeasurement)}. Usando la ley de enfriamiento de Newton, estas mediciones permiten estimar que la muerte se produjo aproximadamente a las ${formatTime(timeline.death)}.`
         ),
         block.paragraph(
-          `The suspects include students who had interactions with Professor ${teacherShortName} or were in the building around the estimated time of death. Suspect 1 stayed behind with the professor and left at approximately ${formatEnglishTime(timeline.death)}. Suspect 2 returned later to collect a forgotten jacket near the classroom entrance, but did not go to the front of the room, where the body was partly hidden behind the professor's desk. Suspect 3 returned only for the afternoon class and discovered the body. The forensic evidence, combined with their testimonies, will help to establish the guilt or innocence of each suspect.`
+          `Las personas sospechosas son estudiantes que interactuaron con el profesor ${teacherShortName} o estuvieron en el edificio alrededor de la hora estimada de muerte. ${data.suspects[0].withArticleCap} se quedó con el profesor y salió aproximadamente a las ${formatTime(timeline.death)}. ${data.suspects[1].withArticleCap} regresó más tarde para recoger una chaqueta olvidada cerca de la entrada del aula, pero no avanzó hasta la parte delantera, donde el cuerpo quedó parcialmente oculto detrás de la mesa del profesor. ${data.suspects[2].withArticleCap} volvió solo para la clase de la tarde y encontró el cuerpo. La evidencia forense, combinada con los testimonios, ayudará a establecer la culpabilidad o inocencia de cada persona sospechosa.`
         )
       ]
     );
@@ -631,55 +630,51 @@
     return makeSpec(
       "forensicReport",
       "07_Informe_forense.pdf",
-      "Forensic Report",
-      `Professor ${teacherShortName}'s case`,
+      "Informe forense",
+      `Caso del profesor ${teacherShortName}`,
       [
         block.caseFile(
           [
-            ["Case", `Murder of Professor ${teacherShortName}`],
-            ["Victim", `Professor ${teacherFullName}`],
-            ["Date", formatEnglishDate(timeline.classEnd)],
-            ["Prepared by", "Forensic Doctor"],
-            ["Status", "Initial forensic findings"]
+            ["Caso", `Asesinato del profesor ${teacherShortName}`],
+            ["Víctima", `Profesor ${teacherFullName}`],
+            ["Fecha", formatDate(timeline.classEnd)],
+            ["Preparado por", "Médico forense"],
+            ["Estado", "Hallazgos forenses iniciales"]
           ],
           [
             {
-              title: "Summary",
-              body: `On ${formatEnglishDate(timeline.classEnd)}, at ${formatEnglishTime(timeline.forensicCall)}, I received a call from the building custodian informing me that the body of Professor ${teacherShortName} had been found in one of the classrooms. I arrived at the university at ${formatEnglishTime(timeline.firstMeasurement)} and proceeded to examine the body.`
+              title: "Resumen",
+              body: `El ${formatDate(timeline.classEnd)}, a las ${formatTime(timeline.forensicCall)}, recibí una llamada de la conserje del edificio informándome de que el cuerpo del profesor ${teacherShortName} había sido encontrado en una de las aulas. Llegué a la universidad a las ${formatTime(timeline.firstMeasurement)} y procedí a examinar el cuerpo.`
             },
             {
-              title: "Observations",
+              title: "Observaciones",
               bullets: [
-                "A preliminary examination indicated signs of an unnatural death, likely caused by an external agent.",
-                `Upon initial examination, the body temperature of Professor ${teacherShortName} was recorded at ${formatCelsius(temps.firstMeasurement)}. This suggests that some time had elapsed since the professor's death and the discovery of the body.`,
-                `At ${formatEnglishTime(timeline.secondMeasurement)}, the body temperature of Professor ${teacherShortName} was re-measured, recording ${formatCelsius(temps.secondMeasurement)}.`,
-                "A detailed autopsy of the deceased revealed that the cause of death was premeditated homicide.",
-                "The professor's death resulted from an injection that caused instantaneous death."
+                "El examen preliminar indicó signos de muerte no natural, probablemente causada por un agente externo.",
+                `En el examen inicial, la temperatura corporal del profesor ${teacherShortName} fue de ${formatCelsius(temps.firstMeasurement)}. Esto sugiere que había transcurrido un tiempo desde la muerte hasta el descubrimiento del cuerpo.`,
+                `A las ${formatTime(timeline.secondMeasurement)}, la temperatura corporal del profesor ${teacherShortName} se midió de nuevo y fue de ${formatCelsius(temps.secondMeasurement)}.`,
+                "La autopsia detallada reveló que la causa de muerte fue un homicidio premeditado.",
+                "La muerte del profesor se produjo por una inyección que causó muerte instantánea."
               ]
             },
             {
-              title: "Conclusion",
-              body: `Based on the forensic evidence, it is concluded that Professor ${teacherShortName} was the victim of a homicide. The cause of death was an injection that caused instantaneous death. Using Newton's Law of Cooling and the two temperature measurements, the time of death is estimated at approximately ${formatEnglishTime(timeline.death)} on ${formatEnglishDate(timeline.death)}.`
+              title: "Conclusión",
+              body: `A partir de la evidencia forense, se concluye que el profesor ${teacherShortName} fue víctima de un homicidio. La causa de muerte fue una inyección que provocó muerte instantánea. Usando la ley de enfriamiento de Newton y las dos mediciones de temperatura, la hora de muerte se estima aproximadamente a las ${formatTime(timeline.death)} del ${formatDate(timeline.death)}.`
             },
             {
-              title: "Recommendations",
+              title: "Recomendaciones",
               bullets: [
-                "A thorough investigation should be conducted to identify the perpetrator or perpetrators of this crime.",
-                `The injection used to kill Professor ${teacherShortName} should be analyzed to determine its origin and potential suspects.`,
-                `A detailed timeline of Professor ${teacherShortName}'s activities leading up to death should be constructed to identify any potential motives or suspects.`
+                "Debe realizarse una investigación exhaustiva para identificar a la persona o personas responsables del crimen.",
+                `La inyección utilizada para matar al profesor ${teacherShortName} debe analizarse para determinar su origen y posibles responsables.`,
+                `Debe construirse una cronología detallada de las actividades del profesor ${teacherShortName} antes de su muerte para identificar posibles motivos o sospechosos.`
               ]
             },
             {
-              title: "Additional Notes",
+              title: "Notas adicionales",
               bullets: [
-                "No signs of forced entry were found, indicating that the victim may have known the perpetrator.",
-                "A search of the crime scene revealed no obvious murder weapon, suggesting that the injection was administered using a small, concealed device.",
-                "This report is a summary of the initial forensic findings. Further investigation may reveal additional details and conclusions."
+                "No se encontraron señales de entrada forzada, lo que indica que la víctima pudo conocer a la persona agresora.",
+                "La inspección de la escena no reveló ningún arma homicida evidente, lo que sugiere que la inyección se administró con un dispositivo pequeño y oculto.",
+                "Este informe resume los hallazgos forenses iniciales. La investigación posterior puede revelar detalles y conclusiones adicionales."
               ]
-            },
-            {
-              title: "Visual Support",
-              body: "Use the shared case dossier and the mathematical handout for the classroom plan, cooling curve, timeline evidence and comparison of testimonies."
             }
           ]
         )
@@ -698,59 +693,59 @@
     return makeSpec(
       "forensicMath",
       "08_Informe_forense_matematico.pdf",
-      "Case Preparation Handout",
-      "Newton's Law of Cooling applied to the forensic evidence",
+      "Informe matemático del caso",
+      "Ley de enfriamiento de Newton aplicada a la evidencia forense",
       [
-        block.heading("Newton's Law of Cooling"),
+        block.heading("Ley de enfriamiento de Newton"),
         block.paragraph(
-          "Newton's Law of Cooling states that the rate of heat loss of a body is proportional to the difference in temperature between the body and its surroundings."
+          "La ley de enfriamiento de Newton establece que la tasa de pérdida de calor de un cuerpo es proporcional a la diferencia de temperatura entre el cuerpo y su entorno."
         ),
         block.paragraph("dT(t)/dt = -k(T(t) - Ta)"),
         block.bullets([
-          "t is the time variable, measured in hours from the first forensic measurement.",
-          "T(t) is the body temperature at time t.",
-          `Ta is the ambient temperature, here Ta = ${formatCelsius(temps.ambient)}.`,
-          "k is the proportionality constant depending on the cooling conditions."
+          "t es la variable temporal, medida en horas desde la primera medición forense.",
+          "T(t) es la temperatura corporal en el instante t.",
+          `Ta es la temperatura ambiente; en este caso, Ta = ${formatCelsius(temps.ambient)}.`,
+          "k es la constante de proporcionalidad, dependiente de las condiciones de enfriamiento."
         ]),
-        block.heading("Information Available"),
+        block.heading("Información disponible"),
         block.numbered([
-          `Temperature at time of death: the professor's normal body temperature is assumed to be ${formatCelsius(temps.bodyAtDeath)}.`,
-          `Room temperature: the classroom temperature was constant at ${formatCelsius(temps.ambient)}.`,
-          `Forensic measurements: at ${formatEnglishTime(timeline.firstMeasurement)}, the body temperature was ${formatCelsius(temps.firstMeasurement)}; one hour later, at ${formatEnglishTime(timeline.secondMeasurement)}, it was ${formatCelsius(temps.secondMeasurement)}.`
+          `Temperatura en el momento de la muerte: se asume que la temperatura corporal normal del profesor era ${formatCelsius(temps.bodyAtDeath)}.`,
+          `Temperatura de la sala: la temperatura del aula se mantuvo constante en ${formatCelsius(temps.ambient)}.`,
+          `Mediciones forenses: a las ${formatTime(timeline.firstMeasurement)}, la temperatura corporal fue ${formatCelsius(temps.firstMeasurement)}; una hora después, a las ${formatTime(timeline.secondMeasurement)}, fue ${formatCelsius(temps.secondMeasurement)}.`
         ]),
         block.pageBreak(),
-        block.heading("Visual Model"),
+        block.heading("Modelo visual"),
         block.paragraph(
-          "The cooling curve below turns the differential equation into a visual piece of evidence. It connects the two forensic measurements with the estimated time of death."
+          "La curva de enfriamiento convierte la ecuación diferencial en una prueba visual. Conecta las dos mediciones forenses con la hora estimada de muerte."
         ),
         block.coolingCurve(timeline, temps),
-        block.heading("Solving the Differential Equation"),
+        block.heading("Resolución de la ecuación diferencial"),
         block.numbered([
-          "Newton's cooling equation: dT(t)/dt = -k(T(t) - Ta).",
-          `Rewriting with Ta = ${formatNumber(temps.ambient)}: dT(t)/(T(t) - ${formatNumber(temps.ambient)}) = -k dt.`,
-          `Integration gives ln(T(t) - ${formatNumber(temps.ambient)}) = -kt + C.`,
-          `Exponential form: T(t) = ${formatNumber(temps.ambient)} + A e^(-kt).`
+          "Ecuación de enfriamiento de Newton: dT(t)/dt = -k(T(t) - Ta).",
+          `Reescribiendo con Ta = ${formatNumber(temps.ambient)}: dT(t)/(T(t) - ${formatNumber(temps.ambient)}) = -k dt.`,
+          `Al integrar se obtiene ln(T(t) - ${formatNumber(temps.ambient)}) = -kt + C.`,
+          `Forma exponencial: T(t) = ${formatNumber(temps.ambient)} + A e^(-kt).`
         ]),
-        block.heading("Using the Measurements"),
+        block.heading("Uso de las mediciones"),
         block.paragraph(
-          `At t = 0 (${formatEnglishTime(timeline.firstMeasurement)}), T(0) = ${formatCelsius(temps.firstMeasurement)}, so A = ${formatNumber(temps.firstMeasurement)} - ${formatNumber(temps.ambient)} = ${formatNumber(firstDelta)}.`
+          `En t = 0, a las ${formatTime(timeline.firstMeasurement)}, T(0) = ${formatCelsius(temps.firstMeasurement)}, por lo que A = ${formatNumber(temps.firstMeasurement)} - ${formatNumber(temps.ambient)} = ${formatNumber(firstDelta)}.`
         ),
         block.paragraph(
-          `Therefore, T(t) = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-kt).`
+          `Por tanto, T(t) = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-kt).`
         ),
         block.paragraph(
-          `At t = 1 (${formatEnglishTime(timeline.secondMeasurement)}), ${second} = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-k), so e^(-k) = ${formatNumber(secondDelta)} / ${formatNumber(firstDelta)} and k = ${k} h^-1.`
+          `En t = 1, a las ${formatTime(timeline.secondMeasurement)}, ${second} = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-k), de modo que e^(-k) = ${formatNumber(secondDelta)} / ${formatNumber(firstDelta)} y k = ${k} h^-1.`
         ),
-        block.heading("Determining Time of Death"),
+        block.heading("Determinación de la hora de muerte"),
         block.paragraph(
-          `At the time of death, the body temperature is assumed to be ${formatCelsius(temps.bodyAtDeath)}. Solving ${formatNumber(temps.bodyAtDeath)} = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-${k}t) gives t = -${deathOffset} hours relative to the first forensic measurement.`
+          `En el momento de la muerte se asume que la temperatura corporal era ${formatCelsius(temps.bodyAtDeath)}. Al resolver ${formatNumber(temps.bodyAtDeath)} = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-${k}t), se obtiene t = -${deathOffset} horas respecto a la primera medición forense.`
         ),
         block.paragraph(
-          `The time of death is therefore approximately ${deathOffset} hours before ${formatEnglishTime(timeline.firstMeasurement)}, which gives ${formatEnglishTime(timeline.death)}.`
+          `La hora de muerte es, por tanto, aproximadamente ${deathOffset} horas antes de las ${formatTime(timeline.firstMeasurement)}, es decir, alrededor de las ${formatTime(timeline.death)}.`
         ),
-        block.heading("Summary"),
+        block.heading("Resumen"),
         block.paragraph(
-          `Time of death: approximately ${formatEnglishTime(timeline.death)} on ${formatEnglishDate(timeline.death)}.`
+          `Hora de muerte: aproximadamente las ${formatTime(timeline.death)} del ${formatDate(timeline.death)}.`
         )
       ]
     );
@@ -1236,7 +1231,7 @@
     doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
     doc.setTextColor(255, 255, 255);
-    doc.text("FORENSIC CASE FILE", page.marginX + 12, cursor.y + 16);
+    doc.text("EXPEDIENTE FORENSE", page.marginX + 12, cursor.y + 16);
     cursor.y += 38;
 
     const colWidth = width / 2;
@@ -1881,23 +1876,6 @@
     return new Intl.DateTimeFormat("es-ES", {
       hour: "2-digit",
       minute: "2-digit"
-    }).format(date);
-  }
-
-  function formatEnglishDate(date) {
-    return new Intl.DateTimeFormat("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-      year: "numeric"
-    }).format(date);
-  }
-
-  function formatEnglishTime(date) {
-    return new Intl.DateTimeFormat("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true
     }).format(date);
   }
 
