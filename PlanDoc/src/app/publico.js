@@ -389,6 +389,7 @@ function renderProfesorTab(state) {
                         ${rows.length === 0 ? `<tr><td colspan="8" class="empty-cell">No hay profesores visibles.</td></tr>` : rows.map((item) => {
         const inicial = toPositiveNumber(item.profesor.creditosObjetivo, 0);
         const reducciones = Number((inicial - item.capacidadBase).toFixed(2));
+        const pendientes = Number(Math.max(0, item.objetivoReal - item.asignado).toFixed(2));
         return `
                             <tr>
                                 <td><strong>${escapeHtml(professorName(item.profesor))}</strong><small class="muted-line">${escapeHtml(item.profesor.id)}</small></td>
@@ -397,7 +398,10 @@ function renderProfesorTab(state) {
                                 <td><span class="num-pill ${item.cargaTfm > 0 ? "danger-pill" : "muted-pill"}">${item.cargaTfm}</span></td>
                                 <td><span class="num-pill muted-pill">${item.capacidad}</span></td>
                                 <td><span class="num-pill">${item.objetivoReal}</span></td>
-                                <td><span class="num-pill ${item.asignado < item.objetivoReal ? "danger-pill" : "muted-pill"}">${item.asignado}</span></td>
+                                <td>
+                                    <span class="num-pill ${item.asignado < item.objetivoReal ? "danger-pill" : "muted-pill"}">${item.asignado}</span>
+                                    <small class="muted-line">Faltan ${pendientes}</small>
+                                </td>
                                 <td>
                                     <button class="secondary icon-button calendar-row-btn" data-public-prof-calendar="${escapeHtml(item.profesor.id)}" type="button" title="Ver calendario" aria-label="Ver calendario de ${escapeHtml(professorName(item.profesor))}">
                                         <span class="calendar-mini-icon" aria-hidden="true"></span>
