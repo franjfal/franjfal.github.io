@@ -506,6 +506,10 @@ button.mini {
     background: #f8fafc;
 }
 
+.public-simulation-panel-modal {
+    margin: 0;
+}
+
 .public-horario-panel {
     margin: 0;
     background: #f8fafc;
@@ -519,7 +523,7 @@ button.mini {
     max-height: 720px;
 }
 
-.public-horario-panel > button {
+.public-horario-panel>button {
     width: 100%;
     margin: 0 0 12px;
 }
@@ -565,7 +569,7 @@ button.mini {
     margin-top: 2px;
 }
 
-.public-horario-subject-row > span {
+.public-horario-subject-row>span {
     min-width: 0;
 }
 
@@ -574,7 +578,7 @@ button.mini {
 }
 
 .simulation-subject-row {
-    grid-template-columns: 26px 18px minmax(0, 1fr);
+    grid-template-columns: 18px minmax(0, 1fr);
     align-items: start;
 }
 
@@ -584,8 +588,8 @@ button.mini {
     padding-left: 18px;
 }
 
-.simulation-subject-row > span,
-.simulation-subgroup-row > span {
+.simulation-subject-row>span,
+.simulation-subgroup-row>span {
     min-width: 0;
 }
 
@@ -595,9 +599,9 @@ button.mini {
 .simulation-subgroup-row small {
     overflow: visible;
     text-overflow: clip;
-    overflow-wrap: normal;
+    overflow-wrap: break-word;
     word-break: normal;
-    hyphens: auto;
+    hyphens: none;
 }
 
 .printable-calendar {
@@ -608,11 +612,6 @@ button.mini {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 14px;
-}
-
-.public-calendar-workspace.with-sidebar {
-    grid-template-columns: minmax(270px, 330px) minmax(0, 1fr);
-    align-items: start;
 }
 
 .inline-form {
@@ -1232,15 +1231,7 @@ button.mini {
 .inline-form-subgroup {
     display: grid;
     grid-template-columns:
-        minmax(82px, 0.7fr)
-        minmax(160px, 1.2fr)
-        minmax(140px, 0.9fr)
-        minmax(130px, 0.9fr)
-        minmax(130px, 0.9fr)
-        minmax(170px, 1fr)
-        minmax(110px, 0.7fr)
-        max-content
-        max-content;
+        minmax(82px, 0.7fr) minmax(160px, 1.2fr) minmax(140px, 0.9fr) minmax(130px, 0.9fr) minmax(130px, 0.9fr) minmax(170px, 1fr) minmax(110px, 0.7fr) max-content max-content;
     gap: 10px;
 }
 
@@ -1658,6 +1649,10 @@ pre {
     width: min(620px, 100%);
     max-height: calc(100vh - 40px);
     overflow: auto;
+}
+
+.public-simulation-selector-modal {
+    width: min(980px, calc(100vw - 40px));
 }
 
 .loading-modal-backdrop {

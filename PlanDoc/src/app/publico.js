@@ -480,38 +480,49 @@ function renderSimulationTree(state) {
             <h3>${escapeHtml(category.nombre)}</h3>
             <div class="calendar-subject-list">
                 ${category.asignaturas.map(({ asignatura, subgrupos }) => {
-        const expanded = state.publicSimulationExpandedAsignaturas?.[asignatura.id] === true;
         const selectedCount = subgrupos.filter(({ key }) => selected.has(key)).length;
         const allSelected = selectedCount === subgrupos.length;
         return `
                     <div class="calendar-subject">
                         <div class="calendar-subject-row simulation-subject-row">
-                            <button class="calendar-expand" data-public-sim-expand="${escapeHtml(asignatura.id)}" type="button" aria-label="${expanded ? "Contraer" : "Expandir"} asignatura">${expanded ? "⌄" : "›"}</button>
                             <input data-public-sim-asignatura="${escapeHtml(asignatura.id)}" type="checkbox" ${allSelected ? "checked" : ""} />
                             <span>
                                 <strong>${escapeHtml(asignatura.nombre || asignatura.id || "Asignatura")}</strong>
                                 <small>${subgrupos.length} subgrupos pendientes · ${subgrupos.reduce((sum, item) => sum + item.pending, 0).toFixed(2)} horas</small>
                             </span>
                         </div>
-                        ${expanded ? `
-                            <div class="calendar-subgroup-list">
-                                ${subgrupos.map(({ subgrupo, key, pending }) => `
-                                    <label class="calendar-subgroup-row simulation-subgroup-row">
-                                        <input data-public-sim-subgroup="${escapeHtml(key)}" type="checkbox" ${selected.has(key) ? "checked" : ""} />
-                                        <span>
-                                            <strong>${escapeHtml(subgrupo.nombre || subgrupo.id || "Subgrupo")}</strong>
-                                            <small>${escapeHtml(subgrupo.id || "")} · ${pending} horas pendientes · ${sesionesSubgrupo(subgrupo).length} eventos</small>
-                                        </span>
-                                    </label>
-                                `).join("")}
-                            </div>
-                        ` : ""}
                     </div>
                 `;
     }).join("")}
             </div>
         </section>
     `).join("");
+}
+
+function renderSimulationSelectorModal(state) {
+    const totalSelected = new Set(state.publicSimulatedSubgroups || []).size;
+    return `
+        <div class="modal-backdrop" id="public-sim-selector-backdrop">
+            <section class="card modal professor-modal public-simulation-selector-modal" role="dialog" aria-modal="true" aria-labelledby="public-sim-selector-title">
+                <div class="modal-header">
+                    <div>
+                        <h2 id="public-sim-selector-title">Seleccionar asignaturas para la simulacion</h2>
+                        <p class="status">Marca las asignaturas pendientes que quieres sumar al calendario de este profesor. Ahora hay ${totalSelected} grupos simulados seleccionados.</p>
+                    </div>
+                    <button class="secondary mini" id="close-public-sim-selector-btn" type="button">Cerrar</button>
+                </div>
+                <section class="form-section public-simulation-panel public-simulation-panel-modal">
+                    <div class="form-section-title">
+                        <span class="section-kicker">Simulacion</span>
+                        <h3>Asignaturas disponibles</h3>
+                    </div>
+                    <div class="calendar-event-list">
+                        ${renderSimulationTree(state)}
+                    </div>
+                </section>
+            </section>
+        </div>
+    `;
 }
 
 function renderProfessorCalendarModal(state) {
@@ -560,29 +571,19 @@ function renderProfessorCalendarModal(state) {
                     </div>
                     <div class="public-calendar-action-buttons">
                         <button class="secondary" id="public-prof-sim-toggle" type="button">${state.publicSimulationMode ? "Cerrar simulacion" : "Simular docencia"}</button>
+                        ${state.publicSimulationMode ? `<button class="secondary" id="open-public-sim-selector-btn" type="button">Seleccionar asignaturas</button>` : ""}
                         <button class="secondary" id="download-prof-calendar-pdf" type="button">Descargar PDF (${escapeHtml(viewLabel)})</button>
                         <button class="secondary" id="download-prof-calendar-ics" type="button">Descargar ICS</button>
                     </div>
                 </div>
 
-                <div class="public-calendar-workspace ${state.publicSimulationMode ? "with-sidebar" : ""}">
-                    ${state.publicSimulationMode ? `
-                        <aside class="form-section public-simulation-panel">
-                            <div class="form-section-title">
-                                <span class="section-kicker">Simulacion</span>
-                                <h3>Grupos disponibles</h3>
-                            </div>
-                            <div class="calendar-event-list">
-                                ${renderSimulationTree(state)}
-                            </div>
-                        </aside>
-                    ` : ""}
-
+                <div class="public-calendar-workspace">
                     <div class="calendar-shell printable-calendar">
                         <div id="public-prof-calendar"></div>
                     </div>
                 </div>
             </section>
+            ${state.publicSimulationMode && state.publicSimulationSelectorOpen ? renderSimulationSelectorModal(state) : ""}
         </div>
     `;
 }
@@ -1575,36 +1576,39 @@ export function bindPublicEvents({ state, render }) {
     if (simToggle) {
         simToggle.onclick = () => {
             state.publicSimulationMode = !state.publicSimulationMode;
-            if (!state.publicSimulationMode) {
+            if (state.publicSimulationMode) {
+                state.publicSimulationSelectorOpen = true;
+            } else {
+                state.publicSimulationSelectorOpen = false;
                 state.publicSimulatedSubgroups = [];
                 state.publicSimulationExpandedAsignaturas = {};
             }
             render();
         };
     }
-    document.querySelectorAll("[data-public-sim-subgroup]").forEach((input) => {
-        input.onchange = () => {
-            const key = input.dataset.publicSimSubgroup;
-            const selected = new Set(state.publicSimulatedSubgroups || []);
-            if (input.checked) {
-                selected.add(key);
-            } else {
-                selected.delete(key);
+    const openSimSelectorBtn = document.getElementById("open-public-sim-selector-btn");
+    if (openSimSelectorBtn) {
+        openSimSelectorBtn.onclick = () => {
+            state.publicSimulationSelectorOpen = true;
+            render();
+        };
+    }
+    const closeSimSelectorBtn = document.getElementById("close-public-sim-selector-btn");
+    if (closeSimSelectorBtn) {
+        closeSimSelectorBtn.onclick = () => {
+            state.publicSimulationSelectorOpen = false;
+            render();
+        };
+    }
+    const simSelectorBackdrop = document.getElementById("public-sim-selector-backdrop");
+    if (simSelectorBackdrop) {
+        simSelectorBackdrop.onclick = (e) => {
+            if (e.target === simSelectorBackdrop) {
+                state.publicSimulationSelectorOpen = false;
+                render();
             }
-            state.publicSimulatedSubgroups = [...selected];
-            render();
         };
-    });
-    document.querySelectorAll("[data-public-sim-expand]").forEach((btn) => {
-        btn.onclick = () => {
-            const id = btn.dataset.publicSimExpand;
-            state.publicSimulationExpandedAsignaturas = {
-                ...(state.publicSimulationExpandedAsignaturas || {}),
-                [id]: state.publicSimulationExpandedAsignaturas?.[id] !== true,
-            };
-            render();
-        };
-    });
+    }
     document.querySelectorAll("[data-public-sim-asignatura]").forEach((input) => {
         const asignaturaId = input.dataset.publicSimAsignatura;
         const keys = availableSimulationSubgroups(state)
