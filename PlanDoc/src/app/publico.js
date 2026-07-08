@@ -757,6 +757,8 @@ function renderPublicAsignaturaDetailModal(state) {
 }
 
 function assignmentsByProfessor(state) {
+    const reajuste = calcularReajusteDocente(state);
+    const objetivosByProfesor = new Map(reajuste.profesoresDetalle.map((item) => [item.profesor.id, item.objetivoReal]));
     return state.profesores.map((profesor) => {
         const items = state.docencia
             .filter((item) => item.profesorId === profesor.id)
@@ -767,7 +769,8 @@ function assignmentsByProfessor(state) {
             })
             .filter((entry) => entry.asignatura && entry.subgrupo);
         const specialCredits = profesorSpecialWorkCredits(state, profesor.id);
-        return { profesor, items, specialCredits };
+        const targetCredits = Number(toPositiveNumber(objetivosByProfesor.get(profesor.id), 0).toFixed(2));
+        return { profesor, items, specialCredits, targetCredits };
     });
 }
 
@@ -789,9 +792,9 @@ function renderRepartoTab(state) {
     const text = (state.publicRepartoFilter || "").trim().toLowerCase();
     const byProfessor = state.publicRepartoMode !== "asignatura";
     const rows = byProfessor
-        ? assignmentsByProfessor(state).filter(({ profesor, items, specialCredits }) => {
+        ? assignmentsByProfessor(state).filter(({ profesor, items, specialCredits, targetCredits }) => {
             const specialLabel = toPositiveNumber(specialCredits, 0) > 0 ? "TFG TFM practicas de empresa" : "";
-            const haystack = [professorName(profesor), profesor.id, specialLabel, ...items.map(({ asignatura }) => asignatura.nombre)].join(" ").toLowerCase();
+            const haystack = [professorName(profesor), profesor.id, specialLabel, String(targetCredits), ...items.map(({ asignatura }) => asignatura.nombre)].join(" ").toLowerCase();
             return !text || haystack.includes(text);
         }).sort((a, b) => professorName(a.profesor).localeCompare(professorName(b.profesor), "es", { sensitivity: "base" }))
         : assignmentsBySubject(state).filter(({ asignatura, items }) => {
@@ -821,12 +824,12 @@ function renderRepartoTab(state) {
     `;
 }
 
-function renderProfessorAssignmentCard({ profesor, items, specialCredits }) {
+function renderProfessorAssignmentCard({ profesor, items, specialCredits, targetCredits }) {
     const teachingCredits = Number(items.reduce((sum, { item }) => sum + toPositiveNumber(item.creditos, 0), 0).toFixed(2));
     const total = Number((teachingCredits + toPositiveNumber(specialCredits, 0)).toFixed(2));
     return `
         <article class="public-assignment-card">
-            <header><strong>${escapeHtml(professorName(profesor))}</strong><span>${total} horas</span></header>
+            <header><strong>${escapeHtml(professorName(profesor))}</strong><span>${total} horas / ${targetCredits} horas</span></header>
             ${items.length === 0 && toPositiveNumber(specialCredits, 0) <= 0 ? `<p class="status">Sin docencia asignada.</p>` : `
                 <ul>
                     ${items.map(({ item, asignatura, subgrupo }) => `
