@@ -1,5 +1,5 @@
 import { calcularReajusteDocente } from "./reajuste.js";
-import { escapeHtml, toPositiveNumber, uid } from "./utils.js";
+import { bindNoteButtons, escapeHtml, renderNoteButton, toPositiveNumber, uid } from "./utils.js";
 
 const SPECIAL_WORK_TYPES = [
     { value: "tfg", label: "TFG" },
@@ -333,16 +333,19 @@ function renderDocenciaNavigator(state, asignaturas, selectedId) {
             const status = asignaturaStatus(state, asignatura);
             const active = asignatura.id === selectedId;
             return `
-                            <button class="allocation-subject-card ${active ? "active" : ""} ${status.complete ? "complete" : ""}" data-docencia-select-asignatura="${escapeHtml(asignatura.id)}" type="button">
-                                <span>
-                                    <strong>${escapeHtml(asignatura.nombre || asignatura.id)}</strong>
-                                    <small>${escapeHtml(asignatura.codigoReferencia || asignatura.id || "")}</small>
-                                </span>
-                                <span class="allocation-subject-progress">
-                                    <b>${status.assigned} / ${status.total}</b>
-                                    <small>${status.remaining > 0 ? `${status.remaining} pendientes` : "Completa"}</small>
-                                </span>
-                            </button>
+                            <div class="allocation-subject-card-shell">
+                                <button class="allocation-subject-card ${active ? "active" : ""} ${status.complete ? "complete" : ""}" data-docencia-select-asignatura="${escapeHtml(asignatura.id)}" type="button">
+                                    <span>
+                                        <strong>${escapeHtml(asignatura.nombre || asignatura.id)}</strong>
+                                        <small>${escapeHtml(asignatura.codigoReferencia || asignatura.id || "")}</small>
+                                    </span>
+                                    <span class="allocation-subject-progress">
+                                        <b>${status.assigned} / ${status.total}</b>
+                                        <small>${status.remaining > 0 ? `${status.remaining} pendientes` : "Completa"}</small>
+                                    </span>
+                                </button>
+                                ${renderNoteButton(asignatura.nota, "Ver nota de la asignatura")}
+                            </div>
                         `;
         }).join("")}
                     </div>
@@ -384,6 +387,7 @@ function renderSubgrupoAllocation(state, asignatura, subgrupo) {
             <div class="allocation-subgroup-header">
                 <div>
                     <h3>${escapeHtml(subgrupo.nombre || subgrupo.id)}</h3>
+                    ${renderNoteButton(subgrupo.nota, "Ver nota del subgrupo")}
                     <p class="status">${escapeHtml(subgrupo.id)} &middot; ${escapeHtml(subgrupo.tipo || "subgrupo")}</p>
                 </div>
                 <div class="allocation-progress">
@@ -1355,6 +1359,7 @@ export function renderDocenciaSection(state) {
                             <div>
                                 <span class="section-kicker">${asignatura ? escapeHtml(categoriaLabel(state, asignatura.categoriaId)) : "Asignatura"}</span>
                                 <h3>${asignatura ? escapeHtml(asignatura.nombre || asignatura.id) : "Sin asignatura seleccionada"}</h3>
+                                ${asignatura ? renderNoteButton(asignatura.nota, "Ver nota de la asignatura") : ""}
                             </div>
                         </div>
 
@@ -1393,6 +1398,8 @@ function readAssignmentForm(subgrupoId) {
 }
 
 export function bindDocenciaEvents({ app, state, setStatus, render, saveDocencia }) {
+    bindNoteButtons(app);
+
     app.querySelectorAll("[data-docencia-tab]").forEach((btn) => {
         btn.onclick = () => {
             state.docenciaTab = btn.dataset.docenciaTab || "reparto";

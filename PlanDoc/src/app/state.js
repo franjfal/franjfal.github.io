@@ -67,6 +67,7 @@ export const state = {
         codigoReferencia: "",
         codigoTitulacion: "",
         color: "",
+        nota: "",
         cuatrimestre: "primer",
         subgrupos: [],
     },
@@ -161,6 +162,7 @@ export function resetCourseSlices() {
         codigoReferencia: "",
         codigoTitulacion: "",
         color: "",
+        nota: "",
         cuatrimestre: "primer",
         subgrupos: [],
     };

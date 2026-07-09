@@ -1,4 +1,4 @@
-import { escapeHtml, toPositiveNumber, uid } from "./utils.js";
+import { bindNoteButtons, escapeHtml, renderNoteButton, toPositiveNumber, uid } from "./utils.js";
 
 const CUATRIMESTRES = [
     { value: "primer", label: "Primer cuatrimestre" },
@@ -78,6 +78,7 @@ function normalizeSubgrupo(raw, asignaturaCuatrimestre = "primer") {
         nombre: (raw?.nombre || "").trim(),
         codigoUv: (raw?.codigoUv || raw?.uvId || raw?.grupoUv || "").trim(),
         color: (raw?.color || "").trim(),
+        nota: (raw?.nota || "").trim(),
         tipo: normalizeTipoSubgrupo(raw?.tipo || "teoria"),
         idioma: normalizeIdioma(raw?.idioma || "castellano"),
         cuatrimestre: subjectCuatrimestre === "anual"
@@ -97,6 +98,7 @@ export function normalizeAsignatura(raw) {
         codigoReferencia: (raw?.codigoReferencia || "").trim(),
         codigoTitulacion: (raw?.codigoTitulacion || "").trim(),
         color: (raw?.color || "").trim(),
+        nota: (raw?.nota || "").trim(),
         cuatrimestre,
         subgrupos: Array.isArray(raw?.subgrupos) ? raw.subgrupos.map((s) => normalizeSubgrupo(s, cuatrimestre)) : [],
     };
@@ -131,6 +133,7 @@ function emptyAsignaturaDraft() {
         codigoReferencia: "",
         codigoTitulacion: "",
         color: "",
+        nota: "",
         cuatrimestre: "primer",
         subgrupos: [],
     };
@@ -151,6 +154,7 @@ function draftFromAsignatura(asignatura) {
         codigoReferencia: asignatura.codigoReferencia || "",
         codigoTitulacion: asignatura.codigoTitulacion || "",
         color: asignatura.color || "",
+        nota: asignatura.nota || "",
         cuatrimestre: normalizeCuatrimestre(asignatura.cuatrimestre || "primer"),
         subgrupos: Array.isArray(asignatura.subgrupos)
             ? asignatura.subgrupos.map((s) => normalizeSubgrupo(s, asignatura.cuatrimestre || "primer"))
@@ -205,6 +209,7 @@ function updateAsignaturaDraftFromModal(state) {
         codigoReferencia: (document.getElementById("asig-modal-codigo-ref")?.value || "").trim(),
         codigoTitulacion: (document.getElementById("asig-modal-codigo-titulacion")?.value || "").trim(),
         color: state.asignaturaDraft?.color || "",
+        nota: (document.getElementById("asig-modal-nota")?.value || "").trim(),
         cuatrimestre,
         subgrupos: previousSubgrupos.map((s) => normalizeSubgrupo(s, cuatrimestre)),
     };
@@ -1236,6 +1241,7 @@ function renderImportInstructions(state) {
 - tipo de subgrupo puede ser: teoria, practicas, seminario, practicas-informaticas, tutorias.
 - codigoReferencia debe ser numerico.
 - codigoTitulacion debe ser el codigo UV de titulacion, por ejemplo 1107.
+- nota en la asignatura y en cada subgrupo es opcional.
 - codigoUv en cada subgrupo es opcional pero recomendado: debe ser el codigo de grupo que aparece en la UV, por ejemplo C-O1, C-P2 o C-T.
 - horas de subgrupo se guardan en el campo tecnico "creditos"; debe ser un numero igual o mayor que 0; 0 es valido si el grupo existe solo por organizacion.
 - Si la asignatura es primer o segundo cuatrimestre, los subgrupos heredaran ese cuatrimestre.
@@ -1249,6 +1255,7 @@ Ejemplo:
   "codigoReferencia": "12345",
   "codigoTitulacion": "1107",
   "cuatrimestre": "primer",
+  "nota": "Coordinacion especial con otro departamento.",
   "subgrupos": [
     {
       "id": "T1",
@@ -1257,6 +1264,7 @@ Ejemplo:
       "tipo": "teoria",
       "idioma": "castellano",
       "cuatrimestre": "primer",
+      "nota": "Preferible asignar a profesorado con experiencia en laboratorio.",
       "creditos": 6
     }
   ]
@@ -1401,6 +1409,7 @@ export function renderAsignaturasSection(state) {
                                             <span>
                                                 <span class="subject-title-line">
                                                     <button class="link-button subject-name-button" data-open-asig-detail="${originalIndex}" type="button">${escapeHtml(a.nombre || "")}</button>
+                                                    ${renderNoteButton(a.nota, "Ver nota de la asignatura")}
                                                     ${warnings.length ? `
                                                         <span class="warning-icon" title="${escapeHtml(warnings.join(" "))}" aria-label="Asignatura con informacion incompleta">!</span>
                                                         <span class="warning-label" title="${escapeHtml(warnings.join(" "))}">Incompleta</span>
@@ -1504,6 +1513,10 @@ function renderAsignaturaModal(state) {
                                 Codigo titulacion UV
                                 <input id="asig-modal-codigo-titulacion" inputmode="numeric" placeholder="ej. 1107" value="${escapeHtml(draft.codigoTitulacion || "")}" />
                             </label>
+                            <label class="grid-span-2">
+                                Nota
+                                <textarea id="asig-modal-nota" class="compact-textarea" placeholder="Observaciones internas o avisos visibles">${escapeHtml(draft.nota || "")}</textarea>
+                            </label>
                         </div>
                     </section>
 
@@ -1528,6 +1541,7 @@ function renderAsignaturaModal(state) {
                                 ${renderCuatrimestreOptions(subgrupoFormCuatrimestre)}
                             </select>
                             <input id="subgrupo-creditos" type="number" min="0" step="any" placeholder="Horas" value="${editingSubgrupo ? escapeHtml(String(toPositiveNumber(editingSubgrupo.creditos, 0))) : ""}" />
+                            <textarea id="subgrupo-nota" class="compact-textarea subgroup-note-field" placeholder="Nota del subgrupo">${escapeHtml(editingSubgrupo?.nota || "")}</textarea>
                             <button id="add-subgrupo-btn" class="secondary" type="button">${subgrupoActionLabel}</button>
                             ${editingSubgrupo ? `<button id="cancel-subgrupo-edit-btn" class="secondary" type="button">Cancelar</button>` : ""}
                         </div>
@@ -1553,6 +1567,7 @@ function renderAsignaturaModal(state) {
                                         <tr class="${originalIndex === state.editingSubgrupoIndex ? "row-active" : ""}">
                                             <td>
                                                 <strong>${escapeHtml(s.nombre || "")}</strong>
+                                                ${renderNoteButton(s.nota, "Ver nota del subgrupo")}
                                                 <small class="muted-line">${escapeHtml(s.id || "")}</small>
                                                 ${s.codigoUv ? `<small class="muted-line">UV ${escapeHtml(s.codigoUv)}</small>` : ""}
                                             </td>
@@ -1779,6 +1794,7 @@ function renderAsignaturaDetailModal(state) {
                 <div class="modal-header">
                     <div>
                         <h2 id="asig-detail-modal-title">${escapeHtml(asignatura.nombre || "Asignatura")}</h2>
+                        ${renderNoteButton(asignatura.nota, "Ver nota de la asignatura")}
                         <p class="status">${escapeHtml(asignatura.id || "")}${asignatura.codigoReferencia ? ` &middot; Codigo ${escapeHtml(asignatura.codigoReferencia)}` : ""}</p>
                     </div>
                     <button class="secondary mini" id="close-asig-detail-modal-btn" type="button">Cerrar</button>
@@ -1809,6 +1825,7 @@ function renderAsignaturaDetailModal(state) {
                                 <tr>
                                     <td>
                                         <strong>${escapeHtml(subgrupo.nombre || "")}</strong>
+                                        ${renderNoteButton(subgrupo.nota, "Ver nota del subgrupo")}
                                         <small class="muted-line">${escapeHtml(subgrupo.id || "")}</small>
                                         ${subgrupo.codigoUv ? `<small class="muted-line">UV ${escapeHtml(subgrupo.codigoUv)}</small>` : ""}
                                     </td>
@@ -1851,6 +1868,8 @@ function renderAsignaturaDetailModal(state) {
 }
 
 export function bindAsignaturasEvents({ app, state, setStatus, render, saveAsignaturas, saveCategoriasAsignaturas, importUvSchedule }) {
+    bindNoteButtons(app);
+
     const filterText = document.getElementById("asig-filter-text");
     if (filterText) {
         const applyTextFilter = () => {
@@ -2080,6 +2099,7 @@ export function bindAsignaturasEvents({ app, state, setStatus, render, saveAsign
             const codigoReferencia = state.asignaturaDraft.codigoReferencia;
             const codigoTitulacion = state.asignaturaDraft.codigoTitulacion;
             const color = state.asignaturaDraft.color || "";
+            const nota = state.asignaturaDraft.nota || "";
             const cuatrimestre = state.asignaturaDraft.cuatrimestre;
             const subgrupos = state.asignaturaDraft.subgrupos || [];
             const isEdit = state.asignaturaModalMode === "edit";
@@ -2113,6 +2133,7 @@ export function bindAsignaturasEvents({ app, state, setStatus, render, saveAsign
                 codigoReferencia,
                 codigoTitulacion,
                 color,
+                nota,
                 cuatrimestre,
                 subgrupos,
             });
@@ -2163,6 +2184,7 @@ export function bindAsignaturasEvents({ app, state, setStatus, render, saveAsign
             const codigoUv = (document.getElementById("subgrupo-codigo-uv")?.value || "").trim();
             const tipo = document.getElementById("subgrupo-tipo")?.value || "teoria";
             const idioma = document.getElementById("subgrupo-idioma")?.value || "castellano";
+            const nota = (document.getElementById("subgrupo-nota")?.value || "").trim();
             const cuatrimestre = subjectCuatrimestre === "anual"
                 ? document.getElementById("subgrupo-cuatrimestre")?.value || "primer"
                 : subjectCuatrimestre;
@@ -2187,6 +2209,7 @@ export function bindAsignaturasEvents({ app, state, setStatus, render, saveAsign
                 nombre,
                 codigoUv,
                 color: isEditingSubgrupo ? state.asignaturaDraft.subgrupos[editIndex].color || "" : "",
+                nota,
                 tipo,
                 idioma,
                 cuatrimestre,

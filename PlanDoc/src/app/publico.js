@@ -1,5 +1,5 @@
 import { calcularReajusteDocente } from "./reajuste.js";
-import { escapeHtml, toPositiveNumber } from "./utils.js";
+import { bindNoteButtons, escapeHtml, renderNoteButton, toPositiveNumber } from "./utils.js";
 
 const PUBLIC_TABS = [
     { id: "profesores", label: "Profesores" },
@@ -27,6 +27,12 @@ const TIPOS_SUBGRUPO = [
     { value: "seminario", label: "Seminario" },
     { value: "practicas-informaticas", label: "Practicas informaticas" },
     { value: "tutorias", label: "Tutorias" },
+];
+
+const IDIOMAS = [
+    { value: "castellano", label: "Castellano" },
+    { value: "valenciano", label: "Valenciano" },
+    { value: "ingles", label: "Ingles" },
 ];
 
 const DAY_INDEX = {
@@ -62,6 +68,10 @@ function cuatrimestreLabel(value) {
 
 function tipoSubgrupoLabel(value) {
     return TIPOS_SUBGRUPO.find((item) => item.value === value)?.label || value || "";
+}
+
+function idiomaLabel(value) {
+    return IDIOMAS.find((item) => item.value === value)?.label || value || "Castellano";
 }
 
 function calendarViewLabel(value) {
@@ -490,18 +500,20 @@ function renderSimulationTree(state) {
                             <input data-public-sim-asignatura="${escapeHtml(asignatura.id)}" type="checkbox" ${allSelected ? "checked" : ""} />
                             <span>
                                 <strong>${escapeHtml(asignatura.nombre || asignatura.id || "Asignatura")}</strong>
+                                ${renderNoteButton(asignatura.nota, "Ver nota de la asignatura")}
                                 <small>${subgrupos.length} subgrupos pendientes · ${subgrupos.reduce((sum, item) => sum + item.pending, 0).toFixed(2)} horas</small>
                             </span>
                         </div>
                         ${expanded ? `<div class="calendar-subgroup-list simulation-subgroup-list">
                             ${subgrupos.map(({ subgrupo, pending }) => `
-                                <label class="calendar-subgroup-row simulation-subgroup-row">
+                                <div class="calendar-subgroup-row simulation-subgroup-row">
                                     <input data-public-sim-subgrupo="${escapeHtml(`${asignatura.id}::${subgrupo.id}`)}" type="checkbox" ${selected.has(`${asignatura.id}::${subgrupo.id}`) ? "checked" : ""} />
                                     <span>
                                         <strong>${escapeHtml(subgrupo.nombre || subgrupo.id || "Subgrupo")}</strong>
+                                        ${renderNoteButton(subgrupo.nota, "Ver nota del subgrupo")}
                                         <small>${escapeHtml(subgrupo.id || "")} · ${pending} horas pendientes · ${sesionesSubgrupo(subgrupo).length} eventos</small>
                                     </span>
-                                </label>
+                                </div>
                             `).join("")}
                         </div>` : ""}
                     </div>
@@ -643,6 +655,7 @@ function renderAsignaturasTab(state) {
                                     <button class="link-button subject-name-button" data-public-asig-detail="${escapeHtml(asignatura.id)}" type="button">
                                         ${escapeHtml(asignatura.nombre || asignatura.id)}
                                     </button>
+                                    ${renderNoteButton(asignatura.nota, "Ver nota de la asignatura")}
                                 </td>
                                 <td><span class="subject-code">${escapeHtml(asignatura.codigoReferencia || "")}</span></td>
                                 <td><span class="badge">${escapeHtml(categoriaNombre(state, asignatura.categoriaId))}</span></td>
@@ -673,6 +686,7 @@ function renderPublicAsignaturaDetailModal(state) {
                 <div class="modal-header">
                     <div>
                         <h2 id="public-asig-detail-title">${escapeHtml(asignatura.nombre || "Asignatura")}</h2>
+                        ${renderNoteButton(asignatura.nota, "Ver nota de la asignatura")}
                         <p class="status">
                             ${escapeHtml(categoriaNombre(state, asignatura.categoriaId))}
                             ${asignatura.codigoReferencia ? ` &middot; Codigo ${escapeHtml(asignatura.codigoReferencia)}` : ""}
@@ -722,6 +736,7 @@ function renderPublicAsignaturaDetailModal(state) {
                         <thead>
                             <tr>
                                 <th>Subgrupo</th>
+                                <th>Idioma</th>
                                 <th>Horas</th>
                                 <th>Asignadas</th>
                                 <th>Profesores</th>
@@ -729,9 +744,9 @@ function renderPublicAsignaturaDetailModal(state) {
                         </thead>
                         <tbody>
                             ${(asignatura.subgrupos || []).length === 0 ? `
-                                <tr><td colspan="4" class="empty-cell">Esta asignatura no tiene subgrupos.</td></tr>
+                                <tr><td colspan="5" class="empty-cell">Esta asignatura no tiene subgrupos.</td></tr>
                             ` : subgrupos.length === 0 ? `
-                                <tr><td colspan="4" class="empty-cell">No hay subgrupos que coincidan con los filtros.</td></tr>
+                                <tr><td colspan="5" class="empty-cell">No hay subgrupos que coincidan con los filtros.</td></tr>
                             ` : subgrupos.map((subgrupo) => {
         const total = toPositiveNumber(subgrupo.creditos, 0);
         const assigned = assignedForSubgrupo(state, asignatura.id, subgrupo.id);
@@ -740,8 +755,10 @@ function renderPublicAsignaturaDetailModal(state) {
                                 <tr>
                                     <td>
                                         <strong>${escapeHtml(subgrupo.nombre || subgrupo.id)}</strong>
+                                        ${renderNoteButton(subgrupo.nota, "Ver nota del subgrupo")}
                                         <small class="muted-line">${escapeHtml(subgrupo.id || "")}${subgrupo.tipo ? ` &middot; ${escapeHtml(subgrupo.tipo)}` : ""}</small>
                                     </td>
+                                    <td><span class="badge">${escapeHtml(idiomaLabel(subgrupo.idioma))}</span></td>
                                     <td><span class="num-pill">${total}</span></td>
                                     <td><span class="num-pill ${assigned < total ? "danger-pill" : "muted-pill"}">${assigned}</span></td>
                                     <td>
@@ -1558,6 +1575,8 @@ export function renderPublicView(state) {
 }
 
 export function bindPublicEvents({ state, render }) {
+    bindNoteButtons(document);
+
     document.querySelectorAll("[data-public-tab]").forEach((btn) => {
         btn.onclick = () => {
             state.publicTab = btn.dataset.publicTab || "profesores";

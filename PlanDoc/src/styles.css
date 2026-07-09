@@ -136,6 +136,10 @@ button {
     font-size: 0.95rem;
 }
 
+textarea {
+    resize: vertical;
+}
+
 button {
     cursor: pointer;
     border: none;
@@ -405,6 +409,10 @@ button.mini {
 
 .public-container {
     max-width: 1280px;
+}
+
+.public-container .app-header > a[href="./"] {
+    display: none !important;
 }
 
 .public-section {
@@ -1259,6 +1267,19 @@ button.mini {
     gap: 10px;
 }
 
+.grid-span-2 {
+    grid-column: span 2;
+}
+
+.compact-textarea {
+    min-height: 42px;
+    line-height: 1.35;
+}
+
+.subgroup-note-field {
+    grid-column: 1 / -3;
+}
+
 .inline-form-uv {
     display: grid;
     grid-template-columns: minmax(220px, max-content) minmax(220px, max-content);
@@ -1336,6 +1357,13 @@ button.mini {
 .allocation-subject-list {
     display: grid;
     gap: 7px;
+}
+
+.allocation-subject-card-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 7px;
+    align-items: center;
 }
 
 .allocation-subject-card {
@@ -1575,6 +1603,28 @@ button.mini {
     align-items: center;
     gap: 6px;
     min-width: 0;
+}
+
+.note-warning-button {
+    display: inline-grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: #f59e0b;
+    color: #fff7ed;
+    font-size: 0.78rem;
+    font-weight: 900;
+    line-height: 1;
+    vertical-align: middle;
+    flex: 0 0 auto;
+}
+
+.note-warning-button:hover {
+    background: #d97706;
 }
 
 .warning-icon {
@@ -1830,6 +1880,11 @@ pre {
 
     .public-calendar-actions {
         align-items: stretch;
+    }
+
+    .grid-span-2,
+    .subgroup-note-field {
+        grid-column: auto;
     }
 
     .public-calendar-actions .nav-tabs,
