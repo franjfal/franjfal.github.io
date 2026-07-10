@@ -19,7 +19,7 @@ feature: "/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/feature.s
 ---
 This activity turns Newton's law of cooling into a trial. Students receive separate roles, question witnesses and suspects, and reconstruct the timeline until they identify the culprit.
 
-The generator lets you choose the professor's name, the date of the case, the class ending time, and the gender of each suspect. From those data it produces the documents needed to run the classroom activity, either as separate pieces or as complete packets by role.
+The generator lets you choose the PDF format, the professor's name, the class, the case date, the class start and end times, and each suspect's name and gender. From those data it produces the documents needed to run the classroom activity as separate pieces, complete role packets, or one full PDF.
 
 <figure>
   <img src="{{ site.baseurl }}/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/assets/cover_scene.png" alt="Classroom prepared as the case scene">
@@ -199,8 +199,17 @@ The generator lets you choose the professor's name, the date of the case, the cl
   }
 
   .trial-generator .tab-button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 10px 14px;
+    border: 1px solid #b9c2ca;
+    border-radius: 6px;
+    font: inherit;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
     background: #fff;
-    border-color: #b9c2ca;
     color: var(--trial-ink);
   }
 
@@ -317,30 +326,57 @@ The generator lets you choose the professor's name, the date of the case, the cl
           Nombre del profesor
           <input id="teacher-name" name="teacherName" type="text" value="Javier Falcó" required>
         </label>
+        <label class="full">
+          Clase impartida
+          <input id="class-name" name="className" type="text" value="ecuaciones diferenciales y transformadas de Laplace" required>
+        </label>
         <label>
-          Fecha del asesinato
-          <input id="case-date" name="caseDate" type="date" value="2026-07-02" required>
+          Formato PDF
+          <select id="page-format" name="pageFormat">
+            <option value="a4" selected>A4</option>
+            <option value="letter">Carta americana</option>
+          </select>
+        </label>
+        <label>
+          Fecha del caso
+          <input id="case-date" name="caseDate" type="date" value="2026-07-02">
+        </label>
+        <label>
+          Inicio de la clase
+          <input id="class-start-time" name="classStartTime" type="time" value="10:30" required>
         </label>
         <label>
           Fin de la clase
           <input id="class-end-time" name="classEndTime" type="time" value="12:30" required>
         </label>
         <label>
-          Sospechoso 1
+          Nombre sospechoso 1
+          <input id="suspect-1-name" name="suspect1Name" type="text" placeholder="Sospechosa 1">
+        </label>
+        <label>
+          Género sospechoso 1
           <select id="suspect-1-gender" name="suspect1Gender">
             <option value="f" selected>Mujer</option>
             <option value="m">Hombre</option>
           </select>
         </label>
         <label>
-          Sospechoso 2
+          Nombre sospechoso 2
+          <input id="suspect-2-name" name="suspect2Name" type="text" placeholder="Sospechoso 2">
+        </label>
+        <label>
+          Género sospechoso 2
           <select id="suspect-2-gender" name="suspect2Gender">
             <option value="m" selected>Hombre</option>
             <option value="f">Mujer</option>
           </select>
         </label>
         <label>
-          Sospechoso 3
+          Nombre sospechoso 3
+          <input id="suspect-3-name" name="suspect3Name" type="text" placeholder="Sospechoso 3">
+        </label>
+        <label>
+          Género sospechoso 3
           <select id="suspect-3-gender" name="suspect3Gender">
             <option value="m" selected>Hombre</option>
             <option value="f">Mujer</option>
@@ -375,6 +411,9 @@ The generator lets you choose the professor's name, the date of the case, the cl
       <button id="tab-separate" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="panel-separate" data-tab-target="panel-separate">
         Documentos separados
       </button>
+      <a id="complete-pdf-link" class="tab-button hidden" href="#" download>
+        PDF completo
+      </a>
     </div>
     <div id="panel-bundles" class="tab-panel" role="tabpanel" aria-labelledby="tab-bundles">
       <div id="bundle-downloads" class="downloads"></div>

@@ -16,7 +16,7 @@ feature: "/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/feature.s
 ---
 Esta actividad convierte la ley de enfriamiento de Newton en un juicio. El alumnado recibe papeles separados, interroga a testigos y sospechosos, y reconstruye la cronología hasta encontrar a la persona culpable.
 
-El generador permite elegir el nombre del profesor, la clase impartida, la fecha del caso, las horas de inicio y fin de la clase y el género de cada sospechoso. A partir de esos datos produce los documentos necesarios para repartir la actividad en el aula, tanto por piezas separadas como en paquetes completos por rol.
+El generador permite elegir el formato del PDF, el nombre del profesor, la clase impartida, la fecha del caso, las horas de inicio y fin de la clase, y el nombre y género de cada sospechoso. A partir de esos datos produce los documentos necesarios para repartir la actividad en el aula, tanto por piezas separadas como en paquetes completos por rol o en un único PDF completo.
 
 <figure>
   <img src="{{ site.baseurl }}/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/assets/cover_scene.png" alt="Aula preparada como escena del caso">
@@ -196,8 +196,17 @@ El generador permite elegir el nombre del profesor, la clase impartida, la fecha
   }
 
   .trial-generator .tab-button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 10px 14px;
+    border: 1px solid #b9c2ca;
+    border-radius: 6px;
+    font: inherit;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
     background: #fff;
-    border-color: #b9c2ca;
     color: var(--trial-ink);
   }
 
@@ -319,8 +328,15 @@ El generador permite elegir el nombre del profesor, la clase impartida, la fecha
           <input id="class-name" name="className" type="text" value="ecuaciones diferenciales y transformadas de Laplace" required>
         </label>
         <label>
+          Formato PDF
+          <select id="page-format" name="pageFormat">
+            <option value="a4" selected>A4</option>
+            <option value="letter">Carta americana</option>
+          </select>
+        </label>
+        <label>
           Fecha del caso
-          <input id="case-date" name="caseDate" type="date" value="2026-07-02" required>
+          <input id="case-date" name="caseDate" type="date" value="2026-07-02">
         </label>
         <label>
           Inicio de la clase
@@ -331,21 +347,33 @@ El generador permite elegir el nombre del profesor, la clase impartida, la fecha
           <input id="class-end-time" name="classEndTime" type="time" value="12:30" required>
         </label>
         <label>
-          Sospechoso 1
+          Nombre sospechoso 1
+          <input id="suspect-1-name" name="suspect1Name" type="text" placeholder="Sospechosa 1">
+        </label>
+        <label>
+          Género sospechoso 1
           <select id="suspect-1-gender" name="suspect1Gender">
             <option value="f" selected>Mujer</option>
             <option value="m">Hombre</option>
           </select>
         </label>
         <label>
-          Sospechoso 2
+          Nombre sospechoso 2
+          <input id="suspect-2-name" name="suspect2Name" type="text" placeholder="Sospechoso 2">
+        </label>
+        <label>
+          Género sospechoso 2
           <select id="suspect-2-gender" name="suspect2Gender">
             <option value="m" selected>Hombre</option>
             <option value="f">Mujer</option>
           </select>
         </label>
         <label>
-          Sospechoso 3
+          Nombre sospechoso 3
+          <input id="suspect-3-name" name="suspect3Name" type="text" placeholder="Sospechoso 3">
+        </label>
+        <label>
+          Género sospechoso 3
           <select id="suspect-3-gender" name="suspect3Gender">
             <option value="m" selected>Hombre</option>
             <option value="f">Mujer</option>
@@ -380,6 +408,9 @@ El generador permite elegir el nombre del profesor, la clase impartida, la fecha
       <button id="tab-separate" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="panel-separate" data-tab-target="panel-separate">
         Documentos separados
       </button>
+      <a id="complete-pdf-link" class="tab-button hidden" href="#" download>
+        PDF completo
+      </a>
     </div>
     <div id="panel-bundles" class="tab-panel" role="tabpanel" aria-labelledby="tab-bundles">
       <div id="bundle-downloads" class="downloads"></div>

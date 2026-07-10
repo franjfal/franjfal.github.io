@@ -48,9 +48,13 @@
     els.form = document.getElementById("case-form");
     els.teacherName = document.getElementById("teacher-name");
     els.className = document.getElementById("class-name");
+    els.pageFormat = document.getElementById("page-format");
     els.date = document.getElementById("case-date");
     els.startTime = document.getElementById("class-start-time");
     els.endTime = document.getElementById("class-end-time");
+    els.suspect1Name = document.getElementById("suspect-1-name");
+    els.suspect2Name = document.getElementById("suspect-2-name");
+    els.suspect3Name = document.getElementById("suspect-3-name");
     els.g1 = document.getElementById("suspect-1-gender");
     els.g2 = document.getElementById("suspect-2-gender");
     els.g3 = document.getElementById("suspect-3-gender");
@@ -59,6 +63,7 @@
     els.downloadsPanel = document.getElementById("downloads-panel");
     els.separateDownloads = document.getElementById("separate-downloads");
     els.bundleDownloads = document.getElementById("bundle-downloads");
+    els.completePdfLink = document.getElementById("complete-pdf-link");
     els.generateButton = document.getElementById("generate-button");
     els.clearButton = document.getElementById("clear-button");
     els.tabButtons = Array.from(document.querySelectorAll("[data-tab-target]"));
@@ -70,7 +75,20 @@
       button.addEventListener("click", () => activateTab(button.dataset.tabTarget));
     });
 
-    [els.teacherName, els.className, els.date, els.startTime, els.endTime, els.g1, els.g2, els.g3].forEach((input) => {
+    [
+      els.teacherName,
+      els.className,
+      els.pageFormat,
+      els.date,
+      els.startTime,
+      els.endTime,
+      els.suspect1Name,
+      els.suspect2Name,
+      els.suspect3Name,
+      els.g1,
+      els.g2,
+      els.g3
+    ].filter(Boolean).forEach((input) => {
       input.addEventListener("input", handleInputChange);
       input.addEventListener("change", handleInputChange);
     });
@@ -85,8 +103,11 @@
   }
 
   function syncTimeConstraints() {
-    els.startTime.max = els.endTime.value || "";
-    els.endTime.min = els.startTime.value || "";
+    if (!els.startTime || !els.endTime) {
+      return;
+    }
+    els.startTime.max = els.endTime.value ? shiftTimeValue(els.endTime.value, -30) : "";
+    els.endTime.min = els.startTime.value ? shiftTimeValue(els.startTime.value, 30) : "";
   }
 
   async function handleGenerate(event) {
@@ -104,14 +125,17 @@
 
       setStatus("Generando PDFs separados...");
       const individualSpecs = buildDocumentSpecs(caseData);
-      const individualFiles = individualSpecs.map((spec) => buildPdfFile(spec, images));
+      const individualFiles = individualSpecs.map((spec) => buildPdfFile(spec, images, caseData.pageFormat));
 
       setStatus("Generando PDFs conjuntos por rol...");
       const bundleSpecs = buildBundleSpecs(caseData, individualSpecs);
-      const bundleFiles = bundleSpecs.map((spec) => buildPdfFile(spec, images));
+      const bundleFiles = bundleSpecs.map((spec) => buildPdfFile(spec, images, caseData.pageFormat));
+
+      const completeSpec = buildCompleteSpec(individualSpecs);
+      const completeFile = buildPdfFile(completeSpec, images, caseData.pageFormat);
 
       setStatus("Preparando archivos ZIP...");
-      const stamp = `${caseData.dateValue}_${caseData.endTimeValue.replace(":", "-")}`;
+      const stamp = `${caseData.dateStamp}_${caseData.endTimeValue.replace(":", "-")}`;
       const separateZip = {
         fileName: `juicio_${caseData.teacherFileStem}_documentos_separados_${stamp}.zip`,
         label: "ZIP documentos separados",
@@ -123,10 +147,13 @@
         blob: await buildZip(bundleFiles)
       };
 
-      showDownloads(individualFiles, bundleFiles, separateZip, bundleZip);
+      completeFile.fileName = `juicio_${caseData.teacherFileStem}_documento_completo_${stamp}.pdf`;
+      completeFile.label = "PDF completo";
+
+      showDownloads(individualFiles, bundleFiles, separateZip, bundleZip, completeFile);
       updateSummary(caseData);
       setStatus(
-        `Listo: ${individualFiles.length} documentos separados y ${bundleFiles.length} paquetes por rol generados.`
+        `Listo: ${individualFiles.length} documentos separados, ${bundleFiles.length} paquetes por rol y un PDF completo generados.`
       );
     } catch (error) {
       console.error(error);
@@ -148,31 +175,34 @@
   function readCaseData() {
     const teacherFullName = normalizeName(els.teacherName.value);
     const className = normalizeName(els.className.value);
+    const pageFormat = els.pageFormat && els.pageFormat.value === "letter" ? "letter" : "a4";
     const dateValue = els.date.value;
     const startTimeValue = els.startTime.value;
     const endTimeValue = els.endTime.value;
+    const hasCaseDate = Boolean(dateValue);
+    const calculationDateValue = hasCaseDate ? dateValue : "2026-07-02";
     if (!teacherFullName) {
       throw new Error("Escribe el nombre del profesor.");
     }
     if (!className) {
       throw new Error("Escribe el nombre de la clase impartida.");
     }
-    if (!dateValue || !startTimeValue || !endTimeValue) {
-      throw new Error("Selecciona la fecha, la hora de inicio y la hora de fin de clase.");
+    if (!startTimeValue || !endTimeValue) {
+      throw new Error("Selecciona la hora de inicio y la hora de fin de clase.");
     }
 
-    const classStart = parseLocalDateTime(dateValue, startTimeValue);
-    const classEnd = parseLocalDateTime(dateValue, endTimeValue);
-    if (classStart >= classEnd) {
-      throw new Error("La hora de inicio de la clase debe ser anterior a la hora de fin.");
+    const classStart = parseLocalDateTime(calculationDateValue, startTimeValue);
+    const classEnd = parseLocalDateTime(calculationDateValue, endTimeValue);
+    if (classEnd.getTime() - classStart.getTime() < 30 * 60 * 1000) {
+      throw new Error("La hora de inicio debe ser al menos 30 minutos anterior al fin de la clase.");
     }
 
     const timeline = buildTimeline(classStart, classEnd);
     const temps = calculateTemperatures();
     const suspects = [
-      buildSuspect(1, els.g1.value),
-      buildSuspect(2, els.g2.value),
-      buildSuspect(3, els.g3.value)
+      buildSuspect(1, els.g1.value, els.suspect1Name ? els.suspect1Name.value : ""),
+      buildSuspect(2, els.g2.value, els.suspect2Name ? els.suspect2Name.value : ""),
+      buildSuspect(3, els.g3.value, els.suspect3Name ? els.suspect3Name.value : "")
     ];
 
     return {
@@ -180,7 +210,11 @@
       teacherShortName: shortName(teacherFullName),
       teacherFileStem: fileStem(teacherFullName),
       className,
+      pageFormat,
       dateValue,
+      hasCaseDate,
+      calculationDateValue,
+      dateStamp: hasCaseDate ? dateValue : "sin_fecha",
       startTimeValue,
       endTimeValue,
       classStart,
@@ -193,8 +227,8 @@
 
   function buildTimeline(classStart, classEnd) {
     const death = addMinutes(classEnd, 10);
-    const discovery = addMinutes(death, 135);
-    const firstMeasurement = addMinutes(death, 150);
+    const discovery = addMinutes(classEnd, 65);
+    const firstMeasurement = addMinutes(death, TEMPS.hoursFromDeathToFirst * 60);
 
     return {
       classStart,
@@ -204,10 +238,10 @@
       suspect2Return: addMinutes(classEnd, 20),
       suspect2Leave: addMinutes(classEnd, 25),
       discovery,
-      forensicCall: addMinutes(death, 140),
+      forensicCall: addMinutes(firstMeasurement, -10),
       firstMeasurement,
       secondMeasurement: addMinutes(firstMeasurement, 60),
-      afternoonClass: addMinutes(discovery, 5)
+      afternoonClass: addMinutes(classEnd, 70)
     };
   }
 
@@ -229,7 +263,7 @@
     };
   }
 
-  function buildSuspect(number, gender) {
+  function buildSuspect(number, gender, name) {
     const feminine = gender === "f";
     const forms = feminine
       ? {
@@ -265,15 +299,20 @@
           responsible: "responsable"
         };
 
+    const fallbackLabel = `${forms.roleCap} ${number}`;
+    const displayName = normalizeName(name) || fallbackLabel;
+    const usesCustomName = displayName !== fallbackLabel;
+
     return {
       number,
       gender,
+      name: displayName,
       ...forms,
-      label: `${forms.roleCap} ${number}`,
-      lowerLabel: `${forms.role} ${number}`,
-      withArticle: `${forms.article} ${forms.role} ${number}`,
-      withArticleCap: `${forms.articleCap} ${forms.role} ${number}`,
-      fileStem: `${forms.roleCap}_${number}`
+      label: displayName,
+      lowerLabel: usesCustomName ? displayName : `${forms.role} ${number}`,
+      withArticle: usesCustomName ? displayName : `${forms.article} ${forms.role} ${number}`,
+      withArticleCap: usesCustomName ? displayName : `${forms.articleCap} ${forms.role} ${number}`,
+      fileStem: usesCustomName ? fileStem(displayName) : `${forms.roleCap}_${number}`
     };
   }
 
@@ -373,8 +412,19 @@
     });
   }
 
+  function buildCompleteSpec(individualSpecs) {
+    return makeBundleSpec(
+      "complete",
+      "documento_completo.pdf",
+      "PDF completo",
+      "Todos los documentos",
+      individualSpecs
+    );
+  }
+
   function commonContextDoc(data) {
     const { timeline, temps, teacherFullName, teacherShortName, className } = data;
+    const caseDate = formatCaseDate(data);
 
     return makeSpec(
       "context",
@@ -388,7 +438,7 @@
           `El profesor ${teacherFullName} era conocido en la Universidad de Valencia por sus temidos exámenes sorpresa en "${className}".`
         ),
         block.paragraph(
-          `El ${formatDate(timeline.classEnd)}, durante una clase especialmente tensa, el profesor ${teacherShortName} anunció otro examen sorpresa. Los murmullos llenaron el aula mientras el alumnado intercambiaba miradas de preocupación. La tensión era palpable cuando se repartieron los enunciados y comenzó la prueba cronometrada.`
+          `${caseDate}, durante una clase especialmente tensa, el profesor ${teacherShortName} anunció otro examen sorpresa. Los murmullos llenaron el aula mientras el alumnado intercambiaba miradas de preocupación. La tensión era palpable cuando se repartieron los enunciados y comenzó la prueba cronometrada.`
         ),
         block.paragraph(
           "A medida que pasaban los minutos, la ansiedad aumentaba. Cada estudiante intentaba recordar las soluciones de las ecuaciones diferenciales y los pasos de las transformadas de Laplace, escribiendo respuestas a toda prisa con la esperanza de acertar."
@@ -404,7 +454,7 @@
         ),
         block.heading("Resumen policial"),
         block.paragraph(
-          `La mañana del ${formatDate(timeline.classEnd)}, el profesor ${teacherShortName} impartía su clase habitual. La clase terminó a las ${formatTime(timeline.classEnd)}, pero varios estudiantes permanecieron en el edificio o cerca de él durante distintos intervalos de tiempo. Hacia las ${formatTime(timeline.discovery)}, ${data.suspects[2].withArticle} encontró el cuerpo del profesor ${teacherShortName} en el aula y avisó inmediatamente a la conserje.`
+          `La mañana del caso, el profesor ${teacherShortName} impartía su clase habitual. La clase terminó a las ${formatTime(timeline.classEnd)}, pero varios estudiantes permanecieron en el edificio o cerca de él durante distintos intervalos de tiempo. Hacia las ${formatTime(timeline.discovery)}, ${data.suspects[2].withArticle} encontró el cuerpo del profesor ${teacherShortName} en el aula y avisó inmediatamente a la conserje.`
         ),
         block.paragraph(
           `Al llegar a las ${formatTime(timeline.firstMeasurement)}, el médico forense registró una temperatura corporal de ${formatCelsius(temps.firstMeasurement)}. Una hora después, la temperatura se midió de nuevo y fue de ${formatCelsius(temps.secondMeasurement)}. Usando la ley de enfriamiento de Newton, estas mediciones permiten estimar que la muerte se produjo aproximadamente a las ${formatTime(timeline.death)}.`
@@ -637,14 +687,14 @@
           [
             ["Caso", `Asesinato del profesor ${teacherShortName}`],
             ["Víctima", `Profesor ${teacherFullName}`],
-            ["Fecha", formatDate(timeline.classEnd)],
+            ["Fecha", formatCaseDateValue(data, timeline.classEnd)],
             ["Preparado por", "Médico forense"],
             ["Estado", "Hallazgos forenses iniciales"]
           ],
           [
             {
               title: "Resumen",
-              body: `El ${formatDate(timeline.classEnd)}, a las ${formatTime(timeline.forensicCall)}, recibí una llamada de la conserje del edificio informándome de que el cuerpo del profesor ${teacherShortName} había sido encontrado en una de las aulas. Llegué a la universidad a las ${formatTime(timeline.firstMeasurement)} y procedí a examinar el cuerpo.`
+              body: `${formatCaseDate(data)}, a las ${formatTime(timeline.forensicCall)}, recibí una llamada de la conserje del edificio informándome de que el cuerpo del profesor ${teacherShortName} había sido encontrado en una de las aulas. Llegué a la universidad a las ${formatTime(timeline.firstMeasurement)} y procedí a examinar el cuerpo.`
             },
             {
               title: "Observaciones",
@@ -658,7 +708,7 @@
             },
             {
               title: "Conclusión",
-              body: `A partir de la evidencia forense, se concluye que el profesor ${teacherShortName} fue víctima de un homicidio. La causa de muerte fue una inyección que provocó muerte instantánea. Usando la ley de enfriamiento de Newton y las dos mediciones de temperatura, la hora de muerte se estima aproximadamente a las ${formatTime(timeline.death)} del ${formatDate(timeline.death)}.`
+              body: `A partir de la evidencia forense, se concluye que el profesor ${teacherShortName} fue víctima de un homicidio. La causa de muerte fue una inyección que provocó muerte instantánea. Usando la ley de enfriamiento de Newton y las dos mediciones de temperatura, la hora de muerte se estima aproximadamente a las ${formatTime(timeline.death)} ${formatCaseDateSuffix(data, timeline.death)}.`
             },
             {
               title: "Recomendaciones",
@@ -793,7 +843,7 @@
         ),
         block.heading("Resumen"),
         block.paragraph(
-          `Hora de muerte: aproximadamente las ${formatTime(timeline.death)} del ${formatDate(timeline.death)}.`
+          `Hora de muerte: aproximadamente las ${formatTime(timeline.death)} ${formatCaseDateSuffix(data, timeline.death)}.`
         )
       ]
     );
@@ -823,7 +873,7 @@
         ),
         block.heading("Una rutina interrumpida"),
         block.paragraph(
-          `El ${formatDate(timeline.classEnd)}, ${s3.withArticle} regresó para una clase de la tarde y encontró el cuerpo del profesor ${teacherShortName} parcialmente oculto detrás de la mesa del profesor a las ${formatEventTime(timeline.discovery, timeline.classEnd)}. Te avisó inmediatamente y llamaste a las autoridades. El médico forense recibió el aviso a las ${formatEventTime(timeline.forensicCall, timeline.classEnd)} y llegó a la facultad a las ${formatEventTime(timeline.firstMeasurement, timeline.classEnd)}.`
+          `${formatCaseDate(data)}, ${s3.withArticle} regresó para una clase de la tarde y encontró el cuerpo del profesor ${teacherShortName} parcialmente oculto detrás de la mesa del profesor a las ${formatEventTime(timeline.discovery, timeline.classEnd)}. Te avisó inmediatamente y llamaste a las autoridades. El médico forense recibió el aviso a las ${formatEventTime(timeline.forensicCall, timeline.classEnd)} y llegó a la facultad a las ${formatEventTime(timeline.firstMeasurement, timeline.classEnd)}.`
         ),
         block.heading("Por qué existe una temperatura previa"),
         block.paragraph(
@@ -1116,8 +1166,8 @@
     };
   }
 
-  function buildPdfFile(spec, images) {
-    const pdf = renderPdf(spec, images);
+  function buildPdfFile(spec, images, pageFormat) {
+    const pdf = renderPdf(spec, images, pageFormat);
     return {
       fileName: spec.fileName,
       label: spec.downloadLabel,
@@ -1125,9 +1175,9 @@
     };
   }
 
-  function renderPdf(spec, images) {
+  function renderPdf(spec, images, pageFormat) {
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ unit: "pt", format: "a4" });
+    const doc = new jsPDF({ unit: "pt", format: pageFormat === "letter" ? "letter" : "a4" });
     const page = {
       width: doc.internal.pageSize.getWidth(),
       height: doc.internal.pageSize.getHeight(),
@@ -1722,14 +1772,26 @@
     return zip.generateAsync({ type: "blob" });
   }
 
-  function showDownloads(individualFiles, bundleFiles, separateZip, bundleZip) {
+  function showDownloads(individualFiles, bundleFiles, separateZip, bundleZip, completeFile) {
     els.separateDownloads.innerHTML = "";
     els.bundleDownloads.innerHTML = "";
     els.downloadsPanel.classList.remove("hidden");
     activateTab("panel-bundles");
 
+    updateCompletePdfLink(completeFile);
     appendDownloadGroup(els.separateDownloads, separateZip, individualFiles);
     appendDownloadGroup(els.bundleDownloads, bundleZip, bundleFiles);
+  }
+
+  function updateCompletePdfLink(file) {
+    if (!els.completePdfLink || !file) {
+      return;
+    }
+    const url = rememberUrl(URL.createObjectURL(file.blob));
+    els.completePdfLink.href = url;
+    els.completePdfLink.download = file.fileName;
+    els.completePdfLink.classList.remove("hidden");
+    els.completePdfLink.setAttribute("aria-label", "Descargar PDF completo");
   }
 
   function appendDownloadGroup(container, zipFile, files) {
@@ -1797,6 +1859,11 @@
     if (els.downloadsPanel) {
       els.downloadsPanel.classList.add("hidden");
     }
+    if (els.completePdfLink) {
+      els.completePdfLink.classList.add("hidden");
+      els.completePdfLink.removeAttribute("href");
+      els.completePdfLink.removeAttribute("download");
+    }
   }
 
   function rememberUrl(url) {
@@ -1830,13 +1897,15 @@
     const rows = [
       ["Profesor", data.teacherFullName],
       ["Clase", data.className],
-      ["Fecha", formatDate(timeline.classEnd)],
+      ["Formato PDF", data.pageFormat === "letter" ? "Carta" : "A4"],
+      ["Fecha", formatCaseDateValue(data, timeline.classEnd)],
       ["Inicio de clase", formatTime(timeline.classStart)],
       ["Fin de clase", formatTime(timeline.classEnd)],
       ["Muerte estimada", formatEventTime(timeline.death, timeline.classEnd)],
       ["Descubrimiento", formatEventTime(timeline.discovery, timeline.classEnd)],
       ["1a medición", `${formatEventTime(timeline.firstMeasurement, timeline.classEnd)} (${formatNumber(data.temps.firstMeasurement)} C)`],
-      ["2a medición", `${formatEventTime(timeline.secondMeasurement, timeline.classEnd)} (${formatNumber(data.temps.secondMeasurement)} C)`]
+      ["2a medición", `${formatEventTime(timeline.secondMeasurement, timeline.classEnd)} (${formatNumber(data.temps.secondMeasurement)} C)`],
+      ["Sospechosos", data.suspects.map((suspect) => suspect.label).join(", ")]
     ];
 
     els.summary.innerHTML = "";
@@ -1899,6 +1968,14 @@
     return new Date(year, month - 1, day, hour, minute, 0, 0);
   }
 
+  function shiftTimeValue(timeValue, minutes) {
+    const [hour, minute] = timeValue.split(":").map(Number);
+    const total = Math.max(0, Math.min(23 * 60 + 59, hour * 60 + minute + minutes));
+    const shiftedHour = String(Math.floor(total / 60)).padStart(2, "0");
+    const shiftedMinute = String(total % 60).padStart(2, "0");
+    return `${shiftedHour}:${shiftedMinute}`;
+  }
+
   function addMinutes(date, minutes) {
     return new Date(date.getTime() + minutes * 60 * 1000);
   }
@@ -1918,6 +1995,18 @@
       month: "long",
       year: "numeric"
     }).format(date);
+  }
+
+  function formatCaseDate(data) {
+    return data.hasCaseDate ? `El ${formatDate(data.timeline.classEnd)}` : "El día del caso";
+  }
+
+  function formatCaseDateValue(data, date) {
+    return data.hasCaseDate ? formatDate(date) : "Sin fecha";
+  }
+
+  function formatCaseDateSuffix(data, date) {
+    return data.hasCaseDate ? `del ${formatDate(date)}` : "del día del caso";
   }
 
   function formatTime(date) {
