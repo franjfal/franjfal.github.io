@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 185" role="img" aria-labelledby="title description">
+  <title id="title">El duelo del cálculo</title>
+  <desc id="description">Dos relojes enfrentados representan la derivación y la integración.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101a2b"/>
+      <stop offset="1" stop-color="#2f6682"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#000" flood-opacity=".32"/>
+    </filter>
+  </defs>
+  <rect width="1024" height="185" fill="url(#background)"/>
+  <circle cx="44" cy="18" r="138" fill="#d9a441" opacity=".12"/>
+  <circle cx="982" cy="180" r="164" fill="#c64a3f" opacity=".13"/>
+  <g opacity=".1" fill="#fff7df" font-family="Georgia, serif">
+    <text x="22" y="166" font-size="48">f′(x)</text>
+    <text x="817" y="48" font-size="42">∫ f(x) dx</text>
+  </g>
+  <g filter="url(#shadow)">
+    <circle cx="388" cy="93" r="68" fill="#c64a3f" stroke="#f7e8bd" stroke-width="5"/>
+    <circle cx="636" cy="93" r="68" fill="#2f6682" stroke="#f7e8bd" stroke-width="5"/>
+    <circle cx="388" cy="93" r="51" fill="#fffdf8"/>
+    <circle cx="636" cy="93" r="51" fill="#fffdf8"/>
+  </g>
+  <g fill="none" stroke="#172235" stroke-width="7" stroke-linecap="round">
+    <path d="M388 55v38l-24 22"/>
+    <path d="M636 55v38l27 17"/>
+  </g>
+  <g fill="#172235">
+    <circle cx="388" cy="93" r="7"/>
+    <circle cx="636" cy="93" r="7"/>
+  </g>
+  <text x="512" y="106" fill="#f7e8bd" font-family="Georgia, serif" font-size="35" font-weight="700" text-anchor="middle">d ↔ ∫</text>
+</svg>

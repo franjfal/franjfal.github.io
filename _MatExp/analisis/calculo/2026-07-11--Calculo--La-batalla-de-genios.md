@@ -12,7 +12,7 @@ categories:
 taxonomy: experimento análisis cálculo derivadas integrales juego
 permalink: "/MatExp/analisis/calculo/duelo/"
 header:
-  image: "/assets/MatExp/analisis/calculo/duelo/feature.svg"
+  image: "/assets/MatExp/analisis/calculo/duelo/header.svg"
 excerpt: "Un duelo multijugador de derivadas e integrales en el que cada respuesta correcta devuelve la operación inversa al campo rival."
 feature: "/assets/MatExp/analisis/calculo/duelo/feature.svg"
 sidebar:
@@ -38,51 +38,27 @@ La conexión entre dispositivos es directa mediante WebRTC y no necesita un serv
   .calculus-duel-actions {
     margin: 0.75rem 0 0.5rem;
   }
-
-  .calculus-duel-embed {
-    width: 100%;
-    height: 2050px;
-    border: 0;
-    border-radius: 14px;
-    overflow: hidden;
-    background: #101a2b;
-    box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.08);
-  }
-
-  @media (max-width: 700px) {
-    .calculus-duel-embed {
-      height: 2400px;
-    }
-  }
 </style>
 
 <div class="calculus-duel-actions">
   <button id="calculusDuelFullscreen" class="btn btn--small btn--info" style="color: white;" type="button">Ver en pantalla completa</button>
-  <a class="btn btn--small" href="{{ '/assets/MatExp/analisis/calculo/duelo/index.html' | relative_url }}" target="_blank" rel="noopener">Abrir en una pestaña nueva</a>
+  <a class="btn btn--small" href="{{ '/assets/MatExp/analisis/calculo/duelo/index.html' | relative_url }}" target="_blank" rel="noopener">Abrir versión aislada</a>
 </div>
 
-<iframe
-  id="calculusDuelFrame"
-  class="calculus-duel-embed"
-  title="La batalla de genios: el duelo del cálculo"
-  src="{{ '/assets/MatExp/analisis/calculo/duelo/index.html' | relative_url }}"
-  allow="camera; clipboard-read; clipboard-write"
-  allowfullscreen
-  loading="lazy"
-></iframe>
+{% include calculus-duel-app.html %}
 
 <script>
   (function () {
     var button = document.getElementById('calculusDuelFullscreen');
-    var frame = document.getElementById('calculusDuelFrame');
+    var app = document.getElementById('calculusDuelApp');
 
-    if (!button || !frame) return;
+    if (!button || !app) return;
 
     button.addEventListener('click', function () {
-      if (frame.requestFullscreen) {
-        frame.requestFullscreen();
+      if (app.requestFullscreen) {
+        app.requestFullscreen();
       } else {
-        window.open(frame.src, '_blank', 'noopener');
+        window.open('{{ "/assets/MatExp/analisis/calculo/duelo/index.html" | relative_url }}', '_blank', 'noopener');
       }
     });
   })();

@@ -1,6 +1,11 @@
 (function () {
   "use strict";
 
+  const duelScriptUrl = document.currentScript && document.currentScript.src;
+  const questionBankUrl = duelScriptUrl
+    ? new URL("questions.json", duelScriptUrl).href
+    : "questions.json";
+
   const app = {
     questionBank: null,
     questionIndex: new Map(),
@@ -152,7 +157,7 @@
   async function loadQuestionBank() {
     setSetupMessage("Cargando el banco de preguntas…");
     try {
-      const response = await fetch("questions.json", { cache: "no-store" });
+      const response = await fetch(questionBankUrl, { cache: "no-store" });
       if (!response.ok) {
         throw new Error(`No se pudo abrir questions.json (${response.status}).`);
       }

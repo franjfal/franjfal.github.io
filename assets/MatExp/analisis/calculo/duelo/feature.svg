@@ -1,50 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
-  <title id="title">La batalla de genios: el duelo del cálculo</title>
-  <desc id="description">Dos relojes enfrentados entre símbolos de derivación e integración.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" role="img" aria-labelledby="title description">
+  <title id="title">El duelo del cálculo</title>
+  <desc id="description">Dos relojes enfrentados, uno para derivar y otro para integrar.</desc>
   <defs>
-    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#101a2b"/>
-      <stop offset="1" stop-color="#243754"/>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8e9bd"/>
+      <stop offset="1" stop-color="#edd49a"/>
     </linearGradient>
-    <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#e06858"/>
-      <stop offset="1" stop-color="#98362f"/>
-    </linearGradient>
-    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#4c87a5"/>
-      <stop offset="1" stop-color="#244e68"/>
-    </linearGradient>
-    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="22" stdDeviation="24" flood-color="#000" flood-opacity=".35"/>
+    <filter id="shadow" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="9" stdDeviation="9" flood-color="#172235" flood-opacity=".28"/>
     </filter>
   </defs>
-  <rect width="1600" height="900" fill="url(#background)"/>
-  <circle cx="140" cy="90" r="320" fill="#d9a441" opacity=".1"/>
-  <circle cx="1490" cy="820" r="390" fill="#c64a3f" opacity=".09"/>
-  <g opacity=".08" fill="#fff" font-family="Georgia, serif" font-size="92">
-    <text x="80" y="760">f′(x)</text>
-    <text x="1260" y="160">∫ f(x) dx</text>
+  <rect width="500" height="500" rx="22" fill="#2f6682"/>
+  <path d="M0 0h500v115C375 88 288 145 190 119 112 99 56 78 0 105Z" fill="#3e7894"/>
+  <path d="M0 390c96-38 169-13 247 19 88 36 166 6 253-31v122H0Z" fill="#c64a3f" opacity=".92"/>
+  <g fill="none" stroke="#f7e8bd" stroke-linecap="round" opacity=".2">
+    <path d="M42 52h112M346 447h112" stroke-width="5"/>
+    <path d="M70 78h58M374 421h58" stroke-width="3"/>
   </g>
   <g filter="url(#shadow)">
-    <circle cx="485" cy="450" r="205" fill="url(#red)" stroke="#f7e8bd" stroke-width="10"/>
-    <circle cx="1115" cy="450" r="205" fill="url(#blue)" stroke="#f7e8bd" stroke-width="10"/>
-    <circle cx="485" cy="450" r="158" fill="#fffdf8"/>
-    <circle cx="1115" cy="450" r="158" fill="#fffdf8"/>
+    <circle cx="168" cy="259" r="113" fill="#c64a3f" stroke="#172235" stroke-width="9"/>
+    <circle cx="332" cy="259" r="113" fill="#d9a441" stroke="#172235" stroke-width="9"/>
+    <circle cx="168" cy="259" r="82" fill="url(#paper)" stroke="#fff7df" stroke-width="5"/>
+    <circle cx="332" cy="259" r="82" fill="url(#paper)" stroke="#fff7df" stroke-width="5"/>
   </g>
-  <g fill="none" stroke="#172235" stroke-linecap="round">
-    <path d="M485 322v128l-74 68" stroke-width="18"/>
-    <path d="M1115 322v128l82 53" stroke-width="18"/>
+  <g fill="none" stroke="#172235" stroke-width="11" stroke-linecap="round">
+    <path d="M168 199v60l-37 35"/>
+    <path d="M332 199v60l42 27"/>
   </g>
   <g fill="#172235">
-    <circle cx="485" cy="450" r="18"/>
-    <circle cx="1115" cy="450" r="18"/>
+    <circle cx="168" cy="259" r="12"/>
+    <circle cx="332" cy="259" r="12"/>
   </g>
-  <g fill="#f7e8bd" font-family="Georgia, serif" text-anchor="middle">
-    <text x="800" y="405" font-size="150" font-weight="700">∫ ↔ d</text>
-    <text x="800" y="520" font-family="system-ui, sans-serif" font-size="48" font-weight="700" letter-spacing="5">DUELO DEL CÁLCULO</text>
-  </g>
-  <g fill="#172235" font-family="system-ui, sans-serif" font-weight="800" text-anchor="middle">
-    <text x="485" y="660" font-size="36">DERIVAR</text>
-    <text x="1115" y="660" font-size="36">INTEGRAR</text>
+  <g fill="#fff7df" font-family="Georgia, serif" font-weight="700" text-anchor="middle">
+    <text x="168" y="126" font-size="58">d</text>
+    <text x="332" y="126" font-size="58">∫</text>
+    <text x="250" y="435" font-size="52">d ↔ ∫</text>
   </g>
 </svg>

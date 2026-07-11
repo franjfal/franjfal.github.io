@@ -1,0 +1,320 @@
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="{{ '/assets/MatExp/analisis/calculo/duelo/duel.css' | relative_url }}">
+
+<div id="calculusDuelApp" class="calculus-duel-app">
+<div class="app-shell">
+    <header class="site-header">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">∫↔d</div>
+        <div class="brand-copy">
+          <strong>El archivo del profesor</strong>
+          <span>Caso 06 · Teorema Fundamental del Cálculo</span>
+        </div>
+      </div>
+      <div class="network-pill"><span class="network-dot"></span>P2P · sin servidor de partida</div>
+    </header>
+
+    <div class="duel-main">
+      <section id="setup-screen" class="screen setup-layout" aria-labelledby="duel-page-title">
+        <article class="story-panel">
+          <div class="story-top">
+            <span class="eyebrow">Caso 06 · Duelo matemático</span>
+            <h1 id="duel-page-title">La batalla de genios</h1>
+            <p>Derivar, integrar y sobrevivir. Cada acierto devuelve una operación al campo rival y acelera su reloj.</p>
+          </div>
+          <div class="story-body">
+            <h2>Las reglas del archivo</h2>
+            <p>El último reloj activo gana. Las preguntas revelan que derivar e integrar son operaciones opuestas, pero cada constante y cada función cambian el duelo.</p>
+            <div class="duel-steps">
+              <div class="duel-step">
+                <span>1</span>
+                <div><strong>Resuelve tu operación</strong><small>Elige la derivada o antiderivada correcta antes de quedarte sin tiempo.</small></div>
+              </div>
+              <div class="duel-step">
+                <span>2</span>
+                <div><strong>Devuelve la inversa</strong><small>Un acierto envía la operación opuesta a otro jugador.</small></div>
+              </div>
+              <div class="duel-step">
+                <span>3</span>
+                <div><strong>Rompe la penalización</strong><small>Las preguntas recibidas aceleran el reloj hasta que las resuelvas.</small></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <section class="setup-panel" aria-label="Crear o unirse a una partida">
+          <div class="tabs" role="tablist" aria-label="Modo de acceso">
+            <button id="create-tab" class="tab-button" type="button" role="tab" aria-selected="true" aria-controls="create-panel">Crear partida</button>
+            <button id="join-tab" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="join-panel">Unirse</button>
+          </div>
+
+          <div id="create-panel" role="tabpanel" aria-labelledby="create-tab">
+            <h2>Configura el duelo</h2>
+            <p class="section-intro">Este dispositivo coordinará los relojes y conectará directamente con los demás.</p>
+            <form id="create-form">
+              <div class="form-grid">
+                <label class="field full">
+                  <span>Tu nombre</span>
+                  <input id="host-name" name="hostName" type="text" maxlength="24" value="Anfitrión" autocomplete="nickname" required>
+                </label>
+                <label class="field">
+                  <span>Tiempo inicial</span>
+                  <input id="initial-minutes" name="initialMinutes" type="number" min="0.5" max="30" step="0.5" value="3" required>
+                  <small>Minutos por jugador</small>
+                </label>
+                <label class="field">
+                  <span>Número de jugadores</span>
+                  <select id="player-count" name="playerCount">
+                    <option value="2" selected>2 jugadores</option>
+                    <option value="3">3 jugadores</option>
+                    <option value="4">4 jugadores</option>
+                    <option value="5">5 jugadores</option>
+                    <option value="6">6 jugadores</option>
+                    <option value="7">7 jugadores</option>
+                    <option value="8">8 jugadores</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>Bonificación por acierto</span>
+                  <input id="bonus-seconds" name="bonusSeconds" type="number" min="0" max="120" step="1" value="10" required>
+                  <small>Segundos añadidos</small>
+                </label>
+                <label class="field">
+                  <span>Épsilon de penalización</span>
+                  <input id="penalty-epsilon" name="penaltyEpsilon" type="number" min="0" max="1" step="0.01" value="0.08" required>
+                  <small>Épsilon × peso de la función</small>
+                </label>
+                <label class="field full">
+                  <span>Cota máxima de penalización</span>
+                  <input id="penalty-cap" name="penaltyCap" type="number" min="0" max="4" step="0.05" value="0.75" required>
+                  <small>0,75 significa que el reloj puede llegar como máximo a velocidad ×1,75</small>
+                </label>
+              </div>
+
+              <fieldset>
+                <div class="fieldset-heading">
+                  <div>
+                    <div class="fieldset-title">Familias de funciones</div>
+                    <p>Elige qué grupos pueden aparecer en la partida.</p>
+                  </div>
+                  <button id="toggle-families" class="text-action" type="button">Seleccionar todas</button>
+                </div>
+                <div id="family-groups" class="family-groups" aria-live="polite"></div>
+              </fieldset>
+
+              <div class="actions">
+                <button id="create-room-button" class="button button-primary button-block" type="submit" disabled>Crear sala P2P</button>
+              </div>
+              <p id="setup-message" class="setup-message" role="status" aria-live="polite">Cargando el banco de preguntas…</p>
+            </form>
+          </div>
+
+          <div id="join-panel" role="tabpanel" aria-labelledby="join-tab" hidden>
+            <h2>Entra en la sala</h2>
+            <p class="section-intro">Escanea la invitación del anfitrión o pega el código recibido.</p>
+            <form id="join-form">
+              <div class="form-grid">
+                <label class="field full">
+                  <span>Tu nombre</span>
+                  <input id="join-name" name="joinName" type="text" maxlength="24" placeholder="Nombre del jugador" autocomplete="nickname" required>
+                </label>
+                <label class="field full">
+                  <span>Código de invitación</span>
+                  <textarea id="offer-code" name="offerCode" placeholder="Pega aquí el código que aparece bajo el QR…" required></textarea>
+                </label>
+              </div>
+              <div class="actions">
+                <button id="scan-offer-button" class="button button-secondary" type="button">Escanear QR</button>
+                <button id="prepare-answer-button" class="button button-primary" type="submit" disabled>Preparar conexión</button>
+              </div>
+            </form>
+            <div class="join-note">
+              <div class="note-icon" aria-hidden="true">i</div>
+              <div><strong>Conexión sin servidor</strong>El QR intercambia la información necesaria entre ambos navegadores. El anfitrión deberá escanear después tu respuesta.</div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section id="lobby-screen" class="screen lobby-shell" hidden aria-labelledby="lobby-title">
+        <header class="lobby-header">
+          <div>
+            <span id="lobby-role" class="badge">Sala del anfitrión</span>
+            <h1 id="lobby-title">Preparando el duelo</h1>
+          </div>
+          <div class="room-code"><span>Código de sala</span><strong id="room-code">------</strong></div>
+        </header>
+
+        <div class="lobby-grid">
+          <section class="lobby-panel" aria-labelledby="players-title">
+            <div class="panel-heading">
+              <div><h2 id="players-title">Jugadores</h2><p id="players-progress">1 de 2 conectados</p></div>
+              <span id="lobby-status-chip" class="status-chip">Esperando</span>
+            </div>
+            <div id="lobby-players" class="players-list"></div>
+            <div id="lobby-config-summary" class="config-summary"></div>
+          </section>
+
+          <section id="host-lobby-panel" class="lobby-panel" aria-labelledby="invite-title">
+            <div class="panel-heading">
+              <div><h2 id="invite-title">Añadir un dispositivo</h2><p>Completa el intercambio de dos QR por cada jugador.</p></div>
+            </div>
+            <div id="host-connection-steps" class="connection-steps">
+              <div class="connection-step active" data-step="offer"><span>1 · Invitación</span>Genera el QR</div>
+              <div class="connection-step" data-step="answer"><span>2 · Respuesta</span>Escanea al jugador</div>
+              <div class="connection-step" data-step="ready"><span>3 · Listo</span>Conexión directa</div>
+            </div>
+            <div id="invite-empty" class="waiting-card">
+              <div>
+                <div class="waiting-orbit" aria-hidden="true"></div>
+                <h3>Abre un nuevo enlace P2P</h3>
+                <p class="muted">Se generará una invitación de un solo uso para el siguiente dispositivo.</p>
+                <button id="generate-invite-button" class="button button-primary" type="button">Generar invitación</button>
+              </div>
+            </div>
+            <div id="invite-content" hidden>
+              <div class="qr-layout">
+                <div id="offer-qr" class="qr-box"><span class="qr-placeholder">Generando QR…</span></div>
+                <div class="signal-block">
+                  <h3>1. El jugador escanea este QR</h3>
+                  <p>También puedes copiar y enviar el código completo.</p>
+                  <textarea id="host-offer-code" readonly aria-label="Código de invitación"></textarea>
+                  <div class="inline-actions">
+                    <button id="copy-offer-button" class="button button-ghost" type="button">Copiar invitación</button>
+                    <button id="cancel-invite-button" class="button button-secondary" type="button">Generar otra</button>
+                  </div>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="signal-block">
+                <h3>2. Recibe la respuesta del jugador</h3>
+                <p>Escanea su QR de respuesta o pega el código para cerrar la conexión.</p>
+                <textarea id="answer-code" placeholder="Pega aquí la respuesta del otro dispositivo…"></textarea>
+                <div class="inline-actions">
+                  <button id="scan-answer-button" class="button button-secondary" type="button">Escanear respuesta</button>
+                  <button id="accept-answer-button" class="button button-dark" type="button">Completar conexión</button>
+                </div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <button id="start-game-button" class="button button-primary button-block" type="button" disabled>Esperando a todos los jugadores</button>
+          </section>
+
+          <section id="guest-lobby-panel" class="lobby-panel" hidden aria-labelledby="answer-title">
+            <div class="panel-heading">
+              <div><h2 id="answer-title">Devuelve tu respuesta</h2><p>El anfitrión debe escanearla para completar el enlace.</p></div>
+            </div>
+            <div id="guest-connection-steps" class="connection-steps">
+              <div class="connection-step done"><span>1 · Invitación</span>Recibida</div>
+              <div class="connection-step active"><span>2 · Respuesta</span>Muéstrala</div>
+              <div class="connection-step"><span>3 · Listo</span>Espera al anfitrión</div>
+            </div>
+            <div class="qr-layout">
+              <div id="answer-qr" class="qr-box"><span class="qr-placeholder">Generando respuesta…</span></div>
+              <div class="signal-block">
+                <h3>Tu código de respuesta</h3>
+                <p>Mantén esta pantalla abierta mientras el anfitrión lo escanea.</p>
+                <textarea id="guest-answer-code" readonly aria-label="Código de respuesta"></textarea>
+                <button id="copy-answer-button" class="button button-ghost" type="button">Copiar respuesta</button>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="waiting-card">
+              <div>
+                <div class="waiting-orbit" aria-hidden="true"></div>
+                <h3 id="guest-waiting-title">Esperando al anfitrión</h3>
+                <p id="guest-waiting-text" class="muted">La sala aparecerá en cuanto se abra el canal directo.</p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="game-screen" class="screen game-shell" hidden aria-labelledby="game-question-title">
+        <header class="game-topbar">
+          <div class="game-identity">
+            <div id="game-avatar" class="player-avatar" aria-hidden="true">A</div>
+            <div><strong id="game-player-name">Jugador</strong><span id="game-room-label">Sala ------</span></div>
+          </div>
+          <div class="game-metrics">
+            <span class="metric-pill">Nivel <strong id="game-level">1</strong></span>
+            <span class="metric-pill">Cola <strong id="game-queue">0</strong></span>
+            <span class="metric-pill">Aciertos <strong id="game-correct">0</strong></span>
+          </div>
+        </header>
+
+        <div class="game-grid">
+          <div class="game-main">
+            <section id="timer-card" class="timer-card" aria-label="Temporizador del jugador">
+              <div class="timer-content">
+                <div class="timer-label">Tiempo restante</div>
+                <div id="timer-value" class="timer-value">03:00.0</div>
+                <div id="timer-rate" class="timer-rate">Velocidad ×1,00</div>
+              </div>
+              <div id="countdown-cover" class="countdown-cover" hidden><div><strong id="countdown-value">3</strong><span>Todos los relojes arrancan a la vez</span></div></div>
+              <div id="eliminated-cover" class="eliminated-cover" hidden><div><strong>Reloj agotado</strong><span>Sigues viendo el duelo mientras queda un genio en pie.</span></div></div>
+            </section>
+
+            <section class="game-card" aria-labelledby="game-question-title">
+              <div class="question-meta">
+                <div id="question-tags" class="question-tags"></div>
+                <span id="question-counter" class="question-counter">Pregunta activa</span>
+              </div>
+              <p id="question-prompt" class="question-prompt">Elige la respuesta correcta</p>
+              <h2 id="game-question-title" class="question-expression" aria-live="polite"></h2>
+              <div id="answers-grid" class="answers-grid"></div>
+            </section>
+          </div>
+
+          <aside class="game-side">
+            <section class="side-panel" aria-labelledby="opponents-title">
+              <div class="side-heading"><h2 id="opponents-title">Estado del duelo</h2><span id="alive-count" class="mini-badge">2 activos</span></div>
+              <div id="opponents-list" class="opponents-list"></div>
+            </section>
+            <section class="side-panel" aria-labelledby="penalties-title">
+              <div class="side-heading"><h2 id="penalties-title">Penalizaciones activas</h2><span id="penalty-total" class="mini-badge attack">+0,00</span></div>
+              <div id="penalties-list" class="penalties-list"></div>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section id="end-screen" class="screen" hidden aria-labelledby="winner-title">
+        <article class="end-card">
+          <div class="end-banner">
+            <div class="trophy" aria-hidden="true">∫</div>
+            <span class="badge">Archivo resuelto</span>
+            <h1 id="winner-title">Último genio en pie</h1>
+            <p id="winner-subtitle">La partida ha terminado.</p>
+          </div>
+          <div class="end-body">
+            <div id="results-list" class="results-list"></div>
+            <button id="new-game-button" class="button button-primary" type="button">Nueva partida</button>
+          </div>
+        </article>
+      </section>
+    </div>
+  </div>
+
+  <dialog id="scan-dialog" aria-labelledby="scan-dialog-title">
+    <div class="dialog-header">
+      <h2 id="scan-dialog-title">Escanear código QR</h2>
+      <button id="close-scanner-button" class="icon-button" type="button" aria-label="Cerrar escáner">×</button>
+    </div>
+    <div class="dialog-body">
+      <div id="qr-reader"></div>
+      <p class="scanner-help">Apunta la cámara al QR y mantén el dispositivo quieto.</p>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</div>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script defer src="{{ '/assets/MatExp/analisis/calculo/duelo/game-engine.js' | relative_url }}"></script>
+<script defer src="{{ '/assets/MatExp/analisis/calculo/duelo/webrtc.js' | relative_url }}"></script>
+<script defer src="{{ '/assets/MatExp/analisis/calculo/duelo/duel.js' | relative_url }}"></script>
+
