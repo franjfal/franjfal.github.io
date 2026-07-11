@@ -5,6 +5,8 @@ excerpt: Material complementario del libro "Matemáticas experimentales" publica
   en la colección Estímulos Matemáticos que editan conjuntamente la RSME y SM.
 lang: es
 page_id: matexp-book
+sidebar:
+  nav: "primer-libro"
 ---
 
 <style>

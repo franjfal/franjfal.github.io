@@ -13,6 +13,8 @@ header:
 excerpt: Experimento que muestra la derivada como un fenómeno natural que establece
   la dirección de los trenes en cada instante.
 feature: "/assets/MatExp/analisis/derivadas/trenes/feature.jpg"
+sidebar:
+  nav: "primer-libro"
 ---
 <div class="materials">
 <h2> Materiales:</h2>

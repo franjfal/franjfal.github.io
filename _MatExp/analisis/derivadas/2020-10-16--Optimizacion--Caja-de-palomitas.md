@@ -21,6 +21,8 @@ gallery1:
 - image_path: "/assets/MatExp/analisis/derivadas/palomitas/caja3.jpg"
   alt: Ejemplo de caja
 feature: "/assets/MatExp/analisis/derivadas/palomitas/feature.jpg"
+sidebar:
+  nav: "primer-libro"
 ---
 <div class="materials">
 <h2> Materiales:</h2>

@@ -9,6 +9,8 @@ taxonomy: experimento modelización Covid-19
 permalink: /MatExp/aplicada/epidemiologia/portales-covid-19/
 excerpt: "Listado de portales con datos sobre la Covid-19."
 hidden: true
+sidebar:
+  nav: "primer-libro"
 ---
 # Portales de datos de la Covid-19
 
@@ -46,5 +48,4 @@ La siguiente lista contiene diversos portales donde puede consultarse los datos 
    - [Ourworldindata.org](https://ourworldindata.org/coronavirus){:target="_blank"}
    - [Número de casos por país - Wikipedia]( https://en.wikipedia.org/wiki/Template:COVID-19_pandemic_data){:target="_blank"}
   
-
 

@@ -39,3 +39,114 @@ main_en:
         url: /resources/bibliography/
   - title: "About me"
     url: /about/
+
+# Navegación del libro "Matemáticas Experimentales". El orden reproduce el
+# índice de material complementario de la portada del libro.
+primer-libro:
+  - title: "Portada"
+    url: /Libros/MatExp/
+  - title: "1. Secciones cónicas y órbitas planetarias"
+    children:
+      - title: "Construcciones de secciones cónicas"
+        url: /MatExp/geometria/conicas/construccion/
+      - title: "Corto de animación 3D: Ellipses"
+        url: https://www.youtube.com/watch?v=1v5Aqo6PaFw
+      - title: "Modelo del sistema solar a escala (PDF)"
+        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Modelo-a-escala-del-sistema-solar.pdf
+      - title: "Ficha de Mercurio"
+        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Mercurio.pdf
+      - title: "Ficha de Venus"
+        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Venus.pdf
+      - title: "Ficha de la Tierra"
+        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Tierra.pdf
+      - title: "Ficha de Marte"
+        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Marte.pdf
+      - title: "Ficha de Júpiter"
+        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Jupiter.pdf
+      - title: "Ficha de Saturno"
+        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Saturno.pdf
+      - title: "Ficha de Urano"
+        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Urano.pdf
+      - title: "Ficha de Neptuno"
+        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Neptuno.pdf
+  - title: "2. Grafos y conexiones: Donde menos es más"
+    children:
+      - title: "Mandala para colorear"
+        url: /falbe/assets/MatExp/discreta/grafos/cuatro-colores/Mandala.pdf
+      - title: "Mandalas alternativas"
+        url: http://www.supercoloring.com/es/dibujos-para-colorear/artes-y-cultura/mandala
+      - title: "Mapas para colorear"
+        url: http://www.supercoloring.com/es/dibujos-para-colorear/paises-y-culturas/mapas
+      - title: "Número de Edros y número de Jordan"
+        url: https://mathscinet.ams.org/mathscinet/freeTools.html?version=2
+      - title: "Juego de Kevin Bacon"
+        url: https://oracleofbacon.org/
+      - title: "Crear grafos y encontrar caminos más cortos"
+        url: https://graphonline.ru/es/
+  - title: "3. Sólidos platónicos: Platón y el universo"
+    children:
+      - title: "Teselado con triángulos"
+        url: /falbe/assets/MatExp/geometria/teselados/construccion/Teselado-3-lados.pdf
+      - title: "Teselado con cuadrados"
+        url: /falbe/assets/MatExp/geometria/teselados/construccion/Teselado-4-lados.pdf
+      - title: "Teselado con hexágonos"
+        url: /falbe/assets/MatExp/geometria/teselados/construccion/Teselado-6-lados.pdf
+      - title: "17 maneras de construir mosaicos planos"
+        url: https://www.imaginary.org/sites/default/files/rsme-imaginary_morenaments_rollup_es.pdf
+      - title: "Timeo de Locres - Platón"
+        url: https://www.filosofia.org/cla/pla/azc11121.htm
+      - title: "Construcción de los sólidos platónicos"
+        url: /MatExp/geometria/solidosplatonicos/
+      - title: "Sólidos arquimedianos"
+        url: /MatExp/geometria/solidos/arquimedianos/
+      - title: "Caleidociclo"
+        url: https://www.polyhedra.net/es/model.php?name-en=hexagonal-kaleidocycle
+      - title: "Calendario dodecaédrico (PDF)"
+        url: /falbe/assets/MatExp/geometria/poliedros/calendario-dodecaedro/Calendario-Dodecaedrico.pdf
+      - title: "Gran dodecaedro estrellado"
+        url: https://www.polyhedra.net/es/model.php?name-en=great-stellated-dodecahedron
+      - title: "Pequeño dodecaedro estrellado"
+        url: https://www.polyhedra.net/es/model.php?name-en=small-stellated-dodecahedron
+      - title: "Gran icosaedro"
+        url: https://www.polyhedra.net/es/model.php?name-en=great-icosahedron
+      - title: "Gran dodecaedro"
+        url: https://www.polyhedra.net/es/model.php?name-en=great-dodecahedron
+      - title: "Lámpara estrellada"
+        url: https://www.polyhedra.net/es/model.php?name-en=small-stellated-dodecahedron-lampshade
+      - title: "Construcción de un hipercubo (PDF)"
+        url: /falbe/assets/MatExp/geometria/politopos/hipercubo/hipercubo.pdf
+  - title: "4. Derivadas: Las matemáticas del cambio"
+    children:
+      - title: "La recta tangente – Dirección del tren"
+        url: /MatExp/analisis/derivadas/trenes/
+      - title: "Calculadora de derivadas WolframAlpha"
+        url: https://www.wolframalpha.com/calculators/derivative-calculator/
+      - title: "Calculadora de derivadas Symbolab"
+        url: https://es.symbolab.com/solver/derivative-calculator
+      - title: "Optimización – La caja de palomitas del cine"
+        url: /MatExp/analisis/derivadas/palomitas/
+  - title: "5. Modelos matemáticos: Las pandemias y la COVID-19"
+    children:
+      - title: "Modelo Depredador-Presa de Lotka-Volterra"
+        url: /MatExp/aplicada/modelizacion/Lotka-Volterra/
+      - title: "Juego de mesa sobre epidemias (PDF)"
+        url: /falbe/assets/MatExp/aplicada/modelizacion/juego-epidemias/El-juego-de-las-epidemias--tablero-6x6.pdf
+      - title: "Simulación online del juego de epidemias"
+        url: https://www.nctm.org/tools/pandemic2020/index.html
+      - title: "Solución analítica del modelo SIR (sección 4.3)"
+        url: https://repositorio.unican.es/xmlui/bitstream/handle/10902/7125/Andrea%20Garcia%20Pi%C3%B1era.pdf
+      - title: "Simulación del modelo SIR"
+        url: /MatExp/aplicada/modelizacion/SIR/
+      - title: "Póster de eventos significativos en virología"
+        url: https://www.rndsystems.com/resources/posters/significant-events-history-virology
+      - title: "Portales de datos sobre la COVID-19"
+        url: /MatExp/aplicada/epidemiologia/portales-covid-19/
+
+# Navegación independiente del libro "Calculus Casebook".
+calculus-casebook:
+  - title: "Portada"
+    url: /Libros/Calculus-Casebook/
+  - title: "Capítulo 7. El asesinato del profesor"
+    children:
+      - title: "El asesinato del profesor"
+        url: /MatExp/analisis/modelacion/ode/juicio-profesor-falco/

@@ -13,6 +13,8 @@ header:
   image: "/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/header.jpg"
 excerpt: "Generador de documentos para una actividad de juicio matemático basada en la ley de enfriamiento de Newton."
 feature: "/assets/MatExp/analisis/modelacion/ode/juicio-profesor-falco/feature.svg"
+sidebar:
+  nav: "calculus-casebook"
 ---
 Esta actividad convierte la ley de enfriamiento de Newton en un juicio. El alumnado recibe papeles separados, interroga a testigos y sospechosos, y reconstruye la cronología hasta encontrar a la persona culpable.
 

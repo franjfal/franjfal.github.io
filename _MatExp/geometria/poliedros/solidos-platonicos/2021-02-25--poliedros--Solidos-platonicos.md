@@ -10,6 +10,8 @@ taxonomy: experimento geometría poliedros
 permalink: "/MatExp/geometria/solidosplatonicos/"
 excerpt: Construcción de los sólidos patñonicos por distintos métodos.
 feature: "assets/MatExp/geometria/poliedros/solidos-platonicos/poligonos/feature.png"
+sidebar:
+  nav: "primer-libro"
 gallery1:
 - image_path: "/assets/MatExp/geometria/poliedros/solidos-platonicos/poligonos/tetraedro.png"
   alt: Tetraedo realizado utilizando polígonos regulares.
