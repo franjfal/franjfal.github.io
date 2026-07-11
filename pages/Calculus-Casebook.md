@@ -16,6 +16,10 @@ Cada actividad conserva su lugar dentro de **Matemáticas Experimentales** y se 
 
 ## Índice
 
+### Capítulo 6. La batalla de genios
+
+- [El duelo del cálculo](/MatExp/analisis/calculo/duelo/)
+
 ### Capítulo 7. El asesinato del profesor
 
 - [El asesinato del profesor](/MatExp/analisis/modelacion/ode/juicio-profesor-falco/)
