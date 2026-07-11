@@ -4,9 +4,18 @@
   const TEMPS = {
     ambient: 22,
     bodyAtDeath: 36.5,
-    firstMeasurement: 24.56,
-    hoursFromDeathToFirst: 2.5,
+    referenceFirstMeasurement: 24.56,
+    referenceHoursFromDeathToFirst: 2.5,
     hoursBetweenMeasurements: 1
+  };
+
+  const TIMING = {
+    suspect2ReturnAfterClass: 20,
+    suspect2LeaveAfterClass: 25,
+    discoveryAfterClass: 55,
+    forensicCallAfterDiscovery: 5,
+    firstMeasurementAfterDiscovery: 15,
+    afternoonClassAfterClass: 60
   };
 
   const SOURCE_CREDIT = "Material procedente de franjfal.github.io";
@@ -40,6 +49,7 @@
     evidenceCards: (cards) => ({ type: "evidenceCards", cards }),
     suspectTable: (rows) => ({ type: "suspectTable", rows }),
     caseFile: (meta, sections) => ({ type: "caseFile", meta, sections }),
+    scaledTimeline: (title, lanes) => ({ type: "scaledTimeline", title, lanes }),
     pageBreak: () => ({ type: "pageBreak" }),
     spacer: (height = 10) => ({ type: "spacer", height })
   };
@@ -49,6 +59,7 @@
     els.teacherName = document.getElementById("teacher-name");
     els.className = document.getElementById("class-name");
     els.pageFormat = document.getElementById("page-format");
+    els.mathMode = document.getElementById("math-mode");
     els.date = document.getElementById("case-date");
     els.startTime = document.getElementById("class-start-time");
     els.endTime = document.getElementById("class-end-time");
@@ -79,6 +90,7 @@
       els.teacherName,
       els.className,
       els.pageFormat,
+      els.mathMode,
       els.date,
       els.startTime,
       els.endTime,
@@ -176,6 +188,7 @@
     const teacherFullName = normalizeName(els.teacherName.value);
     const className = normalizeName(els.className.value);
     const pageFormat = els.pageFormat && els.pageFormat.value === "letter" ? "letter" : "a4";
+    const mathMode = els.mathMode && els.mathMode.checked ? "ode" : "calculus";
     const dateValue = els.date.value;
     const startTimeValue = els.startTime.value;
     const endTimeValue = els.endTime.value;
@@ -198,7 +211,7 @@
     }
 
     const timeline = buildTimeline(classStart, classEnd);
-    const temps = calculateTemperatures();
+    const temps = calculateTemperatures(timeline);
     const suspects = [
       buildSuspect(1, els.g1.value, els.suspect1Name ? els.suspect1Name.value : ""),
       buildSuspect(2, els.g2.value, els.suspect2Name ? els.suspect2Name.value : ""),
@@ -211,6 +224,7 @@
       teacherFileStem: fileStem(teacherFullName),
       className,
       pageFormat,
+      mathMode,
       dateValue,
       hasCaseDate,
       calculationDateValue,
@@ -227,28 +241,31 @@
 
   function buildTimeline(classStart, classEnd) {
     const death = addMinutes(classEnd, 10);
-    const discovery = addMinutes(classEnd, 65);
-    const firstMeasurement = addMinutes(death, TEMPS.hoursFromDeathToFirst * 60);
+    const discovery = addMinutes(classEnd, TIMING.discoveryAfterClass);
+    const firstMeasurement = addMinutes(discovery, TIMING.firstMeasurementAfterDiscovery);
 
     return {
       classStart,
       normalTemp: classStart,
       classEnd,
       death,
-      suspect2Return: addMinutes(classEnd, 20),
-      suspect2Leave: addMinutes(classEnd, 25),
+      suspect2Return: addMinutes(classEnd, TIMING.suspect2ReturnAfterClass),
+      suspect2Leave: addMinutes(classEnd, TIMING.suspect2LeaveAfterClass),
       discovery,
-      forensicCall: addMinutes(firstMeasurement, -10),
+      forensicCall: addMinutes(discovery, TIMING.forensicCallAfterDiscovery),
       firstMeasurement,
       secondMeasurement: addMinutes(firstMeasurement, 60),
-      afternoonClass: addMinutes(classEnd, 70)
+      afternoonClass: addMinutes(classEnd, TIMING.afternoonClassAfterClass)
     };
   }
 
-  function calculateTemperatures() {
-    const firstDelta = TEMPS.firstMeasurement - TEMPS.ambient;
+  function calculateTemperatures(timeline) {
     const bodyDelta = TEMPS.bodyAtDeath - TEMPS.ambient;
-    const k = -Math.log(firstDelta / bodyDelta) / TEMPS.hoursFromDeathToFirst;
+    const referenceDelta = TEMPS.referenceFirstMeasurement - TEMPS.ambient;
+    const k = -Math.log(referenceDelta / bodyDelta) / TEMPS.referenceHoursFromDeathToFirst;
+    const hoursFromDeathToFirst = hoursBetween(timeline.death, timeline.firstMeasurement);
+    const firstMeasurement = TEMPS.ambient + bodyDelta * Math.exp(-k * hoursFromDeathToFirst);
+    const firstDelta = firstMeasurement - TEMPS.ambient;
     const secondMeasurement =
       TEMPS.ambient + firstDelta * Math.exp(-k * TEMPS.hoursBetweenMeasurements);
     const estimatedHoursBeforeFirst = -Math.log(firstDelta / bodyDelta) / k;
@@ -256,9 +273,10 @@
     return {
       ambient: TEMPS.ambient,
       bodyAtDeath: TEMPS.bodyAtDeath,
-      firstMeasurement: TEMPS.firstMeasurement,
+      firstMeasurement,
       secondMeasurement,
       k,
+      hoursFromDeathToFirst,
       estimatedHoursBeforeFirst
     };
   }
@@ -615,12 +633,18 @@
           `Muestra que esos datos llevan a una hora de muerte aproximada de ${formatEventTime(timeline.death, timeline.classEnd)}.`,
           "Deja claro que la prueba científica fija una ventana temporal, pero no identifica por sí sola a la persona culpable."
         ]),
-        block.heading("Examen de las cronologías"),
+        block.heading("Contexto recopilado antes del juicio"),
         block.bullets([
-          `Presenta el testimonio de ${s1.withArticle}: se quedó tras la clase y salió aproximadamente a las ${formatEventTime(timeline.death, timeline.classEnd)}.`,
-          `Presenta el testimonio de ${s2.withArticle}: salió con el grupo, volvió a las ${formatEventTime(timeline.suspect2Return, timeline.classEnd)} para recoger una chaqueta y se marchó hacia las ${formatEventTime(timeline.suspect2Leave, timeline.classEnd)}.`,
-          `Presenta el testimonio de ${s3.withArticle}: regresó para la clase de la tarde y encontró el cuerpo a las ${formatEventTime(timeline.discovery, timeline.classEnd)}.`,
-          "Interroga a cada sospechoso para detectar inconsistencias, motivos o detalles que no encajen con la cronología."
+          "Esta información procede de conversaciones con otros compañeros de la clase y sirve solo para orientar las preguntas iniciales.",
+          `${s1.withArticleCap} estaba ${s1.upset} por los exámenes sorpresa. Varios no le habían salido bien y este último podía hacer que suspendiera la asignatura.`,
+          `${s2.withArticleCap} estaba pendiente de una beca importante para continuar sus estudios el año siguiente. Un mal resultado en este examen podía bajar drásticamente su nota y poner en riesgo la beca.`,
+          `Sobre ${s3.withArticle} no aparece un motivo claro, pero algunos compañeros comentan que salió del edificio bastante enfadado y que, al volver por la tarde, parecía más calmado aunque triste.`
+        ]),
+        block.heading("Interrogatorio de cronologías"),
+        block.bullets([
+          "No presentes como conocidos los movimientos exactos de las personas sospechosas. Debes obtenerlos mediante preguntas durante el juicio.",
+          "Pregunta dónde estaba cada persona al terminar la clase, cuándo abandonó el aula, si volvió al edificio y si tuvo oportunidad de acercarse al profesor.",
+          "Contrasta las respuestas con la hora de muerte estimada, pero separa siempre lo que ya ha sido declarado de lo que estás intentando demostrar."
         ]),
         block.heading("Conexión entre pruebas y sospechosos"),
         block.paragraph(
@@ -733,6 +757,116 @@
   }
 
   function forensicMathDoc(data) {
+    return data.mathMode === "ode" ? forensicMathOdeDoc(data) : forensicMathCalculusDoc(data);
+  }
+
+  function forensicMathCalculusDoc(data) {
+    const { timeline, temps } = data;
+    const firstDelta = temps.firstMeasurement - temps.ambient;
+    const secondDelta = temps.secondMeasurement - temps.ambient;
+    const second = formatNumber(temps.secondMeasurement);
+    const coolingRatio = secondDelta / firstDelta;
+    const deathRatio = (temps.bodyAtDeath - temps.ambient) / firstDelta;
+    const lnRatio = Math.log(coolingRatio).toFixed(4);
+    const deathOffsetSigned = (Math.log(deathRatio) / Math.log(coolingRatio)).toFixed(2);
+    const deathOffset = temps.estimatedHoursBeforeFirst.toFixed(2);
+
+    return makeSpec(
+      "forensicMath",
+      "08_Informe_forense_matematico.pdf",
+      "Informe matemático del caso",
+      "Versión para curso de cálculo",
+      [
+        block.heading("Qué se quiere modelizar"),
+        block.paragraph(
+          "El objetivo no es adivinar una hora, sino construir un modelo matemático que conecte tres ideas: la temperatura del cuerpo, la temperatura constante del aula y el paso del tiempo."
+        ),
+        block.paragraph(
+          "La temperatura ambiente del aula era constante. Por eso no importa tanto la temperatura absoluta del cuerpo, sino cuántos grados está por encima del ambiente. A esa diferencia la llamamos exceso térmico: E(t) = T(t) - Ta."
+        ),
+        block.paragraph(
+          "La ley de enfriamiento de Newton dice que cuanto mayor es ese exceso térmico, más rápido pierde calor el cuerpo. Si el cuerpo está muy por encima de la temperatura ambiente, se enfría deprisa; si ya está cerca del ambiente, se enfría lentamente."
+        ),
+        block.bullets([
+          "t se mide en horas desde la primera medición forense.",
+          "T(t) es la temperatura corporal en el instante t.",
+          `Ta es la temperatura ambiente del aula: ${formatCelsius(temps.ambient)}.`,
+          "E(t) = T(t) - Ta mide cuánto le falta al cuerpo para alcanzar la temperatura del aula."
+        ]),
+        block.heading("Información disponible"),
+        block.numbered([
+          `Temperatura corporal normal: se toma como temperatura en el momento de la muerte ${formatCelsius(temps.bodyAtDeath)}.`,
+          `Temperatura ambiente constante del aula: ${formatCelsius(temps.ambient)}.`,
+          `Primera medición forense: a las ${formatTime(timeline.firstMeasurement)}, T(0) = ${formatCelsius(temps.firstMeasurement)}.`,
+          `Segunda medición forense: una hora después, a las ${formatTime(timeline.secondMeasurement)}, T(1) = ${formatCelsius(temps.secondMeasurement)}.`
+        ]),
+        block.pageBreak(),
+        block.heading("Modelo visual"),
+        block.paragraph(
+          "La curva de enfriamiento muestra que las mediciones no se reparten en línea recta: el descenso es más rápido cuando el cuerpo está más caliente que el aula y se va suavizando al acercarse a la temperatura ambiente."
+        ),
+        block.coolingCurve(timeline, temps),
+        block.heading("Construcción del modelo con herramientas de cálculo"),
+        block.paragraph(
+          "Como el enfriamiento depende del exceso térmico, buscamos un modelo en el que el exceso se multiplique por el mismo factor en intervalos de tiempo iguales. Ese tipo de comportamiento se describe con una función exponencial."
+        ),
+        block.paragraph(
+          `Usaremos T(t) = ${formatNumber(temps.ambient)} + A b^t, donde A es el exceso térmico en la primera medición y b es el factor de enfriamiento por hora.`
+        ),
+        block.numbered([
+          `En la primera medición, t = 0. Entonces ${formatNumber(temps.firstMeasurement)} = ${formatNumber(temps.ambient)} + A b^0.`,
+          `Como b^0 = 1, resulta A = ${formatNumber(temps.firstMeasurement)} - ${formatNumber(temps.ambient)} = ${formatNumber(firstDelta)}.`,
+          `Una hora después: ${second} = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} b.`,
+          `Restando la temperatura ambiente: ${formatNumber(secondDelta)} = ${formatNumber(firstDelta)} b.`,
+          `Por tanto, b = ${formatNumber(secondDelta)} / ${formatNumber(firstDelta)} = ${formatNumber(coolingRatio)}.`
+        ]),
+        block.paragraph(
+          `El modelo queda T(t) = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} * ${formatNumber(coolingRatio)}^t.`
+        ),
+        block.heading("Comprobación con derivadas"),
+        block.paragraph(
+          "Este modelo sí expresa la idea de Newton. Usando la regla de derivación de una exponencial, la derivada de b^t es ln(b) b^t."
+        ),
+        block.paragraph(
+          `Por tanto, T'(t) = ${formatNumber(firstDelta)} ln(${formatNumber(coolingRatio)}) ${formatNumber(coolingRatio)}^t.`
+        ),
+        block.paragraph(
+          `Como T(t) - ${formatNumber(temps.ambient)} = ${formatNumber(firstDelta)} ${formatNumber(coolingRatio)}^t, podemos escribir T'(t) = ln(${formatNumber(coolingRatio)}) (T(t) - ${formatNumber(temps.ambient)}).`
+        ),
+        block.paragraph(
+          `El número ln(${formatNumber(coolingRatio)}) = ${lnRatio} es negativo, así que la derivada es negativa: la temperatura baja. Además, cuanto mayor es T(t) - Ta, mayor es la rapidez de descenso. Esa es exactamente la ley de enfriamiento.`
+        ),
+        block.heading("Determinación de la hora de muerte"),
+        block.paragraph(
+          `En el momento de la muerte suponemos T(t) = ${formatCelsius(temps.bodyAtDeath)}. Sustituimos ese valor en el modelo para encontrar cuántas horas antes de la primera medición ocurrió.`
+        ),
+        block.paragraph(
+          `${formatNumber(temps.bodyAtDeath)} = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} * ${formatNumber(coolingRatio)}^t.`
+        ),
+        block.paragraph(
+          `${formatNumber(temps.bodyAtDeath - temps.ambient)} = ${formatNumber(firstDelta)} * ${formatNumber(coolingRatio)}^t.`
+        ),
+        block.paragraph(
+          `${formatNumber(deathRatio)} = ${formatNumber(coolingRatio)}^t.`
+        ),
+        block.paragraph(
+          `Tomando logaritmos: t = ln(${formatNumber(deathRatio)}) / ln(${formatNumber(coolingRatio)}) = ${deathOffsetSigned} horas.`
+        ),
+        block.paragraph(
+          `El signo negativo indica que la muerte ocurrió antes de la primera medición. En valor absoluto, la diferencia es de ${deathOffset} horas.`
+        ),
+        block.paragraph(
+          `${formatTime(timeline.firstMeasurement)} - ${deathOffset} horas = aproximadamente ${formatTime(timeline.death)}.`
+        ),
+        block.heading("Resumen"),
+        block.paragraph(
+          `Hora de muerte: aproximadamente las ${formatTime(timeline.death)} ${formatCaseDateSuffix(data, timeline.death)}.`
+        )
+      ]
+    );
+  }
+
+  function forensicMathOdeDoc(data) {
     const { timeline, temps } = data;
     const firstDelta = temps.firstMeasurement - temps.ambient;
     const secondDelta = temps.secondMeasurement - temps.ambient;
@@ -747,93 +881,72 @@
       "forensicMath",
       "08_Informe_forense_matematico.pdf",
       "Informe matemático del caso",
-      "Ley de enfriamiento de Newton aplicada a la evidencia forense",
+      "Versión para curso de ecuaciones diferenciales",
       [
-        block.heading("Ley de enfriamiento de Newton"),
+        block.heading("Modelización del enfriamiento"),
         block.paragraph(
-          "La ley de enfriamiento de Newton establece que la tasa de pérdida de calor de un cuerpo es proporcional a la diferencia de temperatura entre el cuerpo y su entorno."
+          "La ley de enfriamiento de Newton afirma que la rapidez con que cambia la temperatura de un cuerpo es proporcional a la diferencia entre la temperatura del cuerpo y la temperatura ambiente."
         ),
-        block.paragraph("En forma diferencial:"),
-        block.paragraph("dT(t)/dt = -k(T(t) - Ta)"),
+        block.paragraph(
+          "Si T(t) es la temperatura corporal y Ta la temperatura ambiente, la diferencia T(t) - Ta mide cuánto más caliente está el cuerpo que el aula. Cuando esa diferencia es grande, el cuerpo pierde calor más deprisa; cuando es pequeña, pierde calor más lentamente."
+        ),
+        block.paragraph("En forma diferencial: dT(t)/dt = -k(T(t) - Ta)."),
         block.bullets([
-          "t es la variable temporal, medida en horas desde la primera medición forense.",
+          "t se mide en horas desde la primera medición forense.",
           "T(t) es la temperatura corporal en el instante t.",
-          `Ta es la temperatura ambiente; en este caso, Ta = ${formatCelsius(temps.ambient)}.`,
-          "k es la constante de proporcionalidad, dependiente de las condiciones de enfriamiento."
+          `Ta = ${formatCelsius(temps.ambient)} es la temperatura ambiente constante del aula.`,
+          "k > 0 es una constante que depende de las condiciones de enfriamiento.",
+          "El signo negativo indica que, si T(t) está por encima de Ta, la temperatura disminuye."
         ]),
         block.heading("Información disponible"),
         block.numbered([
-          `Temperatura en el momento de la muerte: se asume que la temperatura corporal normal del profesor era ${formatCelsius(temps.bodyAtDeath)}.`,
-          `Temperatura de la sala: la temperatura del aula se mantuvo constante en ${formatCelsius(temps.ambient)}.`,
-          `Mediciones forenses: a las ${formatTime(timeline.firstMeasurement)}, la temperatura corporal fue ${formatCelsius(temps.firstMeasurement)}; una hora después, a las ${formatTime(timeline.secondMeasurement)}, fue ${formatCelsius(temps.secondMeasurement)}.`
+          `Temperatura corporal normal en el momento de la muerte: ${formatCelsius(temps.bodyAtDeath)}.`,
+          `Temperatura ambiente de la sala: ${formatCelsius(temps.ambient)}.`,
+          `Mediciones forenses: a las ${formatTime(timeline.firstMeasurement)}, T(0) = ${formatCelsius(temps.firstMeasurement)}; una hora después, a las ${formatTime(timeline.secondMeasurement)}, T(1) = ${formatCelsius(temps.secondMeasurement)}.`
         ]),
         block.pageBreak(),
         block.heading("Modelo visual"),
         block.paragraph(
-          "La curva de enfriamiento convierte la ecuación diferencial en una prueba visual. Conecta las dos mediciones forenses con la hora estimada de muerte."
+          "La curva de enfriamiento conecta las dos mediciones forenses con la hora estimada de muerte."
         ),
         block.coolingCurve(timeline, temps),
         block.heading("Resolución de la ecuación diferencial"),
         block.numbered([
           "Ecuación de enfriamiento de Newton: dT(t)/dt = -k(T(t) - Ta).",
           `Reescribiendo con Ta = ${formatNumber(temps.ambient)}: dT(t)/(T(t) - ${formatNumber(temps.ambient)}) = -k dt.`,
-          `Integración: integral dT(t)/(T(t) - ${formatNumber(temps.ambient)}) = integral -k dt.`,
+          `Integramos ambos lados: integral dT(t)/(T(t) - ${formatNumber(temps.ambient)}) = integral -k dt.`,
           `Por tanto, ln(T(t) - ${formatNumber(temps.ambient)}) = -kt + C.`,
           `Pasando a forma exponencial: T(t) - ${formatNumber(temps.ambient)} = A e^(-kt).`,
           `Forma final del modelo: T(t) = ${formatNumber(temps.ambient)} + A e^(-kt).`
         ]),
-        block.heading("Cálculo de las constantes A y k"),
+        block.heading("Cálculo de A y k"),
         block.paragraph(
           `Tomamos t = 0 en la primera medición forense, realizada a las ${formatTime(timeline.firstMeasurement)}. En ese instante T(0) = ${formatCelsius(temps.firstMeasurement)}.`
         ),
         block.paragraph(
-          `${formatNumber(temps.firstMeasurement)} = ${formatNumber(temps.ambient)} + A e^0 = ${formatNumber(temps.ambient)} + A.`
+          `${formatNumber(temps.firstMeasurement)} = ${formatNumber(temps.ambient)} + A, así que A = ${formatNumber(firstDelta)}.`
         ),
         block.paragraph(
-          `De aquí se obtiene A = ${formatNumber(temps.firstMeasurement)} - ${formatNumber(temps.ambient)} = ${formatNumber(firstDelta)}.`
+          `El modelo queda T(t) = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-kt).`
         ),
         block.paragraph(
-          `Por tanto, T(t) = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-kt).`
+          `Una hora después se mide T(1) = ${formatCelsius(temps.secondMeasurement)}. Sustituyendo: ${second} = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-k).`
         ),
         block.paragraph(
-          `Una hora después, a las ${formatTime(timeline.secondMeasurement)}, se mide T(1) = ${formatCelsius(temps.secondMeasurement)}. Sustituyendo en el modelo:`
+          `Entonces e^(-k) = (${second} - ${formatNumber(temps.ambient)}) / ${formatNumber(firstDelta)} = ${formatNumber(coolingRatio)}.`
         ),
         block.paragraph(
-          `${second} = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-k).`
-        ),
-        block.paragraph(
-          `${second} - ${formatNumber(temps.ambient)} = ${formatNumber(firstDelta)} e^(-k), es decir, ${formatNumber(secondDelta)} = ${formatNumber(firstDelta)} e^(-k).`
-        ),
-        block.paragraph(
-          `Por tanto, e^(-k) = ${formatNumber(secondDelta)} / ${formatNumber(firstDelta)} = ${formatNumber(coolingRatio)}.`
-        ),
-        block.paragraph(
-          `Tomando logaritmos: -k = ln(${formatNumber(coolingRatio)}), así que k = -ln(${formatNumber(coolingRatio)}) = ${k} h^-1.`
-        ),
-        block.paragraph(
-          `El modelo queda T(t) = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-${k}t).`
+          `Tomando logaritmos: k = -ln(${formatNumber(coolingRatio)}) = ${k} h^-1.`
         ),
         block.heading("Determinación de la hora de muerte"),
         block.paragraph(
-          `En el momento de la muerte se asume que la temperatura corporal era ${formatCelsius(temps.bodyAtDeath)}. Buscamos el instante t_a, medido respecto a la primera medición forense, tal que T(t_a) = ${formatCelsius(temps.bodyAtDeath)}.`
+          `Buscamos t_a tal que T(t_a) = ${formatCelsius(temps.bodyAtDeath)}: ${formatNumber(temps.bodyAtDeath)} = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-${k}t_a).`
         ),
         block.paragraph(
-          `${formatNumber(temps.bodyAtDeath)} = ${formatNumber(temps.ambient)} + ${formatNumber(firstDelta)} e^(-${k}t_a).`
+          `De aquí, ${formatNumber(deathRatio)} = e^(-${k}t_a).`
         ),
         block.paragraph(
-          `${formatNumber(temps.bodyAtDeath)} - ${formatNumber(temps.ambient)} = ${formatNumber(firstDelta)} e^(-${k}t_a).`
-        ),
-        block.paragraph(
-          `(${formatNumber(temps.bodyAtDeath)} - ${formatNumber(temps.ambient)}) / ${formatNumber(firstDelta)} = e^(-${k}t_a).`
-        ),
-        block.paragraph(
-          `${formatNumber(temps.bodyAtDeath - temps.ambient)} / ${formatNumber(firstDelta)} = ${formatNumber(deathRatio)} = e^(-${k}t_a).`
-        ),
-        block.paragraph(
-          `Tomando logaritmos: ln(${formatNumber(deathRatio)}) = -${k}t_a.`
-        ),
-        block.paragraph(
-          `Así, t_a = ln(${formatNumber(deathRatio)}) / (-${k}) = ${deathOffsetSigned} horas.`
+          `Tomando logaritmos: t_a = ln(${formatNumber(deathRatio)}) / (-${k}) = ${deathOffsetSigned} horas.`
         ),
         block.paragraph(
           `El signo negativo indica que la muerte ocurrió antes de la primera medición. En valor absoluto, la diferencia es de ${deathOffset} horas.`
@@ -890,7 +1003,7 @@
         block.bullets([
           `${s1.withArticleCap} se quedó después de clase y salió del edificio aproximadamente a las ${formatEventTime(timeline.death, timeline.classEnd)}.`,
           `${s2.withArticleCap} salió con la mayoría de la clase a las ${formatTime(timeline.classEnd)}. Volvió a entrar sobre las ${formatEventTime(timeline.suspect2Return, timeline.classEnd)} para recoger una chaqueta olvidada cerca de la entrada del aula y salió unos minutos después, hacia las ${formatEventTime(timeline.suspect2Leave, timeline.classEnd)}.`,
-          `${s3.withArticleCap} salió con el resto de la clase a las ${formatTime(timeline.classEnd)}. Regresó para una clase de la tarde, prevista a las ${formatEventTime(timeline.afternoonClass, timeline.classEnd)}, y encontró el cuerpo al llegar unos minutos antes.`
+          `${s3.withArticleCap} salió con el resto de la clase a las ${formatTime(timeline.classEnd)}. Al salir parecía bastante ${s3.upset}; cuando regresó para la clase de la tarde, prevista a las ${formatEventTime(timeline.afternoonClass, timeline.classEnd)}, estaba más calmado aunque parecía triste. Encontró el cuerpo al llegar unos minutos antes.`
         ]),
         block.heading("Durante el juicio"),
         block.bullets([
@@ -965,7 +1078,8 @@
         block.bullets([
           `Eres ${s1.un} estudiante ${s1.applied} de la clase de ${className} del profesor ${teacherFullName}.`,
           "Siempre has sido una persona diligente y con buen rendimiento académico.",
-          "Te molestó profundamente que el profesor anunciara otro examen sorpresa."
+          "Ya habías tenido varios exámenes sorpresa en esta asignatura y no te habían salido bien.",
+          "Te molestó profundamente que el profesor anunciara otro examen sorpresa porque este último resultado podía hacer que suspendieras la asignatura."
         ]),
         block.heading("Hechos privados"),
         block.bullets([
@@ -978,12 +1092,13 @@
         block.bullets([
           "Reconoce que hubo un desacuerdo por el examen, pero afirma que aceptaste la decisión a regañadientes y sin más conflicto.",
           "Di que cuando saliste del aula el profesor seguía vivo y parecía encontrarse bien.",
-          `Insiste en que disfrutabas ${className} y que una discusión académica no es motivo para matar a nadie.`
+          "Admite que estabas preocupado por suspender, pero insiste en que suspender una asignatura no es motivo suficiente para asesinar a nadie.",
+          `Insiste en que una discusión académica, incluso seria, no convierte a una persona en asesina.`
         ]),
         block.heading("Argumentos de defensa"),
         block.numbered([
           "Presencia en el aula: admite que te quedaste después de clase, pero sostiene que el profesor seguía vivo cuando te marchaste.",
-          "Ausencia de motivo suficiente: presenta el desacuerdo como una discusión académica, no como una razón para cometer un asesinato.",
+          "Ausencia de motivo suficiente: reconoce la preocupación por la nota, pero presenta el desacuerdo como una discusión académica, no como una razón para cometer un asesinato.",
           "Dudas sobre el cálculo forense: cuestiona la precisión de la estimación de la hora de muerte y su dependencia de una temperatura ambiente constante.",
           "Sistema del aula: sugiere que la climatización pudo cambiar después de clase o que cualquier variación afectaría a los cálculos de enfriamiento."
         ]),
@@ -1016,7 +1131,9 @@
         block.bullets([
           `Eres ${s2.un} estudiante ${s2.attentive} y puntual de la clase de ${className} del profesor ${teacherShortName}.`,
           "Normalmente tienes buena relación con tus compañeros y con el profesor.",
-          "No tenías ningún conflicto serio con el profesor ni motivo para hacerle daño."
+          "Estás pendiente de una beca muy importante para continuar tus estudios el próximo curso en otra universidad.",
+          "Creías que tenías muchas posibilidades de conseguirla, pero el examen sorpresa te salió mal porque no lo habías preparado.",
+          "Temes que esa nota baje drásticamente tu media y pueda hacer que pierdas la beca."
         ]),
         block.heading("Hechos"),
         block.bullets([
@@ -1031,13 +1148,14 @@
           "Salida con el grupo: subraya que abandonaste el aula con el resto de estudiantes al terminar la clase.",
           "Regreso breve y limitado: explica que volviste solo por la chaqueta y no avanzaste hacia la mesa del profesor.",
           "Desconocimiento de la muerte: recalca que no sabías nada de lo ocurrido hasta que se informó más tarde.",
-          `Falta de motivo: insiste en que disfrutabas ${className} y que no tenías razones para dañar al profesor.`
+          "Motivo insuficiente: reconoce que la beca te preocupaba, pero insiste en que una mala nota no justifica hacer daño a nadie.",
+          `Falta de oportunidad: subraya que en el momento estimado de la muerte no estabas directamente en el aula.`
         ]),
         block.heading("Conclusión"),
         block.bullets([
           "Afirma tu inocencia.",
           "Enfatiza que tu comportamiento encaja con alguien que olvidó un objeto y volvió brevemente a recogerlo.",
-          "Señala que no tenías motivo ni oportunidad real para cometer el crimen."
+          "Señala que, aunque estabas preocupado por la beca, no tenías oportunidad real para cometer el crimen."
         ]),
         block.heading("Objetivo"),
         block.paragraph(
@@ -1062,7 +1180,8 @@
         block.bullets([
           `Eres ${s3.un} estudiante ${s3.responsible} que asiste regularmente a las clases de ${className} de la mañana y de la tarde.`,
           "Tienes buena relación con el profesor y con el resto del grupo.",
-          "No tenías ningún motivo para hacer daño al profesor."
+          "Saliste del edificio enfadado tras el examen sorpresa, pero fue una reacción de frustración y no un conflicto personal con el profesor.",
+          "Cuando volviste por la tarde estabas más calmado, aunque triste por cómo había ido la mañana."
         ]),
         block.heading("Hechos"),
         block.bullets([
@@ -1077,7 +1196,8 @@
           "Salida con el grupo: recalca que saliste con el resto de estudiantes cuando acabó la clase.",
           "Descubrimiento del cuerpo: explica que al llegar para la clase de la tarde el profesor ya estaba muerto.",
           "Acción inmediata: destaca que actuaste de forma responsable avisando a la conserje en cuanto encontraste el cuerpo.",
-          `Falta de motivo: insiste en que disfrutabas ${className} y que no tenías razones para dañar al profesor.`
+          "Falta de oportunidad: insiste en que en el momento estimado de la muerte no estabas directamente en el aula.",
+          `Falta de motivo claro: explica que tu enfado era por el examen, no contra el profesor como persona.`
         ]),
         block.heading("Conclusión"),
         block.bullets([
@@ -1110,12 +1230,12 @@
           `${s1.withArticleCap} es la persona culpable. Se quedó ${s1.alone} con el profesor tras la clase y la muerte instantánea se produjo aproximadamente a las ${formatEventTime(timeline.death, timeline.classEnd)}.`
         ),
         block.heading("Cronología visual"),
-        block.timeline("Cronología completa", buildFullTimelineEvents(data)),
+        block.scaledTimeline("Cronología completa con escala proporcional", buildScaledTimelineLanes(data)),
         block.heading("Tabla de sospechosos"),
         block.suspectTable([
-          [s1.label, "Molestia por el examen sorpresa", `A solas hasta ${formatEventTime(timeline.death, timeline.classEnd)}`, "Afirma que el profesor seguía vivo"],
-          [s2.label, "Sin motivo fuerte", `Volvió por la chaqueta a las ${formatEventTime(timeline.suspect2Return, timeline.classEnd)}`, "Se quedó en la entrada"],
-          [s3.label, "Sin motivo claro", `Regresó a las ${formatEventTime(timeline.discovery, timeline.classEnd)}`, "Encontró el cuerpo"]
+          [s1.label, "Varios exámenes sorpresa le salieron mal; este último podía hacer que suspendiera.", `Tuvo contacto directo tras la clase y estuvo a solas hasta ${formatEventTime(timeline.death, timeline.classEnd)}.`, "Afirma que el profesor seguía vivo"],
+          [s2.label, "Beca importante en riesgo si el examen baja mucho su nota.", `Sin oportunidad directa: en el momento del asesinato no estaba en el aula; volvió después por la chaqueta.`, "Se quedó en la entrada"],
+          [s3.label, "Sin motivo claro; salió enfadado y volvió más calmado, aunque triste.", `Sin oportunidad directa: en el momento del asesinato no estaba en el aula; regresó para la clase de la tarde.`, "Encontró el cuerpo"]
         ]),
         block.heading("Solución matemática"),
         block.coolingCurve(timeline, temps),
@@ -1126,7 +1246,7 @@
           `La ecuación con t = 0 en la primera medición es T(t) = 22 + ${formatNumber(temps.firstMeasurement - temps.ambient)} e^(-${k}t). Al imponer T = ${formatNumber(temps.bodyAtDeath)} C, resulta t = -${temps.estimatedHoursBeforeFirst.toFixed(2)} h.`
         ),
         block.paragraph(
-          `Por tanto, la muerte ocurre unas 2 h 30 min antes de la primera medición, es decir, a las ${formatEventTime(timeline.death, timeline.classEnd)}.`
+          `Por tanto, la muerte ocurre unas ${temps.estimatedHoursBeforeFirst.toFixed(2)} horas antes de la primera medición, es decir, a las ${formatEventTime(timeline.death, timeline.classEnd)}.`
         ),
         block.heading("Reparto de información"),
         block.bullets([
@@ -1290,6 +1410,11 @@
 
     if (item.type === "timeline") {
       addTimelineBlock(doc, page, cursor, item);
+      return;
+    }
+
+    if (item.type === "scaledTimeline") {
+      addScaledTimelineBlock(doc, page, cursor, item);
       return;
     }
 
@@ -1517,6 +1642,92 @@
     cursor.y += 125;
   }
 
+  function addScaledTimelineBlock(doc, page, cursor, item) {
+    const lanes = item.lanes;
+    const height = 86 + lanes.length * 48;
+    ensureSpace(doc, page, cursor, height);
+    addWrappedText(doc, page, cursor, item.title, {
+      size: 12,
+      style: "bold",
+      lineHeight: 15,
+      gapAfter: 7
+    });
+
+    const axisLeft = page.marginX + 86;
+    const axisRight = page.width - page.marginX - 12;
+    const axisWidth = axisRight - axisLeft;
+    const minTime = Math.min(
+      ...lanes.flatMap((lane) => [
+        ...lane.segments.map((segment) => segment.start.getTime()),
+        ...lane.segments.map((segment) => segment.end.getTime()),
+        ...lane.events.map((event) => event.time.getTime())
+      ])
+    );
+    const maxTime = Math.max(
+      ...lanes.flatMap((lane) => [
+        ...lane.segments.map((segment) => segment.start.getTime()),
+        ...lane.segments.map((segment) => segment.end.getTime()),
+        ...lane.events.map((event) => event.time.getTime())
+      ])
+    );
+    const span = Math.max(maxTime - minTime, 1);
+    const xFor = (date) => axisLeft + ((date.getTime() - minTime) / span) * axisWidth;
+    const topY = cursor.y + 24;
+
+    const tickCount = 5;
+    doc.setDrawColor(216, 222, 228);
+    doc.setLineWidth(0.6);
+    for (let i = 0; i <= tickCount; i += 1) {
+      const ratio = i / tickCount;
+      const x = axisLeft + axisWidth * ratio;
+      const tickDate = new Date(minTime + span * ratio);
+      doc.line(x, topY - 8, x, topY + lanes.length * 48 - 2);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(7.5);
+      doc.setTextColor(90, 101, 112);
+      doc.text(formatTime(tickDate), x, topY - 13, { align: "center" });
+    }
+
+    lanes.forEach((lane, laneIndex) => {
+      const y = topY + laneIndex * 48;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(8.4);
+      doc.setTextColor(32, 42, 51);
+      doc.text(lane.label, page.marginX, y + 3);
+      doc.setDrawColor(201, 209, 216);
+      doc.setLineWidth(0.7);
+      doc.line(axisLeft, y, axisRight, y);
+
+      lane.segments.forEach((segment) => {
+        const startX = xFor(segment.start);
+        const endX = xFor(segment.end);
+        doc.setDrawColor(segment.color[0], segment.color[1], segment.color[2]);
+        doc.setLineWidth(7);
+        doc.line(startX, y, endX, y);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(7.2);
+        doc.setTextColor(32, 42, 51);
+        const labelX = startX + (endX - startX) / 2;
+        const labelLines = doc.splitTextToSize(segment.label, Math.max(42, Math.abs(endX - startX) + 18));
+        labelLines.slice(0, 2).forEach((line, lineIndex) => {
+          doc.text(line, labelX, y + 13 + lineIndex * 8, { align: "center" });
+        });
+      });
+
+      lane.events.forEach((event) => {
+        const x = xFor(event.time);
+        doc.setFillColor(event.color[0], event.color[1], event.color[2]);
+        doc.circle(x, y, 4.2, "F");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(7.4);
+        doc.setTextColor(32, 42, 51);
+        doc.text(event.label, x, y - 10, { align: "center" });
+      });
+    });
+
+    cursor.y += height - 8;
+  }
+
   function addCoolingCurveBlock(doc, page, cursor, item) {
     ensureSpace(doc, page, cursor, 240);
     const { timeline, temps } = item;
@@ -1528,7 +1739,7 @@
     };
     const minT = 22;
     const maxT = 37;
-    const minX = -2.5;
+    const minX = -Math.max(temps.estimatedHoursBeforeFirst, 0.5);
     const maxX = 1;
     const xFor = (t) => graph.x + ((t - minX) / (maxX - minX)) * graph.width;
     const yFor = (temp) => graph.y + ((maxT - temp) / (maxT - minT)) * graph.height;
@@ -1562,7 +1773,7 @@
     }
 
     const points = [
-      { t: -2.5, temp: temps.bodyAtDeath, label: `${formatNumber(temps.bodyAtDeath)} C\n${formatEventTime(timeline.death, timeline.classEnd)}` },
+      { t: -temps.estimatedHoursBeforeFirst, temp: temps.bodyAtDeath, label: `${formatNumber(temps.bodyAtDeath)} C\n${formatEventTime(timeline.death, timeline.classEnd)}` },
       { t: 0, temp: temps.firstMeasurement, label: `${formatNumber(temps.firstMeasurement)} C\n${formatEventTime(timeline.firstMeasurement, timeline.classEnd)}` },
       { t: 1, temp: temps.secondMeasurement, label: `${formatNumber(temps.secondMeasurement)} C\n${formatEventTime(timeline.secondMeasurement, timeline.classEnd)}` }
     ];
@@ -1626,14 +1837,15 @@
   }
 
   function addSuspectTableBlock(doc, page, cursor, rows) {
-    ensureSpace(doc, page, cursor, 112);
+    ensureSpace(doc, page, cursor, 232);
     const headers = ["Sospechoso", "Motivo", "Oportunidad", "Coartada"];
-    const widths = [92, 135, 145, 145];
-    const rowHeight = 44;
+    const tableWidth = page.width - page.marginX * 2;
+    const widths = [0.18, 0.3, 0.32, 0.2].map((ratio) => tableWidth * ratio);
+    const rowHeight = 66;
     let x = page.marginX;
 
     doc.setFillColor(32, 42, 51);
-    doc.rect(page.marginX, cursor.y, widths.reduce((a, b) => a + b, 0), 24, "F");
+    doc.rect(page.marginX, cursor.y, tableWidth, 24, "F");
     headers.forEach((header, index) => {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(8.5);
@@ -1647,14 +1859,14 @@
       ensureSpace(doc, page, cursor, rowHeight + 4);
       x = page.marginX;
       doc.setFillColor(rowIndex % 2 === 0 ? 255 : 239, rowIndex % 2 === 0 ? 255 : 243, rowIndex % 2 === 0 ? 255 : 246);
-      doc.rect(page.marginX, cursor.y, widths.reduce((a, b) => a + b, 0), rowHeight, "F");
+      doc.rect(page.marginX, cursor.y, tableWidth, rowHeight, "F");
       row.forEach((cell, index) => {
         doc.setFont("helvetica", index === 0 ? "bold" : "normal");
-        doc.setFontSize(8.4);
+        doc.setFontSize(7.9);
         doc.setTextColor(32, 42, 51);
         const lines = doc.splitTextToSize(cell, widths[index] - 10);
-        lines.slice(0, 3).forEach((line, lineIndex) => {
-          doc.text(line, x + 5, cursor.y + 14 + lineIndex * 10);
+        lines.slice(0, 5).forEach((line, lineIndex) => {
+          doc.text(line, x + 5, cursor.y + 13 + lineIndex * 9.5);
         });
         x += widths[index];
       });
@@ -1898,6 +2110,7 @@
       ["Profesor", data.teacherFullName],
       ["Clase", data.className],
       ["Formato PDF", data.pageFormat === "letter" ? "Carta" : "A4"],
+      ["Informe matemático", data.mathMode === "ode" ? "Ecuaciones diferenciales" : "Cálculo"],
       ["Fecha", formatCaseDateValue(data, timeline.classEnd)],
       ["Inicio de clase", formatTime(timeline.classStart)],
       ["Fin de clase", formatTime(timeline.classEnd)],
@@ -1952,6 +2165,142 @@
     ];
   }
 
+  function buildScaledTimelineLanes(data) {
+    const { timeline, temps } = data;
+    const [s1, s2, s3] = data.suspects;
+    const outsideColor = [201, 209, 216];
+    const classroomColor = [47, 95, 119];
+    const contactColor = [200, 86, 72];
+    const limitedColor = [96, 127, 97];
+
+    return [
+      {
+        label: "Caso",
+        segments: [
+          {
+            start: timeline.classStart,
+            end: timeline.classEnd,
+            label: "Clase",
+            color: classroomColor
+          },
+          {
+            start: timeline.classEnd,
+            end: timeline.death,
+            label: "Intervalo crítico",
+            color: contactColor
+          },
+          {
+            start: timeline.death,
+            end: timeline.discovery,
+            label: "Cuerpo oculto",
+            color: outsideColor
+          },
+          {
+            start: timeline.discovery,
+            end: timeline.firstMeasurement,
+            label: "Aviso y llegada",
+            color: limitedColor
+          },
+          {
+            start: timeline.firstMeasurement,
+            end: timeline.secondMeasurement,
+            label: "Mediciones",
+            color: classroomColor
+          }
+        ],
+        events: [
+          { time: timeline.death, label: "muerte", color: contactColor },
+          { time: timeline.discovery, label: "hallazgo", color: contactColor },
+          { time: timeline.firstMeasurement, label: `${formatNumber(temps.firstMeasurement)} C`, color: classroomColor }
+        ]
+      },
+      {
+        label: s1.label,
+        segments: [
+          {
+            start: timeline.classStart,
+            end: timeline.classEnd,
+            label: "En aula",
+            color: classroomColor
+          },
+          {
+            start: timeline.classEnd,
+            end: timeline.death,
+            label: "Contacto directo",
+            color: contactColor
+          },
+          {
+            start: timeline.death,
+            end: timeline.secondMeasurement,
+            label: "Fuera",
+            color: outsideColor
+          }
+        ],
+        events: [{ time: timeline.death, label: "sale", color: contactColor }]
+      },
+      {
+        label: s2.label,
+        segments: [
+          {
+            start: timeline.classStart,
+            end: timeline.classEnd,
+            label: "En aula",
+            color: classroomColor
+          },
+          {
+            start: timeline.classEnd,
+            end: timeline.suspect2Return,
+            label: "Fuera",
+            color: outsideColor
+          },
+          {
+            start: timeline.suspect2Return,
+            end: timeline.suspect2Leave,
+            label: "Entrada / chaqueta",
+            color: limitedColor
+          },
+          {
+            start: timeline.suspect2Leave,
+            end: timeline.secondMeasurement,
+            label: "Fuera",
+            color: outsideColor
+          }
+        ],
+        events: [{ time: timeline.suspect2Return, label: "vuelve", color: limitedColor }]
+      },
+      {
+        label: s3.label,
+        segments: [
+          {
+            start: timeline.classStart,
+            end: timeline.classEnd,
+            label: "En aula",
+            color: classroomColor
+          },
+          {
+            start: timeline.classEnd,
+            end: timeline.discovery,
+            label: "Fuera",
+            color: outsideColor
+          },
+          {
+            start: timeline.discovery,
+            end: timeline.afternoonClass,
+            label: "Aula / hallazgo",
+            color: limitedColor
+          },
+          {
+            start: timeline.afternoonClass,
+            end: timeline.secondMeasurement,
+            label: "Edificio",
+            color: outsideColor
+          }
+        ],
+        events: [{ time: timeline.discovery, label: "encuentra", color: contactColor }]
+      }
+    ];
+  }
+
   function setBusy(isBusy) {
     if (els.generateButton) {
       els.generateButton.disabled = isBusy;
@@ -1978,6 +2327,10 @@
 
   function addMinutes(date, minutes) {
     return new Date(date.getTime() + minutes * 60 * 1000);
+  }
+
+  function hoursBetween(start, end) {
+    return (end.getTime() - start.getTime()) / (60 * 60 * 1000);
   }
 
   function sameCalendarDay(a, b) {

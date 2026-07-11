@@ -105,6 +105,55 @@ The generator lets you choose the PDF format, the professor's name, the class, t
     background: #fff;
   }
 
+  .trial-generator .switch-field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    border: 1px solid var(--trial-line);
+    border-radius: 6px;
+    padding: 12px 14px;
+    background: #fff;
+  }
+
+  .trial-generator .switch-field span {
+    font-weight: 700;
+  }
+
+  .trial-generator .switch-field input {
+    width: 46px;
+    height: 24px;
+    min-height: 24px;
+    flex: none;
+    appearance: none;
+    border-radius: 999px;
+    padding: 0;
+    background: #c9d1d8;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s ease;
+  }
+
+  .trial-generator .switch-field input::before {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    top: 2px;
+    left: 3px;
+    transition: transform 0.2s ease;
+  }
+
+  .trial-generator .switch-field input:checked {
+    background: var(--trial-blue);
+  }
+
+  .trial-generator .switch-field input:checked::before {
+    transform: translateX(20px);
+  }
+
   .trial-generator .actions {
     display: flex;
     flex-wrap: wrap;
@@ -336,6 +385,10 @@ The generator lets you choose the PDF format, the professor's name, the class, t
             <option value="a4" selected>A4</option>
             <option value="letter">Carta americana</option>
           </select>
+        </label>
+        <label class="full switch-field">
+          <span>Informe matemático para ecuaciones diferenciales</span>
+          <input id="math-mode" name="mathMode" type="checkbox" aria-label="Usar informe matemático para curso de ecuaciones diferenciales">
         </label>
         <label>
           Fecha del caso
