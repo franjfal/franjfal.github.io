@@ -1644,7 +1644,7 @@
 
   function addScaledTimelineBlock(doc, page, cursor, item) {
     const lanes = item.lanes;
-    const height = 86 + lanes.length * 48;
+    const height = 110 + lanes.length * 48;
     ensureSpace(doc, page, cursor, height);
     addWrappedText(doc, page, cursor, item.title, {
       size: 12,
@@ -1672,7 +1672,9 @@
     );
     const span = Math.max(maxTime - minTime, 1);
     const xFor = (date) => axisLeft + ((date.getTime() - minTime) / span) * axisWidth;
-    const topY = cursor.y + 24;
+    // Leave separate vertical bands for axis ticks and event labels. Events that
+    // are close in time are staggered so their captions cannot overlap.
+    const topY = cursor.y + 48;
 
     const tickCount = 5;
     doc.setDrawColor(216, 222, 228);
@@ -1685,7 +1687,7 @@
       doc.setFont("helvetica", "normal");
       doc.setFontSize(7.5);
       doc.setTextColor(90, 101, 112);
-      doc.text(formatTime(tickDate), x, topY - 13, { align: "center" });
+      doc.text(formatTime(tickDate), x, topY - 40, { align: "center" });
     }
 
     lanes.forEach((lane, laneIndex) => {
@@ -1714,14 +1716,23 @@
         });
       });
 
-      lane.events.forEach((event) => {
-        const x = xFor(event.time);
+      const eventTiers = [];
+      lane.events
+        .map((event) => ({ event, x: xFor(event.time) }))
+        .sort((a, b) => a.x - b.x)
+        .forEach(({ event, x }) => {
         doc.setFillColor(event.color[0], event.color[1], event.color[2]);
         doc.circle(x, y, 4.2, "F");
         doc.setFont("helvetica", "bold");
         doc.setFontSize(7.4);
         doc.setTextColor(32, 42, 51);
-        doc.text(event.label, x, y - 10, { align: "center" });
+        const labelWidth = doc.getTextWidth(event.label) + 6;
+        const labelLeft = x - labelWidth / 2;
+        const labelRight = x + labelWidth / 2;
+        let tier = eventTiers.findIndex((rightEdge) => labelLeft > rightEdge);
+        if (tier === -1) tier = eventTiers.length;
+        eventTiers[tier] = labelRight;
+        doc.text(event.label, x, y - 10 - tier * 11, { align: "center" });
       });
     });
 
