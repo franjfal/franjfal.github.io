@@ -1,0 +1,1856 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a2b">
+  <title>La batalla de genios · El duelo del cálculo</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172235;
+      --muted: #667085;
+      --paper: #f4efe4;
+      --panel: #fffdf8;
+      --panel-strong: #ffffff;
+      --navy: #101a2b;
+      --navy-soft: #1c2b43;
+      --line: #d8d1c3;
+      --line-strong: #b9b09f;
+      --red: #c64a3f;
+      --red-dark: #98362f;
+      --gold: #d9a441;
+      --gold-soft: #f7e8bd;
+      --green: #287a5c;
+      --green-soft: #e5f4ec;
+      --blue: #2f6682;
+      --blue-soft: #e8f2f6;
+      --danger-soft: #fae9e7;
+      --shadow: 0 18px 50px rgba(20, 29, 43, 0.12);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-width: 320px;
+      background: var(--navy);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(217, 164, 65, 0.16), transparent 30rem),
+        linear-gradient(180deg, var(--navy) 0 260px, var(--paper) 260px 100%);
+      line-height: 1.5;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .app-shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 22px 0 52px;
+    }
+
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 70px;
+      color: #fff;
+      margin-bottom: 30px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      flex: 0 0 auto;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 14px;
+      color: var(--gold-soft);
+      background: rgba(255, 255, 255, 0.08);
+      font-family: Georgia, serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .brand-copy strong,
+    .brand-copy span {
+      display: block;
+    }
+
+    .brand-copy strong {
+      font-size: 1rem;
+      letter-spacing: 0.01em;
+    }
+
+    .brand-copy span {
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 0.82rem;
+    }
+
+    .network-pill,
+    .eyebrow,
+    .badge,
+    .status-chip,
+    .mini-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      width: fit-content;
+      border-radius: 999px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .network-pill {
+      padding: 8px 11px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: rgba(255, 255, 255, 0.82);
+      background: rgba(255, 255, 255, 0.07);
+      font-size: 0.7rem;
+    }
+
+    .network-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #7dd8b4;
+      box-shadow: 0 0 0 4px rgba(125, 216, 180, 0.12);
+    }
+
+    .screen {
+      animation: screen-in 260ms ease-out;
+    }
+
+    @keyframes screen-in {
+      from { opacity: 0; transform: translateY(7px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .setup-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(440px, 1.1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .story-panel,
+    .setup-panel,
+    .lobby-panel,
+    .game-card,
+    .end-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .story-panel {
+      position: sticky;
+      top: 22px;
+      overflow: hidden;
+    }
+
+    .story-top {
+      min-height: 245px;
+      padding: 30px;
+      color: #fff;
+      background:
+        linear-gradient(135deg, rgba(198, 74, 63, 0.92), rgba(108, 43, 43, 0.74)),
+        repeating-linear-gradient(45deg, transparent 0 16px, rgba(255, 255, 255, 0.04) 16px 17px),
+        var(--navy-soft);
+    }
+
+    .eyebrow {
+      padding: 6px 9px;
+      color: var(--gold-soft);
+      background: rgba(16, 26, 43, 0.28);
+      font-size: 0.7rem;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 620px;
+      margin: 20px 0 14px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.6rem, 6vw, 4.8rem);
+      line-height: 0.94;
+      letter-spacing: -0.045em;
+    }
+
+    .story-top p {
+      max-width: 560px;
+      margin-bottom: 0;
+      color: rgba(255, 255, 255, 0.84);
+      font-size: 1.02rem;
+    }
+
+    .story-body {
+      padding: 26px 30px 30px;
+    }
+
+    .story-body h2,
+    .setup-panel h2,
+    .lobby-panel h2,
+    .game-card h2 {
+      margin-bottom: 8px;
+      font-size: 1.22rem;
+    }
+
+    .story-body > p,
+    .section-intro,
+    .helper,
+    .muted {
+      color: var(--muted);
+    }
+
+    .duel-steps {
+      display: grid;
+      gap: 13px;
+      margin-top: 22px;
+    }
+
+    .duel-step {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .duel-step span {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      color: var(--red-dark);
+      background: var(--danger-soft);
+      font-weight: 900;
+    }
+
+    .duel-step strong,
+    .duel-step small {
+      display: block;
+    }
+
+    .duel-step small {
+      margin-top: 2px;
+      color: var(--muted);
+    }
+
+    .setup-panel {
+      padding: 26px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-bottom: 24px;
+      padding: 5px;
+      border-radius: 12px;
+      background: #ece7dd;
+    }
+
+    .tab-button {
+      min-height: 43px;
+      border: 0;
+      border-radius: 9px;
+      color: var(--muted);
+      background: transparent;
+      font-weight: 800;
+    }
+
+    .tab-button[aria-selected="true"] {
+      color: var(--ink);
+      background: var(--panel-strong);
+      box-shadow: 0 2px 8px rgba(21, 30, 44, 0.09);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field > span,
+    .fieldset-title {
+      color: var(--ink);
+      font-size: 0.86rem;
+      font-weight: 850;
+    }
+
+    .field small {
+      color: var(--muted);
+      font-size: 0.74rem;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line-strong);
+      border-radius: 10px;
+      color: var(--ink);
+      background: #fff;
+      outline: none;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    input,
+    select {
+      min-height: 45px;
+      padding: 9px 11px;
+    }
+
+    textarea {
+      min-height: 110px;
+      padding: 11px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.74rem;
+      line-height: 1.35;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(47, 102, 130, 0.13);
+    }
+
+    fieldset {
+      margin: 22px 0 0;
+      padding: 0;
+      border: 0;
+    }
+
+    .fieldset-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .fieldset-heading p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .text-action {
+      padding: 3px;
+      border: 0;
+      color: var(--blue);
+      background: transparent;
+      font-size: 0.76rem;
+      font-weight: 850;
+    }
+
+    .family-groups {
+      display: grid;
+      gap: 14px;
+    }
+
+    .family-group {
+      display: grid;
+      gap: 8px;
+    }
+
+    .family-group-title {
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .family-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .family-option {
+      position: relative;
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      gap: 10px;
+      min-height: 72px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      cursor: pointer;
+      transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+    }
+
+    .family-option:hover {
+      transform: translateY(-1px);
+      border-color: var(--line-strong);
+    }
+
+    .family-option:has(input:checked) {
+      border-color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .family-option input {
+      width: 18px;
+      min-height: 18px;
+      margin: 2px 0 0;
+      accent-color: var(--blue);
+      box-shadow: none;
+    }
+
+    .family-option strong,
+    .family-option small {
+      display: block;
+    }
+
+    .family-option strong {
+      font-size: 0.82rem;
+    }
+
+    .family-option small {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.7rem;
+      line-height: 1.3;
+    }
+
+    .actions,
+    .inline-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .actions {
+      margin-top: 22px;
+    }
+
+    .button {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 10px 15px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 850;
+      transition: background 150ms ease, color 150ms ease, border-color 150ms ease, transform 150ms ease;
+    }
+
+    .button:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .button-primary {
+      color: #fff;
+      background: var(--red);
+    }
+
+    .button-primary:hover:not(:disabled) {
+      background: var(--red-dark);
+    }
+
+    .button-dark {
+      color: #fff;
+      background: var(--navy);
+    }
+
+    .button-secondary {
+      border-color: var(--line-strong);
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .button-ghost {
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .button-block {
+      width: 100%;
+    }
+
+    .setup-message {
+      min-height: 22px;
+      margin: 12px 0 0;
+      color: var(--blue);
+      font-size: 0.82rem;
+      font-weight: 750;
+    }
+
+    .setup-message.error {
+      color: var(--red-dark);
+    }
+
+    .join-note {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 11px;
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 12px;
+      color: #244653;
+      background: var(--blue-soft);
+      font-size: 0.78rem;
+    }
+
+    .join-note strong {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .note-icon {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      color: var(--blue);
+      background: #fff;
+      font-weight: 900;
+    }
+
+    .lobby-shell {
+      display: grid;
+      gap: 18px;
+    }
+
+    .lobby-header,
+    .game-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 20px 22px;
+      border-radius: var(--radius);
+      color: #fff;
+      background: var(--navy);
+      box-shadow: var(--shadow);
+    }
+
+    .lobby-header h1 {
+      margin: 3px 0 0;
+      font-family: inherit;
+      font-size: clamp(1.45rem, 4vw, 2.1rem);
+      letter-spacing: -0.02em;
+    }
+
+    .badge {
+      padding: 6px 9px;
+      color: var(--gold-soft);
+      background: rgba(255, 255, 255, 0.1);
+      font-size: 0.65rem;
+    }
+
+    .room-code {
+      text-align: right;
+    }
+
+    .room-code span,
+    .room-code strong {
+      display: block;
+    }
+
+    .room-code span {
+      color: rgba(255, 255, 255, 0.64);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .room-code strong {
+      color: var(--gold-soft);
+      font-size: 1.2rem;
+      letter-spacing: 0.14em;
+    }
+
+    .lobby-grid {
+      display: grid;
+      grid-template-columns: minmax(300px, 0.78fr) minmax(420px, 1.22fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .lobby-panel {
+      padding: 22px;
+    }
+
+    .panel-heading {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .panel-heading p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .status-chip {
+      flex: 0 0 auto;
+      padding: 6px 9px;
+      color: var(--blue);
+      background: var(--blue-soft);
+      font-size: 0.63rem;
+    }
+
+    .status-chip.ready {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .players-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .player-row {
+      display: grid;
+      grid-template-columns: 38px 1fr auto;
+      gap: 11px;
+      align-items: center;
+      min-height: 58px;
+      padding: 10px 11px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .player-avatar {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      color: #fff;
+      background: var(--navy-soft);
+      font-weight: 900;
+    }
+
+    .player-row strong,
+    .player-row small {
+      display: block;
+    }
+
+    .player-row small {
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    .connection-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #b8b4aa;
+    }
+
+    .connection-dot.connected {
+      background: #3ca47c;
+      box-shadow: 0 0 0 4px rgba(60, 164, 124, 0.12);
+    }
+
+    .empty-slot {
+      color: var(--muted);
+      border-style: dashed;
+      background: transparent;
+    }
+
+    .empty-slot .player-avatar {
+      color: var(--muted);
+      background: #ede8df;
+    }
+
+    .config-summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+      margin-top: 18px;
+    }
+
+    .config-item {
+      padding: 11px;
+      border-radius: 11px;
+      background: #f0ece4;
+    }
+
+    .config-item span,
+    .config-item strong {
+      display: block;
+    }
+
+    .config-item span {
+      color: var(--muted);
+      font-size: 0.66rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .config-item strong {
+      margin-top: 2px;
+      font-size: 0.86rem;
+    }
+
+    .connection-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin: 4px 0 18px;
+    }
+
+    .connection-step {
+      display: grid;
+      gap: 5px;
+      padding: 10px;
+      border-radius: 10px;
+      color: var(--muted);
+      background: #f0ece4;
+      font-size: 0.69rem;
+      font-weight: 800;
+    }
+
+    .connection-step span {
+      color: var(--ink);
+      font-size: 0.78rem;
+    }
+
+    .connection-step.active {
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .connection-step.done {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .qr-layout {
+      display: grid;
+      grid-template-columns: 210px minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .qr-box {
+      display: grid;
+      place-items: center;
+      width: 210px;
+      min-height: 210px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .qr-box img,
+    .qr-box canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .qr-placeholder {
+      max-width: 150px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.75rem;
+    }
+
+    .signal-block {
+      display: grid;
+      gap: 9px;
+    }
+
+    .signal-block h3 {
+      margin-bottom: 0;
+      font-size: 0.93rem;
+    }
+
+    .signal-block p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .divider {
+      height: 1px;
+      margin: 20px 0;
+      background: var(--line);
+    }
+
+    .waiting-card {
+      display: grid;
+      place-items: center;
+      min-height: 240px;
+      padding: 30px;
+      border: 1px dashed var(--line-strong);
+      border-radius: 14px;
+      text-align: center;
+    }
+
+    .waiting-orbit {
+      display: grid;
+      place-items: center;
+      width: 76px;
+      height: 76px;
+      margin-bottom: 16px;
+      border: 2px solid var(--line);
+      border-top-color: var(--red);
+      border-radius: 50%;
+      animation: spin 1.2s linear infinite;
+    }
+
+    .waiting-orbit::after {
+      content: "∫";
+      color: var(--red);
+      font-family: Georgia, serif;
+      font-size: 2rem;
+      animation: counter-spin 1.2s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes counter-spin { to { transform: rotate(-360deg); } }
+
+    .game-shell {
+      display: grid;
+      gap: 16px;
+    }
+
+    .game-topbar {
+      padding: 13px 16px;
+      border-radius: 14px;
+    }
+
+    .game-identity {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .game-identity .player-avatar {
+      color: var(--navy);
+      background: var(--gold-soft);
+    }
+
+    .game-identity strong,
+    .game-identity span {
+      display: block;
+    }
+
+    .game-identity strong {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .game-identity span {
+      color: rgba(255, 255, 255, 0.66);
+      font-size: 0.7rem;
+    }
+
+    .game-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: end;
+      gap: 8px;
+    }
+
+    .metric-pill {
+      padding: 7px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      color: rgba(255, 255, 255, 0.72);
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 0.72rem;
+      font-weight: 750;
+    }
+
+    .metric-pill strong {
+      color: #fff;
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .game-main {
+      display: grid;
+      gap: 16px;
+    }
+
+    .timer-card {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 260px;
+      overflow: hidden;
+      color: #fff;
+      border-radius: var(--radius);
+      background:
+        radial-gradient(circle at center, rgba(217, 164, 65, 0.11), transparent 44%),
+        var(--navy);
+      box-shadow: var(--shadow);
+    }
+
+    .timer-card::before,
+    .timer-card::after {
+      content: "";
+      position: absolute;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+    }
+
+    .timer-card::before {
+      width: 228px;
+      height: 228px;
+    }
+
+    .timer-card::after {
+      width: 188px;
+      height: 188px;
+    }
+
+    .timer-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .timer-label {
+      color: rgba(255, 255, 255, 0.62);
+      font-size: 0.67rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .timer-value {
+      margin: 5px 0 2px;
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(3.7rem, 10vw, 6.3rem);
+      font-weight: 900;
+      letter-spacing: -0.07em;
+      line-height: 1;
+    }
+
+    .timer-rate {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: var(--gold-soft);
+      background: rgba(217, 164, 65, 0.13);
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .timer-card.warning {
+      background:
+        radial-gradient(circle at center, rgba(198, 74, 63, 0.24), transparent 45%),
+        #2c1720;
+    }
+
+    .countdown-cover {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: rgba(16, 26, 43, 0.93);
+      text-align: center;
+    }
+
+    .countdown-cover strong {
+      display: block;
+      color: var(--gold-soft);
+      font-size: clamp(4.8rem, 14vw, 8rem);
+      line-height: 0.9;
+    }
+
+    .countdown-cover span {
+      display: block;
+      margin-top: 12px;
+      color: rgba(255, 255, 255, 0.72);
+      font-weight: 800;
+    }
+
+    .game-card {
+      padding: 22px;
+    }
+
+    .question-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .question-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .mini-badge {
+      padding: 6px 9px;
+      color: var(--blue);
+      background: var(--blue-soft);
+      font-size: 0.62rem;
+    }
+
+    .mini-badge.attack {
+      color: var(--red-dark);
+      background: var(--danger-soft);
+    }
+
+    .question-counter {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .question-prompt {
+      margin-bottom: 4px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.87rem;
+      font-weight: 750;
+    }
+
+    .question-expression {
+      display: grid;
+      place-items: center;
+      min-height: 105px;
+      padding: 18px 8px;
+      color: var(--ink);
+      text-align: center;
+      font-size: clamp(1.25rem, 4vw, 1.85rem);
+    }
+
+    .answers-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .answer-button {
+      min-height: 74px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--ink);
+      background: #fff;
+      font-weight: 700;
+      transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+    }
+
+    .answer-button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      border-color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .answer-button:focus-visible {
+      outline: 3px solid rgba(47, 102, 130, 0.28);
+      outline-offset: 2px;
+    }
+
+    .game-side {
+      display: grid;
+      gap: 16px;
+    }
+
+    .side-panel {
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--panel);
+      box-shadow: 0 10px 28px rgba(20, 29, 43, 0.08);
+      overflow: hidden;
+    }
+
+    .side-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px 15px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .side-heading h2 {
+      margin: 0;
+      font-size: 0.88rem;
+    }
+
+    .opponents-list,
+    .penalties-list {
+      display: grid;
+    }
+
+    .opponent-row,
+    .penalty-row {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .opponent-row:last-child,
+    .penalty-row:last-child {
+      border-bottom: 0;
+    }
+
+    .opponent-top,
+    .penalty-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .opponent-top strong,
+    .penalty-top strong {
+      overflow: hidden;
+      font-size: 0.78rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .opponent-time {
+      flex: 0 0 auto;
+      font-variant-numeric: tabular-nums;
+      font-size: 0.8rem;
+      font-weight: 900;
+    }
+
+    .time-track,
+    .penalty-track {
+      height: 6px;
+      margin-top: 8px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: #e8e3da;
+    }
+
+    .time-track span,
+    .penalty-track span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--green);
+      transition: width 250ms linear;
+    }
+
+    .opponent-row.eliminated {
+      opacity: 0.58;
+    }
+
+    .opponent-row.eliminated .time-track span {
+      background: var(--red);
+    }
+
+    .opponent-meta,
+    .penalty-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 7px;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.66rem;
+    }
+
+    .penalty-track span {
+      background: var(--red);
+    }
+
+    .empty-state {
+      padding: 20px 15px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.74rem;
+    }
+
+    .eliminated-cover {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      color: #fff;
+      background: rgba(44, 23, 32, 0.94);
+      text-align: center;
+    }
+
+    .eliminated-cover strong {
+      display: block;
+      margin-bottom: 8px;
+      font-family: Georgia, serif;
+      font-size: 2.2rem;
+    }
+
+    .end-card {
+      max-width: 760px;
+      margin: 40px auto 0;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .end-banner {
+      padding: 38px 28px;
+      color: #fff;
+      background:
+        radial-gradient(circle at 50% 10%, rgba(217, 164, 65, 0.2), transparent 45%),
+        var(--navy);
+    }
+
+    .trophy {
+      display: grid;
+      place-items: center;
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 18px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 50%;
+      color: var(--gold-soft);
+      background: rgba(255, 255, 255, 0.07);
+      font-family: Georgia, serif;
+      font-size: 2.4rem;
+    }
+
+    .end-banner h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2.1rem, 7vw, 3.8rem);
+    }
+
+    .end-banner p {
+      margin-bottom: 0;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .end-body {
+      padding: 26px;
+    }
+
+    .results-list {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 22px;
+      text-align: left;
+    }
+
+    .result-row {
+      display: grid;
+      grid-template-columns: 32px 1fr repeat(2, auto);
+      gap: 10px;
+      align-items: center;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: #fff;
+    }
+
+    .result-position {
+      color: var(--muted);
+      font-weight: 900;
+    }
+
+    .result-row small {
+      color: var(--muted);
+      font-size: 0.7rem;
+    }
+
+    dialog {
+      width: min(520px, calc(100% - 28px));
+      padding: 0;
+      border: 0;
+      border-radius: 16px;
+      color: var(--ink);
+      background: var(--panel);
+      box-shadow: 0 28px 80px rgba(5, 13, 26, 0.34);
+    }
+
+    dialog::backdrop {
+      background: rgba(8, 15, 27, 0.72);
+      backdrop-filter: blur(3px);
+    }
+
+    .dialog-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .dialog-header h2 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .icon-button {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      color: var(--ink);
+      background: #fff;
+      font-weight: 900;
+    }
+
+    .dialog-body {
+      padding: 20px;
+    }
+
+    #qr-reader {
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    .scanner-help {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-align: center;
+    }
+
+    .toast {
+      position: fixed;
+      z-index: 20;
+      right: 20px;
+      bottom: 20px;
+      width: min(390px, calc(100% - 40px));
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      color: #fff;
+      background: var(--navy);
+      box-shadow: 0 18px 50px rgba(11, 18, 31, 0.28);
+      font-size: 0.82rem;
+      font-weight: 750;
+      animation: toast-in 180ms ease-out;
+    }
+
+    .toast.success {
+      background: #205f49;
+    }
+
+    .toast.error {
+      background: #8d352f;
+    }
+
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 940px) {
+      .setup-layout,
+      .lobby-grid,
+      .game-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .story-panel {
+        position: static;
+      }
+
+      .game-side {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 660px) {
+      body {
+        background: linear-gradient(180deg, var(--navy) 0 210px, var(--paper) 210px 100%);
+      }
+
+      .app-shell {
+        width: min(100% - 20px, 1180px);
+        padding-top: 12px;
+      }
+
+      .site-header {
+        margin-bottom: 18px;
+      }
+
+      .network-pill {
+        display: none;
+      }
+
+      .brand-copy span {
+        display: none;
+      }
+
+      .story-top,
+      .story-body,
+      .setup-panel,
+      .lobby-panel,
+      .game-card {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .form-grid,
+      .family-options,
+      .answers-grid,
+      .config-summary,
+      .game-side {
+        grid-template-columns: 1fr;
+      }
+
+      .qr-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .qr-box {
+        width: min(100%, 250px);
+        min-height: 210px;
+        margin: 0 auto;
+      }
+
+      .connection-steps {
+        grid-template-columns: 1fr;
+      }
+
+      .lobby-header,
+      .game-topbar {
+        align-items: flex-start;
+      }
+
+      .game-topbar {
+        flex-direction: column;
+      }
+
+      .game-metrics {
+        justify-content: start;
+      }
+
+      .timer-card {
+        min-height: 230px;
+      }
+
+      .timer-card::before {
+        width: 205px;
+        height: 205px;
+      }
+
+      .timer-card::after {
+        width: 170px;
+        height: 170px;
+      }
+
+      .result-row {
+        grid-template-columns: 28px 1fr auto;
+      }
+
+      .result-row .result-attacks {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="site-header">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">∫↔d</div>
+        <div class="brand-copy">
+          <strong>El archivo del profesor</strong>
+          <span>Caso 06 · Teorema Fundamental del Cálculo</span>
+        </div>
+      </div>
+      <div class="network-pill"><span class="network-dot"></span>P2P · sin servidor de partida</div>
+    </header>
+
+    <main>
+      <section id="setup-screen" class="screen setup-layout" aria-labelledby="page-title">
+        <article class="story-panel">
+          <div class="story-top">
+            <span class="eyebrow">Caso 06 · Duelo matemático</span>
+            <h1 id="page-title">La batalla de genios</h1>
+            <p>Derivar, integrar y sobrevivir. Cada acierto devuelve una operación al campo rival y acelera su reloj.</p>
+          </div>
+          <div class="story-body">
+            <h2>Las reglas del archivo</h2>
+            <p>El último reloj activo gana. Las preguntas revelan que derivar e integrar son operaciones opuestas, pero cada constante y cada función cambian el duelo.</p>
+            <div class="duel-steps">
+              <div class="duel-step">
+                <span>1</span>
+                <div><strong>Resuelve tu operación</strong><small>Elige la derivada o antiderivada correcta antes de quedarte sin tiempo.</small></div>
+              </div>
+              <div class="duel-step">
+                <span>2</span>
+                <div><strong>Devuelve la inversa</strong><small>Un acierto envía la operación opuesta a otro jugador.</small></div>
+              </div>
+              <div class="duel-step">
+                <span>3</span>
+                <div><strong>Rompe la penalización</strong><small>Las preguntas recibidas aceleran el reloj hasta que las resuelvas.</small></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <section class="setup-panel" aria-label="Crear o unirse a una partida">
+          <div class="tabs" role="tablist" aria-label="Modo de acceso">
+            <button id="create-tab" class="tab-button" type="button" role="tab" aria-selected="true" aria-controls="create-panel">Crear partida</button>
+            <button id="join-tab" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="join-panel">Unirse</button>
+          </div>
+
+          <div id="create-panel" role="tabpanel" aria-labelledby="create-tab">
+            <h2>Configura el duelo</h2>
+            <p class="section-intro">Este dispositivo coordinará los relojes y conectará directamente con los demás.</p>
+            <form id="create-form">
+              <div class="form-grid">
+                <label class="field full">
+                  <span>Tu nombre</span>
+                  <input id="host-name" name="hostName" type="text" maxlength="24" value="Anfitrión" autocomplete="nickname" required>
+                </label>
+                <label class="field">
+                  <span>Tiempo inicial</span>
+                  <input id="initial-minutes" name="initialMinutes" type="number" min="0.5" max="30" step="0.5" value="3" required>
+                  <small>Minutos por jugador</small>
+                </label>
+                <label class="field">
+                  <span>Número de jugadores</span>
+                  <select id="player-count" name="playerCount">
+                    <option value="2" selected>2 jugadores</option>
+                    <option value="3">3 jugadores</option>
+                    <option value="4">4 jugadores</option>
+                    <option value="5">5 jugadores</option>
+                    <option value="6">6 jugadores</option>
+                    <option value="7">7 jugadores</option>
+                    <option value="8">8 jugadores</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>Bonificación por acierto</span>
+                  <input id="bonus-seconds" name="bonusSeconds" type="number" min="0" max="120" step="1" value="10" required>
+                  <small>Segundos añadidos</small>
+                </label>
+                <label class="field">
+                  <span>Épsilon de penalización</span>
+                  <input id="penalty-epsilon" name="penaltyEpsilon" type="number" min="0" max="1" step="0.01" value="0.08" required>
+                  <small>Épsilon × peso de la función</small>
+                </label>
+                <label class="field full">
+                  <span>Cota máxima de penalización</span>
+                  <input id="penalty-cap" name="penaltyCap" type="number" min="0" max="4" step="0.05" value="0.75" required>
+                  <small>0,75 significa que el reloj puede llegar como máximo a velocidad ×1,75</small>
+                </label>
+              </div>
+
+              <fieldset>
+                <div class="fieldset-heading">
+                  <div>
+                    <div class="fieldset-title">Familias de funciones</div>
+                    <p>Elige qué grupos pueden aparecer en la partida.</p>
+                  </div>
+                  <button id="toggle-families" class="text-action" type="button">Seleccionar todas</button>
+                </div>
+                <div id="family-groups" class="family-groups" aria-live="polite"></div>
+              </fieldset>
+
+              <div class="actions">
+                <button id="create-room-button" class="button button-primary button-block" type="submit" disabled>Crear sala P2P</button>
+              </div>
+              <p id="setup-message" class="setup-message" role="status" aria-live="polite">Cargando el banco de preguntas…</p>
+            </form>
+          </div>
+
+          <div id="join-panel" role="tabpanel" aria-labelledby="join-tab" hidden>
+            <h2>Entra en la sala</h2>
+            <p class="section-intro">Escanea la invitación del anfitrión o pega el código recibido.</p>
+            <form id="join-form">
+              <div class="form-grid">
+                <label class="field full">
+                  <span>Tu nombre</span>
+                  <input id="join-name" name="joinName" type="text" maxlength="24" placeholder="Nombre del jugador" autocomplete="nickname" required>
+                </label>
+                <label class="field full">
+                  <span>Código de invitación</span>
+                  <textarea id="offer-code" name="offerCode" placeholder="Pega aquí el código que aparece bajo el QR…" required></textarea>
+                </label>
+              </div>
+              <div class="actions">
+                <button id="scan-offer-button" class="button button-secondary" type="button">Escanear QR</button>
+                <button id="prepare-answer-button" class="button button-primary" type="submit" disabled>Preparar conexión</button>
+              </div>
+            </form>
+            <div class="join-note">
+              <div class="note-icon" aria-hidden="true">i</div>
+              <div><strong>Conexión sin servidor</strong>El QR intercambia la información necesaria entre ambos navegadores. El anfitrión deberá escanear después tu respuesta.</div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section id="lobby-screen" class="screen lobby-shell" hidden aria-labelledby="lobby-title">
+        <header class="lobby-header">
+          <div>
+            <span id="lobby-role" class="badge">Sala del anfitrión</span>
+            <h1 id="lobby-title">Preparando el duelo</h1>
+          </div>
+          <div class="room-code"><span>Código de sala</span><strong id="room-code">------</strong></div>
+        </header>
+
+        <div class="lobby-grid">
+          <section class="lobby-panel" aria-labelledby="players-title">
+            <div class="panel-heading">
+              <div><h2 id="players-title">Jugadores</h2><p id="players-progress">1 de 2 conectados</p></div>
+              <span id="lobby-status-chip" class="status-chip">Esperando</span>
+            </div>
+            <div id="lobby-players" class="players-list"></div>
+            <div id="lobby-config-summary" class="config-summary"></div>
+          </section>
+
+          <section id="host-lobby-panel" class="lobby-panel" aria-labelledby="invite-title">
+            <div class="panel-heading">
+              <div><h2 id="invite-title">Añadir un dispositivo</h2><p>Completa el intercambio de dos QR por cada jugador.</p></div>
+            </div>
+            <div id="host-connection-steps" class="connection-steps">
+              <div class="connection-step active" data-step="offer"><span>1 · Invitación</span>Genera el QR</div>
+              <div class="connection-step" data-step="answer"><span>2 · Respuesta</span>Escanea al jugador</div>
+              <div class="connection-step" data-step="ready"><span>3 · Listo</span>Conexión directa</div>
+            </div>
+            <div id="invite-empty" class="waiting-card">
+              <div>
+                <div class="waiting-orbit" aria-hidden="true"></div>
+                <h3>Abre un nuevo enlace P2P</h3>
+                <p class="muted">Se generará una invitación de un solo uso para el siguiente dispositivo.</p>
+                <button id="generate-invite-button" class="button button-primary" type="button">Generar invitación</button>
+              </div>
+            </div>
+            <div id="invite-content" hidden>
+              <div class="qr-layout">
+                <div id="offer-qr" class="qr-box"><span class="qr-placeholder">Generando QR…</span></div>
+                <div class="signal-block">
+                  <h3>1. El jugador escanea este QR</h3>
+                  <p>También puedes copiar y enviar el código completo.</p>
+                  <textarea id="host-offer-code" readonly aria-label="Código de invitación"></textarea>
+                  <div class="inline-actions">
+                    <button id="copy-offer-button" class="button button-ghost" type="button">Copiar invitación</button>
+                    <button id="cancel-invite-button" class="button button-secondary" type="button">Generar otra</button>
+                  </div>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="signal-block">
+                <h3>2. Recibe la respuesta del jugador</h3>
+                <p>Escanea su QR de respuesta o pega el código para cerrar la conexión.</p>
+                <textarea id="answer-code" placeholder="Pega aquí la respuesta del otro dispositivo…"></textarea>
+                <div class="inline-actions">
+                  <button id="scan-answer-button" class="button button-secondary" type="button">Escanear respuesta</button>
+                  <button id="accept-answer-button" class="button button-dark" type="button">Completar conexión</button>
+                </div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <button id="start-game-button" class="button button-primary button-block" type="button" disabled>Esperando a todos los jugadores</button>
+          </section>
+
+          <section id="guest-lobby-panel" class="lobby-panel" hidden aria-labelledby="answer-title">
+            <div class="panel-heading">
+              <div><h2 id="answer-title">Devuelve tu respuesta</h2><p>El anfitrión debe escanearla para completar el enlace.</p></div>
+            </div>
+            <div id="guest-connection-steps" class="connection-steps">
+              <div class="connection-step done"><span>1 · Invitación</span>Recibida</div>
+              <div class="connection-step active"><span>2 · Respuesta</span>Muéstrala</div>
+              <div class="connection-step"><span>3 · Listo</span>Espera al anfitrión</div>
+            </div>
+            <div class="qr-layout">
+              <div id="answer-qr" class="qr-box"><span class="qr-placeholder">Generando respuesta…</span></div>
+              <div class="signal-block">
+                <h3>Tu código de respuesta</h3>
+                <p>Mantén esta pantalla abierta mientras el anfitrión lo escanea.</p>
+                <textarea id="guest-answer-code" readonly aria-label="Código de respuesta"></textarea>
+                <button id="copy-answer-button" class="button button-ghost" type="button">Copiar respuesta</button>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="waiting-card">
+              <div>
+                <div class="waiting-orbit" aria-hidden="true"></div>
+                <h3 id="guest-waiting-title">Esperando al anfitrión</h3>
+                <p id="guest-waiting-text" class="muted">La sala aparecerá en cuanto se abra el canal directo.</p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="game-screen" class="screen game-shell" hidden aria-labelledby="game-question-title">
+        <header class="game-topbar">
+          <div class="game-identity">
+            <div id="game-avatar" class="player-avatar" aria-hidden="true">A</div>
+            <div><strong id="game-player-name">Jugador</strong><span id="game-room-label">Sala ------</span></div>
+          </div>
+          <div class="game-metrics">
+            <span class="metric-pill">Nivel <strong id="game-level">1</strong></span>
+            <span class="metric-pill">Cola <strong id="game-queue">0</strong></span>
+            <span class="metric-pill">Aciertos <strong id="game-correct">0</strong></span>
+          </div>
+        </header>
+
+        <div class="game-grid">
+          <div class="game-main">
+            <section id="timer-card" class="timer-card" aria-label="Temporizador del jugador">
+              <div class="timer-content">
+                <div class="timer-label">Tiempo restante</div>
+                <div id="timer-value" class="timer-value">03:00.0</div>
+                <div id="timer-rate" class="timer-rate">Velocidad ×1,00</div>
+              </div>
+              <div id="countdown-cover" class="countdown-cover" hidden><div><strong id="countdown-value">3</strong><span>Todos los relojes arrancan a la vez</span></div></div>
+              <div id="eliminated-cover" class="eliminated-cover" hidden><div><strong>Reloj agotado</strong><span>Sigues viendo el duelo mientras queda un genio en pie.</span></div></div>
+            </section>
+
+            <section class="game-card" aria-labelledby="game-question-title">
+              <div class="question-meta">
+                <div id="question-tags" class="question-tags"></div>
+                <span id="question-counter" class="question-counter">Pregunta activa</span>
+              </div>
+              <p id="question-prompt" class="question-prompt">Elige la respuesta correcta</p>
+              <h2 id="game-question-title" class="question-expression" aria-live="polite"></h2>
+              <div id="answers-grid" class="answers-grid"></div>
+            </section>
+          </div>
+
+          <aside class="game-side">
+            <section class="side-panel" aria-labelledby="opponents-title">
+              <div class="side-heading"><h2 id="opponents-title">Estado del duelo</h2><span id="alive-count" class="mini-badge">2 activos</span></div>
+              <div id="opponents-list" class="opponents-list"></div>
+            </section>
+            <section class="side-panel" aria-labelledby="penalties-title">
+              <div class="side-heading"><h2 id="penalties-title">Penalizaciones activas</h2><span id="penalty-total" class="mini-badge attack">+0,00</span></div>
+              <div id="penalties-list" class="penalties-list"></div>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section id="end-screen" class="screen" hidden aria-labelledby="winner-title">
+        <article class="end-card">
+          <div class="end-banner">
+            <div class="trophy" aria-hidden="true">∫</div>
+            <span class="badge">Archivo resuelto</span>
+            <h1 id="winner-title">Último genio en pie</h1>
+            <p id="winner-subtitle">La partida ha terminado.</p>
+          </div>
+          <div class="end-body">
+            <div id="results-list" class="results-list"></div>
+            <button id="new-game-button" class="button button-primary" type="button">Nueva partida</button>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="scan-dialog" aria-labelledby="scan-dialog-title">
+    <div class="dialog-header">
+      <h2 id="scan-dialog-title">Escanear código QR</h2>
+      <button id="close-scanner-button" class="icon-button" type="button" aria-label="Cerrar escáner">×</button>
+    </div>
+    <div class="dialog-body">
+      <div id="qr-reader"></div>
+      <p class="scanner-help">Apunta la cámara al QR y mantén el dispositivo quieto.</p>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script defer src="game-engine.js"></script>
+  <script defer src="webrtc.js"></script>
+  <script defer src="duel.js"></script>
+</body>
+</html>
