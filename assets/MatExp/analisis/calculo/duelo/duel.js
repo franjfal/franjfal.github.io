@@ -25,6 +25,7 @@
     answerLocked: false,
     hostLoop: null,
     scanner: null,
+    scannerProcessing: false,
     toastTimer: null,
     lobbyState: null
   };
@@ -34,6 +35,8 @@
   document.addEventListener("DOMContentLoaded", init);
 
   function init() {
+    cacheElements();
+    buildSetupEnhancements();
     cacheElements();
     bindEvents();
     handleJoinHash();
@@ -59,6 +62,15 @@
       "bonus-seconds",
       "penalty-epsilon",
       "penalty-cap",
+      "advanced-options-button",
+      "advanced-options-dialog",
+      "close-advanced-options",
+      "print-cards-button",
+      "print-cards-dialog",
+      "close-print-cards",
+      "paper-size",
+      "generate-print-cards",
+      "fullscreen-exit-button",
       "family-groups",
       "toggle-families",
       "create-room-button",
@@ -144,14 +156,169 @@
     elements.copyAnswerButton.addEventListener("click", () => copyText(elements.guestAnswerCode.value, "Respuesta copiada."));
     elements.acceptAnswerButton.addEventListener("click", acceptAnswer);
     elements.startGameButton.addEventListener("click", startGame);
-    elements.scanOfferButton.addEventListener("click", () => openScanner(elements.offerCode));
-    elements.scanAnswerButton.addEventListener("click", () => openScanner(elements.answerCode));
+    elements.scanOfferButton.addEventListener("click", () => openScanner(
+      elements.offerCode,
+      () => elements.joinForm.requestSubmit()
+    ));
+    elements.scanAnswerButton.addEventListener("click", () => openScanner(
+      elements.answerCode,
+      acceptAnswer
+    ));
     elements.closeScannerButton.addEventListener("click", closeScanner);
     elements.scanDialog.addEventListener("cancel", (event) => {
       event.preventDefault();
       closeScanner();
     });
     elements.newGameButton.addEventListener("click", () => window.location.assign(window.location.href.split("#")[0]));
+    elements.advancedOptionsButton.addEventListener("click", () => elements.advancedOptionsDialog.showModal());
+    elements.closeAdvancedOptions.addEventListener("click", () => elements.advancedOptionsDialog.close());
+    elements.printCardsButton.addEventListener("click", openPrintDialog);
+    elements.closePrintCards.addEventListener("click", () => elements.printCardsDialog.close());
+    elements.generatePrintCards.addEventListener("click", printCards);
+    elements.fullscreenExitButton.addEventListener("click", () => document.exitFullscreen && document.exitFullscreen());
+    document.addEventListener("fullscreenchange", updateFullscreenExitButton);
+  }
+
+  function buildSetupEnhancements() {
+    const createForm = elements.createForm;
+    const familyFieldset = elements.familyGroups.closest("fieldset");
+    const epsilonField = elements.penaltyEpsilon.closest("label");
+    const capField = elements.penaltyCap.closest("label");
+    const actions = createForm.querySelector(".actions");
+
+    const advancedButton = document.createElement("button");
+    advancedButton.id = "advanced-options-button";
+    advancedButton.className = "button button-ghost button-block";
+    advancedButton.type = "button";
+    advancedButton.textContent = "Opciones avanzadas";
+
+    const advancedDialog = document.createElement("dialog");
+    advancedDialog.id = "advanced-options-dialog";
+    advancedDialog.className = "settings-dialog";
+    advancedDialog.innerHTML = '<div class="dialog-header"><div><span class="eyebrow">Configuración</span><h2>Opciones avanzadas</h2></div><button id="close-advanced-options" class="icon-button" type="button" aria-label="Cerrar opciones avanzadas">×</button></div><div class="dialog-body"><p class="section-intro">Ajusta las penalizaciones y limita las familias que aparecerán tanto en el duelo como en las tarjetas imprimibles.</p><div class="form-grid advanced-fields"></div><div class="advanced-families"></div></div>';
+    advancedDialog.querySelector(".advanced-fields").append(epsilonField, capField);
+    advancedDialog.querySelector(".advanced-families").append(familyFieldset);
+
+    const printButton = document.createElement("button");
+    printButton.id = "print-cards-button";
+    printButton.className = "button button-secondary button-block";
+    printButton.type = "button";
+    printButton.textContent = "Crear tarjetas imprimibles";
+
+    const printDialog = document.createElement("dialog");
+    printDialog.id = "print-cards-dialog";
+    printDialog.className = "settings-dialog print-dialog";
+    printDialog.innerHTML = '<div class="dialog-header"><div><span class="eyebrow">Versión de mesa</span><h2>Tarjetas imprimibles</h2></div><button id="close-print-cards" class="icon-button" type="button" aria-label="Cerrar tarjetas imprimibles">×</button></div><div class="dialog-body"><p>Se crearán 8 tarjetas por hoja con las familias elegidas en Opciones avanzadas. Cada anverso propone una derivada y cada reverso su integración inversa.</p><label class="field"><span>Formato del papel</span><select id="paper-size"><option value="a4">A4 (Europa)</option><option value="letter">Letter (EE. UU.)</option></select></label><div class="print-instructions"><strong>Al imprimir o guardar como PDF</strong><ol><li>Elige orientación <b>horizontal</b>.</li><li>Activa <b>doble cara</b> y <b>voltear por el borde corto</b>.</li><li>Usa escala 100 % o “tamaño real”; desactiva encabezados y pies.</li></ol><p>Las páginas impares son anversos y las pares, sus reversos ya espejados. No reordenes las páginas.</p></div><button id="generate-print-cards" class="button button-primary button-block" type="button">Abrir PDF para imprimir</button></div>';
+
+    createForm.insertBefore(advancedButton, actions);
+    actions.insertBefore(printButton, actions.firstChild);
+    document.body.append(advancedDialog, printDialog);
+
+    const exitButton = document.createElement("button");
+    exitButton.id = "fullscreen-exit-button";
+    exitButton.className = "fullscreen-exit-button";
+    exitButton.type = "button";
+    exitButton.setAttribute("aria-label", "Salir de pantalla completa");
+    exitButton.title = "Salir de pantalla completa";
+    exitButton.textContent = "×";
+    exitButton.hidden = true;
+    const duelApp = document.getElementById("calculusDuelApp");
+    (duelApp || document.body).appendChild(exitButton);
+  }
+
+  function updateFullscreenExitButton() {
+    const duelApp = document.getElementById("calculusDuelApp");
+    elements.fullscreenExitButton.hidden = !duelApp || document.fullscreenElement !== duelApp;
+  }
+
+  function openPrintDialog() {
+    if (!app.questionBank) {
+      showToast("Espera a que termine de cargar el banco de preguntas.", "error");
+      return;
+    }
+    elements.printCardsDialog.showModal();
+  }
+
+  function printCards() {
+    const selectedFamilies = new Set(Array.from(elements.familyGroups.querySelectorAll('input[type="checkbox"]:checked')).map((input) => input.value));
+    if (!selectedFamilies.size) {
+      showToast("Selecciona al menos una familia en Opciones avanzadas.", "error");
+      return;
+    }
+    const pairs = [];
+    app.questionBank.levels.forEach((level) => level.questions.forEach((question) => {
+      if (question.operation === "derive" && selectedFamilies.has(question.family)) {
+        const inverse = app.questionIndex.get(question.inverseQuestionId);
+        if (inverse) pairs.push([question, inverse]);
+      }
+    }));
+    if (!pairs.length) return;
+
+    const printRoot = document.createElement("div");
+    printRoot.id = "duel-print-root";
+    for (let offset = 0; offset < pairs.length; offset += 8) {
+      const batch = pairs.slice(offset, offset + 8);
+      printRoot.append(createPrintPage(batch, offset, false), createPrintPage(batch, offset, true));
+    }
+    document.getElementById("duel-print-root")?.remove();
+    document.body.appendChild(printRoot);
+    document.documentElement.dataset.duelPaper = elements.paperSize.value;
+    elements.printCardsDialog.close();
+    requestAnimationFrame(() => {
+      window.print();
+      setTimeout(() => printRoot.remove(), 1000);
+    });
+  }
+
+  function createPrintPage(batch, offset, reverse) {
+    const page = document.createElement("section");
+    page.className = `duel-print-page ${reverse ? "is-back" : "is-front"}`;
+    const slots = Array.from({ length: 8 }, (_, index) => batch[index] ? { pair: batch[index], number: offset + index + 1 } : null);
+    const ordered = reverse ? mirrorColumns(slots) : slots;
+    ordered.forEach((entry) => {
+      if (!entry) {
+        const blank = document.createElement("article");
+        blank.className = "duel-print-card is-blank";
+        page.appendChild(blank);
+        return;
+      }
+      const { pair, number } = entry;
+      const question = pair[reverse ? 1 : 0];
+      const card = document.createElement("article");
+      card.className = "duel-print-card";
+      const family = app.familyIndex.get(question.family);
+      const answers = shuffle([question.correctAnswer, ...question.incorrectAnswers.slice(0, 2)]);
+      card.innerHTML = `<div class="print-card-meta"><span>${reverse ? "REVERSO · INTEGRA" : "ANVERSO · DERIVA"}</span><span class="print-family"></span></div><div class="print-card-number">${number}</div><div class="print-expression"></div><div class="print-answers"></div>`;
+      card.querySelector(".print-family").textContent = family ? family.label : "Cálculo";
+      renderMath(card.querySelector(".print-expression"), question.expression, true);
+      answers.forEach((answer, answerIndex) => {
+        const option = document.createElement("div");
+        option.className = "print-answer";
+        option.innerHTML = `<span>${String.fromCharCode(65 + answerIndex)}</span><div></div>`;
+        renderMath(option.lastElementChild, answer, false);
+        card.querySelector(".print-answers").appendChild(option);
+      });
+      page.appendChild(card);
+    });
+    return page;
+  }
+
+  function mirrorColumns(items) {
+    const result = [];
+    for (let row = 0; row < 2; row += 1) {
+      const slice = items.slice(row * 4, row * 4 + 4);
+      result.push(...slice.reverse());
+    }
+    return result;
+  }
+
+  function shuffle(values) {
+    const result = values.slice();
+    for (let index = result.length - 1; index > 0; index -= 1) {
+      const randomIndex = Math.floor(Math.random() * (index + 1));
+      [result[index], result[randomIndex]] = [result[randomIndex], result[index]];
+    }
+    return result;
   }
 
   async function loadQuestionBank() {
@@ -162,6 +329,7 @@
         throw new Error(`No se pudo abrir questions.json (${response.status}).`);
       }
       const questionBank = await response.json();
+      expandGeneratedPairs(questionBank);
       validateQuestionBank(questionBank);
       app.questionBank = questionBank;
       app.familyIndex = new Map(questionBank.families.map((family) => [family.id, family]));
@@ -182,6 +350,19 @@
         : "";
       setSetupMessage(`${error.message}${localHint}`, true);
     }
+  }
+
+  function expandGeneratedPairs(questionBank) {
+    if (!Array.isArray(questionBank.generatedPairs)) return;
+    const levels = new Map(questionBank.levels.map((level) => [level.level, level]));
+    questionBank.generatedPairs.forEach((pair) => {
+      const level = levels.get(pair.level);
+      const base = { level: pair.level, family: pair.family, baseFunction: pair.base, weight: pair.weight };
+      level.questions.push(
+        { ...base, id: `${pair.id}-d`, operation: "derive", prompt: pair.derivePrompt || "Deriva la función", expression: `\\frac{d}{dx}\\left(${pair.base}\\right)`, correctAnswer: pair.derivative, incorrectAnswers: pair.deriveWrong, inverseQuestionId: `${pair.id}-i` },
+        { ...base, id: `${pair.id}-i`, operation: "integrate", prompt: "Calcula la familia de antiderivadas", expression: `\\int ${pair.derivative}\\,dx`, correctAnswer: `${pair.base}+C`, incorrectAnswers: pair.integrateWrong, inverseQuestionId: `${pair.id}-d` }
+      );
+    });
   }
 
   function validateQuestionBank(questionBank) {
@@ -1188,13 +1369,14 @@
     });
   }
 
-  async function openScanner(targetTextarea) {
+  async function openScanner(targetTextarea, afterScan) {
     if (!window.Html5Qrcode) {
       showToast("El lector QR no se ha cargado. Pega el código manualmente.", "error");
       targetTextarea.focus();
       return;
     }
 
+    app.scannerProcessing = false;
     elements.scanDialog.showModal();
     app.scanner = new window.Html5Qrcode("qr-reader");
     try {
@@ -1202,10 +1384,15 @@
         { facingMode: "environment" },
         { fps: 10, qrbox: { width: 230, height: 230 }, aspectRatio: 1 },
         async (decodedText) => {
+          if (app.scannerProcessing) return;
+          app.scannerProcessing = true;
           targetTextarea.value = decodedText;
           await closeScanner();
           targetTextarea.dispatchEvent(new Event("input", { bubbles: true }));
-          showToast("Código QR leído.", "success");
+          showToast("Código QR leído. Completando el enlace…", "success");
+          if (typeof afterScan === "function") {
+            await afterScan();
+          }
         },
         () => {}
       );
@@ -1229,6 +1416,7 @@
       }
       app.scanner = null;
     }
+    app.scannerProcessing = false;
     if (elements.scanDialog.open) {
       elements.scanDialog.close();
     }

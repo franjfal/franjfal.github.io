@@ -2,47 +2,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <link rel="stylesheet" href="{{ '/assets/MatExp/analisis/calculo/duelo/duel.css' | relative_url }}">
 
-<div id="calculusDuelApp" class="calculus-duel-app">
-<div class="app-shell">
-    <header class="site-header">
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true">∫↔d</div>
-        <div class="brand-copy">
-          <strong>El archivo del profesor</strong>
-          <span>Caso 06 · Teorema Fundamental del Cálculo</span>
-        </div>
-      </div>
-      <div class="network-pill"><span class="network-dot"></span>P2P · sin servidor de partida</div>
-    </header>
-
+<div id="calculusDuelApp" class="calculus-duel-app calculus-duel-app--embedded">
+  <div class="app-shell app-shell--embedded">
     <div class="duel-main">
-      <section id="setup-screen" class="screen setup-layout" aria-labelledby="duel-page-title">
-        <article class="story-panel">
-          <div class="story-top">
-            <span class="eyebrow">Caso 06 · Duelo matemático</span>
-            <h1 id="duel-page-title">La batalla de genios</h1>
-            <p>Derivar, integrar y sobrevivir. Cada acierto devuelve una operación al campo rival y acelera su reloj.</p>
-          </div>
-          <div class="story-body">
-            <h2>Las reglas del archivo</h2>
-            <p>El último reloj activo gana. Las preguntas revelan que derivar e integrar son operaciones opuestas, pero cada constante y cada función cambian el duelo.</p>
-            <div class="duel-steps">
-              <div class="duel-step">
-                <span>1</span>
-                <div><strong>Resuelve tu operación</strong><small>Elige la derivada o antiderivada correcta antes de quedarte sin tiempo.</small></div>
-              </div>
-              <div class="duel-step">
-                <span>2</span>
-                <div><strong>Devuelve la inversa</strong><small>Un acierto envía la operación opuesta a otro jugador.</small></div>
-              </div>
-              <div class="duel-step">
-                <span>3</span>
-                <div><strong>Rompe la penalización</strong><small>Las preguntas recibidas aceleran el reloj hasta que las resuelvas.</small></div>
-              </div>
-            </div>
-          </div>
-        </article>
-
+      <section id="setup-screen" class="screen setup-layout" aria-label="Configurar el duelo">
         <section class="setup-panel" aria-label="Crear o unirse a una partida">
           <div class="tabs" role="tablist" aria-label="Modo de acceso">
             <button id="create-tab" class="tab-button" type="button" role="tab" aria-selected="true" aria-controls="create-panel">Crear partida</button>
@@ -125,7 +88,7 @@
                 </label>
               </div>
               <div class="actions">
-                <button id="scan-offer-button" class="button button-secondary" type="button">Escanear QR</button>
+                <button id="scan-offer-button" class="button button-secondary" type="button">Escanear invitación</button>
                 <button id="prepare-answer-button" class="button button-primary" type="submit" disabled>Preparar conexión</button>
               </div>
             </form>
@@ -189,10 +152,10 @@
               <div class="divider"></div>
               <div class="signal-block">
                 <h3>2. Recibe la respuesta del jugador</h3>
-                <p>Escanea su QR de respuesta o pega el código para cerrar la conexión.</p>
+                <p>Escanea su QR de respuesta y la conexión se completará automáticamente. También puedes pegar el código.</p>
                 <textarea id="answer-code" placeholder="Pega aquí la respuesta del otro dispositivo…"></textarea>
                 <div class="inline-actions">
-                  <button id="scan-answer-button" class="button button-secondary" type="button">Escanear respuesta</button>
+                  <button id="scan-answer-button" class="button button-secondary" type="button">Escanear y conectar</button>
                   <button id="accept-answer-button" class="button button-dark" type="button">Completar conexión</button>
                 </div>
               </div>
@@ -317,4 +280,3 @@
 <script defer src="{{ '/assets/MatExp/analisis/calculo/duelo/game-engine.js' | relative_url }}"></script>
 <script defer src="{{ '/assets/MatExp/analisis/calculo/duelo/webrtc.js' | relative_url }}"></script>
 <script defer src="{{ '/assets/MatExp/analisis/calculo/duelo/duel.js' | relative_url }}"></script>
-

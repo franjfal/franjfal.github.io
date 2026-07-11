@@ -7,6 +7,7 @@
   <title>La batalla de genios · El duelo del cálculo</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="duel.css">
   <style>
     :root {
       color-scheme: light;
@@ -1661,7 +1662,7 @@
                 </label>
               </div>
               <div class="actions">
-                <button id="scan-offer-button" class="button button-secondary" type="button">Escanear QR</button>
+                <button id="scan-offer-button" class="button button-secondary" type="button">Escanear invitación</button>
                 <button id="prepare-answer-button" class="button button-primary" type="submit" disabled>Preparar conexión</button>
               </div>
             </form>
@@ -1725,10 +1726,10 @@
               <div class="divider"></div>
               <div class="signal-block">
                 <h3>2. Recibe la respuesta del jugador</h3>
-                <p>Escanea su QR de respuesta o pega el código para cerrar la conexión.</p>
+                <p>Escanea su QR de respuesta y la conexión se completará automáticamente. También puedes pegar el código.</p>
                 <textarea id="answer-code" placeholder="Pega aquí la respuesta del otro dispositivo…"></textarea>
                 <div class="inline-actions">
-                  <button id="scan-answer-button" class="button button-secondary" type="button">Escanear respuesta</button>
+                  <button id="scan-answer-button" class="button button-secondary" type="button">Escanear y conectar</button>
                   <button id="accept-answer-button" class="button button-dark" type="button">Completar conexión</button>
                 </div>
               </div>

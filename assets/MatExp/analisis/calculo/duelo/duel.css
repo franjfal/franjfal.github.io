@@ -1537,7 +1537,113 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
+.calculus-duel-app.calculus-duel-app--embedded {
+  min-height: 0;
+  overflow: visible;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.calculus-duel-app--embedded .app-shell.app-shell--embedded {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.calculus-duel-app--embedded .setup-layout {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.calculus-duel-app--embedded .setup-panel {
+  box-shadow: 0 8px 24px rgba(20, 29, 43, 0.08);
+}
+
 .calculus-duel-app:fullscreen {
   overflow: auto;
   border-radius: 0;
+}
+
+.fullscreen-exit-button {
+  position: fixed;
+  z-index: 10000;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(16, 26, 43, 0.88);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  font-size: 1.8rem;
+  line-height: 1;
+}
+.fullscreen-exit-button[hidden] { display: none; }
+
+.settings-dialog {
+  width: min(720px, calc(100% - 28px));
+  max-height: min(88vh, 780px);
+  padding: 0;
+  border: 1px solid #d8d1c3;
+  border-radius: 18px;
+  color: #172235;
+  background: #fffdf8;
+  box-shadow: 0 24px 80px rgba(16, 26, 43, 0.3);
+}
+
+.settings-dialog::backdrop { background: rgba(16, 26, 43, 0.72); }
+.settings-dialog .dialog-header { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 20px 22px; border-bottom: 1px solid #d8d1c3; }
+.settings-dialog .dialog-header h2 { margin: 2px 0 0; }
+.settings-dialog .dialog-body { padding: 22px; }
+.settings-dialog .icon-button { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid #d8d1c3; border-radius: 50%; color: #172235; background: #fff; font-size: 1.5rem; }
+.settings-dialog .eyebrow { color: #98362f; font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.settings-dialog .field { display: grid; gap: 6px; }
+.settings-dialog .field > span { font-weight: 800; }
+.settings-dialog input, .settings-dialog select { width: 100%; min-height: 44px; padding: 8px 11px; border: 1px solid #b9b09f; border-radius: 9px; background: #fff; }
+.settings-dialog .dialog-body { overflow: auto; max-height: calc(88vh - 88px); }
+.settings-dialog .advanced-fields { margin-bottom: 20px; }
+.settings-dialog fieldset { margin: 0; }
+.print-instructions { margin: 18px 0; padding: 16px 18px; border-radius: 12px; background: #e8f2f6; }
+.print-instructions ol { margin: 8px 0; padding-left: 22px; }
+.print-instructions p { margin: 8px 0 0; }
+
+#duel-print-root { display: none; }
+
+@media print {
+  @page { margin: 0; size: A4 landscape; }
+  html[data-duel-paper="letter"] { page: duel-letter; }
+  @page duel-letter { margin: 0; size: letter landscape; }
+  body > *:not(#duel-print-root) { display: none !important; }
+  #duel-print-root { display: block !important; color: #101a2b; background: #fff; }
+  .duel-print-page {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    width: 297mm;
+    height: 210mm;
+    padding: 8mm;
+    break-after: page;
+    page-break-after: always;
+  }
+  html[data-duel-paper="letter"] .duel-print-page { width: 279.4mm; height: 215.9mm; page: duel-letter; }
+  .duel-print-card {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    padding: 5mm;
+    border: 0.25mm dashed #64748b;
+    background: #fff;
+    font-family: Inter, Arial, sans-serif;
+  }
+  .duel-print-card.is-blank { border-color: transparent; }
+  .print-card-meta { display: flex; justify-content: space-between; gap: 3mm; color: #475569; font-size: 7pt; font-weight: 800; letter-spacing: .04em; }
+  .print-card-number { position: absolute; right: 4mm; bottom: 3mm; color: #94a3b8; font-size: 7pt; }
+  .print-expression { display: grid; place-items: center; min-height: 29mm; margin: 4mm 0 3mm; font-size: 15pt; text-align: center; }
+  .print-answers { display: grid; gap: 2mm; }
+  .print-answer { display: grid; grid-template-columns: 6mm 1fr; align-items: center; min-height: 10mm; padding: 1.5mm 2mm; border: .2mm solid #cbd5e1; border-radius: 2mm; font-size: 10pt; }
+  .print-answer > span { font-weight: 800; }
+  .print-answer > div { text-align: center; }
 }

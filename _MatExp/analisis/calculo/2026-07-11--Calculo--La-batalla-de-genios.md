@@ -32,7 +32,7 @@ Cuando un jugador responde correctamente, recibe una bonificación y envía a un
 
 La conexión entre dispositivos es directa mediante WebRTC y no necesita un servidor de partida. Para escanear los códigos QR, el navegador solicitará permiso para utilizar la cámara.
 
-## El duelo del cálculo
+## Jugar
 
 <style>
   .calculus-duel-actions {
@@ -42,7 +42,6 @@ La conexión entre dispositivos es directa mediante WebRTC y no necesita un serv
 
 <div class="calculus-duel-actions">
   <button id="calculusDuelFullscreen" class="btn btn--small btn--info" style="color: white;" type="button">Ver en pantalla completa</button>
-  <a class="btn btn--small" href="{{ '/assets/MatExp/analisis/calculo/duelo/index.html' | relative_url }}" target="_blank" rel="noopener">Abrir versión aislada</a>
 </div>
 
 {% include calculus-duel-app.html %}
@@ -57,8 +56,6 @@ La conexión entre dispositivos es directa mediante WebRTC y no necesita un serv
     button.addEventListener('click', function () {
       if (app.requestFullscreen) {
         app.requestFullscreen();
-      } else {
-        window.open('{{ "/assets/MatExp/analisis/calculo/duelo/index.html" | relative_url }}', '_blank', 'noopener');
       }
     });
   })();
