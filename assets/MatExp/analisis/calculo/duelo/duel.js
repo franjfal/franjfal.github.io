@@ -201,7 +201,7 @@
 
     const printButton = document.createElement("button");
     printButton.id = "print-cards-button";
-    printButton.className = "button button-secondary button-block";
+    printButton.className = "button button-secondary setup-action";
     printButton.type = "button";
     printButton.textContent = "Crear tarjetas imprimibles";
 
@@ -211,6 +211,8 @@
     printDialog.innerHTML = '<div class="dialog-header"><div><span class="eyebrow">Versión de mesa</span><h2>Tarjetas imprimibles</h2></div><button id="close-print-cards" class="icon-button" type="button" aria-label="Cerrar tarjetas imprimibles">×</button></div><div class="dialog-body"><p>Se crearán 8 tarjetas por hoja con las familias elegidas en Opciones avanzadas. Cada anverso propone una derivada y cada reverso su integración inversa.</p><label class="field"><span>Formato del papel</span><select id="paper-size"><option value="a4">A4 (Europa)</option><option value="letter">Letter (EE. UU.)</option></select></label><div class="print-instructions"><strong>Al imprimir o guardar como PDF</strong><ol><li>Elige orientación <b>horizontal</b>.</li><li>Activa <b>doble cara</b> y <b>voltear por el borde corto</b>.</li><li>Usa escala 100 % o “tamaño real”; desactiva encabezados y pies.</li></ol><p>Las páginas impares son anversos y las pares, sus reversos ya espejados. No reordenes las páginas.</p></div><button id="generate-print-cards" class="button button-primary button-block" type="button">Abrir PDF para imprimir</button></div>';
 
     createForm.insertBefore(advancedButton, actions);
+    elements.createRoomButton.classList.remove("button-block");
+    elements.createRoomButton.classList.add("setup-action");
     actions.insertBefore(printButton, actions.firstChild);
     document.body.append(advancedDialog, printDialog);
 

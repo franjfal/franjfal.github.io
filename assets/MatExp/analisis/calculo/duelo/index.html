@@ -316,11 +316,13 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
+      min-width: 0;
     }
 
     .field {
       display: grid;
       gap: 7px;
+      min-width: 0;
     }
 
     .field.full {
@@ -343,6 +345,7 @@
     select,
     textarea {
       width: 100%;
+      min-width: 0;
       border: 1px solid var(--line-strong);
       border-radius: 10px;
       color: var(--ink);
@@ -484,6 +487,11 @@
 
     .actions {
       margin-top: 22px;
+    }
+
+    .actions .setup-action {
+      flex: 1 1 0;
+      width: auto;
     }
 
     .button {
@@ -1475,6 +1483,10 @@
       .config-summary,
       .game-side {
         grid-template-columns: 1fr;
+      }
+
+      .actions .setup-action {
+        flex-basis: 100%;
       }
 
       .qr-layout {

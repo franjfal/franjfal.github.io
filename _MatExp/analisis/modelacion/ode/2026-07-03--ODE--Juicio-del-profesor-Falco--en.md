@@ -110,6 +110,8 @@ The generator lets you choose the PDF format, the professor's name, the class, t
     align-items: center;
     justify-content: space-between;
     gap: 14px;
+    min-width: 0;
+    max-width: 100%;
     border: 1px solid var(--trial-line);
     border-radius: 6px;
     padding: 12px 14px;
@@ -117,6 +119,8 @@ The generator lets you choose the PDF format, the professor's name, the class, t
   }
 
   .trial-generator .switch-field span {
+    min-width: 0;
+    overflow-wrap: anywhere;
     font-weight: 700;
   }
 
