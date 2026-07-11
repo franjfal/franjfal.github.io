@@ -1700,6 +1700,7 @@
       doc.setLineWidth(0.7);
       doc.line(axisLeft, y, axisRight, y);
 
+      const segmentLabels = [];
       lane.segments.forEach((segment) => {
         const startX = xFor(segment.start);
         const endX = xFor(segment.end);
@@ -1711,8 +1712,21 @@
         doc.setTextColor(32, 42, 51);
         const labelX = startX + (endX - startX) / 2;
         const labelLines = doc.splitTextToSize(segment.label, Math.max(42, Math.abs(endX - startX) + 18));
+        segmentLabels.push({ labelX, labelLines: labelLines.slice(0, 2) });
+      });
+
+      const segmentTiers = [];
+      segmentLabels
+        .sort((a, b) => a.labelX - b.labelX)
+        .forEach(({ labelX, labelLines }) => {
+        const labelWidth = Math.max(...labelLines.map((line) => doc.getTextWidth(line)), 0) + 6;
+        const labelLeft = labelX - labelWidth / 2;
+        const labelRight = labelX + labelWidth / 2;
+        let tier = segmentTiers.findIndex((rightEdge) => labelLeft > rightEdge);
+        if (tier === -1) tier = segmentTiers.length;
+        segmentTiers[tier] = labelRight;
         labelLines.slice(0, 2).forEach((line, lineIndex) => {
-          doc.text(line, labelX, y + 13 + lineIndex * 8, { align: "center" });
+          doc.text(line, labelX, y + 13 + tier * 16 + lineIndex * 8, { align: "center" });
         });
       });
 
