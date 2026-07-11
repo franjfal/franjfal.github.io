@@ -11,7 +11,8 @@ permalink: "/MatExp/geometria/solidos/arquimedianos/"
 excerpt: Construcción de los sólidos arquimedianos por distintos métodos.
 feature: "assets/MatExp/geometria/poliedros/solidos-arquimedianos/feature.jpg"
 sidebar:
-  nav: "primer-libro"
+  nav:
+    - primer-libro
 ---
 Los sólidos arquimedianos son los poliedros convexos cuyas caras son polígonos regulares de dos o más tipos y cuyas aristas se encuentran en vértices idénticos. Normalmente se excluyen de esta familia los prismas y antiprismas. Eisten en total trece sólidos arquimedianos.
 

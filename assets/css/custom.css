@@ -218,37 +218,95 @@
     color: #007bff;
 }
 
-/* Mobile-specific dropdown behavior */
-@media (max-width: 640px) {
+/* Explicit mobile navigation. It is rendered separately from priority-plus so
+   it never depends on links being cloned by JavaScript. */
+.mobile-nav__toggle,
+.mobile-nav__panel {
+    display: none;
+}
 
-    /* hide the regular links and show toggle */
+@media (max-width: 1024px) {
+
     .greedy-nav .visible-links {
-        display: none;
+        display: none !important;
     }
 
-    .greedy-nav__toggle {
-        display: block !important;
-        /* override .hidden class */
+    .greedy-nav > .greedy-nav__toggle,
+    .greedy-nav > .hidden-links {
+        display: none !important;
     }
 
-    .greedy-nav .hidden-links {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        background: #fff;
+    .mobile-nav__toggle {
+        display: block;
+        flex: 0 0 auto;
+        width: 44px;
+        height: 44px;
+        margin-left: auto;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .mobile-nav__panel {
         position: absolute;
         top: 100%;
         left: 0;
-        border-top: 1px solid #ddd;
+        right: 0;
+        z-index: 10000;
+        max-height: calc(100vh - 60px);
+        margin: 0;
+        padding: 0.5rem 1rem 1rem;
+        overflow-y: auto;
+        list-style: none;
+        border: 1px solid #d8d8d8;
+        border-radius: 0 0 8px 8px;
+        background: #fff;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
     }
 
-    .greedy-nav .hidden-links.show {
-        display: flex;
+    .mobile-nav__panel:not([hidden]) {
+        display: block;
     }
 
-    .greedy-nav .hidden-links a {
-        padding: 10px 1rem;
+    .mobile-nav__item,
+    .mobile-nav__panel > .language-switcher {
+        display: block;
+        margin: 0;
         border-bottom: 1px solid #eee;
+    }
+
+    .mobile-nav__panel a,
+    .mobile-nav__section {
+        display: block;
+        margin: 0;
+        padding: 0.75rem 0.25rem;
+        color: #333;
+        text-decoration: none;
+    }
+
+    .mobile-nav__section {
+        font-weight: 700;
+    }
+
+    .mobile-nav__sublist {
+        margin: -0.35rem 0 0.5rem;
+        padding-left: 1rem;
+        list-style: none;
+        border-left: 3px solid #e7e7e7;
+    }
+
+    .mobile-nav__sublist a {
+        padding: 0.55rem 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .mobile-nav__panel .language-switcher {
+        padding: 0.75rem 0.25rem;
+    }
+
+    .mobile-nav__panel .language-switcher__select {
+        width: 100%;
+        min-height: 40px;
     }
 }
 

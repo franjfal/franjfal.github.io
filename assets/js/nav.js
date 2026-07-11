@@ -1,17 +1,6 @@
-// simple mobile menu toggler
 window.addEventListener('DOMContentLoaded', function () {
-    var toggle = document.querySelector('.greedy-nav__toggle');
-    var hidden = document.querySelector('.greedy-nav .hidden-links');
-    var visible = document.querySelector('.greedy-nav .visible-links');
-
-    function populateHidden() {
-        if (visible && hidden && hidden.children.length === 0) {
-            // clone the visible link list into hidden menu
-            hidden.innerHTML = visible.innerHTML;
-        }
-    }
-
-    populateHidden();
+    var mobileToggle = document.querySelector('.mobile-nav__toggle');
+    var mobileMenu = document.getElementById('mobile-site-menu');
 
     var switchers = document.querySelectorAll('.language-switcher__select');
     if (switchers.length && window.languageAlternates) {
@@ -25,9 +14,32 @@ window.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    if (toggle && hidden) {
-        toggle.addEventListener('click', function () {
-            hidden.classList.toggle('show');
+    function closeMobileMenu() {
+        if (!mobileToggle || !mobileMenu) return;
+        mobileMenu.hidden = true;
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        mobileToggle.classList.remove('close');
+    }
+
+    if (mobileToggle && mobileMenu) {
+        mobileToggle.addEventListener('click', function () {
+            var opening = mobileMenu.hidden;
+            mobileMenu.hidden = !opening;
+            mobileToggle.setAttribute('aria-expanded', String(opening));
+            mobileToggle.classList.toggle('close', opening);
+        });
+
+        document.addEventListener('click', function (event) {
+            if (mobileMenu.hidden || event.target.closest('.greedy-nav')) return;
+            closeMobileMenu();
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') closeMobileMenu();
+        });
+
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 1024) closeMobileMenu();
         });
     }
 
@@ -40,7 +52,4 @@ window.addEventListener('DOMContentLoaded', function () {
         }
         window.location.href = event.target.value;
     });
-
-    // repopulate on resize just in case
-    window.addEventListener('resize', populateHidden);
 });

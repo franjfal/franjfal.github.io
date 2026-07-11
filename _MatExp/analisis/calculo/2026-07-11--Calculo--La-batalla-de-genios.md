@@ -16,7 +16,8 @@ header:
 excerpt: "Un duelo multijugador de derivadas e integrales en el que cada respuesta correcta devuelve la operación inversa al campo rival."
 feature: "/assets/MatExp/analisis/calculo/duelo/feature.svg"
 sidebar:
-  nav: "calculus-casebook"
+  nav:
+    - calculus-casebook
 ---
 **La batalla de genios** es un juego multijugador para practicar derivadas e integrales y reconocer que ambas operaciones son inversas. Cada participante dispone de un reloj: gana la última persona que conserva tiempo.
 
@@ -57,14 +58,15 @@ La conexión entre dispositivos es directa mediante WebRTC y no necesita un serv
 
 <div class="calculus-duel-actions">
   <button id="calculusDuelFullscreen" class="btn btn--small btn--info" style="color: white;" type="button">Ver en pantalla completa</button>
+  <a class="btn btn--small" href="{{ '/assets/MatExp/analisis/calculo/duelo/index.html' | relative_url }}" target="_blank" rel="noopener">Abrir en una pestaña nueva</a>
 </div>
 
 <iframe
   id="calculusDuelFrame"
   class="calculus-duel-embed"
   title="La batalla de genios: el duelo del cálculo"
-  src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/duelo/index.html"
-  allow="camera"
+  src="{{ '/assets/MatExp/analisis/calculo/duelo/index.html' | relative_url }}"
+  allow="camera; clipboard-read; clipboard-write"
   allowfullscreen
   loading="lazy"
 ></iframe>

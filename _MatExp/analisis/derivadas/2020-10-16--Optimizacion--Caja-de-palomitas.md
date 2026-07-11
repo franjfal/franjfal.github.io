@@ -22,7 +22,8 @@ gallery1:
   alt: Ejemplo de caja
 feature: "/assets/MatExp/analisis/derivadas/palomitas/feature.jpg"
 sidebar:
-  nav: "primer-libro"
+  nav:
+    - primer-libro
 ---
 <div class="materials">
 <h2> Materiales:</h2>

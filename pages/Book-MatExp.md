@@ -6,7 +6,8 @@ excerpt: Material complementario del libro "Matemáticas experimentales" publica
 lang: es
 page_id: matexp-book
 sidebar:
-  nav: "primer-libro"
+  nav:
+    - primer-libro
 ---
 
 <style>

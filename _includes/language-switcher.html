@@ -1,7 +1,8 @@
 {% assign current_lang = site.active_lang | default: site.default_lang %}
+{% assign switcher_id = include.select_id | default: "language-switcher-select" %}
 <li class="masthead__menu-item language-switcher">
-  <label class="visually-hidden" for="language-switcher-select">Language selector</label>
-  <select id="language-switcher-select" class="language-switcher__select" aria-label="Language selector">
+  <label class="visually-hidden" for="{{ switcher_id }}">Language selector</label>
+  <select id="{{ switcher_id }}" class="language-switcher__select" aria-label="Language selector">
     {% for language in site.languages %}
       {% assign language_meta = site.data.languages[language] %}
       {% capture language_url %}{{ site.baseurl }}{% if language != site.default_lang %}/{{ language }}/{% else %}/{% endif %}{% endcapture %}

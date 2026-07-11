@@ -13,7 +13,8 @@ header:
 excerpt: Construcción de las secciones cónicas por diferentes métodos.
 feature: "/assets/MatExp/geometria/conicas/construccion/feature.jpg"
 sidebar:
-  nav: "primer-libro"
+  nav:
+    - primer-libro
 ---
 Las secciones cónicas son las figuras geométricas que se obtienen al realizar un corte recto a un cono. Estas figuras se caracterizan por sus propiedades de simetría, además de poderse definir de un modo sencillo en términos de distancias entre puntos del plano. Aunque las cónicas han sido estudiadas durante más de dos milenios, el interés por estas figuras ha aumentado en los últimos siglos al descubrirse que las órbitas que describen el movimiento de los astros son, aproximadamente, curvas de este tipo.
 

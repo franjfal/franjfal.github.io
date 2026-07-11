@@ -3,15 +3,20 @@ main_es:
     url: /docencia/
   - title: "Investigación"
     url: /investigacion/
+  - title: "Libros"
+    url: /Libros/MatExp/
+    sublinks:
+      - title: "Matemáticas Experimentales"
+        url: /Libros/MatExp/
+      - title: "Cerebros Artificiales"
+        url: https://artibrains.github.io/
+      - title: "Calculus Casebook"
+        url: /Libros/Calculus-Casebook/
   - title: "MatExp"
     url: /MatExp/
     sublinks:
-      - title: "Libro: Matemáticas Experimentales"
-        url: /Libros/MatExp/
       - title: "MatExp"
         url: /MatExp/
-      - title: "Cerebros Artificiales"
-        url: https://artibrains.github.io/
       - title: "Relojes solares"
         url: /RelojesSolares.html
       - title: "Recursos"
@@ -24,15 +29,20 @@ main_en:
     url: /teaching/
   - title: "Research"
     url: /research/
+  - title: "Books"
+    url: /books/experimental-mathematics/
+    sublinks:
+      - title: "Experimental Mathematics"
+        url: /books/experimental-mathematics/
+      - title: "Artificial Brains"
+        url: https://artibrains.github.io/en/how-machines-think/index.html
+      - title: "Calculus Casebook"
+        url: /Libros/Calculus-Casebook/
   - title: "MatExp"
     url: /MatExp/
     sublinks:
-      - title: "Book: Experimental Mathematics"
-        url: /books/experimental-mathematics/
       - title: "MatExp"
         url: /MatExp/
-      - title: "Artificial Brains"
-        url: https://artibrains.github.io/en/how-machines-think/index.html
       - title: "Sundials"
         url: /sundials/
       - title: "Resources"

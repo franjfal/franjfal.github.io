@@ -50,7 +50,38 @@
           </li>
           {% endif %}
           {% endfor %}
-          {% include language-switcher.html %}
+          {% include language-switcher.html select_id="language-switcher-select" %}
+        </ul>
+        <button class="mobile-nav__toggle" type="button" aria-controls="mobile-site-menu" aria-expanded="false">
+          <span class="visually-hidden">{{ site.data.ui-text[site.locale].menu_label | default: "Abrir menú" }}</span>
+          <div class="navicon" aria-hidden="true"></div>
+        </button>
+        <ul id="mobile-site-menu" class="mobile-nav__panel" hidden>
+          {%- for link in nav_links -%}
+          <li class="mobile-nav__item{% if link.sublinks %} mobile-nav__item--group{% endif %}">
+            {% if link.sublinks %}
+            <span class="mobile-nav__section">{{ link.title }}</span>
+            <ul class="mobile-nav__sublist">
+              {% for sublink in link.sublinks %}
+              <li>
+                {% if sublink.url contains '://' %}
+                <a href="{{ sublink.url }}" target="_blank" rel="noopener">{{ sublink.title }}</a>
+                {% else %}
+                <a href="{{ sublink.url | relative_url }}">{{ sublink.title }}</a>
+                {% endif %}
+              </li>
+              {% endfor %}
+            </ul>
+            {% else %}
+              {% if link.url contains '://' %}
+              <a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.title }}</a>
+              {% else %}
+              <a href="{{ link.url | relative_url }}">{{ link.title }}</a>
+              {% endif %}
+            {% endif %}
+          </li>
+          {% endfor %}
+          {% include language-switcher.html select_id="mobile-language-switcher-select" %}
         </ul>
         {% if site.search == true %}
         <button class="search__toggle" type="button">
@@ -63,7 +94,7 @@
           </svg>
         </button>
         {% endif %}
-        <button class="greedy-nav__toggle hidden" type="button">
+        <button class="greedy-nav__toggle hidden" type="button" aria-expanded="false">
           <span class="visually-hidden">{{ site.data.ui-text[site.locale].menu_label | default: "Toggle menu" }}</span>
           <div class="navicon"></div>
         </button>
