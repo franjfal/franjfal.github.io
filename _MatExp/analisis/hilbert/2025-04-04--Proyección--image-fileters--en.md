@@ -932,4 +932,5 @@ feature: "/assets/MatExp/analisis/hilbert/image-filter/feature.jpg"
     </div>
 </div>
 
+<script src="/assets/js/dynamic-content-i18n.js"></script>
 <script src="/assets/js/image-dft-demo.js"></script>

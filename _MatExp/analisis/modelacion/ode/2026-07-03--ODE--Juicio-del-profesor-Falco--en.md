@@ -370,106 +370,105 @@ The generator lets you choose the PDF format, the professor's name, the class, t
   }
 </style>
 
-<section class="trial-generator" aria-label="Generador del juicio del profesor">
+<section class="trial-generator" data-lang="en" aria-label="Professor trial generator">
   <section class="workspace">
     <form id="case-form" class="panel">
-      <h2>Datos del caso</h2>
+      <h2>Case details</h2>
       <div class="form-grid">
         <label class="full">
-          Nombre del profesor
+          Professor's name
           <input id="teacher-name" name="teacherName" type="text" value="Javier Falcó" required>
         </label>
         <label class="full">
-          Clase impartida
-          <input id="class-name" name="className" type="text" value="ecuaciones diferenciales y transformadas de Laplace" required>
+          Course taught
+          <input id="class-name" name="className" type="text" value="differential equations and Laplace transforms" required>
         </label>
         <label>
-          Formato PDF
+          PDF format
           <select id="page-format" name="pageFormat">
             <option value="a4" selected>A4</option>
-            <option value="letter">Carta americana</option>
+            <option value="letter">US Letter</option>
           </select>
         </label>
         <label class="full switch-field">
-          <span>Informe matemático para ecuaciones diferenciales</span>
-          <input id="math-mode" name="mathMode" type="checkbox" aria-label="Usar informe matemático para curso de ecuaciones diferenciales">
+          <span>Mathematical report for differential equations</span>
+          <input id="math-mode" name="mathMode" type="checkbox" aria-label="Use the mathematical report for a differential equations course">
         </label>
         <label>
-          Fecha del caso
+          Case date
           <input id="case-date" name="caseDate" type="date" value="2026-07-02">
         </label>
         <label>
-          Inicio de la clase
+          Class starts
           <input id="class-start-time" name="classStartTime" type="time" value="10:30" required>
         </label>
         <label>
-          Fin de la clase
+          Class ends
           <input id="class-end-time" name="classEndTime" type="time" value="12:30" required>
         </label>
         <label>
-          Nombre sospechoso 1
-          <input id="suspect-1-name" name="suspect1Name" type="text" placeholder="Sospechosa 1">
+          Suspect 1 name
+          <input id="suspect-1-name" name="suspect1Name" type="text" placeholder="Suspect 1">
         </label>
         <label>
-          Género sospechoso 1
+          Suspect 1 gender
           <select id="suspect-1-gender" name="suspect1Gender">
-            <option value="f" selected>Mujer</option>
-            <option value="m">Hombre</option>
+            <option value="f" selected>Woman</option>
+            <option value="m">Man</option>
           </select>
         </label>
         <label>
-          Nombre sospechoso 2
-          <input id="suspect-2-name" name="suspect2Name" type="text" placeholder="Sospechoso 2">
+          Suspect 2 name
+          <input id="suspect-2-name" name="suspect2Name" type="text" placeholder="Suspect 2">
         </label>
         <label>
-          Género sospechoso 2
+          Suspect 2 gender
           <select id="suspect-2-gender" name="suspect2Gender">
-            <option value="m" selected>Hombre</option>
-            <option value="f">Mujer</option>
+            <option value="m" selected>Man</option>
+            <option value="f">Woman</option>
           </select>
         </label>
         <label>
-          Nombre sospechoso 3
-          <input id="suspect-3-name" name="suspect3Name" type="text" placeholder="Sospechoso 3">
+          Suspect 3 name
+          <input id="suspect-3-name" name="suspect3Name" type="text" placeholder="Suspect 3">
         </label>
         <label>
-          Género sospechoso 3
+          Suspect 3 gender
           <select id="suspect-3-gender" name="suspect3Gender">
-            <option value="m" selected>Hombre</option>
-            <option value="f">Mujer</option>
+            <option value="m" selected>Man</option>
+            <option value="f">Woman</option>
           </select>
         </label>
       </div>
       <div class="actions">
-        <button id="generate-button" type="submit">Generar documentos</button>
-        <button id="clear-button" class="secondary" type="button">Limpiar descargas</button>
+        <button id="generate-button" type="submit">Generate documents</button>
+        <button id="clear-button" class="secondary" type="button">Clear downloads</button>
       </div>
       <div id="status" class="status" role="status" aria-live="polite"></div>
     </form>
 
     <aside class="panel" aria-labelledby="case-summary-title">
-      <h2 id="case-summary-title">Resumen calculado</h2>
+      <h2 id="case-summary-title">Calculated summary</h2>
       <ul id="case-summary" class="summary-list"></ul>
     </aside>
   </section>
 
   <section id="downloads-panel" class="panel hidden" aria-labelledby="downloads-title" style="margin-top: 22px;">
-    <h2 id="downloads-title">Descargas</h2>
+    <h2 id="downloads-title">Downloads</h2>
     <p class="download-note">
-      Usa la pestaña de documentos conjuntos si vas a repartir la actividad:
-      cada descarga por rol incluye el contexto común, el dossier compartido y
-      los documentos específicos que le corresponden. Usa la pestaña de
-      documentos separados si quieres comprobar o imprimir cada pieza por separado.
+      Use the role packets tab when distributing the activity: each role download
+      includes the common context, the shared case file, and its specific documents.
+      Use the separate documents tab to review or print each item individually.
     </p>
-    <div class="tabs" role="tablist" aria-label="Tipo de descarga">
+    <div class="tabs" role="tablist" aria-label="Download type">
       <button id="tab-bundles" class="tab-button" type="button" role="tab" aria-selected="true" aria-controls="panel-bundles" data-tab-target="panel-bundles">
-        Documentos conjuntos
+        Role packets
       </button>
       <button id="tab-separate" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="panel-separate" data-tab-target="panel-separate">
-        Documentos separados
+        Separate documents
       </button>
       <a id="complete-pdf-link" class="tab-button hidden" href="#" download>
-        PDF completo
+        Complete PDF
       </a>
     </div>
     <div id="panel-bundles" class="tab-panel" role="tabpanel" aria-labelledby="tab-bundles">

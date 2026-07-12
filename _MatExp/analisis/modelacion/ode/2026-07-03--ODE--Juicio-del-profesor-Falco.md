@@ -370,7 +370,7 @@ El generador permite elegir el formato del PDF, el nombre del profesor, la clase
   }
 </style>
 
-<section class="trial-generator" aria-label="Generador del juicio del profesor">
+<section class="trial-generator" data-lang="es" aria-label="Generador del juicio del profesor">
   <section class="workspace">
     <form id="case-form" class="panel">
       <h2>Datos del caso</h2>

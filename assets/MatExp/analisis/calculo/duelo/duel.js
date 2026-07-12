@@ -264,6 +264,7 @@
     }
     document.getElementById("duel-print-root")?.remove();
     document.body.appendChild(printRoot);
+    if (window.CalculusDuelI18n) window.CalculusDuelI18n.translateElement(printRoot);
     document.documentElement.dataset.duelPaper = elements.paperSize.value;
     elements.printCardsDialog.close();
     requestAnimationFrame(() => {

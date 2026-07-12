@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <link rel="stylesheet" href="{{ '/assets/MatExp/analisis/calculo/duelo/duel.css' | relative_url }}">
 
-<div id="calculusDuelApp" class="calculus-duel-app calculus-duel-app--embedded">
+<div id="calculusDuelApp" class="calculus-duel-app calculus-duel-app--embedded" data-lang="{{ page.lang | default: site.default_lang | default: 'es' }}">
   <div class="app-shell app-shell--embedded">
     <div class="duel-main">
       <section id="setup-screen" class="screen setup-layout" aria-label="Configurar el duelo">
@@ -277,6 +277,7 @@
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script defer src="{{ '/assets/MatExp/analisis/calculo/duelo/i18n.js' | relative_url }}"></script>
 <script defer src="{{ '/assets/MatExp/analisis/calculo/duelo/game-engine.js' | relative_url }}"></script>
 <script defer src="{{ '/assets/MatExp/analisis/calculo/duelo/webrtc.js' | relative_url }}"></script>
 <script defer src="{{ '/assets/MatExp/analisis/calculo/duelo/duel.js' | relative_url }}"></script>

@@ -626,4 +626,5 @@ Este post incluye una demostración interactiva sobre la Transformada Discreta d
 ---
 
 <!-- External JavaScript -->
+<script src="/assets/js/dynamic-content-i18n.js"></script>
 <script src="/assets/js/audio-dft-demo.js"></script>
