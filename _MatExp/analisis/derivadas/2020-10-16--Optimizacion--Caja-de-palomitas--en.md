@@ -23,6 +23,8 @@ gallery1:
   alt: Ejemplo de caja
 feature: "/assets/MatExp/analisis/derivadas/palomitas/feature.jpg"
 ---
+> **Updated version:** see [Calculus Cases: The Perfect Popcorn Box]({{ site.baseurl }}/MatExp/analysis/derivatives/optimal-popcorn-box/), with configurable paper sizes, an optimal template, and the complete activity document set.
+
 <div class="materials">
 <h2> Materiales:</h2>
 <ul>

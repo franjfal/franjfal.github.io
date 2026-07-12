@@ -25,6 +25,8 @@ sidebar:
   nav:
     - primer-libro
 ---
+> **Versión actualizada:** consulta [Calculus Cases: la caja de palomitas perfecta]({{ site.baseurl }}/MatExp/analisis/derivadas/caja-palomitas-optima/), con tamaños de papel configurables, plantilla óptima y todos los documentos de la actividad.
+
 <div class="materials">
 <h2> Materiales:</h2>
 <ul>

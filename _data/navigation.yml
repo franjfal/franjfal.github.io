@@ -156,6 +156,10 @@ primer-libro:
 calculus-casebook:
   - title: "Portada"
     url: /Libros/Calculus-Casebook/
+  - title: "Capítulo 3. La caja de palomitas perfecta"
+    children:
+      - title: "El caso de la caja óptima"
+        url: /MatExp/analisis/derivadas/caja-palomitas-optima/
   - title: "Capítulo 6. La batalla de genios"
     children:
       - title: "El duelo del cálculo"
