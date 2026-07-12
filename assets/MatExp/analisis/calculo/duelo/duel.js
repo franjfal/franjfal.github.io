@@ -26,6 +26,7 @@
     hostLoop: null,
     scanner: null,
     scannerProcessing: false,
+    scannerInvalidNotified: false,
     toastTimer: null,
     lobbyState: null
   };
@@ -568,7 +569,10 @@
         roomId: offer.roomId,
         config: offer.config,
         expectedPlayers: offer.config.playerCount,
-        players: [{ id: offer.peerId, name: playerName, seat: 2, connected: false }]
+        players: [
+          { id: "host-preview", name: cleanName(offer.hostName, "Anfitrión"), seat: 1, connected: true },
+          { id: offer.peerId, name: playerName, seat: 2, connected: false }
+        ]
       };
 
       peerConnection.addEventListener("datachannel", (dataEvent) => {
@@ -673,14 +677,17 @@
         type: "offer",
         roomId: app.roomId,
         peerId,
+        hostName: app.engine.players.get(app.playerId).name,
         config: app.config,
-        lobby: app.engine.getLobbyState(),
         sdp: serializeDescription(peerConnection.localDescription)
       };
       const code = await DuelPeer.packSignal(offer);
       const shareValue = shouldUseInviteUrl() ? DuelPeer.createInviteUrl(code) : code;
       elements.hostOfferCode.value = shareValue;
-      DuelPeer.renderQr(elements.offerQr, shareValue);
+      // Keep the copyable URL for sharing, but encode only the compact signal in
+      // the QR. The shorter payload produces larger modules and scans much more
+      // reliably on phone cameras.
+      DuelPeer.renderQr(elements.offerQr, code);
       elements.inviteEmpty.hidden = true;
       elements.inviteContent.hidden = false;
       setHostConnectionStep("answer");
@@ -1380,21 +1387,41 @@
     }
 
     app.scannerProcessing = false;
+    app.scannerInvalidNotified = false;
     elements.scanDialog.showModal();
     app.scanner = new window.Html5Qrcode("qr-reader");
     try {
       await app.scanner.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 230, height: 230 }, aspectRatio: 1 },
+        {
+          fps: 20,
+          qrbox: (viewfinderWidth, viewfinderHeight) => {
+            const edge = Math.floor(Math.min(viewfinderWidth, viewfinderHeight) * 0.84);
+            return { width: edge, height: edge };
+          },
+          aspectRatio: 1
+        },
         async (decodedText) => {
           if (app.scannerProcessing) return;
           app.scannerProcessing = true;
-          targetTextarea.value = decodedText;
-          await closeScanner();
-          targetTextarea.dispatchEvent(new Event("input", { bubbles: true }));
-          showToast("Código QR leído. Completando el enlace…", "success");
-          if (typeof afterScan === "function") {
-            await afterScan();
+          try {
+            // Do not close the camera on an unrelated or partially decoded QR.
+            // Both invitation and response codes use the same packed format.
+            await DuelPeer.unpackSignal(decodedText);
+            targetTextarea.value = decodedText;
+            await closeScanner();
+            targetTextarea.dispatchEvent(new Event("input", { bubbles: true }));
+            showToast("Código QR leído. Completando el enlace…", "success");
+            if (typeof afterScan === "function") {
+              await afterScan();
+            }
+          } catch (error) {
+            console.warn("QR descartado:", error);
+            app.scannerProcessing = false;
+            if (!app.scannerInvalidNotified) {
+              app.scannerInvalidNotified = true;
+              showToast("Ese QR no contiene una invitación o respuesta válida. Mantén la cámara enfocada en el código del duelo.", "error");
+            }
           }
         },
         () => {}
@@ -1431,7 +1458,7 @@
     const joinCode = params.get("join");
     if (!joinCode) return;
     selectSetupTab("join");
-    elements.offerCode.value = decodeURIComponent(joinCode);
+    elements.offerCode.value = joinCode;
     window.setTimeout(() => elements.joinName.focus(), 50);
   }
 

@@ -791,7 +791,7 @@
 
     .qr-layout {
       display: grid;
-      grid-template-columns: 210px minmax(0, 1fr);
+      grid-template-columns: 256px minmax(0, 1fr);
       gap: 16px;
       align-items: start;
     }
@@ -799,8 +799,8 @@
     .qr-box {
       display: grid;
       place-items: center;
-      width: 210px;
-      min-height: 210px;
+      width: 256px;
+      min-height: 256px;
       padding: 12px;
       border: 1px solid var(--line);
       border-radius: 14px;

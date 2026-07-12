@@ -89,7 +89,9 @@
       const hashParams = new URLSearchParams(url.hash.replace(/^#/, ""));
       const code = hashParams.get("join") || hashParams.get("answer");
       if (code) {
-        return decodeURIComponent(code);
+        // URLSearchParams already decodes percent escapes. Decoding a second
+        // time can alter a valid payload received through a shared URL.
+        return code;
       }
     } catch (error) {
       return value;
@@ -116,8 +118,8 @@
     try {
       new global.QRCode(element, {
         text: value,
-        width: 186,
-        height: 186,
+        width: 232,
+        height: 232,
         colorDark: "#101a2b",
         colorLight: "#ffffff",
         correctLevel: global.QRCode.CorrectLevel.L
