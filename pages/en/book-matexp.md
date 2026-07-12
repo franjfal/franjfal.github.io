@@ -89,28 +89,28 @@ As mathematician Stanley Gudder wrote, "The essence of mathematics is not to mak
 
 - [Conic section constructions](/en/MatExp/geometry/conics/construction/)
 - [3D animated short film *Ellipses* by Pavel Boytchev](https://www.youtube.com/watch?v=1v5Aqo6PaFw){:target="_blank"}
-- Scale model of the solar system [(PDF)](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Modelo-a-escala-del-sistema-solar.pdf)
-- Planet cards: [Mercury](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Mercurio.pdf), [Venus](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Venus.pdf), [Earth](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Tierra.pdf), [Mars](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Marte.pdf), [Jupiter](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Jupiter.pdf), [Saturn](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Saturno.pdf), [Uranus](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Urano.pdf), [Neptune](/falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Neptuno.pdf)
+- Scale model of the solar system [(PDF)](/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Modelo-a-escala-del-sistema-solar.pdf)
+- Planet cards: [Mercury](/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Mercurio.pdf), [Venus](/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Venus.pdf), [Earth](/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Tierra.pdf), [Mars](/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Marte.pdf), [Jupiter](/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Jupiter.pdf), [Saturn](/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Saturno.pdf), [Uranus](/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Urano.pdf), [Neptune](/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Neptuno.pdf)
 
 ### 2. Graphs and connections: where less is more
 
 - Paper trails (representing graphs with pins and thread)
-- Map coloring: [mandala](/falbe/assets/MatExp/discreta/grafos/cuatro-colores/Mandala.pdf), [alternative mandalas](http://www.supercoloring.com/es/dibujos-para-colorear/artes-y-cultura/mandala){:target="_blank"}, [maps to color](http://www.supercoloring.com/es/dibujos-para-colorear/paises-y-culturas/mapas){:target="_blank"}
+- Map coloring: [mandala](/assets/MatExp/discreta/grafos/cuatro-colores/Mandala.pdf), [alternative mandalas](http://www.supercoloring.com/es/dibujos-para-colorear/artes-y-cultura/mandala){:target="_blank"}, [maps to color](http://www.supercoloring.com/es/dibujos-para-colorear/paises-y-culturas/mapas){:target="_blank"}
 - [Erdos number](https://mathscinet.ams.org/mathscinet/freeTools.html?version=2){:target="_blank"}, Jordan number and the [Kevin Bacon game](https://oracleofbacon.org/){:target="_blank"}
 - [Tool for creating graphs and finding shortest paths](https://graphonline.ru/es/){:target="_blank"}
 
 ### 3. Platonic solids: Plato and the universe
 
-- Tessellation construction: [triangle](/falbe/assets/MatExp/geometria/teselados/construccion/Teselado-3-lados.pdf), [square](/falbe/assets/MatExp/geometria/teselados/construccion/Teselado-4-lados.pdf), [hexagon](/falbe/assets/MatExp/geometria/teselados/construccion/Teselado-6-lados.pdf)
+- Tessellation construction: [triangle](/assets/MatExp/geometria/teselados/construccion/Teselado-3-lados.pdf), [square](/assets/MatExp/geometria/teselados/construccion/Teselado-4-lados.pdf), [hexagon](/assets/MatExp/geometria/teselados/construccion/Teselado-6-lados.pdf)
 - [17 ways to build planar mosaics](https://www.imaginary.org/sites/default/files/rsme-imaginary_morenaments_rollup_es.pdf){:target="_blank"}
 - [Timaeus of Locri - Plato](https://www.filosofia.org/cla/pla/azc11121.htm){:target="_blank"}
 - [Construction of the Platonic solids](/en/MatExp/geometry/platonic-solids/)
 - Platonic solids and soap bubbles
 - [Archimedean solids](/en/MatExp/geometry/solids/archimedean/)
 - [Kaleidocycle](https://www.polyhedra.net/es/model.php?name-en=hexagonal-kaleidocycle){:target="_blank"}
-- [Dodecahedral calendar (PDF)](/falbe/assets/MatExp/geometria/poliedros/calendario-dodecaedro/Calendario-Dodecaedrico.pdf)
+- [Dodecahedral calendar (PDF)](/assets/MatExp/geometria/poliedros/calendario-dodecaedro/Calendario-Dodecaedrico.pdf)
 - Models of the Kepler-Poinsot solids: [Great stellated dodecahedron](https://www.polyhedra.net/es/model.php?name-en=great-stellated-dodecahedron){:target="_blank"}, [Small stellated dodecahedron](https://www.polyhedra.net/es/model.php?name-en=small-stellated-dodecahedron){:target="_blank"}, [Great icosahedron](https://www.polyhedra.net/es/model.php?name-en=great-icosahedron){:target="_blank"}, [Great dodecahedron](https://www.polyhedra.net/es/model.php?name-en=great-dodecahedron){:target="_blank"}, [Star lamp](https://www.polyhedra.net/es/model.php?name-en=small-stellated-dodecahedron-lampshade){:target="_blank"}
-- [Construction of a hypercube (PDF)](/falbe/assets/MatExp/geometria/politopos/hipercubo/hipercubo.pdf)
+- [Construction of a hypercube (PDF)](/assets/MatExp/geometria/politopos/hipercubo/hipercubo.pdf)
 
 ### 4. Derivatives: the mathematics of change
 
@@ -123,7 +123,7 @@ As mathematician Stanley Gudder wrote, "The essence of mathematics is not to mak
 - Newton's law of cooling
 - The professor's murder
 - [Lotka-Volterra predator-prey model](/en/MatExp/applied/modeling/Lotka-Volterra/)
-- Epidemic board game: [board (PDF)](/falbe/assets/MatExp/aplicada/modelizacion/juego-epidemias/El-juego-de-las-epidemias--tablero-6x6.pdf), [online simulation](https://www.nctm.org/tools/pandemic2020/index.html){:target="_blank"}
+- Epidemic board game: [board (PDF)](/assets/MatExp/aplicada/modelizacion/juego-epidemias/El-juego-de-las-epidemias--tablero-6x6.pdf), [online simulation](https://www.nctm.org/tools/pandemic2020/index.html){:target="_blank"}
 - [Analytical solution of the SIR model (section 4.3)](https://repositorio.unican.es/xmlui/bitstream/handle/10902/7125/Andrea%20Garcia%20Pi%C3%B1era.pdf){:target="_blank"}
 - [SIR model simulation](/en/MatExp/applied/modeling/SIR/)
 - [Poster of significant events in virology](https://www.rndsystems.com/resources/posters/significant-events-history-virology){:target="_blank"}

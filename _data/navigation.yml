@@ -62,27 +62,27 @@ primer-libro:
       - title: "Corto de animación 3D: Ellipses"
         url: https://www.youtube.com/watch?v=1v5Aqo6PaFw
       - title: "Modelo del sistema solar a escala (PDF)"
-        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Modelo-a-escala-del-sistema-solar.pdf
+        url: /assets/MatExp/geometria/conicas/sistema-solar-a-escala/Modelo-a-escala-del-sistema-solar.pdf
       - title: "Ficha de Mercurio"
-        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Mercurio.pdf
+        url: /assets/MatExp/geometria/conicas/sistema-solar-a-escala/Mercurio.pdf
       - title: "Ficha de Venus"
-        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Venus.pdf
+        url: /assets/MatExp/geometria/conicas/sistema-solar-a-escala/Venus.pdf
       - title: "Ficha de la Tierra"
-        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Tierra.pdf
+        url: /assets/MatExp/geometria/conicas/sistema-solar-a-escala/Tierra.pdf
       - title: "Ficha de Marte"
-        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Marte.pdf
+        url: /assets/MatExp/geometria/conicas/sistema-solar-a-escala/Marte.pdf
       - title: "Ficha de Júpiter"
-        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Jupiter.pdf
+        url: /assets/MatExp/geometria/conicas/sistema-solar-a-escala/Jupiter.pdf
       - title: "Ficha de Saturno"
-        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Saturno.pdf
+        url: /assets/MatExp/geometria/conicas/sistema-solar-a-escala/Saturno.pdf
       - title: "Ficha de Urano"
-        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Urano.pdf
+        url: /assets/MatExp/geometria/conicas/sistema-solar-a-escala/Urano.pdf
       - title: "Ficha de Neptuno"
-        url: /falbe/assets/MatExp/geometria/conicas/sistema-solar-a-escala/Neptuno.pdf
+        url: /assets/MatExp/geometria/conicas/sistema-solar-a-escala/Neptuno.pdf
   - title: "2. Grafos y conexiones: Donde menos es más"
     children:
       - title: "Mandala para colorear"
-        url: /falbe/assets/MatExp/discreta/grafos/cuatro-colores/Mandala.pdf
+        url: /assets/MatExp/discreta/grafos/cuatro-colores/Mandala.pdf
       - title: "Mandalas alternativas"
         url: http://www.supercoloring.com/es/dibujos-para-colorear/artes-y-cultura/mandala
       - title: "Mapas para colorear"
@@ -96,11 +96,11 @@ primer-libro:
   - title: "3. Sólidos platónicos: Platón y el universo"
     children:
       - title: "Teselado con triángulos"
-        url: /falbe/assets/MatExp/geometria/teselados/construccion/Teselado-3-lados.pdf
+        url: /assets/MatExp/geometria/teselados/construccion/Teselado-3-lados.pdf
       - title: "Teselado con cuadrados"
-        url: /falbe/assets/MatExp/geometria/teselados/construccion/Teselado-4-lados.pdf
+        url: /assets/MatExp/geometria/teselados/construccion/Teselado-4-lados.pdf
       - title: "Teselado con hexágonos"
-        url: /falbe/assets/MatExp/geometria/teselados/construccion/Teselado-6-lados.pdf
+        url: /assets/MatExp/geometria/teselados/construccion/Teselado-6-lados.pdf
       - title: "17 maneras de construir mosaicos planos"
         url: https://www.imaginary.org/sites/default/files/rsme-imaginary_morenaments_rollup_es.pdf
       - title: "Timeo de Locres - Platón"
@@ -112,7 +112,7 @@ primer-libro:
       - title: "Caleidociclo"
         url: https://www.polyhedra.net/es/model.php?name-en=hexagonal-kaleidocycle
       - title: "Calendario dodecaédrico (PDF)"
-        url: /falbe/assets/MatExp/geometria/poliedros/calendario-dodecaedro/Calendario-Dodecaedrico.pdf
+        url: /assets/MatExp/geometria/poliedros/calendario-dodecaedro/Calendario-Dodecaedrico.pdf
       - title: "Gran dodecaedro estrellado"
         url: https://www.polyhedra.net/es/model.php?name-en=great-stellated-dodecahedron
       - title: "Pequeño dodecaedro estrellado"
@@ -124,7 +124,7 @@ primer-libro:
       - title: "Lámpara estrellada"
         url: https://www.polyhedra.net/es/model.php?name-en=small-stellated-dodecahedron-lampshade
       - title: "Construcción de un hipercubo (PDF)"
-        url: /falbe/assets/MatExp/geometria/politopos/hipercubo/hipercubo.pdf
+        url: /assets/MatExp/geometria/politopos/hipercubo/hipercubo.pdf
   - title: "4. Derivadas: Las matemáticas del cambio"
     children:
       - title: "La recta tangente – Dirección del tren"
@@ -140,7 +140,7 @@ primer-libro:
       - title: "Modelo Depredador-Presa de Lotka-Volterra"
         url: /MatExp/aplicada/modelizacion/Lotka-Volterra/
       - title: "Juego de mesa sobre epidemias (PDF)"
-        url: /falbe/assets/MatExp/aplicada/modelizacion/juego-epidemias/El-juego-de-las-epidemias--tablero-6x6.pdf
+        url: /assets/MatExp/aplicada/modelizacion/juego-epidemias/El-juego-de-las-epidemias--tablero-6x6.pdf
       - title: "Simulación online del juego de epidemias"
         url: https://www.nctm.org/tools/pandemic2020/index.html
       - title: "Solución analítica del modelo SIR (sección 4.3)"
