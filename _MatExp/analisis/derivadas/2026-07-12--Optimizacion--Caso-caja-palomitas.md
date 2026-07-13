@@ -12,7 +12,7 @@ taxonomy: experimento optimización análisis derivadas aplicaciones Calculus-Ca
 permalink: "/MatExp/analisis/derivadas/caja-palomitas-optima/"
 header:
   image: "/assets/MatExp/analisis/derivadas/caja-palomitas-optima/header-brand.jpg"
-excerpt: "Un caso de publicidad, reclamaciones y optimización: demuestra cuál es la caja de mayor capacidad y genera todos los documentos de la actividad."
+excerpt: "Un posible fraude a gran escala investigado mediante optimización: tres equipos construyen, contrastan la evidencia y emiten un dictamen matemático."
 feature: "/assets/MatExp/analisis/derivadas/caja-palomitas-optima/feature.jpg"
 sidebar:
   nav:
@@ -20,7 +20,7 @@ sidebar:
 ---
 <link rel="stylesheet" href="{{ site.baseurl }}/assets/MatExp/analisis/derivadas/caja-palomitas-optima/popcorn-box.css">
 
-Una cadena de cines anuncia su nuevo envase con una afirmación rotunda: **«La caja de mayor capacidad: más palomitas con el mismo cartón»**. Una asociación de consumidores presenta una reclamación por posible publicidad engañosa. La empresa deberá demostrar su *claim* y el alumnado tendrá que decidir si las matemáticas lo respaldan.
+Una cadena de cines anuncia su nuevo envase con una afirmación rotunda: **«La caja de mayor capacidad: más palomitas con el mismo cartón»**. Una asociación de consumidores denuncia un posible fraude a gran escala que podría afectar a cientos o miles de clientes. La policía encarga a un equipo de consultoría técnico-forense que analice de forma independiente la evidencia matemática y emita el dictamen final.
 
 La caja se construye a partir de una hoja rectangular de lados \(L\) y \(W\). Se recorta en cada esquina un cuadrado de lado \(x\), siempre del mismo tamaño, y se pliegan las cuatro paredes. La altura será \(x\) y la base medirá \((L-2x)\times(W-2x)\), de modo que
 
@@ -28,7 +28,7 @@ $$
 V(x)=x(L-2x)(W-2x), \qquad 0<x<\frac{\min(L,W)}{2}.
 $$
 
-El generador calcula la caja óptima para formatos habituales o para una hoja personalizada. Después crea la plantilla a escala real, el anuncio, la reclamación, la patente ficticia, los dossieres de investigación y la solución reservada al profesorado.
+El generador calcula la caja óptima para formatos habituales o para una hoja personalizada. Después crea la plantilla a escala real, el anuncio, la reclamación, la patente ficticia, los dossieres independientes de la Asociación de Consumidores, el cine y la consultoría policial, además de la solución reservada al profesorado.
 
 <section class="popcorn-case" data-lang="es" aria-label="Generador del caso de la caja de palomitas">
   <section class="pc-workspace">
@@ -123,4 +123,4 @@ Los documentos de publicidad, reclamación y patente son **ficticios y exclusiva
 
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<script src="{{ site.baseurl }}/assets/MatExp/analisis/derivadas/caja-palomitas-optima/popcorn-box-generator.js"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/derivadas/caja-palomitas-optima/popcorn-box-generator.js?v=20260713-three-teams"></script>

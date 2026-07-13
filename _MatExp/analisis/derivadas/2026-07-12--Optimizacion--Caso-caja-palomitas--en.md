@@ -12,7 +12,7 @@ taxonomy: experiment optimization analysis derivatives applications Calculus-Cas
 permalink: "/MatExp/analysis/derivatives/optimal-popcorn-box/"
 header:
   image: "/assets/MatExp/analisis/derivadas/caja-palomitas-optima/header-brand.jpg"
-excerpt: "A case about advertising, complaints, and optimization: prove which box has maximum capacity and generate every activity document."
+excerpt: "A possible large-scale fraud investigated through optimization: three teams build, test the evidence, and issue a mathematical opinion."
 feature: "/assets/MatExp/analisis/derivadas/caja-palomitas-optima/feature.jpg"
 sidebar:
   nav:
@@ -20,7 +20,7 @@ sidebar:
 ---
 <link rel="stylesheet" href="{{ site.baseurl }}/assets/MatExp/analisis/derivadas/caja-palomitas-optima/popcorn-box.css">
 
-A cinema chain is promoting its new container with a bold statement: **“The greatest-capacity box: more popcorn from the same cardstock.”** A consumer association files a complaint alleging potentially misleading advertising. The company must prove its claim, and students must decide whether the mathematics supports it.
+A cinema chain is promoting its new container with a bold statement: **“The greatest-capacity box: more popcorn from the same cardstock.”** A consumer association alleges possible large-scale fraud affecting hundreds or thousands of customers. Police appoint a technical-forensic consultancy team to analyze the mathematical evidence independently and issue the final opinion.
 
 The box is made from a rectangular sheet with sides \(L\) and \(W\). A square with side \(x\) is removed from each corner—always the same size—and the four sides are folded up. The height is \(x\), while the base measures \((L-2x)\times(W-2x)\), so
 
@@ -28,7 +28,7 @@ $$
 V(x)=x(L-2x)(W-2x), \qquad 0<x<\frac{\min(L,W)}{2}.
 $$
 
-The generator calculates the optimal box for common paper formats or a custom sheet. It then creates a full-size template, the advertisement, the complaint, the fictional patent, the investigation dossiers, and the teacher-only solution.
+The generator calculates the optimal box for common paper formats or a custom sheet. It then creates a full-size template, the advertisement, the complaint, the fictional patent, independent dossiers for the Consumer Association, cinema, and police consultancy, and the teacher-only solution.
 
 <section class="popcorn-case" data-lang="en" aria-label="Popcorn box case generator">
   <section class="pc-workspace">
@@ -123,4 +123,4 @@ The advertising, complaint, and patent documents are **fictional and for educati
 
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<script src="{{ site.baseurl }}/assets/MatExp/analisis/derivadas/caja-palomitas-optima/popcorn-box-generator.js"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/derivadas/caja-palomitas-optima/popcorn-box-generator.js?v=20260713-three-teams"></script>
