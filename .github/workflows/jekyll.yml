@@ -3,6 +3,8 @@ name: Build and Deploy Jekyll Site
 on:
   push:
     branches: ["master"]
+  pull_request:
+    branches: ["master"]
   workflow_dispatch:
 
 permissions:
@@ -28,6 +30,7 @@ jobs:
           bundler-cache: true
 
       - name: Setup Pages
+        if: github.event_name != 'pull_request'
         id: pages
         uses: actions/configure-pages@v5
 
@@ -36,10 +39,23 @@ jobs:
         env:
           JEKYLL_ENV: production
 
+      - name: Check internal links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --offline
+            --no-progress
+            --root-dir "${{ github.workspace }}/_site"
+            "${{ github.workspace }}/_site/**/*.html"
+          fail: true
+          failIfEmpty: true
+
       - name: Upload artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
 
   deploy:
+    if: github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

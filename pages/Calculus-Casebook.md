@@ -83,12 +83,16 @@ Las actividades continúan formando parte de **Matemáticas Experimentales**. El
 
 ### Capítulo 1. Límites y continuidad
 
-- [La persecución de Ciudad Delta](/MatExp/analisis/calculo/limites/persecucion-ciudad-delta/)
+- [La persecución de Ciudad Delta]({{ "/MatExp/analisis/calculo/limites/persecucion-ciudad-delta/" | relative_url }})
+
+### Capítulo 3. La caja de palomitas perfecta
+
+- [El caso de la caja óptima]({{ "/MatExp/analisis/derivadas/caja-palomitas-optima/" | relative_url }})
 
 ### Capítulo 6. La batalla de genios
 
-- [El duelo del cálculo](/MatExp/analisis/calculo/duelo/)
+- [El duelo del cálculo]({{ "/MatExp/analisis/calculo/duelo/" | relative_url }})
 
 ### Capítulo 7. El asesinato del profesor
 
-- [El asesinato del profesor](/MatExp/analisis/modelacion/ode/juicio-profesor-falco/)
+- [El asesinato del profesor]({{ "/MatExp/analisis/modelacion/ode/juicio-profesor-falco/" | relative_url }})
