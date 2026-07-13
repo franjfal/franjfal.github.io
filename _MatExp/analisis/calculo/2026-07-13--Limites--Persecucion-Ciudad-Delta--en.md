@@ -15,50 +15,13 @@ excerpt: "Case-file generator for investigating limits and continuity through ph
 feature: "/assets/MatExp/analisis/calculo/limites-ciudad-delta/feature.svg"
 ---
 
-A pursuit crosses Ciudad Delta. Traffic cameras have left a sequence of photographs, but some images are missing and others may show the wrong vehicle. Three police teams receive almost identical case files and must reconstruct the car's position without knowing that a few strategic pieces of evidence differ between dossiers.
+A pursuit crosses Ciudad Delta. Traffic cameras have left a sequence of photographs, but some images are missing and others may show the wrong vehicle. Three police teams receive almost identical case files and must reconstruct the car's position from the evidence in their dossier.
 
-The activity introduces one-sided limits, continuity, removable and jump discontinuities, oscillation, and infinite limits through one essential distinction: **what happens near an instant, what happens exactly at that instant, and what the available evidence allows us to claim**.
+The activity explores one-sided limits, continuity, several types of discontinuity, and infinite limits through a collaborative investigation. The generator lets you choose the PDF format, city name, and case date. It then produces all classroom materials, including a teacher guide containing the activity structure, investigation checkpoints, suggested sequence, and solutions.
 
 <figure>
   <img src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/header.jpg" alt="Placeholder for a pursuit through Ciudad Delta">
 </figure>
-
-## Case structure
-
-The case uses **30 unique photographic files**. Teams A and B receive 26 photographs, while Team C receives 25 because the exact camera at \(t=2\) recorded no image. Twenty-two photographs are shared by everyone; the remaining eight are variants of four strategic slots.
-
-<table class="casebook-comparison">
-  <thead>
-    <tr><th>Checkpoint</th><th>Team A</th><th>Team B</th><th>Team C</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>\(t=2\)</td><td>Correct image: \(f(2)=4\)</td><td>Wrong vehicle: \(f(2)=7\)</td><td>The camera records no image</td></tr>
-    <tr><td>Tunnel \(4&lt;t&lt;7\)</td><td colspan="3">There are no cameras or information inside the tunnel</td></tr>
-    <tr><td>\(t=8\)</td><td>Both road sections meet at 10</td><td>The right-hand section approaches 13</td><td>Both limits equal 10, but the exact image shows 14</td></tr>
-    <tr><td>Oscillation</td><td colspan="3">The same alternating sequence for everyone</td></tr>
-    <tr><td>Leaving the city</td><td colspan="3">The same unbounded sequence for everyone</td></tr>
-  </tbody>
-</table>
-
-Students do not receive this comparison table. Each team sees only its own case file, the map, and an investigation worksheet.
-
-## Five investigation points
-
-1. **The camera at \(t=2\).** Nearby photographs approach position 4. Depending on the team, the exact image confirms that value, identifies another car at position 7, or is missing.
-2. **The Straight-Line Tunnel.** The final camera before entry records \(f(4)=6\), and the first camera after exit records \(f(7)=9\). There is no image for \(4&lt;t&lt;7\). Even though the drawn road is straight, the evidence does not reveal what the car did inside, establish \(f(6)\), calculate its limit, or decide continuity.
-3. **The junction at \(t=8\).** Team A sees a continuous connection. Team B receives two photographs from a displaced upper deck and obtains unequal one-sided limits. Team C sees equal limits but a different registration plate at the exact instant.
-4. **Labyrinth Roundabout.** Every team receives the same alternating sequence of positions. The images are taken closer and closer to one instant, yet the car does not approach a single position.
-5. **Leaving Ciudad Delta.** The final cameras show ever larger positions as \(t=12\) is approached from the left. This section opens the discussion of infinite limits.
-
-<div class="casebook-callout">
-The question is not only “Where was the car?” At several checkpoints, the mathematically correct answer is “The available evidence is not enough to decide.”
-</div>
-
-## Police coordination meeting
-
-After team work, the whole-class discussion becomes a police coordination meeting. Each group must defend its reconstruction and explain which images support its conclusions. Discrepancies arise naturally: a camera may be wrong, an image may be missing, and two roads may fail to meet where expected.
-
-This conflict prepares the formal statement that \(f\) is continuous at \(a\) when \(\lim_{t\to a}f(t)\) exists, \(f(a)\) exists, and the two values agree. It also makes clear that knowing both one-sided limits does not always suffice to decide continuity.
 
 ## Material generator
 
@@ -110,6 +73,7 @@ The generator produces the three team packets, a teacher guide with solutions, s
     <div class="case-tabs" role="tablist" aria-label="Download type">
       <button class="case-tab" type="button" role="tab" aria-selected="true" data-case-tab="casebook-bundles">Complete packets</button>
       <button class="case-tab" type="button" role="tab" aria-selected="false" data-case-tab="casebook-separate">Separate documents</button>
+      <a id="casebook-complete-pdf" class="case-tab case-hidden" href="#" download>Complete PDF</a>
     </div>
     <div id="casebook-bundles" role="tabpanel"><div id="casebook-bundle-downloads" class="case-downloads"></div></div>
     <div id="casebook-separate" role="tabpanel" hidden><div id="casebook-separate-downloads" class="case-downloads"></div></div>

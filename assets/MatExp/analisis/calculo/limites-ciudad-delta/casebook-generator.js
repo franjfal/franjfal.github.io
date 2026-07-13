@@ -124,7 +124,8 @@
     status: document.getElementById("casebook-status"),
     panel: document.getElementById("casebook-download-panel"),
     bundles: document.getElementById("casebook-bundle-downloads"),
-    separate: document.getElementById("casebook-separate-downloads")
+    separate: document.getElementById("casebook-separate-downloads"),
+    complete: document.getElementById("casebook-complete-pdf")
   };
   const objectUrls = [];
 
@@ -150,6 +151,11 @@
     objectUrls.splice(0).forEach((url) => URL.revokeObjectURL(url));
     els.bundles.innerHTML = "";
     els.separate.innerHTML = "";
+    if (els.complete) {
+      els.complete.href = "#";
+      els.complete.removeAttribute("download");
+      els.complete.classList.add("case-hidden");
+    }
     els.panel.classList.add("case-hidden");
     setStatus("");
   }
@@ -184,12 +190,14 @@
       const separate = buildSeparateFiles(data, images);
       setStatus(T("Generando paquetes por equipo...", "Generating team packets..."));
       const bundles = buildBundleFiles(data, images);
+      const complete = buildCompleteFile(data, images);
       setStatus(T("Preparando archivos ZIP...", "Preparing ZIP archives..."));
       const separateZip = await zipFiles(separate, T("documentos_separados.zip", "separate_documents.zip"), T("ZIP de documentos separados", "ZIP of separate documents"));
       const bundleZip = await zipFiles(bundles, T("paquetes_por_equipo.zip", "team_packets.zip"), T("ZIP de paquetes completos", "ZIP of complete packets"));
 
-      showFiles(els.separate, [...separate, separateZip]);
-      showFiles(els.bundles, [...bundles, bundleZip]);
+      showDownloadGroup(els.separate, separateZip, separate);
+      showDownloadGroup(els.bundles, bundleZip, bundles);
+      updateCompletePdfLink(complete);
       els.panel.classList.remove("case-hidden");
       activateTab("casebook-bundles");
       setStatus(T(
@@ -542,6 +550,40 @@
       "Interpret an infinite limit in context.",
       "Argue when the evidence is insufficient for a conclusion."
     ]));
+    writer.heading(T("Estructura del caso", "Case structure"));
+    writer.paragraph(T(
+      "El caso utiliza 30 archivos fotográficos únicos. Los equipos A y B reciben 26 fotografías y el C recibe 25 porque la cámara exacta de t=2 no registró imagen. Veintidós fotografías son comunes a todos; las ocho restantes son variantes de cuatro huecos estratégicos.",
+      "The case uses 30 unique photographic files. Teams A and B receive 26 photographs, while Team C receives 25 because the exact camera at t=2 recorded no image. Twenty-two photographs are shared by all teams; the other eight are variants for four strategic slots."
+    ));
+    writer.table(
+      T(["Punto", "Equipo A", "Equipo B", "Equipo C"], ["Checkpoint", "Team A", "Team B", "Team C"]),
+      T([
+        ["t=2", "Imagen correcta: f(2)=4", "Otro vehículo: f(2)=7", "No hay imagen"],
+        ["Túnel 4<t<7", "Sin cámaras", "Sin cámaras", "Sin cámaras"],
+        ["t=8", "Unión en 10", "Límites 10 y 13", "Límite 10; f(8)=14"],
+        ["t=10 y t=12", "Oscilación e infinito", "Oscilación e infinito", "Oscilación e infinito"]
+      ], [
+        ["t=2", "Correct image: f(2)=4", "Other vehicle: f(2)=7", "No image"],
+        ["Tunnel 4<t<7", "No cameras", "No cameras", "No cameras"],
+        ["t=8", "Connection at 10", "Limits 10 and 13", "Limit 10; f(8)=14"],
+        ["t=10 and t=12", "Oscillation and infinity", "Oscillation and infinity", "Oscillation and infinity"]
+      ]),
+      [65, (writer.width - 2 * writer.margin - 65) / 3, (writer.width - 2 * writer.margin - 65) / 3, (writer.width - 2 * writer.margin - 65) / 3]
+    );
+    writer.heading(T("Cinco puntos de investigación", "Five investigation checkpoints"));
+    writer.bullets(T([
+      "t=2: separar el comportamiento de las fotografías cercanas del valor mostrado por la imagen exacta o de su ausencia.",
+      "Túnel 4<t<7: reconocer que la entrada y la salida no determinan f(6), su límite ni la continuidad interior.",
+      "t=8: comparar una unión continua, un salto y un valor exacto que no coincide con el límite.",
+      "t=10: usar dos sucesiones de posiciones alternantes para justificar que el límite no existe por oscilación.",
+      "t=12 por la izquierda: interpretar el crecimiento sin cota como un límite infinito en el contexto de la salida de la ciudad."
+    ], [
+      "t=2: separate the behaviour of nearby photographs from the value in the exact image or from its absence.",
+      "Tunnel 4<t<7: recognise that entry and exit do not determine f(6), its limit, or continuity inside the tunnel.",
+      "t=8: compare a continuous connection, a jump, and an exact value that differs from the limit.",
+      "t=10: use two alternating position sequences to justify that the limit does not exist because of oscillation.",
+      "t=12 from the left: interpret unbounded growth as an infinite limit in the context of leaving the city."
+    ]));
     writer.heading(T("Preparación", "Preparation"));
     writer.bullets(T([
       "Imprime un paquete distinto para los equipos A, B y C. Si hay más de tres equipos, repite el ciclo sin revelar las letras equivalentes.",
@@ -684,14 +726,17 @@
     const teacher = createFile(data, T("Paquete docente", "Teacher packet"), T("DOCENTE_paquete_completo.pdf", "TEACHER_complete_packet.pdf"), [
       (w) => renderTeacherGuide(w, data), (w) => renderTeacherSolution(w), (w) => renderInventory(w)
     ]);
-    const complete = createFile(data, T("PDF completo", "Complete PDF"), T("Expediente_completo.pdf", "Complete_case_file.pdf"), [
+    return [a, b, c, teacher];
+  }
+
+  function buildCompleteFile(data, images) {
+    return createFile(data, T("PDF completo", "Complete PDF"), T("Expediente_completo.pdf", "Complete_case_file.pdf"), [
       (w) => renderBriefing(w, data), (w) => renderMap(w, data, images),
       (w) => renderPhotoDossier(w, "A", images), (w) => renderWorksheet(w, "A"),
       (w) => renderPhotoDossier(w, "B", images), (w) => renderWorksheet(w, "B"),
       (w) => renderPhotoDossier(w, "C", images), (w) => renderWorksheet(w, "C"),
       (w) => renderTeacherGuide(w, data), (w) => renderTeacherSolution(w), (w) => renderInventory(w)
     ]);
-    return [a, b, c, teacher, complete];
   }
 
   async function zipFiles(files, fileName, label) {
@@ -700,20 +745,60 @@
     return { fileName, label, blob: await zip.generateAsync({ type: "blob", compression: "DEFLATE" }) };
   }
 
-  function showFiles(container, files) {
-    files.forEach((file) => {
-      const url = URL.createObjectURL(file.blob);
-      objectUrls.push(url);
-      const link = document.createElement("a");
-      link.className = "case-download";
-      link.href = url;
-      link.download = file.fileName;
-      const title = document.createElement("span");
-      title.textContent = file.label;
-      const action = document.createElement("span");
-      action.textContent = T("Descargar", "Download");
-      link.append(title, action);
-      container.appendChild(link);
-    });
+  function showDownloadGroup(container, zipFile, files) {
+    showFile(container, zipFile, true);
+    files.forEach((file) => showFile(container, file, false));
   }
+
+  function showFile(container, file, primary) {
+    const url = URL.createObjectURL(file.blob);
+    objectUrls.push(url);
+    const row = document.createElement("div");
+    row.className = primary ? "case-download case-download-primary" : "case-download";
+    const title = document.createElement("span");
+    title.className = "case-download-title";
+    title.textContent = file.label;
+    const actions = document.createElement("span");
+    actions.className = "case-download-actions";
+
+    const view = document.createElement("a");
+    view.className = "case-download-icon";
+    view.href = url;
+    view.target = "_blank";
+    view.rel = "noopener";
+    view.title = T(`Ver ${file.label} en el navegador`, `View ${file.label} in the browser`);
+    view.setAttribute("aria-label", view.title);
+    view.innerHTML = eyeIcon();
+
+    const download = document.createElement("a");
+    download.className = "case-download-icon";
+    download.href = url;
+    download.download = file.fileName;
+    download.title = T(`Descargar ${file.label}`, `Download ${file.label}`);
+    download.setAttribute("aria-label", download.title);
+    download.innerHTML = downloadIcon();
+
+    actions.append(view, download);
+    row.append(title, actions);
+    container.appendChild(row);
+  }
+
+  function updateCompletePdfLink(file) {
+    if (!els.complete) return;
+    const url = URL.createObjectURL(file.blob);
+    objectUrls.push(url);
+    els.complete.href = url;
+    els.complete.download = file.fileName;
+    els.complete.classList.remove("case-hidden");
+    els.complete.setAttribute("aria-label", T("Descargar PDF completo", "Download complete PDF"));
+  }
+
+  function eyeIcon() {
+    return '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke-width="2"/></svg>';
+  }
+
+  function downloadIcon() {
+    return '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12" stroke-width="2" stroke-linecap="round"/><path d="m7 10 5 5 5-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 21h14" stroke-width="2" stroke-linecap="round"/></svg>';
+  }
+
 })();

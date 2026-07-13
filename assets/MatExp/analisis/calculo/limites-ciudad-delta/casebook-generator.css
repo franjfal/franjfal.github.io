@@ -147,14 +147,72 @@
   color: var(--case-ink);
 }
 
+.casebook-generator .case-download-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.casebook-generator .case-download-actions {
+  display: flex;
+  flex: none;
+  gap: 8px;
+}
+
+.casebook-generator .case-download-icon {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  color: inherit;
+  text-decoration: none;
+}
+
+.casebook-generator .case-download-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+}
+
+.casebook-generator .case-download-icon:hover,
+.casebook-generator .case-download-icon:focus {
+  background: #fff;
+  color: var(--case-blue);
+}
+
 .casebook-generator .case-download:hover {
   border-color: var(--case-green);
   color: var(--case-green);
 }
 
-.casebook-generator .case-download span:last-child {
-  flex: none;
-  color: var(--case-blue);
+.casebook-generator .case-download-primary,
+.casebook-generator .case-download-primary:visited,
+.casebook-generator .case-download-primary:focus {
+  border-color: var(--case-accent);
+  background: var(--case-accent);
+  color: #fff;
+}
+
+.casebook-generator .case-download-primary .case-download-icon {
+  border-color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+.casebook-generator .case-download-primary .case-download-icon:hover,
+.casebook-generator .case-download-primary .case-download-icon:focus {
+  background: #fff;
+  color: var(--case-accent-dark);
+}
+
+.casebook-generator .case-download-primary:hover,
+.casebook-generator .case-download-primary:active {
+  border-color: var(--case-accent-dark);
+  background: var(--case-accent-dark);
+  color: #fff;
 }
 
 .casebook-generator .case-hidden,

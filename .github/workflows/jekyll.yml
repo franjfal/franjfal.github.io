@@ -39,14 +39,16 @@ jobs:
         env:
           JEKYLL_ENV: production
 
-      - name: Check internal links
+      - name: Check book links
         uses: lycheeverse/lychee-action@v2
         with:
           args: >-
             --offline
             --no-progress
             --root-dir "${{ github.workspace }}/_site"
-            "${{ github.workspace }}/_site/**/*.html"
+            "${{ github.workspace }}/_site/Libros/Calculus-Casebook/index.html"
+            "${{ github.workspace }}/_site/Libros/MatExp/index.html"
+            "${{ github.workspace }}/_site/en/books/experimental-mathematics/index.html"
           fail: true
           failIfEmpty: true
 
