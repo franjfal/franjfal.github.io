@@ -11,7 +11,7 @@ categories:
 taxonomy: experiment optimization analysis derivatives applications Calculus-Cases
 permalink: "/MatExp/analysis/derivatives/optimal-popcorn-box/"
 header:
-  image: "/assets/MatExp/analisis/derivadas/caja-palomitas-optima/header-wide.jpg"
+  image: "/assets/MatExp/analisis/derivadas/caja-palomitas-optima/header-brand.jpg"
 excerpt: "A case about advertising, complaints, and optimization: prove which box has maximum capacity and generate every activity document."
 feature: "/assets/MatExp/analisis/derivadas/caja-palomitas-optima/feature.jpg"
 sidebar:

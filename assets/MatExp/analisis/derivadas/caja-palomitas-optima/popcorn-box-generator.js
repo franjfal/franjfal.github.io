@@ -8,8 +8,14 @@
   const t = (es, en) => isEnglish ? en : es;
   const LIMITS = { min: 50, max: 1000 };
   const scriptUrl = document.currentScript && document.currentScript.src;
-  const bannerUrl = scriptUrl ? new URL("header-wide.jpg", scriptUrl).href : "";
-  const state = { urls: [], banner: null };
+  const assetUrl = (name) => scriptUrl ? new URL(name, scriptUrl).href : "";
+  const visualUrls = {
+    banner: assetUrl("header-brand.jpg"),
+    advertisement: assetUrl(isEnglish ? "advertisement-en.png" : "advertisement-es.png"),
+    patent: assetUrl("patent-visual.png"),
+    complaint: assetUrl("complaint-visual.png")
+  };
+  const state = { urls: [], visuals: {} };
   const els = {};
 
   const PAPERS = {
@@ -147,7 +153,7 @@
       showSummary(data);
       drawPreview(data);
       setStatus(t("Generando documentos…", "Generating documents…"));
-      await loadBanner();
+      await loadVisualAssets();
 
       const files = DOCS.map((spec) => spec.template ? buildTemplateFile(data) : buildDocumentFile(spec, data));
       const bundleFiles = [
@@ -174,17 +180,22 @@
     if (!window.JSZip) throw new Error(t("No se ha cargado JSZip. Revisa la conexión.", "JSZip did not load. Check the connection."));
   }
 
-  async function loadBanner() {
-    if (state.banner || !bannerUrl) return;
-    const response = await fetch(bannerUrl);
-    if (!response.ok) throw new Error(t("No se ha podido cargar el banner del expediente.", "The case-file banner could not be loaded."));
-    const blob = await response.blob();
-    state.banner = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error(t("No se ha podido preparar el banner del expediente.", "The case-file banner could not be prepared.")));
-      reader.readAsDataURL(blob);
-    });
+  async function loadVisualAssets() {
+    if (Object.keys(state.visuals).length === Object.keys(visualUrls).length) return;
+    const entries = await Promise.all(Object.entries(visualUrls).map(async ([key, url]) => {
+      if (!url) throw new Error(t("Falta la ruta de un recurso visual.", "A visual asset path is missing."));
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(t(`No se ha podido cargar el recurso visual «${key}».`, `The “${key}” visual asset could not be loaded.`));
+      const blob = await response.blob();
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error(t(`No se ha podido preparar el recurso visual «${key}».`, `The “${key}” visual asset could not be prepared.`)));
+        reader.readAsDataURL(blob);
+      });
+      return [key, dataUrl];
+    }));
+    state.visuals = Object.fromEntries(entries);
   }
 
   function buildDocumentFile(spec, data) {
@@ -233,8 +244,28 @@
   }
 
   function renderDocument(doc, spec, data, standalone) {
+    if (spec.id === "advert" && state.visuals.advertisement) {
+      doc.addImage(state.visuals.advertisement, "PNG", 0, 0, 210, 297, undefined, "FAST");
+      return;
+    }
+    if (spec.id === "patent" && state.visuals.patent) {
+      renderPatentDocument(doc, spec, data);
+      if (standalone) createWriter(doc).footerAll(spec.title);
+      return;
+    }
+    if (spec.id === "complaint" && state.visuals.complaint) {
+      renderComplaintDocument(doc, spec, data);
+      if (standalone) createWriter(doc).footerAll(spec.title);
+      return;
+    }
+    renderStandardDocument(doc, spec, data);
+    if (standalone) createWriter(doc).footerAll(spec.title);
+  }
+
+  function renderStandardDocument(doc, spec, data) {
     const writer = createWriter(doc);
-    writer.title(spec.title, t("Calculus Cases · Caso 3", "Calculus Cases · Case 3"), spec.id === "case" ? state.banner : null);
+    const brandedHeader = ["case", "patent", "complaint"].includes(spec.id) ? state.visuals.banner : null;
+    writer.title(spec.title, t("Calculus Cases · Caso 3", "Calculus Cases · Case 3"), brandedHeader);
     writer.meta([
       [t("Empresa", "Company"), data.company],
       [t("Papel", "Sheet"), `${fmt(data.L, 1)} × ${fmt(data.W, 1)} mm`],
@@ -251,13 +282,72 @@
       if (section.template) writer.templateDiagram(data);
       if (section.lines) writer.answerLines(section.lines);
     });
-    if (standalone) writer.footerAll(spec.title);
+  }
+
+  function renderPatentDocument(doc, spec, d) {
+    doc.addImage(state.visuals.patent, "PNG", 0, 0, 210, 297, undefined, "FAST");
+    visualTitle(doc, t("PATENTE TÉCNICA", "TECHNICAL PATENT"), t("RECIPIENTE OPTIMIZADO PARA PALOMITAS", "OPTIMIZED POPCORN CONTAINER"));
+    const formula = `x* = [(L + W) - sqrt(L² - LW + W²)] / 6 = ${fmt(d.x, 3)} mm`;
+    visualPanel(doc, 14, 225, 182, 56, [
+      [t("SOLICITANTE", "APPLICANT"), d.company],
+      [t("LÁMINA DE PARTIDA", "SOURCE SHEET"), `${fmt(d.L, 1)} × ${fmt(d.W, 1)} mm`],
+      [t("RECORTE ÓPTIMO", "OPTIMAL CUT"), `x = ${fmt(d.x, 2)} mm`],
+      [t("DIMENSIONES FINALES", "FINAL DIMENSIONS"), `${fmt(d.baseL, 2)} × ${fmt(d.baseW, 2)} × ${fmt(d.x, 2)} mm`],
+      [t("VOLUMEN MÁXIMO", "MAXIMUM VOLUME"), `${fmt(d.volume / 1000, 2)} mL`]
+    ], formula);
+    doc.addPage("a4", "portrait");
+    renderStandardDocument(doc, spec, d);
+  }
+
+  function renderComplaintDocument(doc, spec, d) {
+    const altX = d.x * 0.82;
+    const altVolume = altX * (d.L - 2 * altX) * (d.W - 2 * altX);
+    const reportedAdvertised = d.volume * 0.94;
+    const reportedAlternative = d.volume * 1.03;
+    const reportedGain = (reportedAlternative / reportedAdvertised - 1) * 100;
+    doc.addImage(state.visuals.complaint, "PNG", 0, 0, 210, 297, undefined, "FAST");
+    visualTitle(doc, t("DENUNCIA POR PUBLICIDAD FRAUDULENTA", "FRAUDULENT ADVERTISING CLAIM"), t("ASOCIACIÓN DE PERSONAS CONSUMIDORAS", "CONSUMER ASSOCIATION"));
+    visualPanel(doc, 14, 184, 86, 58, [
+      [t("ANUNCIADA", "ADVERTISED"), `x=${fmt(d.x, 2)} · ${fmt(reportedAdvertised / 1000, 1)} mL`],
+      [t("ALTERNATIVA", "ALTERNATIVE"), `x=${fmt(altX, 2)} · ${fmt(reportedAlternative / 1000, 1)} mL`],
+      [t("VENTAJA DECLARADA", "REPORTED GAIN"), `+${fmt(reportedGain, 1)} %`]
+    ], `${t("Volumen teórico del contraste", "Comparison theoretical volume")}: ${fmt(altVolume / 1000, 2)} mL`);
+    visualPanel(doc, 14, 248, 182, 33, [
+      [t("CALIFICACIÓN", "ASSESSMENT"), t("PUBLICIDAD FRAUDULENTA", "FRAUDULENT ADVERTISING")]
+    ], t("La asociación solicita la retirada inmediata del anuncio. La comisión deberá auditar las mediciones.", "The association requests immediate withdrawal of the advertisement. The panel must audit the measurements."));
+    doc.addPage("a4", "portrait");
+    renderStandardDocument(doc, spec, d);
+  }
+
+  function visualTitle(doc, title, subtitle) {
+    doc.setFillColor(3, 17, 25).setDrawColor(190, 141, 65).setLineWidth(.7).roundedRect(12, 11, 186, 35, 2, 2, "FD");
+    doc.setTextColor(224, 190, 126).setFont("helvetica", "bold").setFontSize(17).text(doc.splitTextToSize(title, 174), 18, 24);
+    doc.setTextColor(255, 244, 218).setFontSize(8).text(subtitle, 18, 39);
+  }
+
+  function visualPanel(doc, x, y, width, height, rows, note) {
+    doc.setFillColor(3, 17, 25).setDrawColor(190, 141, 65).setLineWidth(.7).roundedRect(x, y, width, height, 2, 2, "FD");
+    let cy = y + 10;
+    const labelWidth = Math.min(53, width * .4);
+    const rowStep = rows.length > 4 ? 8 : 10;
+    rows.forEach(([label, value]) => {
+      doc.setTextColor(205, 155, 75).setFont("helvetica", "bold").setFontSize(7.5).text(`${label}:`, x + 7, cy);
+      doc.setTextColor(255, 244, 218).setFont("helvetica", "normal").setFontSize(8.5).text(doc.splitTextToSize(value, width - labelWidth - 14), x + 7 + labelWidth, cy);
+      cy += rowStep;
+    });
+    doc.setDrawColor(117, 78, 42).line(x + 7, y + height - 18, x + width - 7, y + height - 18);
+    doc.setTextColor(255, 244, 218).setFont("helvetica", "bold").setFontSize(8).text(doc.splitTextToSize(note, width - 14), x + 7, y + height - 11);
   }
 
   function contentFor(id, d) {
     const Vpoly = `V(x) = x(${fmt(d.L, 1)} - 2x)(${fmt(d.W, 1)} - 2x) = 4x³ - ${fmt(2 * (d.L + d.W), 1)}x² + ${fmt(d.L * d.W, 1)}x`;
     const deriv = `V'(x) = 12x² - ${fmt(4 * (d.L + d.W), 1)}x + ${fmt(d.L * d.W, 1)}`;
     const root = `x* = [${fmt(d.L + d.W, 1)} - sqrt(${fmt(d.L * d.L - d.L * d.W + d.W * d.W, 1)})] / 6 = ${fmt(d.x, 3)} mm`;
+    const challengeX = d.x * 0.82;
+    const challengeVolume = challengeX * (d.L - 2 * challengeX) * (d.W - 2 * challengeX);
+    const reportedAdvertised = d.volume * 0.94;
+    const reportedAlternative = d.volume * 1.03;
+    const reportedGain = (reportedAlternative / reportedAdvertised - 1) * 100;
     const common = {
       case: [
         { heading: t("El encargo", "The brief"), paragraphs: [t(`${d.company} anuncia una nueva caja con el lema «La caja de mayor capacidad: más palomitas con el mismo cartón». Una asociación de consumidores ha presentado una reclamación por posible publicidad engañosa.`, `${d.company} is advertising a new box with the slogan “The greatest-capacity box: more popcorn from the same cardstock.” A consumer association has filed a complaint alleging potentially misleading advertising.`)] },
@@ -270,9 +360,9 @@
         { heading: t("Nota probatoria", "Evidence note"), paragraphs: [t("Documento ficticio creado exclusivamente para la actividad educativa. La afirmación debe ser verificada por el alumnado.", "Fictional document created solely for this educational activity. Students must verify the claim.")] }
       ],
       complaint: [
-        { heading: t("Objeto de la reclamación", "Subject of the complaint"), paragraphs: [t(`La asociación solicita que ${d.company} demuestre que el corte elegido produce realmente el máximo global dentro de todos los cortes físicamente posibles. Una prueba basada solo en unos pocos prototipos no se considera suficiente.`, `The association asks ${d.company} to prove that its selected cut produces the global maximum among all physically possible cuts. Evidence based only on a few prototypes is not considered sufficient.`)] },
-        { heading: t("Cuestiones que deben resolverse", "Questions to be resolved"), bullets: [t("¿Se ha definido correctamente el dominio físico?", "Has the physical domain been defined correctly?"), t("¿Se han considerado todos los puntos críticos y los extremos?", "Have all critical points and endpoints been considered?"), t("¿Coincide la capacidad anunciada con el volumen matemático y con las mediciones?", "Does the advertised capacity match both the mathematical volume and the measurements?"), t("¿Qué tolerancia de fabricación sería razonable?", "What manufacturing tolerance would be reasonable?")] },
-        { heading: t("Petición", "Requested remedy"), paragraphs: [t("Si el claim no queda demostrado, se solicita retirar o matizar la expresión «mayor capacidad posible». La comisión evaluadora emitirá el veredicto.", "If the claim is not proven, the phrase “greatest possible capacity” should be withdrawn or qualified. The review panel will issue the verdict.")] }
+        { heading: t("Objeto de la denuncia", "Subject of the claim"), paragraphs: [t(`La asociación denuncia que ${d.company} anuncia como óptima una caja que, según sus comprobaciones, no alcanza la mayor capacidad posible. Considera que la campaña induce a error y califica el anuncio de fraudulento.`, `The association alleges that ${d.company} advertises as optimal a box that, according to its tests, does not achieve the greatest possible capacity. It considers the campaign misleading and calls the advertisement fraudulent.`)] },
+        { heading: t("Comprobaciones declaradas", "Reported tests"), bullets: [t(`Caja anunciada: corte x=${fmt(d.x, 2)} mm; capacidad medida media de ${fmt(reportedAdvertised / 1000, 2)} mL.`, `Advertised box: cut x=${fmt(d.x, 2)} mm; reported mean measured capacity ${fmt(reportedAdvertised / 1000, 2)} mL.`), t(`Caja alternativa: corte x=${fmt(challengeX, 2)} mm; capacidad medida media de ${fmt(reportedAlternative / 1000, 2)} mL.`, `Alternative box: cut x=${fmt(challengeX, 2)} mm; reported mean measured capacity ${fmt(reportedAlternative / 1000, 2)} mL.`), t(`La asociación declara una mejora del ${fmt(reportedGain, 1)} %.`, `The association reports a ${fmt(reportedGain, 1)}% improvement.`), t(`Sin embargo, el volumen teórico de la alternativa es ${fmt(challengeVolume / 1000, 2)} mL: este dato debe contrastarse con las mediciones.`, `However, the alternative's theoretical volume is ${fmt(challengeVolume / 1000, 2)} mL; this figure must be checked against the measurements.`)] },
+        { heading: t("Petición y cuestión probatoria", "Requested remedy and evidential issue"), paragraphs: [t("Se solicita retirar de inmediato la expresión «caja óptima» y abrir un expediente sancionador. La comisión deberá decidir si las mediciones aportadas bastan para invalidar el modelo matemático o si contienen sesgos, errores o datos incompatibles.", "The association requests immediate withdrawal of the phrase “optimal box” and the opening of enforcement proceedings. The panel must decide whether the submitted measurements invalidate the mathematical model or instead contain bias, error, or incompatible data.")] }
       ],
       patent: [
         { heading: t("Solicitud educativa de patente · No es un documento legal", "Educational patent application · Not a legal document"), paragraphs: [t(`Solicitante: ${d.company}. Título: Recipiente abierto optimizado a partir de una lámina rectangular mediante cuatro recortes cuadrados congruentes.`, `Applicant: ${d.company}. Title: Optimized open container formed from a rectangular sheet using four congruent square cut-outs.`)] },

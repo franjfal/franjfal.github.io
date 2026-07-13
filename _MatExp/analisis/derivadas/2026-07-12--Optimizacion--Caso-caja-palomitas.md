@@ -11,7 +11,7 @@ categories:
 taxonomy: experimento optimización análisis derivadas aplicaciones Calculus-Cases
 permalink: "/MatExp/analisis/derivadas/caja-palomitas-optima/"
 header:
-  image: "/assets/MatExp/analisis/derivadas/caja-palomitas-optima/header-wide.jpg"
+  image: "/assets/MatExp/analisis/derivadas/caja-palomitas-optima/header-brand.jpg"
 excerpt: "Un caso de publicidad, reclamaciones y optimización: demuestra cuál es la caja de mayor capacidad y genera todos los documentos de la actividad."
 feature: "/assets/MatExp/analisis/derivadas/caja-palomitas-optima/feature.jpg"
 sidebar:
