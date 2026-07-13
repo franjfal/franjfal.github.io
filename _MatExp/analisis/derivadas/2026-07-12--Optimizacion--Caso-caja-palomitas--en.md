@@ -81,9 +81,18 @@ The generator calculates the optimal box for common paper formats or a custom sh
 
   <section id="popcorn-documents" class="pc-panel pc-documents pc-hidden" aria-labelledby="popcorn-documents-title">
     <h2 id="popcorn-documents-title">Activity documents</h2>
-    <p class="pc-download-note">Packets collect the documents assigned to each role. Below, you can view or download every item separately using the icons in its row. The template uses a PDF page matching the exact sheet dimensions: print at 100%, without “fit to page.”</p>
-    <div id="popcorn-bundles" class="pc-bundles"></div>
-    <div id="popcorn-doc-list" class="pc-doc-list"></div>
+    <p class="pc-download-note">Use the role packets to distribute the activity. In each tab, the red ZIP downloads every file in that section; the icons let you view or download each file. The template uses a PDF page matching the exact sheet dimensions: print at 100%, without “fit to page.”</p>
+    <div class="pc-tabs" role="tablist" aria-label="Document types">
+      <button class="pc-tab-button" type="button" role="tab" aria-selected="true" aria-controls="popcorn-panel-bundles" data-pc-tab-target="popcorn-panel-bundles">Role packets</button>
+      <button class="pc-tab-button" type="button" role="tab" aria-selected="false" aria-controls="popcorn-panel-separate" data-pc-tab-target="popcorn-panel-separate">Separate documents</button>
+      <a id="popcorn-complete-pdf" class="pc-tab-button pc-complete pc-hidden" href="#" download>Complete PDF</a>
+    </div>
+    <div id="popcorn-panel-bundles" class="pc-tab-panel" role="tabpanel">
+      <div id="popcorn-bundles" class="pc-bundles"></div>
+    </div>
+    <div id="popcorn-panel-separate" class="pc-tab-panel" role="tabpanel" hidden>
+      <div id="popcorn-doc-list" class="pc-doc-list"></div>
+    </div>
   </section>
   <noscript><p class="pc-noscript">This generator needs JavaScript to calculate the box and create the PDFs.</p></noscript>
 </section>

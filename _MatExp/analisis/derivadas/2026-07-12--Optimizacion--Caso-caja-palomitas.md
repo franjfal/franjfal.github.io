@@ -81,9 +81,18 @@ El generador calcula la caja óptima para formatos habituales o para una hoja pe
 
   <section id="popcorn-documents" class="pc-panel pc-documents pc-hidden" aria-labelledby="popcorn-documents-title">
     <h2 id="popcorn-documents-title">Documentos de la actividad</h2>
-    <p class="pc-download-note">Los paquetes reúnen los documentos que recibe cada rol. Debajo puedes ver o descargar cada pieza por separado mediante los iconos de su misma fila. La plantilla usa una página PDF del tamaño exacto de la hoja: imprímela al 100 %, sin «ajustar a página».</p>
-    <div id="popcorn-bundles" class="pc-bundles"></div>
-    <div id="popcorn-doc-list" class="pc-doc-list"></div>
+    <p class="pc-download-note">Usa los paquetes por rol para repartir la actividad. En cada pestaña, el ZIP rojo descarga todos los archivos de esa sección; los iconos permiten ver o descargar cada archivo. La plantilla usa una página PDF del tamaño exacto de la hoja: imprímela al 100 %, sin «ajustar a página».</p>
+    <div class="pc-tabs" role="tablist" aria-label="Tipos de documentos">
+      <button class="pc-tab-button" type="button" role="tab" aria-selected="true" aria-controls="popcorn-panel-bundles" data-pc-tab-target="popcorn-panel-bundles">Paquetes por rol</button>
+      <button class="pc-tab-button" type="button" role="tab" aria-selected="false" aria-controls="popcorn-panel-separate" data-pc-tab-target="popcorn-panel-separate">Documentos separados</button>
+      <a id="popcorn-complete-pdf" class="pc-tab-button pc-complete pc-hidden" href="#" download>PDF completo</a>
+    </div>
+    <div id="popcorn-panel-bundles" class="pc-tab-panel" role="tabpanel">
+      <div id="popcorn-bundles" class="pc-bundles"></div>
+    </div>
+    <div id="popcorn-panel-separate" class="pc-tab-panel" role="tabpanel" hidden>
+      <div id="popcorn-doc-list" class="pc-doc-list"></div>
+    </div>
   </section>
   <noscript><p class="pc-noscript">Este generador necesita JavaScript para calcular la caja y crear los PDF.</p></noscript>
 </section>
