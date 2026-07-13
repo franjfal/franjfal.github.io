@@ -24,9 +24,9 @@ Una cadena de cines anuncia su nuevo envase con una afirmación rotunda: **«La 
 
 La caja se construye a partir de una hoja rectangular de lados \(L\) y \(W\). Se recorta en cada esquina un cuadrado de lado \(x\), siempre del mismo tamaño, y se pliegan las cuatro paredes. La altura será \(x\) y la base medirá \((L-2x)\times(W-2x)\), de modo que
 
-\[
+$$
 V(x)=x(L-2x)(W-2x), \qquad 0<x<\frac{\min(L,W)}{2}.
-\]
+$$
 
 El generador calcula la caja óptima para formatos habituales o para una hoja personalizada. Después crea la plantilla a escala real, el anuncio, la reclamación, la patente ficticia, los dossieres de investigación y la solución reservada al profesorado.
 
@@ -101,21 +101,21 @@ El generador calcula la caja óptima para formatos habituales o para una hoja pe
 
 Al derivar la función volumen obtenemos
 
-\[
+$$
 V'(x)=12x^2-4(L+W)x+LW.
-\]
+$$
 
 Sus dos raíces son
 
-\[
+$$
 x=\frac{(L+W)\pm\sqrt{L^2-LW+W^2}}{6}.
-\]
+$$
 
 La raíz con el signo menos es la única que pertenece al dominio físico:
 
-\[
+$$
 x^*=\frac{(L+W)-\sqrt{L^2-LW+W^2}}{6}.
-\]
+$$
 
 El generador compara este punto crítico con los extremos del intervalo, donde el volumen es cero, y comprueba además que \(V''(x^*)<0\). Por tanto, \(x^*\) produce el máximo global dentro del modelo: una hoja rectangular fija, cuatro recortes cuadrados iguales, una caja abierta y ningún material adicional.
 

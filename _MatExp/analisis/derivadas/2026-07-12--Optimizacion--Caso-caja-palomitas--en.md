@@ -24,9 +24,9 @@ A cinema chain is promoting its new container with a bold statement: **“The gr
 
 The box is made from a rectangular sheet with sides \(L\) and \(W\). A square with side \(x\) is removed from each corner—always the same size—and the four sides are folded up. The height is \(x\), while the base measures \((L-2x)\times(W-2x)\), so
 
-\[
+$$
 V(x)=x(L-2x)(W-2x), \qquad 0<x<\frac{\min(L,W)}{2}.
-\]
+$$
 
 The generator calculates the optimal box for common paper formats or a custom sheet. It then creates a full-size template, the advertisement, the complaint, the fictional patent, the investigation dossiers, and the teacher-only solution.
 
@@ -101,21 +101,21 @@ The generator calculates the optimal box for common paper formats or a custom sh
 
 Differentiating the volume function gives
 
-\[
+$$
 V'(x)=12x^2-4(L+W)x+LW.
-\]
+$$
 
 Its two roots are
 
-\[
+$$
 x=\frac{(L+W)\pm\sqrt{L^2-LW+W^2}}{6}.
-\]
+$$
 
 The root with the minus sign is the only one in the physical domain:
 
-\[
+$$
 x^*=\frac{(L+W)-\sqrt{L^2-LW+W^2}}{6}.
-\]
+$$
 
 The generator compares this critical point with the interval endpoints, where volume is zero, and also checks that \(V''(x^*)<0\). Therefore, \(x^*\) produces the global maximum within the model: a fixed rectangular sheet, four equal square cut-outs, an open box, and no added material.
 
