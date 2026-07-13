@@ -31,11 +31,11 @@
 .popcorn-case input:disabled { background: #eef0f1; color: #555; }
 .popcorn-case .pc-help { margin: -4px 0 0; font-size: .86rem; color: var(--pc-muted); }
 .popcorn-case .pc-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
-.popcorn-case button, .popcorn-case .pc-download { appearance: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 9px 14px; border: 1px solid transparent; border-radius: 6px; font: inherit; font-weight: 750; text-decoration: none; cursor: pointer; }
+.popcorn-case button { appearance: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 9px 14px; border: 1px solid transparent; border-radius: 6px; font: inherit; font-weight: 750; text-decoration: none; cursor: pointer; }
 .popcorn-case button[type="submit"], .popcorn-case .pc-primary { background: var(--pc-orange); color: #fff; }
 .popcorn-case button[type="submit"]:hover, .popcorn-case .pc-primary:hover { background: #bc5517; color: #fff; }
-.popcorn-case button.pc-secondary, .popcorn-case .pc-download { border-color: #aeb7be; background: #fff; color: var(--pc-ink); }
-.popcorn-case button.pc-secondary:hover, .popcorn-case .pc-download:hover { border-color: var(--pc-blue); color: var(--pc-blue-dark); }
+.popcorn-case button.pc-secondary { border-color: #aeb7be; background: #fff; color: var(--pc-ink); }
+.popcorn-case button.pc-secondary:hover { border-color: var(--pc-blue); color: var(--pc-blue-dark); }
 .popcorn-case button:disabled { cursor: wait; opacity: .65; }
 .popcorn-case .pc-status { min-height: 24px; margin-top: 12px; color: var(--pc-blue-dark); font-weight: 700; }
 .popcorn-case .pc-error { color: #a32d22; }
@@ -50,13 +50,18 @@
 .popcorn-case .pc-swatch.cut { border-color: var(--pc-orange); }
 .popcorn-case .pc-documents { margin-top: 22px; }
 .popcorn-case .pc-download-note { margin-bottom: 16px; }
-.popcorn-case .pc-doc-list { display: grid; gap: 10px; }
-.popcorn-case details { border: 1px solid var(--pc-line); border-radius: 7px; background: #fff; }
-.popcorn-case details > summary { padding: 13px 15px; color: var(--pc-ink); font-weight: 750; cursor: pointer; }
-.popcorn-case .pc-doc-body { padding: 0 15px 15px; }
-.popcorn-case .pc-doc-body p { margin: 0 0 10px; }
-.popcorn-case .pc-doc-actions { display: flex; flex-wrap: wrap; gap: 9px; }
-.popcorn-case .pc-bundles { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 18px; padding-bottom: 18px; border-bottom: 1px solid var(--pc-line); }
+.popcorn-case .pc-doc-list, .popcorn-case .pc-bundles { display: grid; gap: 10px; }
+.popcorn-case .pc-bundles { margin: 0 0 18px; padding-bottom: 18px; border-bottom: 1px solid var(--pc-line); }
+.popcorn-case .pc-file-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 54px; padding: 8px 10px 8px 14px; border: 1px solid #aeb7be; border-radius: 7px; background: #fff; color: var(--pc-ink); font-weight: 750; }
+.popcorn-case .pc-file-row:hover { border-color: var(--pc-blue); color: var(--pc-blue-dark); }
+.popcorn-case .pc-file-row.pc-primary { border-color: var(--pc-orange); background: var(--pc-orange); color: #fff; }
+.popcorn-case .pc-file-title { min-width: 0; overflow-wrap: anywhere; }
+.popcorn-case .pc-file-actions { display: flex; flex: none; gap: 8px; }
+.popcorn-case .pc-file-icon { display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; border: 1px solid currentColor; border-radius: 6px; background: rgba(255,255,255,.85); color: inherit; text-decoration: none; }
+.popcorn-case .pc-file-icon svg { width: 18px; height: 18px; stroke: currentColor; }
+.popcorn-case .pc-file-icon:hover, .popcorn-case .pc-file-icon:focus { background: #fff; color: var(--pc-blue-dark); }
+.popcorn-case .pc-file-row.pc-primary .pc-file-icon { border-color: rgba(255,255,255,.8); background: rgba(255,255,255,.14); color: #fff; }
+.popcorn-case .pc-file-row.pc-primary .pc-file-icon:hover, .popcorn-case .pc-file-row.pc-primary .pc-file-icon:focus { background: #fff; color: #bc5517; }
 .popcorn-case .pc-hidden { display: none !important; }
 .popcorn-case .pc-noscript { padding: 12px; border-left: 4px solid var(--pc-orange); background: #fff; }
 

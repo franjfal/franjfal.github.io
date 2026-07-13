@@ -11,7 +11,7 @@ categories:
 taxonomy: experimento optimización análisis derivadas aplicaciones Calculus-Cases
 permalink: "/MatExp/analisis/derivadas/caja-palomitas-optima/"
 header:
-  image: "/assets/MatExp/analisis/derivadas/caja-palomitas-optima/header.jpg"
+  image: "/assets/MatExp/analisis/derivadas/caja-palomitas-optima/header-wide.jpg"
 excerpt: "Un caso de publicidad, reclamaciones y optimización: demuestra cuál es la caja de mayor capacidad y genera todos los documentos de la actividad."
 feature: "/assets/MatExp/analisis/derivadas/caja-palomitas-optima/feature.jpg"
 sidebar:
@@ -81,7 +81,7 @@ El generador calcula la caja óptima para formatos habituales o para una hoja pe
 
   <section id="popcorn-documents" class="pc-panel pc-documents pc-hidden" aria-labelledby="popcorn-documents-title">
     <h2 id="popcorn-documents-title">Documentos de la actividad</h2>
-    <p class="pc-download-note">Los paquetes reúnen los documentos que recibe cada rol. Debajo puedes desplegar, ver o descargar cada pieza por separado. La plantilla usa una página PDF del tamaño exacto de la hoja: imprímela al 100 %, sin «ajustar a página».</p>
+    <p class="pc-download-note">Los paquetes reúnen los documentos que recibe cada rol. Debajo puedes ver o descargar cada pieza por separado mediante los iconos de su misma fila. La plantilla usa una página PDF del tamaño exacto de la hoja: imprímela al 100 %, sin «ajustar a página».</p>
     <div id="popcorn-bundles" class="pc-bundles"></div>
     <div id="popcorn-doc-list" class="pc-doc-list"></div>
   </section>

@@ -54,7 +54,12 @@
       throw new Error("El código no pertenece a La batalla de genios.");
     }
 
-    const bytes = fromBase64Url(parts[2]);
+    let bytes;
+    try {
+      bytes = fromBase64Url(parts[2]);
+    } catch (error) {
+      throw new Error("El código está incompleto o dañado.");
+    }
     let decoded = bytes;
 
     if (parts[1] === "g") {
@@ -81,7 +86,7 @@
     }
 
     if (value.startsWith(SIGNAL_PREFIX)) {
-      return value;
+      return cleanSignalCode(value);
     }
 
     try {
@@ -91,13 +96,20 @@
       if (code) {
         // URLSearchParams already decodes percent escapes. Decoding a second
         // time can alter a valid payload received through a shared URL.
-        return code;
+        return cleanSignalCode(code);
       }
     } catch (error) {
       return value;
     }
 
     return value;
+  }
+
+  function cleanSignalCode(value) {
+    // Some mobile QR readers and clipboard flows insert line breaks, a BOM or
+    // zero-width characters into long payloads. None of them are meaningful in
+    // our Base64URL format, and passing them to atob raises InvalidCharacterError.
+    return String(value).replace(/[\s\u200B-\u200D\u2060\uFEFF]/g, "");
   }
 
   function createInviteUrl(code) {
@@ -168,6 +180,9 @@
   }
 
   function fromBase64Url(value) {
+    if (!value || !/^[A-Za-z0-9_-]+$/.test(value) || value.length % 4 === 1) {
+      throw new Error("Invalid Base64URL payload");
+    }
     const base64 = value.replace(/-/g, "+").replace(/_/g, "/");
     const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4);
     const binary = global.atob(padded);

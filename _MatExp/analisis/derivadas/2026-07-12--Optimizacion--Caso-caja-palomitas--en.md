@@ -11,7 +11,7 @@ categories:
 taxonomy: experiment optimization analysis derivatives applications Calculus-Cases
 permalink: "/MatExp/analysis/derivatives/optimal-popcorn-box/"
 header:
-  image: "/assets/MatExp/analisis/derivadas/caja-palomitas-optima/header.jpg"
+  image: "/assets/MatExp/analisis/derivadas/caja-palomitas-optima/header-wide.jpg"
 excerpt: "A case about advertising, complaints, and optimization: prove which box has maximum capacity and generate every activity document."
 feature: "/assets/MatExp/analisis/derivadas/caja-palomitas-optima/feature.jpg"
 sidebar:
@@ -81,7 +81,7 @@ The generator calculates the optimal box for common paper formats or a custom sh
 
   <section id="popcorn-documents" class="pc-panel pc-documents pc-hidden" aria-labelledby="popcorn-documents-title">
     <h2 id="popcorn-documents-title">Activity documents</h2>
-    <p class="pc-download-note">Packets collect the documents assigned to each role. Below, you can expand, view, or download every item separately. The template uses a PDF page matching the exact sheet dimensions: print at 100%, without “fit to page.”</p>
+    <p class="pc-download-note">Packets collect the documents assigned to each role. Below, you can view or download every item separately using the icons in its row. The template uses a PDF page matching the exact sheet dimensions: print at 100%, without “fit to page.”</p>
     <div id="popcorn-bundles" class="pc-bundles"></div>
     <div id="popcorn-doc-list" class="pc-doc-list"></div>
   </section>

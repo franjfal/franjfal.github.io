@@ -7,7 +7,9 @@
   const isEnglish = (root.dataset.lang || document.documentElement.lang || "es").toLowerCase().startsWith("en");
   const t = (es, en) => isEnglish ? en : es;
   const LIMITS = { min: 50, max: 1000 };
-  const state = { urls: [] };
+  const scriptUrl = document.currentScript && document.currentScript.src;
+  const bannerUrl = scriptUrl ? new URL("header-wide.jpg", scriptUrl).href : "";
+  const state = { urls: [], banner: null };
   const els = {};
 
   const PAPERS = {
@@ -145,6 +147,7 @@
       showSummary(data);
       drawPreview(data);
       setStatus(t("Generando documentos…", "Generating documents…"));
+      await loadBanner();
 
       const files = DOCS.map((spec) => spec.template ? buildTemplateFile(data) : buildDocumentFile(spec, data));
       const bundleFiles = [
@@ -169,6 +172,19 @@
   function assertLibraries() {
     if (!window.jspdf || !window.jspdf.jsPDF) throw new Error(t("No se ha cargado jsPDF. Revisa la conexión.", "jsPDF did not load. Check the connection."));
     if (!window.JSZip) throw new Error(t("No se ha cargado JSZip. Revisa la conexión.", "JSZip did not load. Check the connection."));
+  }
+
+  async function loadBanner() {
+    if (state.banner || !bannerUrl) return;
+    const response = await fetch(bannerUrl);
+    if (!response.ok) throw new Error(t("No se ha podido cargar el banner del expediente.", "The case-file banner could not be loaded."));
+    const blob = await response.blob();
+    state.banner = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error(t("No se ha podido preparar el banner del expediente.", "The case-file banner could not be prepared.")));
+      reader.readAsDataURL(blob);
+    });
   }
 
   function buildDocumentFile(spec, data) {
@@ -218,7 +234,7 @@
 
   function renderDocument(doc, spec, data, standalone) {
     const writer = createWriter(doc);
-    writer.title(spec.title, t("Calculus Cases · Caso 3", "Calculus Cases · Case 3"));
+    writer.title(spec.title, t("Calculus Cases · Caso 3", "Calculus Cases · Case 3"), spec.id === "case" ? state.banner : null);
     writer.meta([
       [t("Empresa", "Company"), data.company],
       [t("Papel", "Sheet"), `${fmt(data.L, 1)} × ${fmt(data.W, 1)} mm`],
@@ -294,7 +310,14 @@
     function ensure(h) { if (y + h > doc.internal.pageSize.getHeight() - bottom) { doc.addPage("a4", "portrait"); y = 18; } }
     function lines(text, width = 174) { return doc.splitTextToSize(String(text), width); }
     return {
-      title(title, kicker) {
+      title(title, kicker, banner) {
+        if (banner) {
+          doc.addImage(banner, "JPEG", 0, 0, 210, 38.15, undefined, "FAST");
+          doc.setTextColor(11, 96, 127).setFont("helvetica", "bold").setFontSize(9).text(kicker.toUpperCase(), margin, 47);
+          doc.setTextColor(32, 42, 61).setFontSize(20).text(lines(title, 170), margin, 57);
+          y = 69;
+          return;
+        }
         doc.setFillColor(19, 133, 174).rect(0, 0, 210, 35, "F");
         doc.setTextColor(255).setFont("helvetica", "bold").setFontSize(9).text(kicker.toUpperCase(), margin, 11);
         doc.setFontSize(20).text(lines(title, 170), margin, 21);
@@ -339,17 +362,27 @@
   function showFiles(files, bundles, complete, zip) {
     const all = [...files, ...bundles, complete, zip];
     all.forEach((file) => { file.url = URL.createObjectURL(file.blob); state.urls.push(file.url); });
-    els.bundles.innerHTML = [...bundles, complete, zip].map((file, index) => downloadLink(file, index === bundles.length)).join("");
+    els.bundles.innerHTML = [...bundles, complete, zip].map((file, index) => fileRow(file, index === bundles.length)).join("");
     els.docList.innerHTML = DOCS.map((spec) => {
       const file = files.find((item) => item.id === spec.id);
-      const warning = spec.teacher ? `<p><strong>${t("Uso reservado al profesorado.", "For teacher use only.")}</strong></p>` : "";
-      return `<details><summary>${escapeHtml(spec.title)}</summary><div class="pc-doc-body"><p>${escapeHtml(spec.description)}</p>${warning}<div class="pc-doc-actions"><a class="pc-download" href="${file.url}" target="_blank" rel="noopener">${t("Ver PDF", "View PDF")}</a><a class="pc-download" href="${file.url}" download="${escapeHtml(file.fileName)}">${t("Descargar", "Download")}</a></div></div></details>`;
+      const title = spec.teacher ? `${spec.title} · ${t("Profesorado", "Teacher only")}` : spec.title;
+      return fileRow(file, false, title);
     }).join("");
     els.documents.classList.remove("pc-hidden");
   }
 
-  function downloadLink(file, primary) {
-    return `<a class="pc-download${primary ? " pc-primary" : ""}" href="${file.url}" download="${escapeHtml(file.fileName)}">${escapeHtml(file.label)}</a>`;
+  function fileRow(file, primary, titleOverride) {
+    const title = titleOverride || file.label;
+    const safeTitle = escapeHtml(title);
+    return `<div class="pc-file-row${primary ? " pc-primary" : ""}"><span class="pc-file-title">${safeTitle}</span><span class="pc-file-actions"><a class="pc-file-icon" href="${file.url}" target="_blank" rel="noopener" title="${t("Ver", "View")} ${safeTitle}" aria-label="${t("Ver", "View")} ${safeTitle}">${iconEye()}</a><a class="pc-file-icon" href="${file.url}" download="${escapeHtml(file.fileName)}" title="${t("Descargar", "Download")} ${safeTitle}" aria-label="${t("Descargar", "Download")} ${safeTitle}">${iconDownload()}</a></span></div>`;
+  }
+
+  function iconEye() {
+    return '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke-width="2"/></svg>';
+  }
+
+  function iconDownload() {
+    return '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12" stroke-width="2" stroke-linecap="round"/><path d="m7 10 5 5 5-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 21h14" stroke-width="2" stroke-linecap="round"/></svg>';
   }
 
   function clearFiles() {
