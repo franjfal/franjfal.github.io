@@ -81,6 +81,10 @@ Las actividades continúan formando parte de **Matemáticas Experimentales**. El
 
 ## Índice
 
+### Capítulo 1. Límites y continuidad
+
+- [La persecución de Ciudad Delta](/MatExp/analisis/calculo/limites/persecucion-ciudad-delta/)
+
 ### Capítulo 6. La batalla de genios
 
 - [El duelo del cálculo](/MatExp/analisis/calculo/duelo/)

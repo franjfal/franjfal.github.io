@@ -28,7 +28,7 @@ La actividad introduce los límites laterales, la continuidad, las discontinuida
 
 ## La estructura del caso
 
-Cada dossier contiene 50 posiciones fotográficas potenciales. Cuarenta y cinco son idénticas para todos los equipos; solo cambian cinco huecos de cámara. El grupo C recibe 48 fotografías porque dos cámaras no registraron imagen. Así, entre el 90 % y el 94 % de las fotografías de cada equipo coincide con las de los demás.
+El caso utiliza **30 archivos fotográficos únicos**. Los equipos A y B reciben 26 fotografías y el C recibe 25 porque la cámara exacta de \(t=2\) no registró imagen. Veintidós fotografías son comunes a todos; las ocho restantes son variantes de cuatro huecos estratégicos.
 
 <table class="casebook-comparison">
   <thead>
@@ -36,7 +36,7 @@ Cada dossier contiene 50 posiciones fotográficas potenciales. Cuarenta y cinco 
   </thead>
   <tbody>
     <tr><td>\(t=2\)</td><td>Imagen correcta: \(f(2)=4\)</td><td>Vehículo equivocado: \(f(2)=7\)</td><td>La cámara no registra imagen</td></tr>
-    <tr><td>\(t=6\)</td><td>Imagen correcta: \(f(6)=8\)</td><td>Vehículo equivocado: \(f(6)=11\)</td><td>La cámara no registra imagen</td></tr>
+    <tr><td>Túnel \(4&lt;t&lt;7\)</td><td colspan="3">No hay cámaras ni información dentro del túnel</td></tr>
     <tr><td>\(t=8\)</td><td>Los dos tramos se unen en 10</td><td>El tramo derecho se aproxima a 13</td><td>Los límites valen 10, pero la imagen exacta muestra 14</td></tr>
     <tr><td>Oscilación</td><td colspan="3">La misma secuencia alternante para todos</td></tr>
     <tr><td>Salida de la ciudad</td><td colspan="3">La misma secuencia no acotada para todos</td></tr>
@@ -48,7 +48,7 @@ El alumnado no recibe esta tabla de comparación. Cada equipo solo ve su propio 
 ## Cinco puntos de investigación
 
 1. **La cámara de \(t=2\).** Las fotografías cercanas se aproximan a la posición 4. Según el equipo, la imagen exacta confirma ese valor, identifica otro coche en la posición 7 o no existe.
-2. **El error de matrícula en \(t=6\).** Se repite la estructura anterior alrededor de la posición 8. Esta repetición ayuda a separar el límite del valor de la función y de la disponibilidad de información.
+2. **El Túnel de la Recta.** La última cámara antes de entrar registra \(f(4)=6\) y la primera después de salir registra \(f(7)=9\). No existe ninguna imagen para \(4&lt;t&lt;7\). Aunque el tramo dibujado sea recto, los datos no permiten saber qué hizo el coche dentro, conocer \(f(6)\), calcular su límite ni decidir continuidad.
 3. **El enlace de \(t=8\).** El grupo A observa una unión continua. El grupo B recibe dos fotografías del tablero superior desplazado y obtiene límites laterales distintos. El grupo C observa límites iguales, pero otra matrícula en el instante exacto.
 4. **La rotonda del Laberinto.** Todos reciben la misma secuencia de posiciones alternantes. Las imágenes se toman cada vez más cerca del mismo instante, pero el coche no se aproxima a una única posición.
 5. **La salida de Ciudad Delta.** Las últimas cámaras muestran posiciones cada vez mayores al acercarse a \(t=12\) por la izquierda. Este tramo abre la discusión sobre límites infinitos.
@@ -97,10 +97,11 @@ El generador produce los tres paquetes de equipo, una guía docente con solucion
     <aside class="case-panel" aria-labelledby="casebook-summary-title">
       <h2 id="casebook-summary-title">Resumen del reparto</h2>
       <ul class="case-summary">
-        <li><span>Fotografías comunes</span><strong>45</strong></li>
-        <li><span>Dossier A</span><strong>50 fotos</strong></li>
-        <li><span>Dossier B</span><strong>50 fotos</strong></li>
-        <li><span>Dossier C</span><strong>48 fotos</strong></li>
+        <li><span>Archivos únicos</span><strong>30</strong></li>
+        <li><span>Fotografías comunes</span><strong>22</strong></li>
+        <li><span>Dossier A</span><strong>26 fotos</strong></li>
+        <li><span>Dossier B</span><strong>26 fotos</strong></li>
+        <li><span>Dossier C</span><strong>25 fotos</strong></li>
         <li><span>Vehículo investigado</span><strong>2718 LMT</strong></li>
       </ul>
     </aside>

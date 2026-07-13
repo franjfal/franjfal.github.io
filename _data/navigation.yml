@@ -156,6 +156,10 @@ primer-libro:
 calculus-casebook:
   - title: "Portada"
     url: /Libros/Calculus-Casebook/
+  - title: "Capítulo 1. Límites y continuidad"
+    children:
+      - title: "La persecución de Ciudad Delta"
+        url: /MatExp/analisis/calculo/limites/persecucion-ciudad-delta/
   - title: "Capítulo 3. La caja de palomitas perfecta"
     children:
       - title: "El caso de la caja óptima"

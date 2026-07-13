@@ -25,7 +25,7 @@ The activity introduces one-sided limits, continuity, removable and jump discont
 
 ## Case structure
 
-Each dossier contains 50 potential photographic positions. Forty-five are identical for every team; only five camera slots change. Team C receives 48 photographs because two cameras recorded no image. Consequently, between 90% and 94% of each team's photographs coincide with those of the other teams.
+The case uses **30 unique photographic files**. Teams A and B receive 26 photographs, while Team C receives 25 because the exact camera at \(t=2\) recorded no image. Twenty-two photographs are shared by everyone; the remaining eight are variants of four strategic slots.
 
 <table class="casebook-comparison">
   <thead>
@@ -33,7 +33,7 @@ Each dossier contains 50 potential photographic positions. Forty-five are identi
   </thead>
   <tbody>
     <tr><td>\(t=2\)</td><td>Correct image: \(f(2)=4\)</td><td>Wrong vehicle: \(f(2)=7\)</td><td>The camera records no image</td></tr>
-    <tr><td>\(t=6\)</td><td>Correct image: \(f(6)=8\)</td><td>Wrong vehicle: \(f(6)=11\)</td><td>The camera records no image</td></tr>
+    <tr><td>Tunnel \(4&lt;t&lt;7\)</td><td colspan="3">There are no cameras or information inside the tunnel</td></tr>
     <tr><td>\(t=8\)</td><td>Both road sections meet at 10</td><td>The right-hand section approaches 13</td><td>Both limits equal 10, but the exact image shows 14</td></tr>
     <tr><td>Oscillation</td><td colspan="3">The same alternating sequence for everyone</td></tr>
     <tr><td>Leaving the city</td><td colspan="3">The same unbounded sequence for everyone</td></tr>
@@ -45,7 +45,7 @@ Students do not receive this comparison table. Each team sees only its own case 
 ## Five investigation points
 
 1. **The camera at \(t=2\).** Nearby photographs approach position 4. Depending on the team, the exact image confirms that value, identifies another car at position 7, or is missing.
-2. **The plate-reading error at \(t=6\).** The same structure returns around position 8. Repetition helps separate the limit from the function value and from the availability of information.
+2. **The Straight-Line Tunnel.** The final camera before entry records \(f(4)=6\), and the first camera after exit records \(f(7)=9\). There is no image for \(4&lt;t&lt;7\). Even though the drawn road is straight, the evidence does not reveal what the car did inside, establish \(f(6)\), calculate its limit, or decide continuity.
 3. **The junction at \(t=8\).** Team A sees a continuous connection. Team B receives two photographs from a displaced upper deck and obtains unequal one-sided limits. Team C sees equal limits but a different registration plate at the exact instant.
 4. **Labyrinth Roundabout.** Every team receives the same alternating sequence of positions. The images are taken closer and closer to one instant, yet the car does not approach a single position.
 5. **Leaving Ciudad Delta.** The final cameras show ever larger positions as \(t=12\) is approached from the left. This section opens the discussion of infinite limits.
@@ -94,10 +94,11 @@ The generator produces the three team packets, a teacher guide with solutions, s
     <aside class="case-panel" aria-labelledby="casebook-summary-title">
       <h2 id="casebook-summary-title">Distribution summary</h2>
       <ul class="case-summary">
-        <li><span>Shared photographs</span><strong>45</strong></li>
-        <li><span>Dossier A</span><strong>50 photos</strong></li>
-        <li><span>Dossier B</span><strong>50 photos</strong></li>
-        <li><span>Dossier C</span><strong>48 photos</strong></li>
+        <li><span>Unique files</span><strong>30</strong></li>
+        <li><span>Shared photographs</span><strong>22</strong></li>
+        <li><span>Dossier A</span><strong>26 photos</strong></li>
+        <li><span>Dossier B</span><strong>26 photos</strong></li>
+        <li><span>Dossier C</span><strong>25 photos</strong></li>
         <li><span>Target vehicle</span><strong>2718 LMT</strong></li>
       </ul>
     </aside>
