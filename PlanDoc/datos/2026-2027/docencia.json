@@ -89,5 +89,12 @@
     "subgrupoId": "FM-P1-2",
     "profesorId": "alejandro-miralles",
     "creditos": 22.5
+  },
+  {
+    "id": "doc_txcjnudm",
+    "asignaturaId": "36581",
+    "subgrupoId": "FM-O1-2",
+    "profesorId": "alejandro-miralles",
+    "creditos": 7.5
   }
 ]
