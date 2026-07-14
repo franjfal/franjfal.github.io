@@ -425,5 +425,12 @@
     "subgrupoId": "A-T2",
     "profesorId": "daniel-santacreu",
     "creditos": 30
+  },
+  {
+    "id": "doc_7d5j8gtx",
+    "asignaturaId": "MAT34151",
+    "subgrupoId": "A1P-2",
+    "profesorId": "daniel-santacreu",
+    "creditos": 22.5
   }
 ]
