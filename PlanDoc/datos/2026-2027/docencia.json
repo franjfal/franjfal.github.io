@@ -775,5 +775,19 @@
     "subgrupoId": "FM-O1-2",
     "profesorId": "maria-rueda",
     "creditos": 7.5
+  },
+  {
+    "id": "doc_cyc9wip5",
+    "asignaturaId": "36581",
+    "subgrupoId": "FM-T-2",
+    "profesorId": "jose-martinez",
+    "creditos": 30
+  },
+  {
+    "id": "doc_mabnj443",
+    "asignaturaId": "36581",
+    "subgrupoId": "FM-P1-2",
+    "profesorId": "jose-martinez",
+    "creditos": 22.5
   }
 ]
