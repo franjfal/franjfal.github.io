@@ -1083,5 +1083,12 @@
     "subgrupoId": "A-L2",
     "profesorId": "ayudanteDoctor",
     "creditos": 10
+  },
+  {
+    "id": "doc_mmwa0a7c",
+    "asignaturaId": "34787",
+    "subgrupoId": "A-L4",
+    "profesorId": "ayudanteDoctor",
+    "creditos": 10
   }
 ]
