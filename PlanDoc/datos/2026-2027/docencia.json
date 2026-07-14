@@ -152,5 +152,33 @@
     "subgrupoId": "A-P1",
     "profesorId": "domingo-garcia",
     "creditos": 20
+  },
+  {
+    "id": "doc_q9p74199",
+    "asignaturaId": "34871",
+    "subgrupoId": "A-L1",
+    "profesorId": "domingo-garcia",
+    "creditos": 10
+  },
+  {
+    "id": "doc_s4cwh68b",
+    "asignaturaId": "34871",
+    "subgrupoId": "A-L2",
+    "profesorId": "domingo-garcia",
+    "creditos": 10
+  },
+  {
+    "id": "doc_u2mbr84w",
+    "asignaturaId": "34871",
+    "subgrupoId": "A-L3",
+    "profesorId": "domingo-garcia",
+    "creditos": 10
+  },
+  {
+    "id": "doc_ih6o8j2t",
+    "asignaturaId": "34871",
+    "subgrupoId": "A-L4",
+    "profesorId": "domingo-garcia",
+    "creditos": 10
   }
 ]
