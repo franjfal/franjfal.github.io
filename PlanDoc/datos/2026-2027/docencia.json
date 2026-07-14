@@ -229,5 +229,26 @@
     "subgrupoId": "A-T",
     "profesorId": "carmen-fernandez",
     "creditos": 45
+  },
+  {
+    "id": "doc_vqzx257a",
+    "asignaturaId": "34158",
+    "subgrupoId": "A-P2",
+    "profesorId": "carmen-fernandez",
+    "creditos": 34
+  },
+  {
+    "id": "doc_w2m4z3t4",
+    "asignaturaId": "34158",
+    "subgrupoId": "A-O1",
+    "profesorId": "carmen-fernandez",
+    "creditos": 11
+  },
+  {
+    "id": "doc_jfkg6yrd",
+    "asignaturaId": "34158",
+    "subgrupoId": "A-O2",
+    "profesorId": "carmen-fernandez",
+    "creditos": 11
   }
 ]
