@@ -852,5 +852,12 @@
     "subgrupoId": "B-O2",
     "profesorId": "alejandro-miralles",
     "creditos": 5.5
+  },
+  {
+    "id": "doc_472xincm",
+    "asignaturaId": "34156",
+    "subgrupoId": "B-P2-1",
+    "profesorId": "alejandro-miralles",
+    "creditos": 22.5
   }
 ]
