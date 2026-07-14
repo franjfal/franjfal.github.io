@@ -1160,5 +1160,12 @@
     "subgrupoId": "C-T",
     "profesorId": "susituto1",
     "creditos": 41
+  },
+  {
+    "id": "doc_c7n4nhgr",
+    "asignaturaId": "36407",
+    "subgrupoId": "A-L2",
+    "profesorId": "sustituto2",
+    "creditos": 20
   }
 ]
