@@ -733,5 +733,12 @@
     "subgrupoId": "PT-T",
     "profesorId": "daniel-santacreu",
     "creditos": 30
+  },
+  {
+    "id": "doc_pd08jea4",
+    "asignaturaId": "34156",
+    "subgrupoId": "A-T-1",
+    "profesorId": "jesus-garcia",
+    "creditos": 30
   }
 ]
