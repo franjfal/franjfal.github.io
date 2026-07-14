@@ -54,5 +54,12 @@
     "subgrupoId": "C1P-1",
     "profesorId": "marcos-solera",
     "creditos": 22.5
+  },
+  {
+    "id": "doc_jasq0inv",
+    "asignaturaId": "MATINF34151",
+    "subgrupoId": "C2P-1",
+    "profesorId": "marcos-solera",
+    "creditos": 22.5
   }
 ]
