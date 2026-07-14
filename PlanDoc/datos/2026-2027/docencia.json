@@ -754,5 +754,12 @@
     "subgrupoId": "B-T",
     "profesorId": "carmen-fernandez",
     "creditos": 22.5
+  },
+  {
+    "id": "doc_cwqpa0cw",
+    "asignaturaId": "34156",
+    "subgrupoId": "B-P1-1",
+    "profesorId": "sergio-segura",
+    "creditos": 22.5
   }
 ]
