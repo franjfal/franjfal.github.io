@@ -5,5 +5,12 @@
     "subgrupoId": "A-T",
     "profesorId": "alicia-quero",
     "creditos": 40
+  },
+  {
+    "id": "doc_tgx58u3p",
+    "asignaturaId": "36407",
+    "subgrupoId": "A-L1",
+    "profesorId": "alicia-quero",
+    "creditos": 20
   }
 ]
