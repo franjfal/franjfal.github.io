@@ -616,13 +616,6 @@
     "creditos": 4
   },
   {
-    "id": "doc_fnx7dau6",
-    "asignaturaId": "34787",
-    "subgrupoId": "A-T",
-    "profesorId": "susituto1",
-    "creditos": 30
-  },
-  {
     "id": "doc_st26e3ru",
     "asignaturaId": "34787",
     "subgrupoId": "A-L1",
@@ -1090,5 +1083,12 @@
     "subgrupoId": "A-L6",
     "profesorId": "ayudanteDoctor",
     "creditos": 10
+  },
+  {
+    "id": "doc_t5zdvnt8",
+    "asignaturaId": "34787",
+    "subgrupoId": "A-T",
+    "profesorId": "ayudanteDoctor",
+    "creditos": 30
   }
 ]
