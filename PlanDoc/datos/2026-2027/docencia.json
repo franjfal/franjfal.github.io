@@ -809,6 +809,13 @@
     "asignaturaId": "36584",
     "subgrupoId": "FM-O1",
     "profesorId": "jose-martinez",
-    "creditos": 7.5
+    "creditos": 2.5
+  },
+  {
+    "id": "doc_4uqv7qz8",
+    "asignaturaId": "36584",
+    "subgrupoId": "FM-O1",
+    "profesorId": "marcos-solera",
+    "creditos": 5
   }
 ]
