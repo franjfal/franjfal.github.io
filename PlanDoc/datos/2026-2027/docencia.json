@@ -901,5 +901,12 @@
     "subgrupoId": "D-I1",
     "profesorId": "marcos-solera",
     "creditos": 12
+  },
+  {
+    "id": "doc_ums6cwcj",
+    "asignaturaId": "34187",
+    "subgrupoId": "C-T",
+    "profesorId": "daniel-santacreu",
+    "creditos": 41
   }
 ]
