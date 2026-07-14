@@ -145,5 +145,12 @@
     "subgrupoId": "A-T",
     "profesorId": "domingo-garcia",
     "creditos": 30
+  },
+  {
+    "id": "doc_kofwjo7q",
+    "asignaturaId": "34871",
+    "subgrupoId": "A-P1",
+    "profesorId": "domingo-garcia",
+    "creditos": 20
   }
 ]
