@@ -1167,5 +1167,12 @@
     "subgrupoId": "A-L2",
     "profesorId": "pablo-andujar",
     "creditos": 6
+  },
+  {
+    "id": "doc_9yfw18o6",
+    "asignaturaId": "33976",
+    "subgrupoId": "A-I1",
+    "profesorId": "ayudanteDoctor",
+    "creditos": 8
   }
 ]
