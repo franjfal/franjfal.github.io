@@ -509,5 +509,19 @@
     "subgrupoId": "CO2-2",
     "profesorId": "pablo-andujar",
     "creditos": 7.5
+  },
+  {
+    "id": "doc_2zrwv5um",
+    "asignaturaId": "MAT34151",
+    "subgrupoId": "A1P-1",
+    "profesorId": "daniel-isert",
+    "creditos": 22.5
+  },
+  {
+    "id": "doc_vz66ecoq",
+    "asignaturaId": "MAT34151",
+    "subgrupoId": "A2P-1",
+    "profesorId": "daniel-isert",
+    "creditos": 22.5
   }
 ]
