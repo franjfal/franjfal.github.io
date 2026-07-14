@@ -628,5 +628,12 @@
     "subgrupoId": "A-P1",
     "profesorId": "susituto1",
     "creditos": 20
+  },
+  {
+    "id": "doc_st26e3ru",
+    "asignaturaId": "34787",
+    "subgrupoId": "A-L1",
+    "profesorId": "susituto1",
+    "creditos": 10
   }
 ]
