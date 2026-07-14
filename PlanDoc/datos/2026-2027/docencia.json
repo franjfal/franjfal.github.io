@@ -817,5 +817,12 @@
     "subgrupoId": "FM-O1",
     "profesorId": "marcos-solera",
     "creditos": 5
+  },
+  {
+    "id": "doc_bri88ifj",
+    "asignaturaId": "34871",
+    "subgrupoId": "A-P2",
+    "profesorId": "francisco-falco",
+    "creditos": 20
   }
 ]
