@@ -1097,5 +1097,26 @@
     "subgrupoId": "B-O2-2",
     "profesorId": "ayudanteDoctor",
     "creditos": 7.5
+  },
+  {
+    "id": "doc_2ch7lv6v",
+    "asignaturaId": "34787",
+    "subgrupoId": "A-L3",
+    "profesorId": "sustituto2",
+    "creditos": 10
+  },
+  {
+    "id": "doc_f7uaxx08",
+    "asignaturaId": "34787",
+    "subgrupoId": "A-L4",
+    "profesorId": "sustituto2",
+    "creditos": 10
+  },
+  {
+    "id": "doc_ylzb1psd",
+    "asignaturaId": "34787",
+    "subgrupoId": "A-L5",
+    "profesorId": "sustituto2",
+    "creditos": 10
   }
 ]
