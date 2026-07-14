@@ -1103,7 +1103,7 @@
     "asignaturaId": "34187",
     "subgrupoId": "D-U1",
     "profesorId": "susituto1",
-    "creditos": 7
+    "creditos": 6
   },
   {
     "id": "doc_gn53o3cq",
@@ -1181,5 +1181,12 @@
     "subgrupoId": "B-I1",
     "profesorId": "ayudanteDoctor",
     "creditos": 12
+  },
+  {
+    "id": "doc_qqlkbf2w",
+    "asignaturaId": "34187",
+    "subgrupoId": "D-U1",
+    "profesorId": "marcos-solera",
+    "creditos": 1
   }
 ]
