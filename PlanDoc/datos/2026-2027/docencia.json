@@ -250,5 +250,12 @@
     "subgrupoId": "A-O2",
     "profesorId": "carmen-fernandez",
     "creditos": 11
+  },
+  {
+    "id": "doc_j7guefj7",
+    "asignaturaId": "34171",
+    "subgrupoId": "A-T",
+    "profesorId": "sergio-segura",
+    "creditos": 30
   }
 ]
