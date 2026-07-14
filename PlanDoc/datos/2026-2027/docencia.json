@@ -593,5 +593,19 @@
     "subgrupoId": "A-U2",
     "profesorId": "sustituto2",
     "creditos": 4
+  },
+  {
+    "id": "doc_wcjxiobg",
+    "asignaturaId": "33976",
+    "subgrupoId": "A-E2",
+    "profesorId": "sustituto2",
+    "creditos": 4
+  },
+  {
+    "id": "doc_kdhu8tim",
+    "asignaturaId": "33976",
+    "subgrupoId": "A-E1",
+    "profesorId": "sustituto2",
+    "creditos": 4
   }
 ]
