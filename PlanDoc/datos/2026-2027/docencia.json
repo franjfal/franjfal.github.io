@@ -726,5 +726,12 @@
     "subgrupoId": "FM-O1-1",
     "profesorId": "jesus-garcia",
     "creditos": 7.5
+  },
+  {
+    "id": "doc_guy0q9fd",
+    "asignaturaId": "44079",
+    "subgrupoId": "PT-T",
+    "profesorId": "daniel-santacreu",
+    "creditos": 30
   }
 ]
