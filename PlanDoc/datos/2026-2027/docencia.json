@@ -705,5 +705,19 @@
     "subgrupoId": "A-P1-2",
     "profesorId": "antonio-galbis",
     "creditos": 22.5
+  },
+  {
+    "id": "doc_6ajdwnob",
+    "asignaturaId": "36586",
+    "subgrupoId": "FM-T-1",
+    "profesorId": "jesus-garcia",
+    "creditos": 30
+  },
+  {
+    "id": "doc_ykil2zfa",
+    "asignaturaId": "36586",
+    "subgrupoId": "FM-P1-1",
+    "profesorId": "jesus-garcia",
+    "creditos": 22.5
   }
 ]
