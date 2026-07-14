@@ -978,5 +978,12 @@
     "subgrupoId": "B-P2",
     "profesorId": "alicia-quero",
     "creditos": 17
+  },
+  {
+    "id": "doc_826ifzvq",
+    "asignaturaId": "34156",
+    "subgrupoId": "A-O1-2",
+    "profesorId": "oscar-roldan",
+    "creditos": 7.5
   }
 ]
