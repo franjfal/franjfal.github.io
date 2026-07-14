@@ -278,5 +278,12 @@
     "subgrupoId": "A-O2",
     "profesorId": "sergio-segura",
     "creditos": 7.5
+  },
+  {
+    "id": "doc_6jg4t61u",
+    "asignaturaId": "44078",
+    "subgrupoId": "A-T",
+    "profesorId": "sergio-segura",
+    "creditos": 30
   }
 ]
