@@ -12,5 +12,12 @@
     "subgrupoId": "A-L1",
     "profesorId": "alicia-quero",
     "creditos": 20
+  },
+  {
+    "id": "doc_m3t2ciwi",
+    "asignaturaId": "36590",
+    "subgrupoId": "FM-T",
+    "profesorId": "davidBeltran",
+    "creditos": 38
   }
 ]
