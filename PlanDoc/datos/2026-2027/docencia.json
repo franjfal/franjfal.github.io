@@ -663,5 +663,19 @@
     "subgrupoId": "A-U2",
     "profesorId": "ayudanteDoctor",
     "creditos": 7
+  },
+  {
+    "id": "doc_172sjwha",
+    "asignaturaId": "34174",
+    "subgrupoId": "A-T",
+    "profesorId": "oscar-blasco",
+    "creditos": 37.5
+  },
+  {
+    "id": "doc_pc4gj8kp",
+    "asignaturaId": "34174",
+    "subgrupoId": "A-P",
+    "profesorId": "oscar-blasco",
+    "creditos": 15
   }
 ]
