@@ -3,7 +3,7 @@
     "id": "tfg-matex-concertado",
     "tipo": "tfg",
     "titulo": "TFG Mates Concertados",
-    "totalTrabajos": 16,
+    "totalTrabajos": 18,
     "peso": 9.6,
     "asignaciones": {
       "pablo-andujar": 2,
@@ -11,9 +11,10 @@
       "carmen-fernandez": 1,
       "antonio-galbis": 2,
       "jesus-garcia": 1,
-      "daniel-isert": 1.5,
+      "daniel-isert": 3,
       "alejandro-miralles": 1,
       "oscar-roldan": 1,
+      "daniel-santacreu": 0.5,
       "marcos-solera": 2,
       "mazon": 1
     }
