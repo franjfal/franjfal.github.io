@@ -201,5 +201,26 @@
     "subgrupoId": "A-O",
     "profesorId": "antonio-galbis",
     "creditos": 7.5
+  },
+  {
+    "id": "doc_vwq7fhva",
+    "asignaturaId": "36591",
+    "subgrupoId": "FM-T",
+    "profesorId": "jesus-garcia",
+    "creditos": 30
+  },
+  {
+    "id": "doc_xnnnw5xk",
+    "asignaturaId": "36591",
+    "subgrupoId": "FM-P1",
+    "profesorId": "jesus-garcia",
+    "creditos": 22.5
+  },
+  {
+    "id": "doc_nj78lasj",
+    "asignaturaId": "36591",
+    "subgrupoId": "FM-O1",
+    "profesorId": "jesus-garcia",
+    "creditos": 7.5
   }
 ]
