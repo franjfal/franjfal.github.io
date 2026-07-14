@@ -999,5 +999,12 @@
     "subgrupoId": "B-I1",
     "profesorId": "oscar-roldan",
     "creditos": 6
+  },
+  {
+    "id": "doc_6sxqp20v",
+    "asignaturaId": "34187",
+    "subgrupoId": "C-I1",
+    "profesorId": "oscar-roldan",
+    "creditos": 12
   }
 ]
