@@ -789,5 +789,26 @@
     "subgrupoId": "FM-P1-2",
     "profesorId": "jose-martinez",
     "creditos": 22.5
+  },
+  {
+    "id": "doc_75xl4zfb",
+    "asignaturaId": "36584",
+    "subgrupoId": "FM-T",
+    "profesorId": "jose-martinez",
+    "creditos": 30
+  },
+  {
+    "id": "doc_tuzy4jl0",
+    "asignaturaId": "36584",
+    "subgrupoId": "FM-P1",
+    "profesorId": "jose-martinez",
+    "creditos": 22.5
+  },
+  {
+    "id": "doc_6ddpkf2c",
+    "asignaturaId": "36584",
+    "subgrupoId": "FM-O1",
+    "profesorId": "jose-martinez",
+    "creditos": 7.5
   }
 ]
