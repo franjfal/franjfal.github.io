@@ -383,5 +383,19 @@
     "subgrupoId": "BO2-1",
     "profesorId": "alejandro-miralles",
     "creditos": 7.5
+  },
+  {
+    "id": "doc_yyitikyw",
+    "asignaturaId": "MAT34151",
+    "subgrupoId": "B-T2",
+    "profesorId": "francisco-falco",
+    "creditos": 30
+  },
+  {
+    "id": "doc_ozigq5qd",
+    "asignaturaId": "MAT34151",
+    "subgrupoId": "B1P-2",
+    "profesorId": "francisco-falco",
+    "creditos": 22.5
   }
 ]
