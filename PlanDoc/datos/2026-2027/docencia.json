@@ -61,5 +61,19 @@
     "subgrupoId": "C2P-1",
     "profesorId": "marcos-solera",
     "creditos": 22.5
+  },
+  {
+    "id": "doc_fsuef5uu",
+    "asignaturaId": "MATINF34151",
+    "subgrupoId": "CO1-1",
+    "profesorId": "marcos-solera",
+    "creditos": 7.5
+  },
+  {
+    "id": "doc_tkln1e0q",
+    "asignaturaId": "MATINF34151",
+    "subgrupoId": "CO2-1",
+    "profesorId": "marcos-solera",
+    "creditos": 7.5
   }
 ]
