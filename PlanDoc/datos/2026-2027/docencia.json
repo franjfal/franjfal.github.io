@@ -1162,13 +1162,6 @@
     "creditos": 12
   },
   {
-    "id": "doc_gcnz4ytg",
-    "asignaturaId": "34787",
-    "subgrupoId": "A-L1",
-    "profesorId": "oscar-roldan",
-    "creditos": 5
-  },
-  {
     "id": "doc_qrei1c8p",
     "asignaturaId": "34787",
     "subgrupoId": "A-L1",
@@ -1202,5 +1195,12 @@
     "subgrupoId": "D-U2",
     "profesorId": "oscar-roldan",
     "creditos": 3
+  },
+  {
+    "id": "doc_g6lh6tx7",
+    "asignaturaId": "34787",
+    "subgrupoId": "A-L1",
+    "profesorId": "susituto1",
+    "creditos": 5
   }
 ]
