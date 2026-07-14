@@ -761,5 +761,12 @@
     "subgrupoId": "B-P1-1",
     "profesorId": "sergio-segura",
     "creditos": 22.5
+  },
+  {
+    "id": "doc_hny91f5r",
+    "asignaturaId": "34156",
+    "subgrupoId": "A-P1-1",
+    "profesorId": "jose-toledo",
+    "creditos": 22.5
   }
 ]
