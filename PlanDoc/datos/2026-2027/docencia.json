@@ -180,5 +180,26 @@
     "subgrupoId": "A-L4",
     "profesorId": "domingo-garcia",
     "creditos": 10
+  },
+  {
+    "id": "doc_cm8nlsqb",
+    "asignaturaId": "36877",
+    "subgrupoId": "A-T",
+    "profesorId": "antonio-galbis",
+    "creditos": 30
+  },
+  {
+    "id": "doc_kr4v1i5k",
+    "asignaturaId": "36877",
+    "subgrupoId": "A-P",
+    "profesorId": "antonio-galbis",
+    "creditos": 22.5
+  },
+  {
+    "id": "doc_3b3wf4jo",
+    "asignaturaId": "36877",
+    "subgrupoId": "A-O",
+    "profesorId": "antonio-galbis",
+    "creditos": 7.5
   }
 ]
