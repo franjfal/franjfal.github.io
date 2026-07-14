@@ -544,5 +544,19 @@
     "subgrupoId": "A-T1",
     "profesorId": "daniel-isert",
     "creditos": 30
+  },
+  {
+    "id": "doc_m0b0pftr",
+    "asignaturaId": "44076",
+    "subgrupoId": "PT-T",
+    "profesorId": "oscar-roldan",
+    "creditos": 30
+  },
+  {
+    "id": "doc_gtib05za",
+    "asignaturaId": "44076",
+    "subgrupoId": "PT-T",
+    "profesorId": "daniel-isert",
+    "creditos": 30
   }
 ]
