@@ -558,5 +558,26 @@
     "subgrupoId": "PT-T",
     "profesorId": "daniel-isert",
     "creditos": 30
+  },
+  {
+    "id": "doc_29u8ffjr",
+    "asignaturaId": "33976",
+    "subgrupoId": "A-T",
+    "profesorId": "sustituto2",
+    "creditos": 40
+  },
+  {
+    "id": "doc_55egriyv",
+    "asignaturaId": "33976",
+    "subgrupoId": "A-I1",
+    "profesorId": "sustituto2",
+    "creditos": 8
+  },
+  {
+    "id": "doc_2ty7c3ro",
+    "asignaturaId": "33976",
+    "subgrupoId": "A-I2",
+    "profesorId": "sustituto2",
+    "creditos": 8
   }
 ]
