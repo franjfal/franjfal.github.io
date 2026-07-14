@@ -33,5 +33,12 @@
     "subgrupoId": "FM-O",
     "profesorId": "davidBeltran",
     "creditos": 9
+  },
+  {
+    "id": "doc_olagg6ew",
+    "asignaturaId": "36407",
+    "subgrupoId": "A-L3",
+    "profesorId": "alicia-quero",
+    "creditos": 20
   }
 ]
