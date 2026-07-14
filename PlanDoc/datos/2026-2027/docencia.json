@@ -719,5 +719,12 @@
     "subgrupoId": "FM-P1-1",
     "profesorId": "jesus-garcia",
     "creditos": 22.5
+  },
+  {
+    "id": "doc_uow7g5fb",
+    "asignaturaId": "36586",
+    "subgrupoId": "FM-O1-1",
+    "profesorId": "jesus-garcia",
+    "creditos": 7.5
   }
 ]
