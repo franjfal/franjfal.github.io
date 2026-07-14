@@ -246,6 +246,12 @@
         "tipo": "Sexenios",
         "creditos": 70,
         "descripcion": ""
+      },
+      {
+        "id": "red_kbzeyndo",
+        "tipo": "Concusos PDI",
+        "creditos": 20,
+        "descripcion": ""
       }
     ]
   },
