@@ -453,5 +453,26 @@
     "subgrupoId": "BO2-2",
     "profesorId": "francisco-falco",
     "creditos": 7.5
+  },
+  {
+    "id": "doc_igluhrit",
+    "asignaturaId": "36586",
+    "subgrupoId": "FM-T-2",
+    "profesorId": "oscar-roldan",
+    "creditos": 30
+  },
+  {
+    "id": "doc_ai5nm79t",
+    "asignaturaId": "36586",
+    "subgrupoId": "FM-P1-2",
+    "profesorId": "oscar-roldan",
+    "creditos": 22.5
+  },
+  {
+    "id": "doc_4fsw9uf3",
+    "asignaturaId": "36586",
+    "subgrupoId": "FM-O1-2",
+    "profesorId": "oscar-roldan",
+    "creditos": 7.5
   }
 ]
