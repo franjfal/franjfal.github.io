@@ -523,5 +523,12 @@
     "subgrupoId": "A2P-1",
     "profesorId": "daniel-isert",
     "creditos": 22.5
+  },
+  {
+    "id": "doc_dpo7fuxn",
+    "asignaturaId": "MAT34151",
+    "subgrupoId": "AO1-1",
+    "profesorId": "daniel-isert",
+    "creditos": 7.5
   }
 ]
