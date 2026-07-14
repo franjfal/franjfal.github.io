@@ -1181,5 +1181,12 @@
     "subgrupoId": "A-L1",
     "profesorId": "oscar-roldan",
     "creditos": 5
+  },
+  {
+    "id": "doc_qrei1c8p",
+    "asignaturaId": "34787",
+    "subgrupoId": "A-L1",
+    "profesorId": "daniel-isert",
+    "creditos": 5
   }
 ]
