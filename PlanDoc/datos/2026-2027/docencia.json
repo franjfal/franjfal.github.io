@@ -1103,14 +1103,14 @@
     "asignaturaId": "34187",
     "subgrupoId": "D-U1",
     "profesorId": "susituto1",
-    "creditos": 6
+    "creditos": 4
   },
   {
     "id": "doc_gn53o3cq",
     "asignaturaId": "34187",
     "subgrupoId": "D-U2",
     "profesorId": "susituto1",
-    "creditos": 7
+    "creditos": 4
   },
   {
     "id": "doc_1vs6syr6",
@@ -1188,5 +1188,19 @@
     "subgrupoId": "D-U1",
     "profesorId": "marcos-solera",
     "creditos": 1
+  },
+  {
+    "id": "doc_zx4bhpom",
+    "asignaturaId": "34187",
+    "subgrupoId": "D-U1",
+    "profesorId": "oscar-roldan",
+    "creditos": 2
+  },
+  {
+    "id": "doc_yq5isf1k",
+    "asignaturaId": "34187",
+    "subgrupoId": "D-U2",
+    "profesorId": "oscar-roldan",
+    "creditos": 3
   }
 ]
