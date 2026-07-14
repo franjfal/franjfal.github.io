@@ -866,5 +866,12 @@
     "subgrupoId": "A-I2",
     "profesorId": "marcos-solera",
     "creditos": 12
+  },
+  {
+    "id": "doc_rmlxjzha",
+    "asignaturaId": "34187",
+    "subgrupoId": "C-I3",
+    "profesorId": "marcos-solera",
+    "creditos": 12
   }
 ]
