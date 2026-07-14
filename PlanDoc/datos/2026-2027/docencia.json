@@ -1174,5 +1174,12 @@
     "subgrupoId": "C-I2",
     "profesorId": "susituto1",
     "creditos": 12
+  },
+  {
+    "id": "doc_gcnz4ytg",
+    "asignaturaId": "34787",
+    "subgrupoId": "A-L1",
+    "profesorId": "oscar-roldan",
+    "creditos": 5
   }
 ]
