@@ -1132,5 +1132,12 @@
     "subgrupoId": "A-O1-1",
     "profesorId": "sustituto2",
     "creditos": 7.5
+  },
+  {
+    "id": "doc_scfbte1j",
+    "asignaturaId": "34187",
+    "subgrupoId": "D-T",
+    "profesorId": "susituto1",
+    "creditos": 41
   }
 ]
