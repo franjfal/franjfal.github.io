@@ -824,5 +824,33 @@
     "subgrupoId": "A-P2",
     "profesorId": "francisco-falco",
     "creditos": 20
+  },
+  {
+    "id": "doc_6e4jrh9t",
+    "asignaturaId": "34157",
+    "subgrupoId": "B-P1",
+    "profesorId": "alejandro-miralles",
+    "creditos": 17
+  },
+  {
+    "id": "doc_w3v9w2lw",
+    "asignaturaId": "34157",
+    "subgrupoId": "B-P2",
+    "profesorId": "alejandro-miralles",
+    "creditos": 17
+  },
+  {
+    "id": "doc_tcq1tez9",
+    "asignaturaId": "34157",
+    "subgrupoId": "B-O1",
+    "profesorId": "alejandro-miralles",
+    "creditos": 5.5
+  },
+  {
+    "id": "doc_t7ajqyp5",
+    "asignaturaId": "34157",
+    "subgrupoId": "B-O2",
+    "profesorId": "alejandro-miralles",
+    "creditos": 5.5
   }
 ]
