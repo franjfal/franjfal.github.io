@@ -1090,5 +1090,12 @@
     "subgrupoId": "A-T",
     "profesorId": "ayudanteDoctor",
     "creditos": 30
+  },
+  {
+    "id": "doc_g2787xte",
+    "asignaturaId": "34156",
+    "subgrupoId": "B-O2-2",
+    "profesorId": "ayudanteDoctor",
+    "creditos": 7.5
   }
 ]
