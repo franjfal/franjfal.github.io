@@ -1139,5 +1139,19 @@
     "subgrupoId": "D-T",
     "profesorId": "susituto1",
     "creditos": 41
+  },
+  {
+    "id": "doc_gk8zxu67",
+    "asignaturaId": "34187",
+    "subgrupoId": "D-U1",
+    "profesorId": "susituto1",
+    "creditos": 7
+  },
+  {
+    "id": "doc_gn53o3cq",
+    "asignaturaId": "34187",
+    "subgrupoId": "D-U2",
+    "profesorId": "susituto1",
+    "creditos": 7
   }
 ]
