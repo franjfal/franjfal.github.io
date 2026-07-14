@@ -355,5 +355,19 @@
     "subgrupoId": "B-O2",
     "profesorId": "maria-rueda",
     "creditos": 11
+  },
+  {
+    "id": "doc_ji8qv9ap",
+    "asignaturaId": "34156",
+    "subgrupoId": "B-T-2",
+    "profesorId": "jose-moll",
+    "creditos": 25
+  },
+  {
+    "id": "doc_xymkjpgu",
+    "asignaturaId": "34156",
+    "subgrupoId": "B-T-2",
+    "profesorId": "maria-rueda",
+    "creditos": 5
   }
 ]
