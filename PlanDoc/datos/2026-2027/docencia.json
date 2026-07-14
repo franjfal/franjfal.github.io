@@ -117,5 +117,33 @@
     "subgrupoId": "FM-O1-1",
     "profesorId": "jose-martinez",
     "creditos": 7.5
+  },
+  {
+    "id": "doc_38dm9ynd",
+    "asignaturaId": "34173",
+    "subgrupoId": "A-T",
+    "profesorId": "oscar-blasco",
+    "creditos": 37.5
+  },
+  {
+    "id": "doc_xboe2923",
+    "asignaturaId": "34173",
+    "subgrupoId": "A-P",
+    "profesorId": "oscar-blasco",
+    "creditos": 15
+  },
+  {
+    "id": "doc_nh9vhn33",
+    "asignaturaId": "34173",
+    "subgrupoId": "A-O",
+    "profesorId": "oscar-blasco",
+    "creditos": 7.5
+  },
+  {
+    "id": "doc_m4rwfsfu",
+    "asignaturaId": "34871",
+    "subgrupoId": "A-T",
+    "profesorId": "domingo-garcia",
+    "creditos": 30
   }
 ]
