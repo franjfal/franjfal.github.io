@@ -887,5 +887,12 @@
     "subgrupoId": "B-I1",
     "profesorId": "marcos-solera",
     "creditos": 12
+  },
+  {
+    "id": "doc_qidlc0oz",
+    "asignaturaId": "34187",
+    "subgrupoId": "D-I3",
+    "profesorId": "marcos-solera",
+    "creditos": 12
   }
 ]
