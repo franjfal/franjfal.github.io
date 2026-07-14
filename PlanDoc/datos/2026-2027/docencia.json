@@ -1048,5 +1048,19 @@
     "subgrupoId": "B-O2",
     "profesorId": "pablo-andujar",
     "creditos": 5.5
+  },
+  {
+    "id": "doc_v9uot354",
+    "asignaturaId": "36407",
+    "subgrupoId": "A-L4",
+    "profesorId": "daniel-isert",
+    "creditos": 20
+  },
+  {
+    "id": "doc_xzlaaozl",
+    "asignaturaId": "34156",
+    "subgrupoId": "A-O2-1",
+    "profesorId": "daniel-isert",
+    "creditos": 7.5
   }
 ]
