@@ -614,5 +614,19 @@
     "subgrupoId": "A-U3",
     "profesorId": "sustituto2",
     "creditos": 4
+  },
+  {
+    "id": "doc_fnx7dau6",
+    "asignaturaId": "34787",
+    "subgrupoId": "A-T",
+    "profesorId": "susituto1",
+    "creditos": 30
+  },
+  {
+    "id": "doc_vspwagq8",
+    "asignaturaId": "34787",
+    "subgrupoId": "A-P1",
+    "profesorId": "susituto1",
+    "creditos": 20
   }
 ]
