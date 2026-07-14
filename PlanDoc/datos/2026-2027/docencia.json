@@ -854,13 +854,6 @@
     "creditos": 12
   },
   {
-    "id": "doc_wxg04iob",
-    "asignaturaId": "34187",
-    "subgrupoId": "B-I1",
-    "profesorId": "marcos-solera",
-    "creditos": 6
-  },
-  {
     "id": "doc_qidlc0oz",
     "asignaturaId": "34187",
     "subgrupoId": "D-I3",
@@ -957,13 +950,6 @@
     "subgrupoId": "A-O2-2",
     "profesorId": "oscar-roldan",
     "creditos": 7.5
-  },
-  {
-    "id": "doc_49x257u9",
-    "asignaturaId": "34187",
-    "subgrupoId": "B-I1",
-    "profesorId": "oscar-roldan",
-    "creditos": 6
   },
   {
     "id": "doc_6sxqp20v",
@@ -1188,5 +1174,12 @@
     "subgrupoId": "A-L1",
     "profesorId": "daniel-isert",
     "creditos": 5
+  },
+  {
+    "id": "doc_ifx885vc",
+    "asignaturaId": "34187",
+    "subgrupoId": "B-I1",
+    "profesorId": "ayudanteDoctor",
+    "creditos": 12
   }
 ]
