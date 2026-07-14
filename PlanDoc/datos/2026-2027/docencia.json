@@ -320,5 +320,26 @@
     "subgrupoId": "A-O2",
     "profesorId": "jose-toledo",
     "creditos": 11
+  },
+  {
+    "id": "doc_4poitcth",
+    "asignaturaId": "34158",
+    "subgrupoId": "B-T",
+    "profesorId": "maria-rueda",
+    "creditos": 45
+  },
+  {
+    "id": "doc_9rcoax2g",
+    "asignaturaId": "34158",
+    "subgrupoId": "A-P1",
+    "profesorId": "maria-rueda",
+    "creditos": 34
+  },
+  {
+    "id": "doc_p5e6ok3l",
+    "asignaturaId": "34158",
+    "subgrupoId": "B-P1",
+    "profesorId": "maria-rueda",
+    "creditos": 34
   }
 ]
