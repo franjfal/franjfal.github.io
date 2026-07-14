@@ -19,5 +19,19 @@
     "subgrupoId": "FM-T",
     "profesorId": "davidBeltran",
     "creditos": 38
+  },
+  {
+    "id": "doc_94frm5gd",
+    "asignaturaId": "36590",
+    "subgrupoId": "FM-P",
+    "profesorId": "davidBeltran",
+    "creditos": 28
+  },
+  {
+    "id": "doc_660xds5v",
+    "asignaturaId": "36590",
+    "subgrupoId": "FM-O",
+    "profesorId": "davidBeltran",
+    "creditos": 9
   }
 ]
