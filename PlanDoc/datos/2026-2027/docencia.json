@@ -894,5 +894,12 @@
     "subgrupoId": "D-I3",
     "profesorId": "marcos-solera",
     "creditos": 12
+  },
+  {
+    "id": "doc_6oihe9ye",
+    "asignaturaId": "34187",
+    "subgrupoId": "D-I1",
+    "profesorId": "marcos-solera",
+    "creditos": 6
   }
 ]
