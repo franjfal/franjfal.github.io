@@ -922,5 +922,12 @@
     "subgrupoId": "C-U2",
     "profesorId": "daniel-santacreu",
     "creditos": 7
+  },
+  {
+    "id": "doc_u3tioyg8",
+    "asignaturaId": "34156",
+    "subgrupoId": "B-P2-2",
+    "profesorId": "oscar-roldan",
+    "creditos": 22.5
   }
 ]
