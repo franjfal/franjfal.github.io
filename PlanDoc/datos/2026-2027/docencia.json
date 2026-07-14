@@ -677,5 +677,12 @@
     "subgrupoId": "A-P",
     "profesorId": "oscar-blasco",
     "creditos": 15
+  },
+  {
+    "id": "doc_likj247y",
+    "asignaturaId": "34174",
+    "subgrupoId": "A-O",
+    "profesorId": "oscar-blasco",
+    "creditos": 7.5
   }
 ]
