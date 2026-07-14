@@ -474,5 +474,40 @@
     "subgrupoId": "FM-O1-2",
     "profesorId": "oscar-roldan",
     "creditos": 7.5
+  },
+  {
+    "id": "doc_bpjvim7b",
+    "asignaturaId": "MATINF34151",
+    "subgrupoId": "C-T2",
+    "profesorId": "pablo-andujar",
+    "creditos": 30
+  },
+  {
+    "id": "doc_n3gnxl8u",
+    "asignaturaId": "MATINF34151",
+    "subgrupoId": "C1P-2",
+    "profesorId": "pablo-andujar",
+    "creditos": 22.5
+  },
+  {
+    "id": "doc_xfd8pl8e",
+    "asignaturaId": "MATINF34151",
+    "subgrupoId": "C2P-2",
+    "profesorId": "pablo-andujar",
+    "creditos": 22.5
+  },
+  {
+    "id": "doc_mo35130p",
+    "asignaturaId": "MATINF34151",
+    "subgrupoId": "CO1-2",
+    "profesorId": "pablo-andujar",
+    "creditos": 7.5
+  },
+  {
+    "id": "doc_4j5rz3px",
+    "asignaturaId": "MATINF34151",
+    "subgrupoId": "CO2-2",
+    "profesorId": "pablo-andujar",
+    "creditos": 7.5
   }
 ]
