@@ -740,5 +740,12 @@
     "subgrupoId": "A-T-1",
     "profesorId": "jesus-garcia",
     "creditos": 30
+  },
+  {
+    "id": "doc_m8tynutr",
+    "asignaturaId": "34156",
+    "subgrupoId": "A-P2-2",
+    "profesorId": "carmen-fernandez",
+    "creditos": 22.5
   }
 ]
