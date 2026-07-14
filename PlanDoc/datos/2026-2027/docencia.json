@@ -299,5 +299,26 @@
     "subgrupoId": "A-P1",
     "profesorId": "jose-toledo",
     "creditos": 34
+  },
+  {
+    "id": "doc_r8gajdmj",
+    "asignaturaId": "34157",
+    "subgrupoId": "A-P2",
+    "profesorId": "jose-toledo",
+    "creditos": 34
+  },
+  {
+    "id": "doc_oauj8vse",
+    "asignaturaId": "34157",
+    "subgrupoId": "A-O1",
+    "profesorId": "jose-toledo",
+    "creditos": 11
+  },
+  {
+    "id": "doc_iynw88uq",
+    "asignaturaId": "34157",
+    "subgrupoId": "A-O2",
+    "profesorId": "jose-toledo",
+    "creditos": 11
   }
 ]
