@@ -859,5 +859,12 @@
     "subgrupoId": "B-P2-1",
     "profesorId": "alejandro-miralles",
     "creditos": 22.5
+  },
+  {
+    "id": "doc_1iei26qz",
+    "asignaturaId": "34187",
+    "subgrupoId": "A-I2",
+    "profesorId": "marcos-solera",
+    "creditos": 12
   }
 ]
