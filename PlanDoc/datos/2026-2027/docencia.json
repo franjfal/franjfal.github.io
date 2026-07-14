@@ -40,5 +40,19 @@
     "subgrupoId": "A-L3",
     "profesorId": "alicia-quero",
     "creditos": 20
+  },
+  {
+    "id": "doc_t8k5peen",
+    "asignaturaId": "MATINF34151",
+    "subgrupoId": "C-T1",
+    "profesorId": "marcos-solera",
+    "creditos": 30
+  },
+  {
+    "id": "doc_5jbukt1j",
+    "asignaturaId": "MATINF34151",
+    "subgrupoId": "C1P-1",
+    "profesorId": "marcos-solera",
+    "creditos": 22.5
   }
 ]
