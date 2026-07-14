@@ -75,5 +75,19 @@
     "subgrupoId": "CO2-1",
     "profesorId": "marcos-solera",
     "creditos": 7.5
+  },
+  {
+    "id": "doc_zr00qdqs",
+    "asignaturaId": "36581",
+    "subgrupoId": "FM-T-2",
+    "profesorId": "alejandro-miralles",
+    "creditos": 30
+  },
+  {
+    "id": "doc_rjh0y9vt",
+    "asignaturaId": "36581",
+    "subgrupoId": "FM-P1-2",
+    "profesorId": "alejandro-miralles",
+    "creditos": 22.5
   }
 ]
