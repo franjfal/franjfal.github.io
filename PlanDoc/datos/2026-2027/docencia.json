@@ -985,5 +985,12 @@
     "subgrupoId": "A-O1-2",
     "profesorId": "oscar-roldan",
     "creditos": 7.5
+  },
+  {
+    "id": "doc_p6evor5i",
+    "asignaturaId": "34156",
+    "subgrupoId": "A-O2-2",
+    "profesorId": "oscar-roldan",
+    "creditos": 7.5
   }
 ]
