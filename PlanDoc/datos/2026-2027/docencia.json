@@ -334,5 +334,26 @@
     "subgrupoId": "B-P1",
     "profesorId": "maria-rueda",
     "creditos": 34
+  },
+  {
+    "id": "doc_1ajmg3sz",
+    "asignaturaId": "34158",
+    "subgrupoId": "B-P2",
+    "profesorId": "maria-rueda",
+    "creditos": 34
+  },
+  {
+    "id": "doc_61ef3wip",
+    "asignaturaId": "34158",
+    "subgrupoId": "B-O1",
+    "profesorId": "maria-rueda",
+    "creditos": 11
+  },
+  {
+    "id": "doc_2byimajy",
+    "asignaturaId": "34158",
+    "subgrupoId": "B-O2",
+    "profesorId": "maria-rueda",
+    "creditos": 11
   }
 ]
