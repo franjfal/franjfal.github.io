@@ -439,5 +439,19 @@
     "subgrupoId": "AO2-2",
     "profesorId": "daniel-santacreu",
     "creditos": 7.5
+  },
+  {
+    "id": "doc_y2vrhlnh",
+    "asignaturaId": "MAT34151",
+    "subgrupoId": "BO1-2",
+    "profesorId": "francisco-falco",
+    "creditos": 7.5
+  },
+  {
+    "id": "doc_rcmd234d",
+    "asignaturaId": "MAT34151",
+    "subgrupoId": "BO2-2",
+    "profesorId": "francisco-falco",
+    "creditos": 7.5
   }
 ]
