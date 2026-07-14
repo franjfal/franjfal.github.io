@@ -1076,5 +1076,12 @@
     "subgrupoId": "A-P2",
     "profesorId": "susituto1",
     "creditos": 20
+  },
+  {
+    "id": "doc_9sevik1r",
+    "asignaturaId": "34787",
+    "subgrupoId": "A-L2",
+    "profesorId": "ayudanteDoctor",
+    "creditos": 10
   }
 ]
