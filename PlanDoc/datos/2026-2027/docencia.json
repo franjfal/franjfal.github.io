@@ -1118,5 +1118,12 @@
     "subgrupoId": "A-L5",
     "profesorId": "sustituto2",
     "creditos": 10
+  },
+  {
+    "id": "doc_b3edo6bd",
+    "asignaturaId": "34158",
+    "subgrupoId": "A-P1",
+    "profesorId": "sustituto2",
+    "creditos": 34
   }
 ]
