@@ -285,5 +285,19 @@
     "subgrupoId": "A-T",
     "profesorId": "sergio-segura",
     "creditos": 30
+  },
+  {
+    "id": "doc_rk4gcppl",
+    "asignaturaId": "34157",
+    "subgrupoId": "A-T",
+    "profesorId": "jose-toledo",
+    "creditos": 45
+  },
+  {
+    "id": "doc_u7lz53n4",
+    "asignaturaId": "34157",
+    "subgrupoId": "A-P1",
+    "profesorId": "jose-toledo",
+    "creditos": 34
   }
 ]
