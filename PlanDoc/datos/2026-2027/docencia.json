@@ -964,5 +964,19 @@
     "subgrupoId": "B-P1-2",
     "profesorId": "alicia-quero",
     "creditos": 22.5
+  },
+  {
+    "id": "doc_6n7nwscv",
+    "asignaturaId": "34157",
+    "subgrupoId": "B-P1",
+    "profesorId": "alicia-quero",
+    "creditos": 17
+  },
+  {
+    "id": "doc_nl7wpct6",
+    "asignaturaId": "34157",
+    "subgrupoId": "B-P2",
+    "profesorId": "alicia-quero",
+    "creditos": 17
   }
 ]
