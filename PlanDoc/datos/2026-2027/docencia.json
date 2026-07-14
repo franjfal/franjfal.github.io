@@ -257,5 +257,26 @@
     "subgrupoId": "A-T",
     "profesorId": "sergio-segura",
     "creditos": 30
+  },
+  {
+    "id": "doc_4s35s8al",
+    "asignaturaId": "34171",
+    "subgrupoId": "A-P1",
+    "profesorId": "sergio-segura",
+    "creditos": 22.5
+  },
+  {
+    "id": "doc_aiqw87qd",
+    "asignaturaId": "34171",
+    "subgrupoId": "A-O1",
+    "profesorId": "sergio-segura",
+    "creditos": 7.5
+  },
+  {
+    "id": "doc_ghysetos",
+    "asignaturaId": "34171",
+    "subgrupoId": "A-O2",
+    "profesorId": "sergio-segura",
+    "creditos": 7.5
   }
 ]
