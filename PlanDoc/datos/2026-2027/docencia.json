@@ -222,5 +222,12 @@
     "subgrupoId": "FM-O1",
     "profesorId": "jesus-garcia",
     "creditos": 7.5
+  },
+  {
+    "id": "doc_27b7yszj",
+    "asignaturaId": "34158",
+    "subgrupoId": "A-T",
+    "profesorId": "carmen-fernandez",
+    "creditos": 45
   }
 ]
