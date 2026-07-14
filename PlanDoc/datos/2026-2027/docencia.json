@@ -649,5 +649,19 @@
     "subgrupoId": "A-I1",
     "profesorId": "ayudanteDoctor",
     "creditos": 12
+  },
+  {
+    "id": "doc_lkr80jfa",
+    "asignaturaId": "34187",
+    "subgrupoId": "A-U1",
+    "profesorId": "ayudanteDoctor",
+    "creditos": 7
+  },
+  {
+    "id": "doc_lb0p4sco",
+    "asignaturaId": "34187",
+    "subgrupoId": "A-U2",
+    "profesorId": "ayudanteDoctor",
+    "creditos": 7
   }
 ]
