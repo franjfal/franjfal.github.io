@@ -908,5 +908,19 @@
     "subgrupoId": "C-T",
     "profesorId": "daniel-santacreu",
     "creditos": 41
+  },
+  {
+    "id": "doc_e0m4zgit",
+    "asignaturaId": "34187",
+    "subgrupoId": "C-U1",
+    "profesorId": "daniel-santacreu",
+    "creditos": 7
+  },
+  {
+    "id": "doc_cqy4rpb4",
+    "asignaturaId": "34187",
+    "subgrupoId": "C-U2",
+    "profesorId": "daniel-santacreu",
+    "creditos": 7
   }
 ]
