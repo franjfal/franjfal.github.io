@@ -889,13 +889,6 @@
     "creditos": 12
   },
   {
-    "id": "doc_ums6cwcj",
-    "asignaturaId": "34187",
-    "subgrupoId": "C-T",
-    "profesorId": "daniel-santacreu",
-    "creditos": 41
-  },
-  {
     "id": "doc_e0m4zgit",
     "asignaturaId": "34187",
     "subgrupoId": "C-U1",
@@ -1134,13 +1127,6 @@
     "creditos": 7.5
   },
   {
-    "id": "doc_scfbte1j",
-    "asignaturaId": "34187",
-    "subgrupoId": "D-T",
-    "profesorId": "susituto1",
-    "creditos": 41
-  },
-  {
     "id": "doc_gk8zxu67",
     "asignaturaId": "34187",
     "subgrupoId": "D-U1",
@@ -1153,5 +1139,12 @@
     "subgrupoId": "D-U2",
     "profesorId": "susituto1",
     "creditos": 7
+  },
+  {
+    "id": "doc_1vs6syr6",
+    "asignaturaId": "34187",
+    "subgrupoId": "D-T",
+    "profesorId": "daniel-santacreu",
+    "creditos": 41
   }
 ]
