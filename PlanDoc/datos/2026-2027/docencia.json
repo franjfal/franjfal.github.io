@@ -1153,5 +1153,12 @@
     "subgrupoId": "A-P1",
     "profesorId": "susituto1",
     "creditos": 34
+  },
+  {
+    "id": "doc_dcs5ostv",
+    "asignaturaId": "34187",
+    "subgrupoId": "C-T",
+    "profesorId": "susituto1",
+    "creditos": 41
   }
 ]
