@@ -684,5 +684,26 @@
     "subgrupoId": "A-O",
     "profesorId": "oscar-blasco",
     "creditos": 7.5
+  },
+  {
+    "id": "doc_bperbmbv",
+    "asignaturaId": "34171",
+    "subgrupoId": "A-P2",
+    "profesorId": "antonio-galbis",
+    "creditos": 22.5
+  },
+  {
+    "id": "doc_gsgkfoha",
+    "asignaturaId": "34156",
+    "subgrupoId": "A-T-2",
+    "profesorId": "antonio-galbis",
+    "creditos": 30
+  },
+  {
+    "id": "doc_g5pkift2",
+    "asignaturaId": "34156",
+    "subgrupoId": "A-P1-1",
+    "profesorId": "antonio-galbis",
+    "creditos": 22.5
   }
 ]
