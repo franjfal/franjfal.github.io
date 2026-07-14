@@ -768,5 +768,12 @@
     "subgrupoId": "A-P1-1",
     "profesorId": "jose-toledo",
     "creditos": 22.5
+  },
+  {
+    "id": "doc_d3yrre7e",
+    "asignaturaId": "36581",
+    "subgrupoId": "FM-O1-2",
+    "profesorId": "maria-rueda",
+    "creditos": 7.5
   }
 ]
