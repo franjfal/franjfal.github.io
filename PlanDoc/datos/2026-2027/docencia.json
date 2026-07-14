@@ -1013,5 +1013,12 @@
     "subgrupoId": "D-I2",
     "profesorId": "oscar-roldan",
     "creditos": 12
+  },
+  {
+    "id": "doc_jny8side",
+    "asignaturaId": "34187",
+    "subgrupoId": "B-T",
+    "profesorId": "pablo-andujar",
+    "creditos": 41
   }
 ]
