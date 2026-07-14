@@ -943,5 +943,26 @@
     "subgrupoId": "B-T-1",
     "profesorId": "alicia-quero",
     "creditos": 30
+  },
+  {
+    "id": "doc_4vu3y6ux",
+    "asignaturaId": "34156",
+    "subgrupoId": "B-O1-1",
+    "profesorId": "alicia-quero",
+    "creditos": 7.5
+  },
+  {
+    "id": "doc_ejkmu10r",
+    "asignaturaId": "34156",
+    "subgrupoId": "B-O2-1",
+    "profesorId": "alicia-quero",
+    "creditos": 7.5
+  },
+  {
+    "id": "doc_w0xjumnw",
+    "asignaturaId": "34156",
+    "subgrupoId": "B-P1-2",
+    "profesorId": "alicia-quero",
+    "creditos": 22.5
   }
 ]
