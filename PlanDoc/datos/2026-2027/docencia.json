@@ -1174,5 +1174,12 @@
     "subgrupoId": "A-I1",
     "profesorId": "sustituto2",
     "creditos": 8
+  },
+  {
+    "id": "doc_lgdetnex",
+    "asignaturaId": "34187",
+    "subgrupoId": "C-I2",
+    "profesorId": "susituto1",
+    "creditos": 12
   }
 ]
