@@ -747,5 +747,12 @@
     "subgrupoId": "A-P2-2",
     "profesorId": "carmen-fernandez",
     "creditos": 22.5
+  },
+  {
+    "id": "doc_t7sotwkh",
+    "asignaturaId": "34157",
+    "subgrupoId": "B-T",
+    "profesorId": "carmen-fernandez",
+    "creditos": 22.5
   }
 ]
