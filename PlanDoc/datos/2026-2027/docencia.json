@@ -96,5 +96,26 @@
     "subgrupoId": "FM-O1-2",
     "profesorId": "alejandro-miralles",
     "creditos": 7.5
+  },
+  {
+    "id": "doc_02dhyk4b",
+    "asignaturaId": "36581",
+    "subgrupoId": "FM-T-1",
+    "profesorId": "jose-martinez",
+    "creditos": 30
+  },
+  {
+    "id": "doc_tlwhj8mz",
+    "asignaturaId": "36581",
+    "subgrupoId": "FM-P1-1",
+    "profesorId": "jose-martinez",
+    "creditos": 22.5
+  },
+  {
+    "id": "doc_9fdzosbu",
+    "asignaturaId": "36581",
+    "subgrupoId": "FM-O1-1",
+    "profesorId": "jose-martinez",
+    "creditos": 7.5
   }
 ]
