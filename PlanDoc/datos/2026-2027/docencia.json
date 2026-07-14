@@ -1146,5 +1146,12 @@
     "subgrupoId": "D-T",
     "profesorId": "daniel-santacreu",
     "creditos": 41
+  },
+  {
+    "id": "doc_1elgyfie",
+    "asignaturaId": "34158",
+    "subgrupoId": "A-P1",
+    "profesorId": "susituto1",
+    "creditos": 34
   }
 ]
