@@ -1034,5 +1034,19 @@
     "subgrupoId": "B-U2",
     "profesorId": "pablo-andujar",
     "creditos": 7
+  },
+  {
+    "id": "doc_xkmmxe4t",
+    "asignaturaId": "34157",
+    "subgrupoId": "B-O1",
+    "profesorId": "pablo-andujar",
+    "creditos": 5.5
+  },
+  {
+    "id": "doc_dgvtn6qj",
+    "asignaturaId": "34157",
+    "subgrupoId": "B-O2",
+    "profesorId": "pablo-andujar",
+    "creditos": 5.5
   }
 ]
