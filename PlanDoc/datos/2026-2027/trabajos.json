@@ -91,6 +91,7 @@
     "totalTrabajos": 1,
     "peso": 9.6,
     "asignaciones": {
+      "francisco-falco": 0.5,
       "oscar-roldan": 0.5
     }
   }
