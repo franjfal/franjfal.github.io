@@ -924,7 +924,7 @@ function renderProfessorAssignmentCard(state, { profesor, items, specialCredits,
     const total = Number((teachingCredits + toPositiveNumber(specialCredits, 0)).toFixed(2));
     const tree = professorAssignmentTree(state, items);
     return `
-        <article class="public-assignment-card">
+        <article class="public-assignment-card public-professor-assignment-card">
             <header><strong>${escapeHtml(professorName(profesor))}</strong><span>${total} horas / ${targetCredits} horas</span></header>
             ${items.length === 0 && toPositiveNumber(specialCredits, 0) <= 0 ? `<p class="status">Sin docencia asignada.</p>` : `
                 <div class="public-assignment-tree">

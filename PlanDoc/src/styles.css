@@ -462,6 +462,24 @@ button.mini {
     white-space: nowrap;
 }
 
+.public-professor-assignment-card {
+    border-color: #b8d8d3;
+    border-left: 4px solid var(--accent);
+    background: #f3faf9;
+    box-shadow: 0 2px 8px rgba(15, 118, 110, 0.08);
+}
+
+.public-professor-assignment-card > header {
+    margin: -12px -12px 0;
+    padding: 11px 12px 10px;
+    border-bottom-color: #cfe5e1;
+    background: #e8f5f3;
+}
+
+.public-professor-assignment-card > header > strong {
+    color: #115e59;
+}
+
 .public-assignment-tree,
 .public-assignment-subjects,
 .public-reparto-category-subjects {
