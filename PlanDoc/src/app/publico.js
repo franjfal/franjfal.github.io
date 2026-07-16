@@ -944,7 +944,7 @@ function renderProfessorAssignmentCard(state, { profesor, items, specialCredits,
                                         <ul>
                                             ${subjectItems.map(({ item, subgrupo }) => `
                                                 <li>
-                                                    <span><small>Grupo</small>${escapeHtml(subgrupo.nombre || subgrupo.id)}</span>
+                                                    <span><small>Grupo</small>${escapeHtml(subgrupo.nombre || subgrupo.id)} (${escapeHtml(idiomaLabel(subgrupo.idioma))})</span>
                                                     <strong>${toPositiveNumber(item.creditos, 0)} horas</strong>
                                                 </li>
                                             `).join("")}
@@ -976,7 +976,7 @@ function renderSubjectAssignmentCard({ asignatura, items }) {
             ${items.length === 0 ? `<p class="status">Sin profesores asignados.</p>` : `
                 <ul>
                     ${items.map(({ item, profesor, subgrupo }) => `
-                        <li><span><small>Grupo</small>${escapeHtml(subgrupo.nombre || subgrupo.id)} · ${escapeHtml(professorName(profesor))}</span><strong>${toPositiveNumber(item.creditos, 0)} horas</strong></li>
+                        <li><span><small>Grupo</small>${escapeHtml(subgrupo.nombre || subgrupo.id)} (${escapeHtml(idiomaLabel(subgrupo.idioma))}) · ${escapeHtml(professorName(profesor))}</span><strong>${toPositiveNumber(item.creditos, 0)} horas</strong></li>
                     `).join("")}
                 </ul>
             `}
