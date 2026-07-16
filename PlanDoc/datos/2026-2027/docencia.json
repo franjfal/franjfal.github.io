@@ -214,7 +214,7 @@
     "asignaturaId": "34158",
     "subgrupoId": "A-P2",
     "profesorId": "carmen-fernandez",
-    "creditos": 34
+    "creditos": 29
   },
   {
     "id": "doc_w2m4z3t4",
@@ -1201,6 +1201,13 @@
     "asignaturaId": "34787",
     "subgrupoId": "A-L1",
     "profesorId": "susituto1",
+    "creditos": 5
+  },
+  {
+    "id": "doc_spsbmle4",
+    "asignaturaId": "34158",
+    "subgrupoId": "A-P2",
+    "profesorId": "francisco-falco",
     "creditos": 5
   }
 ]
