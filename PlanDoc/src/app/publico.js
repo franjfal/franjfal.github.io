@@ -805,8 +805,58 @@ function assignmentsBySubject(state) {
                 subgrupo: asignatura.subgrupos?.find((s) => s.id === item.subgrupoId),
             }))
             .filter((entry) => entry.profesor && entry.subgrupo);
-        return { asignatura, items };
+        return { asignatura, items, categoria: categoriaNombre(state, asignatura.categoriaId) };
     });
+}
+
+function assignmentHours(items) {
+    return Number(items.reduce((sum, { item }) => sum + toPositiveNumber(item.creditos, 0), 0).toFixed(2));
+}
+
+function professorAssignmentTree(state, items) {
+    const categories = new Map();
+    items.forEach((entry) => {
+        const categoryId = entry.asignatura.categoriaId || "__sin_categoria__";
+        if (!categories.has(categoryId)) {
+            categories.set(categoryId, {
+                id: categoryId,
+                nombre: categoriaNombre(state, entry.asignatura.categoriaId),
+                asignaturas: new Map(),
+            });
+        }
+        const category = categories.get(categoryId);
+        if (!category.asignaturas.has(entry.asignatura.id)) {
+            category.asignaturas.set(entry.asignatura.id, {
+                asignatura: entry.asignatura,
+                items: [],
+            });
+        }
+        category.asignaturas.get(entry.asignatura.id).items.push(entry);
+    });
+
+    return [...categories.values()]
+        .map((category) => ({
+            ...category,
+            asignaturas: [...category.asignaturas.values()]
+                .map((subject) => ({
+                    ...subject,
+                    items: subject.items.sort((a, b) => String(a.subgrupo.nombre || a.subgrupo.id).localeCompare(String(b.subgrupo.nombre || b.subgrupo.id), "es", { numeric: true, sensitivity: "base" })),
+                }))
+                .sort((a, b) => String(a.asignatura.nombre || a.asignatura.id).localeCompare(String(b.asignatura.nombre || b.asignatura.id), "es", { numeric: true, sensitivity: "base" })),
+        }))
+        .sort((a, b) => String(a.nombre).localeCompare(String(b.nombre), "es", { sensitivity: "base" }));
+}
+
+function subjectRowsByCategory(rows) {
+    const categories = new Map();
+    rows.forEach((row) => {
+        const categoryId = row.asignatura.categoriaId || "__sin_categoria__";
+        if (!categories.has(categoryId)) {
+            categories.set(categoryId, { id: categoryId, nombre: row.categoria, rows: [] });
+        }
+        categories.get(categoryId).rows.push(row);
+    });
+    return [...categories.values()].sort((a, b) => String(a.nombre).localeCompare(String(b.nombre), "es", { sensitivity: "base" }));
 }
 
 function renderRepartoTab(state) {
@@ -815,11 +865,23 @@ function renderRepartoTab(state) {
     const rows = byProfessor
         ? assignmentsByProfessor(state).filter(({ profesor, items, specialCredits, targetCredits }) => {
             const specialLabel = toPositiveNumber(specialCredits, 0) > 0 ? "TFG TFM practicas de empresa" : "";
-            const haystack = [professorName(profesor), profesor.id, specialLabel, String(targetCredits), ...items.map(({ asignatura }) => asignatura.nombre)].join(" ").toLowerCase();
+            const haystack = [
+                professorName(profesor),
+                profesor.id,
+                specialLabel,
+                String(targetCredits),
+                ...items.flatMap(({ asignatura, subgrupo }) => [
+                    categoriaNombre(state, asignatura.categoriaId),
+                    asignatura.nombre,
+                    asignatura.codigoReferencia,
+                    subgrupo.nombre,
+                    subgrupo.id,
+                ]),
+            ].join(" ").toLowerCase();
             return !text || haystack.includes(text);
         }).sort((a, b) => professorName(a.profesor).localeCompare(professorName(b.profesor), "es", { sensitivity: "base" }))
         : assignmentsBySubject(state).filter(({ asignatura, items }) => {
-            const haystack = [asignatura.nombre, asignatura.codigoReferencia, ...items.map(({ profesor }) => professorName(profesor))].join(" ").toLowerCase();
+            const haystack = [categoriaNombre(state, asignatura.categoriaId), asignatura.nombre, asignatura.codigoReferencia, ...items.flatMap(({ profesor, subgrupo }) => [professorName(profesor), subgrupo.nombre, subgrupo.id])].join(" ").toLowerCase();
             return !text || haystack.includes(text);
         }).sort((a, b) => String(a.asignatura.nombre || "").localeCompare(String(b.asignatura.nombre || ""), "es", { sensitivity: "base" }));
 
@@ -835,45 +897,86 @@ function renderRepartoTab(state) {
                 </label>
                 <label>
                     Filtrar reparto
-                    <input id="public-reparto-filter" value="${escapeHtml(state.publicRepartoFilter || "")}" placeholder="Profesor, asignatura o codigo" />
+                    <input id="public-reparto-filter" value="${escapeHtml(state.publicRepartoFilter || "")}" placeholder="Profesor, grado, asignatura o grupo" />
                 </label>
             </div>
             <div class="public-reparto-list">
-                ${rows.length === 0 ? `<div class="empty-state-block">No hay reparto visible.</div>` : rows.map((row) => byProfessor ? renderProfessorAssignmentCard(row) : renderSubjectAssignmentCard(row)).join("")}
+                ${rows.length === 0 ? `<div class="empty-state-block">No hay reparto visible.</div>` : byProfessor
+        ? rows.map((row) => renderProfessorAssignmentCard(state, row)).join("")
+        : subjectRowsByCategory(rows).map((category) => `
+                    <section class="public-reparto-category">
+                        <header class="public-reparto-category-header">
+                            <strong>${escapeHtml(category.nombre)}</strong>
+                            <span>${category.rows.length} ${category.rows.length === 1 ? "asignatura" : "asignaturas"}</span>
+                        </header>
+                        <div class="public-reparto-category-subjects">
+                            ${category.rows.map((row) => renderSubjectAssignmentCard(row)).join("")}
+                        </div>
+                    </section>
+                `).join("")}
             </div>
         </section>
     `;
 }
 
-function renderProfessorAssignmentCard({ profesor, items, specialCredits, targetCredits }) {
-    const teachingCredits = Number(items.reduce((sum, { item }) => sum + toPositiveNumber(item.creditos, 0), 0).toFixed(2));
+function renderProfessorAssignmentCard(state, { profesor, items, specialCredits, targetCredits }) {
+    const teachingCredits = assignmentHours(items);
     const total = Number((teachingCredits + toPositiveNumber(specialCredits, 0)).toFixed(2));
+    const tree = professorAssignmentTree(state, items);
     return `
         <article class="public-assignment-card">
             <header><strong>${escapeHtml(professorName(profesor))}</strong><span>${total} horas / ${targetCredits} horas</span></header>
             ${items.length === 0 && toPositiveNumber(specialCredits, 0) <= 0 ? `<p class="status">Sin docencia asignada.</p>` : `
-                <ul>
-                    ${items.map(({ item, asignatura, subgrupo }) => `
-                        <li><span>${escapeHtml(asignatura.nombre)} · ${escapeHtml(subgrupo.nombre || subgrupo.id)}</span><strong>${toPositiveNumber(item.creditos, 0)}</strong></li>
+                <div class="public-assignment-tree">
+                    ${tree.map((category) => `
+                        <section class="public-assignment-category">
+                            <div class="public-assignment-level-heading">
+                                <span><small>Titulación / grado / facultad</small><strong>${escapeHtml(category.nombre)}</strong></span>
+                                <strong>${assignmentHours(category.asignaturas.flatMap((subject) => subject.items))} horas</strong>
+                            </div>
+                            <div class="public-assignment-subjects">
+                                ${category.asignaturas.map(({ asignatura, items: subjectItems }) => `
+                                    <section class="public-assignment-subject">
+                                        <div class="public-assignment-level-heading subject-heading">
+                                            <span><small>Asignatura</small><strong>${escapeHtml(asignatura.nombre || asignatura.id)}</strong></span>
+                                            <strong>${assignmentHours(subjectItems)} horas</strong>
+                                        </div>
+                                        <ul>
+                                            ${subjectItems.map(({ item, subgrupo }) => `
+                                                <li>
+                                                    <span><small>Grupo</small>${escapeHtml(subgrupo.nombre || subgrupo.id)}</span>
+                                                    <strong>${toPositiveNumber(item.creditos, 0)} horas</strong>
+                                                </li>
+                                            `).join("")}
+                                        </ul>
+                                    </section>
+                                `).join("")}
+                            </div>
+                        </section>
                     `).join("")}
                     ${toPositiveNumber(specialCredits, 0) > 0 ? `
-                        <li><span>TFG, TFM y practicas de empresa</span><strong>${toPositiveNumber(specialCredits, 0)}</strong></li>
+                        <section class="public-assignment-category special-assignment-category">
+                            <div class="public-assignment-level-heading">
+                                <span><small>Otros encargos docentes</small><strong>TFG, TFM y prácticas de empresa</strong></span>
+                                <strong>${toPositiveNumber(specialCredits, 0)} horas</strong>
+                            </div>
+                        </section>
                     ` : ""}
-                </ul>
+                </div>
             `}
         </article>
     `;
 }
 
 function renderSubjectAssignmentCard({ asignatura, items }) {
-    const total = Number(items.reduce((sum, { item }) => sum + toPositiveNumber(item.creditos, 0), 0).toFixed(2));
+    const total = assignmentHours(items);
     return `
-        <article class="public-assignment-card">
+        <article class="public-assignment-card public-subject-assignment-card">
             <header><strong>${escapeHtml(asignatura.nombre || asignatura.id)}</strong><span>${total} horas</span></header>
             ${items.length === 0 ? `<p class="status">Sin profesores asignados.</p>` : `
                 <ul>
                     ${items.map(({ item, profesor, subgrupo }) => `
-                        <li><span>${escapeHtml(subgrupo.nombre || subgrupo.id)} · ${escapeHtml(professorName(profesor))}</span><strong>${toPositiveNumber(item.creditos, 0)}</strong></li>
+                        <li><span><small>Grupo</small>${escapeHtml(subgrupo.nombre || subgrupo.id)} · ${escapeHtml(professorName(profesor))}</span><strong>${toPositiveNumber(item.creditos, 0)} horas</strong></li>
                     `).join("")}
                 </ul>
             `}

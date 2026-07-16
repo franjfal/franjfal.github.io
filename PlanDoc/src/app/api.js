@@ -18,14 +18,40 @@ function resolveApiBase() {
 }
 
 const API_BASE = resolveApiBase();
+const AUTH_TOKEN_KEY = "plandoc_auth_token";
+
+function storedAuthToken() {
+    try {
+        return sessionStorage.getItem(AUTH_TOKEN_KEY) || "";
+    } catch {
+        return "";
+    }
+}
+
+function storeAuthToken(token) {
+    try {
+        if (token) {
+            sessionStorage.setItem(AUTH_TOKEN_KEY, token);
+        } else {
+            sessionStorage.removeItem(AUTH_TOKEN_KEY);
+        }
+    } catch {
+        // Cookies remain the primary auth path when sessionStorage is unavailable.
+    }
+}
 
 export async function api(path, options = {}) {
     let res;
     try {
+        const headers = { "content-type": "application/json", ...(options.headers || {}) };
+        const token = storedAuthToken();
+        if (token && !headers.authorization) {
+            headers.authorization = `Bearer ${token}`;
+        }
         res = await fetch(`${API_BASE}${path}`, {
-            credentials: "include",
-            headers: { "content-type": "application/json", ...(options.headers || {}) },
             ...options,
+            credentials: "include",
+            headers,
         });
     } catch (cause) {
         const target = API_BASE || "la misma URL de la web";
@@ -45,6 +71,9 @@ export async function api(path, options = {}) {
         throw err;
     }
     if (!res.ok) {
+        if (res.status === 401) {
+            storeAuthToken("");
+        }
         const err = new Error(body.details || body.error || `HTTP ${res.status}`);
         err.body = body;
         throw err;
@@ -53,10 +82,12 @@ export async function api(path, options = {}) {
 }
 
 export async function login(password) {
-    return api("/api/auth", {
+    const data = await api("/api/auth", {
         method: "POST",
         body: JSON.stringify({ password }),
     });
+    storeAuthToken(data.token || "");
+    return data;
 }
 
 export async function fetchCourses(options = {}) {

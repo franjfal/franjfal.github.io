@@ -462,6 +462,95 @@ button.mini {
     white-space: nowrap;
 }
 
+.public-assignment-tree,
+.public-assignment-subjects,
+.public-reparto-category-subjects {
+    display: grid;
+    gap: 10px;
+}
+
+.public-assignment-tree {
+    margin-top: 10px;
+}
+
+.public-assignment-category,
+.public-reparto-category {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f8fafc;
+}
+
+.public-assignment-level-heading,
+.public-reparto-category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 9px 10px;
+}
+
+.public-assignment-level-heading > span,
+.public-assignment-level-heading small,
+.public-assignment-level-heading > span > strong,
+.public-assignment-card li span,
+.public-assignment-card li small {
+    display: block;
+}
+
+.public-assignment-level-heading small,
+.public-assignment-card li small {
+    margin-bottom: 2px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.public-assignment-subjects {
+    padding: 0 10px 10px 28px;
+}
+
+.public-assignment-subject {
+    border-left: 3px solid #cbd5e1;
+    background: #fff;
+}
+
+.public-assignment-level-heading.subject-heading {
+    padding: 8px 10px;
+}
+
+.public-assignment-subject ul {
+    margin: 0;
+    padding: 0 10px 8px 28px;
+}
+
+.public-assignment-subject li {
+    padding: 6px 0;
+    border-top: 1px solid var(--line);
+}
+
+.special-assignment-category {
+    background: #fff;
+}
+
+.public-reparto-category {
+    padding: 10px;
+}
+
+.public-reparto-category-header {
+    padding: 0 0 10px;
+}
+
+.public-reparto-category-header span {
+    color: var(--muted);
+}
+
+.public-subject-assignment-card {
+    border-radius: 8px;
+}
+
 .public-calendar-tabs {
     justify-content: flex-end;
 }
@@ -1910,6 +1999,26 @@ pre {
     .allocation-progress {
         min-width: 0;
         text-align: left;
+    }
+
+    .public-assignment-level-heading,
+    .public-reparto-category-header,
+    .public-assignment-card li {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .public-assignment-subjects {
+        padding-left: 14px;
+    }
+
+    .public-assignment-subject ul {
+        padding-left: 14px;
+    }
+
+    .public-assignment-level-heading > strong,
+    .public-assignment-card li > strong {
+        white-space: normal;
     }
 
     .app-header,
