@@ -676,7 +676,7 @@
     "asignaturaId": "34156",
     "subgrupoId": "A-P1-2",
     "profesorId": "antonio-galbis",
-    "creditos": 22.5
+    "creditos": 17.5
   },
   {
     "id": "doc_6ajdwnob",
@@ -1208,6 +1208,13 @@
     "asignaturaId": "34158",
     "subgrupoId": "A-P2",
     "profesorId": "francisco-falco",
+    "creditos": 5
+  },
+  {
+    "id": "doc_vzykgy26",
+    "asignaturaId": "34156",
+    "subgrupoId": "A-P1-2",
+    "profesorId": "maria-rueda",
     "creditos": 5
   }
 ]
