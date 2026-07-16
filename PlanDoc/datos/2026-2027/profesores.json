@@ -365,9 +365,9 @@
   },
   {
     "id": "susituto1",
-    "nombre": "Profesor",
-    "apellidos": "Sustituto - 4",
-    "nombreCompleto": "Profesor Sustituto - 4",
+    "nombre": "Cinzia",
+    "apellidos": "Villa",
+    "nombreCompleto": "Cinzia Villa",
     "creditosObjetivo": 120,
     "docenciaAjustable": false,
     "reducciones": []
