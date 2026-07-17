@@ -13,6 +13,21 @@ const app = document.getElementById("app");
 const urlParams = new URLSearchParams(window.location.search);
 state.publicMode = urlParams.get("public") === "1";
 state.selectedCourse = urlParams.get("course") || "";
+const requestedPublicTab = urlParams.get("tab") || "";
+if (["profesores", "asignaturas", "horarios", "reparto"].includes(requestedPublicTab)) {
+    state.publicTab = requestedPublicTab;
+}
+const requestedAsignaturaId = urlParams.get("asignatura") || "";
+const requestedSubgrupoId = urlParams.get("subgrupo") || "";
+if (state.publicMode && requestedAsignaturaId && requestedSubgrupoId) {
+    state.publicTab = "horarios";
+    state.publicHorarioSelectedSubgrupos = {
+        [`${requestedAsignaturaId}::${requestedSubgrupoId}`]: true,
+    };
+    state.publicHorarioExpandedAsignaturas = {
+        [requestedAsignaturaId]: true,
+    };
+}
 if (state.publicMode) {
     document.title = "PlanDoc publico";
     state.isPreparingData = true;

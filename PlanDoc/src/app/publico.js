@@ -1,4 +1,5 @@
 import { calcularReajusteDocente } from "./reajuste.js";
+import { buildUvAsignaturaUrl } from "./asignaturas.js";
 import { bindNoteButtons, escapeHtml, renderNoteButton, toPositiveNumber } from "./utils.js";
 
 const PUBLIC_TABS = [
@@ -84,6 +85,26 @@ function totalHorasAsignatura(asignatura) {
 
 function totalSesionesAsignatura(asignatura) {
     return (asignatura.subgrupos || []).reduce((sum, subgrupo) => sum + sesionesSubgrupo(subgrupo).length, 0);
+}
+
+function publicSubgrupoCalendarUrl(state, asignatura, subgrupo) {
+    const params = new URLSearchParams({
+        public: "1",
+        course: state.selectedCourse || "",
+        tab: "horarios",
+        asignatura: asignatura.id || "",
+        subgrupo: subgrupo.id || "",
+    });
+    return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+}
+
+function renderSubgrupoCalendarLink(state, asignatura, subgrupo) {
+    const label = `${asignatura.nombre || asignatura.id || "Asignatura"} · ${subgrupo.nombre || subgrupo.id || "Subgrupo"}`;
+    return `
+        <a class="mini icon-button web-link-button" href="${escapeHtml(publicSubgrupoCalendarUrl(state, asignatura, subgrupo))}" target="_blank" rel="noopener noreferrer" title="Ver calendario de ${escapeHtml(label)}" aria-label="Ver calendario de ${escapeHtml(label)}">
+            <span class="web-mini-icon" aria-hidden="true"></span>
+        </a>
+    `;
 }
 
 function sesionesSubgrupo(subgrupo) {
@@ -644,11 +665,12 @@ function renderAsignaturasTab(state) {
             <div class="table-shell">
                 <table class="table teacher-table">
                     <thead>
-                        <tr><th>Asignatura</th><th>Codigo</th><th>Titulacion</th><th>Horas</th><th>Repartidas</th><th>Numero de sesiones</th><th>Estado</th></tr>
+                        <tr><th>Asignatura</th><th>Codigo</th><th>Titulacion</th><th>Horas</th><th>Repartidas</th><th>Numero de sesiones</th><th>Estado</th><th aria-label="Web UV"></th></tr>
                     </thead>
                     <tbody>
-                        ${rows.length === 0 ? `<tr><td colspan="7" class="empty-cell">No hay asignaturas visibles.</td></tr>` : rows.map((asignatura) => {
+                        ${rows.length === 0 ? `<tr><td colspan="8" class="empty-cell">No hay asignaturas visibles.</td></tr>` : rows.map((asignatura) => {
         const status = asignaturaStatus(state, asignatura);
+        const uvUrl = buildUvAsignaturaUrl(asignatura, state.selectedCourse);
         return `
                             <tr>
                                 <td>
@@ -663,6 +685,17 @@ function renderAsignaturasTab(state) {
                                 <td><span class="num-pill muted-pill">${status.assigned}</span></td>
                                 <td><span class="num-pill muted-pill">${totalSesionesAsignatura(asignatura)}</span></td>
                                 <td><span class="badge ${status.complete ? "" : "danger-badge"}">${status.complete ? "Completa" : `${status.pending} horas pendientes de repartir`}</span></td>
+                                <td class="table-actions">
+                                    ${uvUrl ? `
+                                        <a class="mini icon-button web-link-button" href="${escapeHtml(uvUrl)}" target="_blank" rel="noopener noreferrer" title="Abrir web UV de ${escapeHtml(asignatura.nombre || asignatura.id || "la asignatura")}" aria-label="Abrir web UV de ${escapeHtml(asignatura.nombre || asignatura.id || "la asignatura")}">
+                                            <span class="web-mini-icon" aria-hidden="true"></span>
+                                        </a>
+                                    ` : `
+                                        <span class="mini icon-button web-link-button disabled" title="No se puede construir el enlace UV de esta asignatura" aria-label="Web UV de asignatura no disponible">
+                                            <span class="web-mini-icon" aria-hidden="true"></span>
+                                        </span>
+                                    `}
+                                </td>
                             </tr>
                         `;
     }).join("")}
@@ -910,7 +943,7 @@ function renderRepartoTab(state) {
                             <span>${category.rows.length} ${category.rows.length === 1 ? "asignatura" : "asignaturas"}</span>
                         </header>
                         <div class="public-reparto-category-subjects">
-                            ${category.rows.map((row) => renderSubjectAssignmentCard(row)).join("")}
+                            ${category.rows.map((row) => renderSubjectAssignmentCard(state, row)).join("")}
                         </div>
                     </section>
                 `).join("")}
@@ -945,7 +978,10 @@ function renderProfessorAssignmentCard(state, { profesor, items, specialCredits,
                                             ${subjectItems.map(({ item, subgrupo }) => `
                                                 <li>
                                                     <span><small>Grupo</small>${escapeHtml(subgrupo.nombre || subgrupo.id)} (${escapeHtml(idiomaLabel(subgrupo.idioma))})</span>
-                                                    <strong>${toPositiveNumber(item.creditos, 0)} horas</strong>
+                                                    <span class="public-assignment-row-actions">
+                                                        ${renderSubgrupoCalendarLink(state, asignatura, subgrupo)}
+                                                        <strong>${toPositiveNumber(item.creditos, 0)} horas</strong>
+                                                    </span>
                                                 </li>
                                             `).join("")}
                                         </ul>
@@ -968,7 +1004,7 @@ function renderProfessorAssignmentCard(state, { profesor, items, specialCredits,
     `;
 }
 
-function renderSubjectAssignmentCard({ asignatura, items }) {
+function renderSubjectAssignmentCard(state, { asignatura, items }) {
     const total = assignmentHours(items);
     return `
         <article class="public-assignment-card public-subject-assignment-card">
@@ -976,7 +1012,13 @@ function renderSubjectAssignmentCard({ asignatura, items }) {
             ${items.length === 0 ? `<p class="status">Sin profesores asignados.</p>` : `
                 <ul>
                     ${items.map(({ item, profesor, subgrupo }) => `
-                        <li><span><small>Grupo</small>${escapeHtml(subgrupo.nombre || subgrupo.id)} (${escapeHtml(idiomaLabel(subgrupo.idioma))}) · ${escapeHtml(professorName(profesor))}</span><strong>${toPositiveNumber(item.creditos, 0)} horas</strong></li>
+                        <li>
+                            <span><small>Grupo</small>${escapeHtml(subgrupo.nombre || subgrupo.id)} (${escapeHtml(idiomaLabel(subgrupo.idioma))}) · ${escapeHtml(professorName(profesor))}</span>
+                            <span class="public-assignment-row-actions">
+                                ${renderSubgrupoCalendarLink(state, asignatura, subgrupo)}
+                                <strong>${toPositiveNumber(item.creditos, 0)} horas</strong>
+                            </span>
+                        </li>
                     `).join("")}
                 </ul>
             `}

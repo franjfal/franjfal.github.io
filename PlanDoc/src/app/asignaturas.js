@@ -667,7 +667,7 @@ function guessAnyoFinCurso(selectedCourse) {
     return "";
 }
 
-function buildUvAsignaturaUrl(asignatura, selectedCourse) {
+export function buildUvAsignaturaUrl(asignatura, selectedCourse) {
     const codigoAsignatura = String(asignatura?.codigoReferencia || "").trim();
     const idTitulacion = String(asignatura?.codigoTitulacion || "").trim();
     const anyoFinCurso = guessAnyoFinCurso(selectedCourse);

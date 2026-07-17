@@ -462,6 +462,32 @@ button.mini {
     white-space: nowrap;
 }
 
+.public-assignment-row-actions {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    flex: 0 0 auto;
+}
+
+.public-assignment-row-actions .web-link-button {
+    width: 28px;
+    height: 28px;
+}
+
+.public-assignment-row-actions .web-mini-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.public-assignment-row-actions .web-mini-icon::before {
+    height: 16px;
+}
+
+.public-assignment-row-actions .web-mini-icon::after {
+    width: 16px;
+}
+
 .public-professor-assignment-card {
     border-color: #b8d8d3;
     border-left: 4px solid var(--accent);
