@@ -871,15 +871,8 @@
     "id": "doc_e0m4zgit",
     "asignaturaId": "34187",
     "subgrupoId": "C-U1",
-    "profesorId": "daniel-santacreu",
-    "creditos": 7
-  },
-  {
-    "id": "doc_cqy4rpb4",
-    "asignaturaId": "34187",
-    "subgrupoId": "C-U2",
-    "profesorId": "daniel-santacreu",
-    "creditos": 7
+    "profesorId": "susituto1",
+    "creditos": 4
   },
   {
     "id": "doc_u3tioyg8",
@@ -1176,20 +1169,6 @@
     "creditos": 12
   },
   {
-    "id": "doc_qqlkbf2w",
-    "asignaturaId": "34187",
-    "subgrupoId": "D-U1",
-    "profesorId": "marcos-solera",
-    "creditos": 1
-  },
-  {
-    "id": "doc_zx4bhpom",
-    "asignaturaId": "34187",
-    "subgrupoId": "D-U1",
-    "profesorId": "oscar-roldan",
-    "creditos": 2
-  },
-  {
     "id": "doc_yq5isf1k",
     "asignaturaId": "34187",
     "subgrupoId": "D-U2",
@@ -1216,5 +1195,33 @@
     "subgrupoId": "A-P1-2",
     "profesorId": "maria-rueda",
     "creditos": 5
+  },
+  {
+    "id": "doc_sn23q1am",
+    "asignaturaId": "34187",
+    "subgrupoId": "C-U1",
+    "profesorId": "oscar-roldan",
+    "creditos": 2
+  },
+  {
+    "id": "doc_g466bt02",
+    "asignaturaId": "34187",
+    "subgrupoId": "C-U1",
+    "profesorId": "marcos-solera",
+    "creditos": 1
+  },
+  {
+    "id": "doc_jtv1s3jt",
+    "asignaturaId": "34187",
+    "subgrupoId": "C-U2",
+    "profesorId": "susituto1",
+    "creditos": 4
+  },
+  {
+    "id": "doc_gzgb8efo",
+    "asignaturaId": "34187",
+    "subgrupoId": "C-U2",
+    "profesorId": "oscar-roldan",
+    "creditos": 3
   }
 ]
