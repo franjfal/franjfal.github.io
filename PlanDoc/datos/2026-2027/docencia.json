@@ -1209,5 +1209,12 @@
     "subgrupoId": "D-U1",
     "profesorId": "daniel-santacreu",
     "creditos": 7
+  },
+  {
+    "id": "doc_2kg19cof",
+    "asignaturaId": "34187",
+    "subgrupoId": "D-U2",
+    "profesorId": "daniel-santacreu",
+    "creditos": 7
   }
 ]
