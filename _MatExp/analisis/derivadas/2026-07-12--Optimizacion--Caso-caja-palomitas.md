@@ -18,6 +18,7 @@ sidebar:
   nav:
     - calculus-casebook
 ---
+<link rel="stylesheet" href="{{ site.baseurl }}/assets/MatExp/calculus-cases/calculus-cases.css">
 <link rel="stylesheet" href="{{ site.baseurl }}/assets/MatExp/analisis/derivadas/caja-palomitas-optima/popcorn-box.css">
 
 Una cadena de cines anuncia su nuevo envase con una afirmación rotunda: **«La caja de mayor capacidad: más palomitas con el mismo cartón»**. Una asociación de consumidores denuncia un posible fraude a gran escala que podría afectar a cientos o miles de clientes. La policía encarga a un equipo de consultoría técnico-forense que analice de forma independiente la evidencia matemática y emita el dictamen final.
@@ -30,12 +31,12 @@ $$
 
 El generador calcula la caja óptima para formatos habituales o para una hoja personalizada. Después crea la plantilla a escala real, el anuncio, la reclamación, la patente ficticia, los dossieres independientes de la Asociación de Consumidores, el cine y la consultoría policial, además de la solución reservada al profesorado.
 
-<section class="popcorn-case" data-lang="es" aria-label="Generador del caso de la caja de palomitas">
-  <section class="pc-workspace">
-    <form id="popcorn-form" class="pc-panel">
+<section class="cc-case popcorn-case" data-lang="es" aria-label="Generador del caso de la caja de palomitas">
+  <section class="cc-workspace">
+    <form id="popcorn-form" class="cc-panel">
       <h2>Configura el caso</h2>
-      <div class="pc-form-grid">
-        <label class="pc-full">Tamaño del papel
+      <div class="cc-form-grid">
+        <label class="cc-full">Tamaño del papel
           <select id="paper-size" name="paperSize">
             <option value="a5">A5 — 210 × 148 mm</option>
             <option value="a4" selected>A4 — 297 × 210 mm</option>
@@ -53,48 +54,48 @@ El generador calcula la caja óptima para formatos habituales o para una hoja pe
         <label>Ancho (mm)
           <input id="paper-width" name="paperWidth" type="number" min="50" max="1000" step="0.1" value="210" required>
         </label>
-        <p class="pc-full pc-help">Para evitar plantillas inmanejables, cada lado debe medir entre 50 y 1000 mm.</p>
-        <label class="pc-full">Nombre de la empresa
+        <p class="cc-full cc-help">Para evitar plantillas inmanejables, cada lado debe medir entre 50 y 1000 mm.</p>
+        <label class="cc-full">Nombre de la empresa
           <input id="company-name" name="companyName" type="text" value="Cines Horizonte" maxlength="80" required>
         </label>
-        <label class="pc-full">Curso o grupo
+        <label class="cc-full">Curso o grupo
           <input id="course-name" name="courseName" type="text" value="Cálculo diferencial" maxlength="100" required>
         </label>
       </div>
-      <div class="pc-actions">
+      <div class="cc-actions">
         <button id="popcorn-generate" type="submit">Generar actividad</button>
-        <button id="popcorn-clear" class="pc-secondary" type="button">Limpiar descargas</button>
+        <button id="popcorn-clear" class="cc-secondary" type="button">Limpiar descargas</button>
       </div>
-      <div id="popcorn-status" class="pc-status" role="status" aria-live="polite"></div>
+      <div id="popcorn-status" class="cc-status" role="status" aria-live="polite"></div>
     </form>
 
-    <aside class="pc-panel" aria-labelledby="popcorn-summary-title">
+    <aside class="cc-panel" aria-labelledby="popcorn-summary-title">
       <h2 id="popcorn-summary-title">Caja óptima calculada</h2>
-      <ul id="popcorn-summary" class="pc-summary"></ul>
-      <div id="popcorn-preview" class="pc-preview"></div>
-      <div class="pc-legend">
-        <span><i class="pc-swatch cut"></i>Recortar</span>
-        <span><i class="pc-swatch fold"></i>Plegar</span>
+      <ul id="popcorn-summary" class="cc-summary"></ul>
+      <div id="popcorn-preview" class="cc-preview"></div>
+      <div class="cc-legend">
+        <span><i class="cc-swatch cut"></i>Recortar</span>
+        <span><i class="cc-swatch fold"></i>Plegar</span>
       </div>
     </aside>
   </section>
 
-  <section id="popcorn-documents" class="pc-panel pc-documents pc-hidden" aria-labelledby="popcorn-documents-title">
+  <section id="popcorn-documents" class="cc-panel cc-documents cc-hidden" aria-labelledby="popcorn-documents-title">
     <h2 id="popcorn-documents-title">Documentos de la actividad</h2>
-    <p class="pc-download-note">Usa los paquetes por rol para repartir la actividad. En cada pestaña, el ZIP rojo descarga todos los archivos de esa sección; los iconos permiten ver o descargar cada archivo. La plantilla usa una página PDF del tamaño exacto de la hoja: imprímela al 100 %, sin «ajustar a página».</p>
-    <div class="pc-tabs" role="tablist" aria-label="Tipos de documentos">
-      <button class="pc-tab-button" type="button" role="tab" aria-selected="true" aria-controls="popcorn-panel-bundles" data-pc-tab-target="popcorn-panel-bundles">Paquetes por rol</button>
-      <button class="pc-tab-button" type="button" role="tab" aria-selected="false" aria-controls="popcorn-panel-separate" data-pc-tab-target="popcorn-panel-separate">Documentos separados</button>
-      <a id="popcorn-complete-pdf" class="pc-tab-button pc-complete pc-hidden" href="#" download>PDF completo</a>
+    <p class="cc-download-note">Usa los paquetes por rol para repartir la actividad. En cada pestaña, el ZIP rojo descarga todos los archivos de esa sección; los iconos permiten ver o descargar cada archivo. La plantilla usa una página PDF del tamaño exacto de la hoja: imprímela al 100 %, sin «ajustar a página».</p>
+    <div class="cc-tabs" role="tablist" aria-label="Tipos de documentos">
+      <button class="cc-tab-button" type="button" role="tab" aria-selected="true" aria-controls="popcorn-panel-bundles" data-cc-tab-target="popcorn-panel-bundles">Paquetes por rol</button>
+      <button class="cc-tab-button" type="button" role="tab" aria-selected="false" aria-controls="popcorn-panel-separate" data-cc-tab-target="popcorn-panel-separate">Documentos separados</button>
+      <a id="popcorn-complete-pdf" class="cc-tab-button cc-complete cc-hidden" href="#" download>PDF completo</a>
     </div>
-    <div id="popcorn-panel-bundles" class="pc-tab-panel" role="tabpanel">
-      <div id="popcorn-bundles" class="pc-bundles"></div>
+    <div id="popcorn-panel-bundles" class="cc-tab-panel" role="tabpanel">
+      <div id="popcorn-bundles" class="cc-file-list"></div>
     </div>
-    <div id="popcorn-panel-separate" class="pc-tab-panel" role="tabpanel" hidden>
-      <div id="popcorn-doc-list" class="pc-doc-list"></div>
+    <div id="popcorn-panel-separate" class="cc-tab-panel" role="tabpanel" hidden>
+      <div id="popcorn-doc-list" class="cc-file-list"></div>
     </div>
   </section>
-  <noscript><p class="pc-noscript">Este generador necesita JavaScript para calcular la caja y crear los PDF.</p></noscript>
+  <noscript><p class="cc-noscript">Este generador necesita JavaScript para calcular la caja y crear los PDF.</p></noscript>
 </section>
 
 ## Por qué el corte generado es óptimo
@@ -123,4 +124,4 @@ Los documentos de publicidad, reclamación y patente son **ficticios y exclusiva
 
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<script src="{{ site.baseurl }}/assets/MatExp/analisis/derivadas/caja-palomitas-optima/popcorn-box-generator.js?v=20260713-three-teams"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/derivadas/caja-palomitas-optima/popcorn-box-generator.js?v=20261003b"></script>

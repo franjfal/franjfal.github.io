@@ -53,8 +53,8 @@
       docList: document.getElementById("popcorn-doc-list"),
       bundles: document.getElementById("popcorn-bundles"),
       completePdf: document.getElementById("popcorn-complete-pdf"),
-      tabButtons: Array.from(document.querySelectorAll("[data-pc-tab-target]")),
-      tabPanels: Array.from(document.querySelectorAll(".pc-tab-panel")),
+      tabButtons: Array.from(document.querySelectorAll("[data-cc-tab-target]")),
+      tabPanels: Array.from(document.querySelectorAll(".cc-tab-panel")),
       generate: document.getElementById("popcorn-generate"),
       clear: document.getElementById("popcorn-clear")
     });
@@ -66,7 +66,7 @@
     });
     els.form.addEventListener("submit", generate);
     els.clear.addEventListener("click", clearFiles);
-    els.tabButtons.forEach((button) => button.addEventListener("click", () => activateTab(button.dataset.pcTabTarget)));
+    els.tabButtons.forEach((button) => button.addEventListener("click", () => activateTab(button.dataset.ccTabTarget)));
     applyPreset();
   }
 
@@ -88,7 +88,7 @@
       setStatus("");
     } catch (error) {
       els.summary.innerHTML = "";
-      els.preview.innerHTML = `<p class="pc-error">${escapeHtml(error.message)}</p>`;
+      els.preview.innerHTML = `<p class="cc-error">${escapeHtml(error.message)}</p>`;
       setStatus(error.message, true);
     }
   }
@@ -569,40 +569,41 @@
     return common[id] || [];
   }
 
+  // Case-file house style shared with Ciudad Delta and with the student documents of the book
+  // (navy CaseBlue headings, rules and table headers; CaseOrange markers; serif body).
+  const CC = { blue: [32, 80, 110], orange: [155, 80, 30], ink: [28, 30, 34], muted: [112, 112, 112], rule: [155, 155, 155], grid: [200, 203, 206], tint: [242, 246, 249] };
+
   function createWriter(doc) {
     const margin = 18;
     const bottom = 18;
     let y = 18;
     function ensure(h) { if (y + h > doc.internal.pageSize.getHeight() - bottom) { doc.addPage("a4", "portrait"); y = 18; } }
     function lines(text, width = 174) { return doc.splitTextToSize(String(text), width); }
+    const body = (size = 10.5) => doc.setFont("times", "normal").setFontSize(size).setTextColor(...CC.ink);
     return {
       title(title, kicker, banner) {
-        if (banner) {
-          doc.addImage(banner, "JPEG", 0, 0, 210, 38.15, undefined, "FAST");
-          doc.setTextColor(11, 96, 127).setFont("helvetica", "bold").setFontSize(9).text(kicker.toUpperCase(), margin, 47);
-          doc.setTextColor(32, 42, 61).setFontSize(20).text(lines(title, 170), margin, 57);
-          y = 69;
-          return;
-        }
-        doc.setFillColor(19, 133, 174).rect(0, 0, 210, 35, "F");
-        doc.setTextColor(255).setFont("helvetica", "bold").setFontSize(9).text(kicker.toUpperCase(), margin, 11);
-        doc.setFontSize(20).text(lines(title, 170), margin, 21);
-        y = 43; doc.setTextColor(32, 42, 61);
+        let top = 14;
+        if (banner) { doc.addImage(banner, "JPEG", 0, 0, 210, 38.15, undefined, "FAST"); top = 46; }
+        doc.setFont("helvetica", "normal").setFontSize(7.5).setTextColor(...CC.muted).text(kicker.toUpperCase(), margin, top);
+        doc.setDrawColor(...CC.blue).setLineWidth(0.35).line(margin, top + 2.2, 192, top + 2.2).setLineWidth(0.2);
+        doc.setFont("helvetica", "bold").setFontSize(18).setTextColor(...CC.ink);
+        const ls = lines(title, 174);
+        doc.text(ls, margin, top + 10.5);
+        y = top + 10.5 + (ls.length - 1) * 7.2 + 8;
       },
       meta(rows) {
-        doc.setFontSize(8.5);
-        rows.forEach(([label, value]) => { doc.setFont("helvetica", "bold").text(`${label}:`, margin, y); doc.setFont("helvetica", "normal").text(lines(value, 135), margin + 31, y); y += 5; });
+        rows.forEach(([label, value]) => { doc.setFont("helvetica", "bold").setFontSize(8.5).setTextColor(...CC.muted).text(`${label}`, margin, y); doc.setFont("helvetica", "normal").setTextColor(...CC.ink).text(lines(value, 135), margin + 31, y); y += 5; });
         y += 3;
       },
-      heading(text) { ensure(12); doc.setTextColor(11, 96, 127).setFont("helvetica", "bold").setFontSize(13).text(lines(text), margin, y); y += 8; doc.setTextColor(32, 42, 61); },
-      paragraph(text) { const ls = lines(text); ensure(ls.length * 5 + 4); doc.setFont("helvetica", "normal").setFontSize(10).setTextColor(45, 49, 55).text(ls, margin, y); y += ls.length * 5 + 4; },
-      bullets(items) { items.forEach((item) => { const ls = lines(item, 166); ensure(ls.length * 5 + 3); doc.setFillColor(231, 121, 36).circle(margin + 1.5, y - 1.2, 1.1, "F"); doc.setFont("helvetica", "normal").setFontSize(10).setTextColor(45, 49, 55).text(ls, margin + 6, y); y += ls.length * 5 + 3; }); y += 2; },
-      formula(text) { const ls = lines(text, 160); ensure(ls.length * 7 + 10); doc.setFillColor(247, 242, 229).roundedRect(margin, y - 4, 174, ls.length * 7 + 6, 2, 2, "F"); doc.setFont("courier", "bold").setFontSize(10.5).setTextColor(32, 42, 61).text(ls, 23, y + 2); y += ls.length * 7 + 8; },
-      table(headers, rows, widths) { const rowH = 10; ensure((rows.length + 1) * rowH + 5); let x = margin; doc.setFontSize(7.5); headers.forEach((h, i) => { doc.setFillColor(19, 133, 174).setDrawColor(255).rect(x, y, widths[i], rowH, "FD"); doc.setTextColor(255).setFont("helvetica", "bold").text(lines(h, widths[i] - 3), x + 1.5, y + 4); x += widths[i]; }); y += rowH; rows.forEach((row) => { x = margin; row.forEach((cell, i) => { doc.setFillColor(255).setDrawColor(210).rect(x, y, widths[i], rowH, "FD"); doc.setTextColor(45).setFont("helvetica", "normal").text(lines(cell, widths[i] - 3), x + 1.5, y + 4); x += widths[i]; }); y += rowH; }); y += 5; },
-      answerLines(count) { ensure(count * 7 + 4); doc.setDrawColor(190); for (let i = 0; i < count; i += 1) { doc.line(margin, y, 192, y); y += 7; } y += 3; },
+      heading(text) { ensure(12); doc.setTextColor(...CC.blue).setFont("helvetica", "bold").setFontSize(12.5).text(lines(text), margin, y); y += 7.5; },
+      paragraph(text) { body(); const ls = lines(text); ensure(ls.length * 4.9 + 4); body().text(ls, margin, y); y += ls.length * 4.9 + 4; },
+      bullets(items) { items.forEach((item) => { body(); const ls = lines(item, 166); ensure(ls.length * 4.9 + 3); doc.setFillColor(...CC.orange).rect(margin + 0.6, y - 2.2, 1.8, 1.8, "F"); body().text(ls, margin + 6, y); y += ls.length * 4.9 + 3; }); y += 2; },
+      formula(text) { const ls = lines(text, 160); ensure(ls.length * 7 + 10); doc.setFillColor(...CC.tint).rect(margin, y - 4, 174, ls.length * 7 + 6, "F"); doc.setFillColor(...CC.blue).rect(margin, y - 4, 1.2, ls.length * 7 + 6, "F"); doc.setFont("courier", "bold").setFontSize(10.5).setTextColor(...CC.ink).text(ls, 23, y + 2); y += ls.length * 7 + 8; },
+      table(headers, rows, widths) { const rowH = 10; ensure((rows.length + 1) * rowH + 5); let x = margin; doc.setFontSize(7.5).setLineWidth(0.15); headers.forEach((h, i) => { doc.setFillColor(...CC.blue).setDrawColor(...CC.blue).rect(x, y, widths[i], rowH, "FD"); doc.setTextColor(255).setFont("helvetica", "bold").text(lines(h, widths[i] - 3), x + 1.5, y + 4); x += widths[i]; }); y += rowH; rows.forEach((row) => { x = margin; row.forEach((cell, i) => { doc.setFillColor(255).setDrawColor(...CC.grid).rect(x, y, widths[i], rowH, "FD"); doc.setTextColor(...CC.ink).setFont("helvetica", "normal").text(lines(cell, widths[i] - 3), x + 1.5, y + 4); x += widths[i]; }); y += rowH; }); y += 5; },
+      answerLines(count) { ensure(count * 7 + 4); doc.setDrawColor(...CC.grid); for (let i = 0; i < count; i += 1) { doc.line(margin, y, 192, y); y += 7; } y += 3; },
       templateDiagram(d) { ensure(82); const maxW = 150, maxH = 72, scale = Math.min(maxW / d.L, maxH / d.W), w = d.L * scale, h = d.W * scale, x0 = (210 - w) / 2, c = d.x * scale; doc.setFillColor(255, 250, 240).setDrawColor(32, 42, 61).rect(x0, y, w, h, "FD"); doc.setDrawColor(19, 133, 174).setLineDashPattern([2, 1.5], 0); doc.line(x0 + c, y, x0 + c, y + h); doc.line(x0 + w - c, y, x0 + w - c, y + h); doc.line(x0, y + c, x0 + w, y + c); doc.line(x0, y + h - c, x0 + w, y + h - c); doc.setLineDashPattern([], 0).setDrawColor(231, 121, 36); [[x0,y],[x0+w-c,y],[x0,y+h-c],[x0+w-c,y+h-c]].forEach(([x1,y1]) => { doc.line(x1,y1,x1+c,y1+c); doc.line(x1+c,y1,x1,y1+c); }); y += h + 9; },
       pageBreak() { doc.addPage("a4", "portrait"); y = 18; },
-      footerAll(label) { const pages = doc.getNumberOfPages(); for (let p = 1; p <= pages; p += 1) { doc.setPage(p); const h = doc.internal.pageSize.getHeight(); doc.setDrawColor(220).line(margin, h - 12, 192, h - 12); doc.setFont("helvetica", "normal").setFontSize(7.5).setTextColor(100).text(`${label} · ${t("Material educativo ficticio", "Fictional educational material")}`, margin, h - 7); doc.text(`${p}/${pages}`, 192, h - 7, { align: "right" }); } }
+      footerAll(label) { const pages = doc.getNumberOfPages(); for (let p = 1; p <= pages; p += 1) { doc.setPage(p); const h = doc.internal.pageSize.getHeight(); doc.setDrawColor(...CC.rule).setLineWidth(0.2).line(margin, h - 12, 192, h - 12); doc.setFont("helvetica", "normal").setFontSize(7.5).setTextColor(...CC.muted).text(`${label} · Calculus Cases · ${t("Material educativo ficticio", "Fictional educational material")}`, margin, h - 7); doc.text(`${p}/${pages}`, 192, h - 7, { align: "right" }); } }
     };
   }
 
@@ -612,9 +613,9 @@
     for (let p = 1; p <= pages; p += 1) {
       doc.setPage(p);
       const h = doc.internal.pageSize.getHeight();
-      doc.setDrawColor(220).line(margin, h - 12, 192, h - 12);
-      doc.setFont("helvetica", "normal").setFontSize(7.5).setTextColor(100)
-        .text(`${label} · ${t("Material educativo ficticio", "Fictional educational material")}`, margin, h - 7);
+      doc.setDrawColor(...CC.rule).setLineWidth(0.2).line(margin, h - 12, 192, h - 12);
+      doc.setFont("helvetica", "normal").setFontSize(7.5).setTextColor(...CC.muted)
+        .text(`${label} · Calculus Cases · ${t("Material educativo ficticio", "Fictional educational material")}`, margin, h - 7);
       doc.text(`${p}/${pages}`, 192, h - 7, { align: "right" });
     }
   }
@@ -630,21 +631,21 @@
     all.forEach((file) => { file.url = URL.createObjectURL(file.blob); state.urls.push(file.url); });
     els.completePdf.href = complete.url;
     els.completePdf.download = complete.fileName;
-    els.completePdf.classList.remove("pc-hidden");
+    els.completePdf.classList.remove("cc-hidden");
     els.bundles.innerHTML = [bundleZip, ...bundles].map((file, index) => fileRow(file, index === 0)).join("");
     els.docList.innerHTML = fileRow(separateZip, true) + DOCS.map((spec) => {
       const file = files.find((item) => item.id === spec.id);
       const title = spec.teacher ? `${spec.title} · ${t("Profesorado", "Teacher only")}` : spec.title;
       return fileRow(file, false, title);
     }).join("");
-    els.documents.classList.remove("pc-hidden");
+    els.documents.classList.remove("cc-hidden");
     activateTab("popcorn-panel-bundles");
   }
 
   function fileRow(file, primary, titleOverride) {
     const title = titleOverride || file.label;
     const safeTitle = escapeHtml(title);
-    return `<div class="pc-file-row${primary ? " pc-primary" : ""}"><span class="pc-file-title">${safeTitle}</span><span class="pc-file-actions"><a class="pc-file-icon" href="${file.url}" target="_blank" rel="noopener" title="${t("Ver", "View")} ${safeTitle}" aria-label="${t("Ver", "View")} ${safeTitle}">${iconEye()}</a><a class="pc-file-icon" href="${file.url}" download="${escapeHtml(file.fileName)}" title="${t("Descargar", "Download")} ${safeTitle}" aria-label="${t("Descargar", "Download")} ${safeTitle}">${iconDownload()}</a></span></div>`;
+    return `<div class="cc-file-row${primary ? " cc-primary" : ""}"><span class="cc-file-title">${safeTitle}</span><span class="cc-file-actions"><a class="cc-file-icon" href="${file.url}" target="_blank" rel="noopener" title="${t("Ver", "View")} ${safeTitle}" aria-label="${t("Ver", "View")} ${safeTitle}">${iconEye()}</a><a class="cc-file-icon" href="${file.url}" download="${escapeHtml(file.fileName)}" title="${t("Descargar", "Download")} ${safeTitle}" aria-label="${t("Descargar", "Download")} ${safeTitle}">${iconDownload()}</a></span></div>`;
   }
 
   function iconEye() {
@@ -661,22 +662,22 @@
     if (els.docList) els.docList.innerHTML = "";
     if (els.bundles) els.bundles.innerHTML = "";
     if (els.completePdf) {
-      els.completePdf.classList.add("pc-hidden");
+      els.completePdf.classList.add("cc-hidden");
       els.completePdf.removeAttribute("href");
       els.completePdf.removeAttribute("download");
     }
-    if (els.documents) els.documents.classList.add("pc-hidden");
+    if (els.documents) els.documents.classList.add("cc-hidden");
   }
 
   function activateTab(targetId) {
     els.tabButtons.forEach((button) => {
-      button.setAttribute("aria-selected", String(button.dataset.pcTabTarget === targetId));
+      button.setAttribute("aria-selected", String(button.dataset.ccTabTarget === targetId));
     });
     els.tabPanels.forEach((panel) => { panel.hidden = panel.id !== targetId; });
   }
 
   function setBusy(busy) { els.generate.disabled = busy; els.generate.textContent = busy ? t("Generando…", "Generating…") : t("Generar actividad", "Generate activity"); }
-  function setStatus(message, error) { els.status.textContent = message; els.status.classList.toggle("pc-error", Boolean(error)); }
+  function setStatus(message, error) { els.status.textContent = message; els.status.classList.toggle("cc-error", Boolean(error)); }
   function fmt(value, decimals) { return new Intl.NumberFormat(isEnglish ? "en-US" : "es-ES", { maximumFractionDigits: decimals, minimumFractionDigits: decimals }).format(value); }
   function clean(value) { return String(value || "").trim().replace(/\s+/g, " "); }
   function stem(value) { return clean(value).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "") || "document"; }

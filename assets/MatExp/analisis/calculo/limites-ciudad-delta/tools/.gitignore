@@ -1,0 +1,6 @@
+# Originals from the image generator (~3 MB each) and local testing files stay out of the site repo.
+raw/
+incoming/
+harness-*.html
+receiver.html
+__pycache__/

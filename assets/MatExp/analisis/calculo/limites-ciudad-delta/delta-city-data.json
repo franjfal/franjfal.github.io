@@ -1,0 +1,1999 @@
+{
+ "version": "2026-10-03",
+ "names": {
+  "es": "Ciudad Delta",
+  "en": "Delta City"
+ },
+ "model": {
+  "domain": [
+   0,
+   12
+  ],
+  "pieces": [
+   {
+    "kind": "quadratic",
+    "a": 1,
+    "from": 0,
+    "to": 2,
+    "closedFrom": true,
+    "closedTo": true,
+    "tex": "t^2",
+    "road": "PU"
+   },
+   {
+    "kind": "linear",
+    "m": 1,
+    "b": 2,
+    "from": 2,
+    "to": 8,
+    "closedFrom": false,
+    "closedTo": false,
+    "tex": "t+2",
+    "road": "AV"
+   },
+   {
+    "kind": "osc",
+    "c": 11,
+    "A": 1,
+    "p": 10,
+    "from": 8,
+    "to": 10,
+    "closedFrom": true,
+    "closedTo": false,
+    "tex": "11+\\sin\\left(\\frac{\\pi}{10-t}\\right)",
+    "road": "LB"
+   },
+   {
+    "kind": "pole",
+    "c": 10,
+    "k": 4,
+    "p": 12,
+    "from": 10,
+    "to": 12,
+    "closedFrom": true,
+    "closedTo": false,
+    "tex": "10+\\frac{4}{12-t}",
+    "road": "AU"
+   }
+  ],
+  "recordOverrides": [
+   {
+    "t": 6,
+    "value": 12,
+    "camera": "RN-1",
+    "teams": [
+     "B"
+    ]
+   },
+   {
+    "t": 8,
+    "value": 10,
+    "camera": "EN-S",
+    "teams": [
+     "C"
+    ]
+   }
+  ]
+ },
+ "tunnel": {
+  "from": 3,
+  "to": 5,
+  "riverCota": 6
+ },
+ "map": {
+  "image": {
+   "es": "map/delta-map-es.jpg",
+   "en": "map/delta-map-en.jpg"
+  },
+  "frame": {
+   "x0": -1.0,
+   "x1": 12.6,
+   "y0": -2.0,
+   "y1": 31.0
+  },
+  "pixels": {
+   "width": 4080,
+   "height": 2475
+  },
+  "metres": {
+   "perMinute": 400,
+   "perCota": 100
+  },
+  "insets": {
+   "tunnel": {
+    "frame": {
+     "x0": 1.35,
+     "x1": 5.4,
+     "y0": 2.9,
+     "y1": 7.9
+    },
+    "image": {
+     "es": "map/inset-tunnel-es.jpg",
+     "en": "map/inset-tunnel-en.jpg"
+    }
+   },
+   "avenue": {
+    "frame": {
+     "x0": 5.15,
+     "x1": 7.15,
+     "y0": 6.6,
+     "y1": 12.9
+    },
+    "image": {
+     "es": "map/inset-avenue-es.jpg",
+     "en": "map/inset-avenue-en.jpg"
+    }
+   },
+   "labyrinth": {
+    "frame": {
+     "x0": 7.75,
+     "x1": 10.45,
+     "y0": 9.3,
+     "y1": 12.7
+    },
+    "image": {
+     "es": "map/inset-labyrinth-es.jpg",
+     "en": "map/inset-labyrinth-en.jpg"
+    }
+   }
+  }
+ },
+ "views": [
+  {
+   "id": "port",
+   "image": "views/port.jpg",
+   "title": {
+    "es": "El puerto y la Carretera del Puerto",
+    "en": "The harbour and Harbour Road"
+   }
+  },
+  {
+   "id": "lonja",
+   "image": "views/lonja.jpg",
+   "title": {
+    "es": "Glorieta de la Lonja",
+    "en": "Fish Market Roundabout"
+   }
+  },
+  {
+   "id": "river",
+   "image": "views/river.jpg",
+   "title": {
+    "es": "Río Delta y portales del túnel",
+    "en": "Delta River and tunnel portals"
+   }
+  },
+  {
+   "id": "avenue",
+   "image": "views/avenue.jpg",
+   "title": {
+    "es": "Avenida Diagonal",
+    "en": "Diagonal Avenue"
+   }
+  },
+  {
+   "id": "labyrinth",
+   "image": "views/labyrinth.jpg",
+   "title": {
+    "es": "El Laberinto entre las dos rondas",
+    "en": "The Labyrinth between the two ring roads"
+   }
+  },
+  {
+   "id": "motorway",
+   "image": "views/motorway.jpg",
+   "title": {
+    "es": "Autovía del Norte y ferrocarril",
+    "en": "North Motorway and railway"
+   }
+  }
+ ],
+ "roads": {
+  "PU": [
+   "Carretera del Puerto",
+   "Harbour Road"
+  ],
+  "LO": [
+   "Glorieta de la Lonja",
+   "Fish Market Roundabout"
+  ],
+  "AV": [
+   "Avenida Diagonal",
+   "Diagonal Avenue"
+  ],
+  "TU": [
+   "Túnel del Río",
+   "River Tunnel"
+  ],
+  "RN": [
+   "Ronda Norte",
+   "North Ring Road"
+  ],
+  "RS": [
+   "Ronda Sur",
+   "South Ring Road"
+  ],
+  "EN": [
+   "Cuesta del Enlace",
+   "Link Hill"
+  ],
+  "LB": [
+   "Calle del Laberinto",
+   "Labyrinth Street"
+  ],
+  "PL": [
+   "Plaza del Laberinto",
+   "Labyrinth Square"
+  ],
+  "AU": [
+   "Autovía del Norte",
+   "North Motorway"
+  ]
+ },
+ "cameras": [
+  {
+   "id": "PU-1",
+   "road": "PU",
+   "x": 0.5,
+   "y": 0.25,
+   "view": "rear",
+   "note": "port gate, harbour road leaving the docks",
+   "image": "photos/pu-1.jpg",
+   "plate": {
+    "quad": [
+     [
+      911.8,
+      619.3
+     ],
+     [
+      1026.8,
+      617.5
+     ],
+     [
+      1028.5,
+      642.4
+     ],
+     [
+      913.5,
+      644.3
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "PU-2",
+   "road": "PU",
+   "x": 1.0,
+   "y": 1.0,
+   "view": "front",
+   "note": "harbour road curving between warehouses",
+   "image": "photos/pu-2.jpg",
+   "plate": {
+    "quad": [
+     [
+      481.0,
+      650.7
+     ],
+     [
+      593.0,
+      648.5
+     ],
+     [
+      593.0,
+      672.2
+     ],
+     [
+      481.0,
+      674.7
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "PU-3",
+   "road": "PU",
+   "x": 1.5,
+   "y": 2.25,
+   "view": "rear",
+   "note": "harbour road, first residential blocks",
+   "image": "photos/pu-3.jpg",
+   "plate": {
+    "quad": [
+     [
+      844.0,
+      661.4
+     ],
+     [
+      937.0,
+      658.5
+     ],
+     [
+      937.0,
+      678.6
+     ],
+     [
+      844.0,
+      681.6
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "PU-4",
+   "road": "PU",
+   "x": 1.9,
+   "y": 3.61,
+   "view": "front",
+   "note": "approach to the Fish Market Roundabout",
+   "image": "photos/pu-4.jpg",
+   "plate": {
+    "quad": [
+     [
+      890.4,
+      700.4
+     ],
+     [
+      977.0,
+      698.6
+     ],
+     [
+      977.0,
+      717.0
+     ],
+     [
+      890.4,
+      717.0
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "LO-1",
+   "road": "LO",
+   "x": 1.95,
+   "y": 3.8025,
+   "view": "front",
+   "note": "entry of the roundabout",
+   "image": "photos/lo-1.jpg",
+   "plate": {
+    "quad": [
+     [
+      510.0,
+      634.5
+     ],
+     [
+      589.0,
+      632.5
+     ],
+     [
+      589.0,
+      649.5
+     ],
+     [
+      510.5,
+      651.5
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "LO-2",
+   "road": "LO",
+   "x": 2.0,
+   "y": 4.0,
+   "view": "side",
+   "note": "central island of the roundabout",
+   "image": "photos/lo-2.jpg",
+   "plate": {
+    "quad": [
+     [
+      979.0,
+      653.9
+     ],
+     [
+      1053.6,
+      651.7
+     ],
+     [
+      1055.5,
+      668.3
+     ],
+     [
+      980.9,
+      670.4
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "LO-3",
+   "road": "LO",
+   "x": 2.05,
+   "y": 4.05,
+   "view": "rear",
+   "note": "exit of the roundabout onto the avenue",
+   "image": "photos/lo-3.jpg",
+   "plate": {
+    "quad": [
+     [
+      857.0,
+      599.7
+     ],
+     [
+      929.0,
+      602.1
+     ],
+     [
+      929.0,
+      618.4
+     ],
+     [
+      857.0,
+      615.5
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "AV-1",
+   "road": "AV",
+   "x": 2.2,
+   "y": 4.2,
+   "view": "rear",
+   "note": "avenue towards the river tunnel",
+   "image": "photos/av-1.jpg",
+   "plate": {
+    "quad": [
+     [
+      820.0,
+      663.6
+     ],
+     [
+      895.0,
+      665.7
+     ],
+     [
+      895.0,
+      682.5
+     ],
+     [
+      820.0,
+      679.3
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "TU-S",
+   "road": "TU",
+   "x": 3.0,
+   "y": 5.0,
+   "view": "rear",
+   "note": "south portal of the river tunnel",
+   "image": "photos/tu-s.jpg",
+   "plate": {
+    "quad": [
+     [
+      734.0,
+      683.0
+     ],
+     [
+      802.0,
+      684.9
+     ],
+     [
+      802.0,
+      699.5
+     ],
+     [
+      734.0,
+      697.9
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "TU-N",
+   "road": "TU",
+   "x": 5.0,
+   "y": 7.0,
+   "view": "front",
+   "note": "north portal of the river tunnel",
+   "image": "photos/tu-n.jpg",
+   "plate": {
+    "quad": [
+     [
+      765.0,
+      670.8
+     ],
+     [
+      836.0,
+      673.8
+     ],
+     [
+      836.0,
+      689.5
+     ],
+     [
+      765.5,
+      686.0
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "AV-2",
+   "road": "AV",
+   "x": 5.5,
+   "y": 7.5,
+   "view": "rear",
+   "note": "avenue north of the river",
+   "image": "photos/av-2.jpg",
+   "plate": {
+    "quad": [
+     [
+      878.0,
+      657.5
+     ],
+     [
+      945.0,
+      659.3
+     ],
+     [
+      945.0,
+      674.1
+     ],
+     [
+      878.0,
+      672.4
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "AV-3",
+   "road": "AV",
+   "x": 5.95,
+   "y": 7.95,
+   "view": "front",
+   "note": "avenue, shops",
+   "image": "photos/av-3.jpg",
+   "plate": {
+    "quad": [
+     [
+      463.0,
+      653.3
+     ],
+     [
+      561.0,
+      649.9
+     ],
+     [
+      561.0,
+      670.5
+     ],
+     [
+      463.0,
+      674.1
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "AV-4",
+   "road": "AV",
+   "x": 6.0,
+   "y": 8.0,
+   "view": "rear",
+   "note": "avenue, median pole",
+   "image": "photos/av-4.jpg",
+   "plate": {
+    "quad": [
+     [
+      983.4,
+      661.2
+     ],
+     [
+      1051.4,
+      663.1
+     ],
+     [
+      1050.8,
+      677.5
+     ],
+     [
+      982.7,
+      675.9
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "AV-5",
+   "road": "AV",
+   "x": 6.05,
+   "y": 8.05,
+   "view": "front",
+   "note": "avenue, shops",
+   "image": "photos/av-5.jpg",
+   "plate": {
+    "quad": [
+     [
+      664.0,
+      587.3
+     ],
+     [
+      735.0,
+      584.3
+     ],
+     [
+      735.0,
+      600.2
+     ],
+     [
+      664.0,
+      602.6
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "AV-6",
+   "road": "AV",
+   "x": 6.5,
+   "y": 8.5,
+   "view": "rear",
+   "note": "avenue, tram stop",
+   "image": "photos/av-6.jpg",
+   "plate": {
+    "quad": [
+     [
+      882.0,
+      663.1
+     ],
+     [
+      952.0,
+      665.4
+     ],
+     [
+      952.0,
+      680.4
+     ],
+     [
+      882.0,
+      678.6
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "AV-7",
+   "road": "AV",
+   "x": 7.5,
+   "y": 9.5,
+   "view": "front",
+   "note": "avenue before the link hill",
+   "image": "photos/av-7.jpg",
+   "plate": {
+    "quad": [
+     [
+      643.0,
+      700.0
+     ],
+     [
+      731.0,
+      700.0
+     ],
+     [
+      731.0,
+      719.0
+     ],
+     [
+      643.0,
+      719.0
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "AV-8",
+   "road": "AV",
+   "x": 7.95,
+   "y": 9.95,
+   "view": "rear",
+   "note": "end of the avenue, foot of the link hill",
+   "image": "photos/av-8.jpg",
+   "plate": {
+    "quad": [
+     [
+      797.0,
+      708.3
+     ],
+     [
+      878.0,
+      712.2
+     ],
+     [
+      878.0,
+      729.8
+     ],
+     [
+      797.0,
+      725.4
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "RN-1",
+   "road": "RN",
+   "x": 6.0,
+   "y": 12.0,
+   "view": "rear",
+   "note": "north ring road, 19th-century facades",
+   "image": "photos/rn-1.jpg",
+   "plate": {
+    "quad": [
+     [
+      842.7,
+      677.7
+     ],
+     [
+      923.3,
+      674.7
+     ],
+     [
+      923.3,
+      691.7
+     ],
+     [
+      843.0,
+      694.7
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "EN-S",
+   "road": "EN",
+   "x": 8.0,
+   "y": 10.0,
+   "view": "rear",
+   "note": "foot of the link hill",
+   "image": "photos/en-s.jpg",
+   "plate": {
+    "quad": [
+     [
+      890.4,
+      579.5
+     ],
+     [
+      979.4,
+      577.7
+     ],
+     [
+      980.3,
+      596.3
+     ],
+     [
+      891.3,
+      598.3
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "EN-N",
+   "road": "EN",
+   "x": 8.0,
+   "y": 12.0,
+   "view": "front",
+   "note": "top of the link hill, on the north ring road",
+   "image": "photos/en-n.jpg",
+   "plate": {
+    "quad": [
+     [
+      534.7,
+      716.3
+     ],
+     [
+      637.7,
+      722.0
+     ],
+     [
+      637.7,
+      745.3
+     ],
+     [
+      534.7,
+      739.0
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "LB-1",
+   "road": "LB",
+   "x": 8.05,
+   "y": 11.999189,
+   "view": "rear",
+   "note": "entrance of Labyrinth Street",
+   "image": "photos/lb-1.jpg",
+   "plate": {
+    "quad": [
+     [
+      931.0,
+      601.3
+     ],
+     [
+      997.7,
+      607.3
+     ],
+     [
+      997.0,
+      621.7
+     ],
+     [
+      930.0,
+      616.7
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "LB-2",
+   "road": "LB",
+   "x": 8.5,
+   "y": 11.866025,
+   "view": "rear",
+   "note": "Labyrinth Street descending",
+   "image": "photos/lb-2.jpg",
+   "plate": {
+    "quad": [
+     [
+      827.0,
+      614.3
+     ],
+     [
+      915.0,
+      620.0
+     ],
+     [
+      914.0,
+      639.0
+     ],
+     [
+      825.8,
+      632.5
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "LB-3",
+   "road": "LB",
+   "x": 9.0,
+   "y": 11.0,
+   "view": "front",
+   "note": "Labyrinth Street, tight bend",
+   "image": "photos/lb-3.jpg",
+   "plate": {
+    "quad": [
+     [
+      866.3,
+      676.0
+     ],
+     [
+      949.7,
+      672.3
+     ],
+     [
+      950.0,
+      690.0
+     ],
+     [
+      866.7,
+      694.0
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "LB-4",
+   "road": "RS",
+   "x": 9.333333,
+   "y": 10.0,
+   "view": "front",
+   "note": "alley mouth on the south ring road",
+   "image": "photos/lb-4.jpg",
+   "plate": {
+    "quad": [
+     [
+      609.0,
+      563.6
+     ],
+     [
+      696.0,
+      559.1
+     ],
+     [
+      696.0,
+      578.4
+     ],
+     [
+      609.0,
+      582.8
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "LB-5",
+   "road": "RN",
+   "x": 9.6,
+   "y": 12.0,
+   "view": "front",
+   "note": "alley mouth on the north ring road",
+   "image": "photos/lb-5.jpg",
+   "plate": {
+    "quad": [
+     [
+      690.0,
+      561.2
+     ],
+     [
+      767.0,
+      564.4
+     ],
+     [
+      767.0,
+      581.3
+     ],
+     [
+      690.0,
+      577.8
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "LB-6",
+   "road": "RS",
+   "x": 9.714286,
+   "y": 10.0,
+   "view": "front",
+   "note": "alley mouth on the south ring road",
+   "image": "photos/lb-6.jpg",
+   "plate": {
+    "quad": [
+     [
+      731.3,
+      585.3
+     ],
+     [
+      810.0,
+      581.7
+     ],
+     [
+      810.3,
+      598.7
+     ],
+     [
+      731.3,
+      602.3
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "LB-7",
+   "road": "RN",
+   "x": 9.777778,
+   "y": 12.0,
+   "view": "front",
+   "note": "alley mouth on the north ring road",
+   "image": "photos/lb-7.jpg",
+   "plate": {
+    "quad": [
+     [
+      656.0,
+      615.5
+     ],
+     [
+      723.0,
+      610.3
+     ],
+     [
+      723.3,
+      625.3
+     ],
+     [
+      656.0,
+      631.0
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "PL-1",
+   "road": "PL",
+   "x": 10.0,
+   "y": 12.0,
+   "view": "rear",
+   "note": "north corner of Labyrinth Square, motorway slip road",
+   "image": "photos/pl-1.jpg",
+   "plate": {
+    "quad": [
+     [
+      982.4,
+      642.9
+     ],
+     [
+      1055.8,
+      646.0
+     ],
+     [
+      1054.6,
+      661.6
+     ],
+     [
+      981.2,
+      658.3
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "AU-1",
+   "road": "AU",
+   "x": 10.1,
+   "y": 12.105263,
+   "view": "rear",
+   "note": "motorway slip road",
+   "image": "photos/au-1.jpg",
+   "plate": {
+    "quad": [
+     [
+      1001.0,
+      594.5
+     ],
+     [
+      1076.0,
+      596.2
+     ],
+     [
+      1076.0,
+      612.3
+     ],
+     [
+      1001.0,
+      610.5
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "AU-2",
+   "road": "AU",
+   "x": 10.5,
+   "y": 12.666667,
+   "view": "rear",
+   "note": "motorway leaving the city",
+   "image": "photos/au-2.jpg",
+   "plate": {
+    "quad": [
+     [
+      1049.0,
+      585.0
+     ],
+     [
+      1128.0,
+      585.0
+     ],
+     [
+      1128.0,
+      603.0
+     ],
+     [
+      1049.0,
+      601.6
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "AU-3",
+   "road": "AU",
+   "x": 11.0,
+   "y": 14.0,
+   "view": "front",
+   "note": "motorway gantry",
+   "image": "photos/au-3.jpg",
+   "plate": {
+    "quad": [
+     [
+      765.3,
+      723.5
+     ],
+     [
+      845.8,
+      723.5
+     ],
+     [
+      845.8,
+      741.0
+     ],
+     [
+      765.3,
+      741.0
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "AU-4",
+   "road": "AU",
+   "x": 11.5,
+   "y": 18.0,
+   "view": "rear",
+   "note": "motorway beside the railway",
+   "image": "photos/au-4.jpg",
+   "plate": {
+    "quad": [
+     [
+      744.0,
+      659.0
+     ],
+     [
+      841.0,
+      659.0
+     ],
+     [
+      841.0,
+      679.0
+     ],
+     [
+      744.0,
+      679.0
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "AU-5",
+   "road": "AU",
+   "x": 11.8,
+   "y": 30.0,
+   "view": "rear",
+   "note": "motorway at the edge of the map",
+   "image": "photos/au-5.jpg",
+   "plate": {
+    "quad": [
+     [
+      841.0,
+      681.0
+     ],
+     [
+      913.0,
+      681.0
+     ],
+     [
+      913.0,
+      696.0
+     ],
+     [
+      841.0,
+      696.0
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  },
+  {
+   "id": "AU-6",
+   "road": "AU",
+   "x": 11.9,
+   "y": 50.0,
+   "view": "rear",
+   "note": "city-limit gantry, outside the map",
+   "image": "photos/au-6.jpg",
+   "plate": {
+    "quad": [
+     [
+      835.0,
+      695.0
+     ],
+     [
+      912.0,
+      695.0
+     ],
+     [
+      912.0,
+      711.0
+     ],
+     [
+      835.0,
+      711.0
+     ]
+    ],
+    "size": [
+     1536,
+     1024
+    ]
+   }
+  }
+ ],
+ "slots": [
+  {
+   "order": 1,
+   "code": "F-23",
+   "t": 0.5,
+   "value": 0.25,
+   "teams": {
+    "A": {
+     "camera": "PU-1",
+     "car": "target"
+    },
+    "B": {
+     "camera": "PU-1",
+     "car": "target"
+    },
+    "C": {
+     "camera": "PU-1",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 2,
+   "code": "F-07",
+   "t": 1.0,
+   "value": 1.0,
+   "teams": {
+    "A": {
+     "camera": "PU-2",
+     "car": "target"
+    },
+    "B": {
+     "camera": "PU-2",
+     "car": "target"
+    },
+    "C": {
+     "camera": "PU-2",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 3,
+   "code": "F-31",
+   "t": 1.5,
+   "value": 2.25,
+   "teams": {
+    "A": {
+     "camera": "PU-3",
+     "car": "target"
+    },
+    "B": {
+     "camera": "PU-3",
+     "car": "target"
+    },
+    "C": {
+     "camera": "PU-3",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 4,
+   "code": "F-14",
+   "t": 1.9,
+   "value": 3.61,
+   "teams": {
+    "A": {
+     "camera": "PU-4",
+     "car": "target"
+    },
+    "B": {
+     "camera": "PU-4",
+     "car": "target"
+    },
+    "C": {
+     "camera": "PU-4",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 5,
+   "code": "F-02",
+   "t": 1.95,
+   "value": 3.8025,
+   "teams": {
+    "A": {
+     "camera": "LO-1",
+     "car": "target"
+    },
+    "B": {
+     "camera": "LO-1",
+     "car": "target"
+    },
+    "C": {
+     "camera": "LO-1",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 6,
+   "code": "F-27",
+   "t": 2.0,
+   "value": 4.0,
+   "teams": {
+    "A": {
+     "camera": "LO-2",
+     "car": "target"
+    },
+    "B": {
+     "camera": "LO-2",
+     "car": "target"
+    },
+    "C": {
+     "camera": "LO-2",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 7,
+   "code": "F-10",
+   "t": 2.05,
+   "value": 4.05,
+   "teams": {
+    "A": {
+     "camera": "LO-3",
+     "car": "target"
+    },
+    "B": {
+     "camera": "LO-3",
+     "car": "target"
+    },
+    "C": {
+     "camera": "LO-3",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 8,
+   "code": "F-04",
+   "t": 2.2,
+   "value": 4.2,
+   "teams": {
+    "A": {
+     "camera": "AV-1",
+     "car": "target"
+    },
+    "B": {
+     "camera": "AV-1",
+     "car": "target"
+    },
+    "C": {
+     "camera": "AV-1",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 9,
+   "code": "F-18",
+   "t": 3.0,
+   "value": 5.0,
+   "teams": {
+    "A": {
+     "camera": "TU-S",
+     "car": "target"
+    },
+    "B": {
+     "camera": "TU-S",
+     "car": "target"
+    },
+    "C": {
+     "camera": "TU-S",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 10,
+   "code": "F-05",
+   "t": 5.0,
+   "value": 7.0,
+   "teams": {
+    "A": {
+     "camera": "TU-N",
+     "car": "target"
+    },
+    "B": {
+     "camera": "TU-N",
+     "car": "target"
+    },
+    "C": {
+     "camera": "TU-N",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 11,
+   "code": "F-29",
+   "t": 5.5,
+   "value": 7.5,
+   "teams": {
+    "A": {
+     "camera": "AV-2",
+     "car": "target"
+    },
+    "B": {
+     "camera": "AV-2",
+     "car": "target"
+    },
+    "C": {
+     "camera": "AV-2",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 12,
+   "code": "F-12",
+   "t": 5.95,
+   "value": 7.95,
+   "teams": {
+    "A": {
+     "camera": "AV-3",
+     "car": "target"
+    },
+    "B": {
+     "camera": "AV-3",
+     "car": "target"
+    },
+    "C": {
+     "camera": "AV-3",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 13,
+   "code": "F-21",
+   "t": 6.0,
+   "value": 8.0,
+   "teams": {
+    "A": {
+     "camera": "AV-4",
+     "car": "target"
+    },
+    "B": {
+     "camera": "RN-1",
+     "car": "alt"
+    },
+    "C": {
+     "camera": "AV-4",
+     "car": "none"
+    }
+   }
+  },
+  {
+   "order": 14,
+   "code": "F-01",
+   "t": 6.05,
+   "value": 8.05,
+   "teams": {
+    "A": {
+     "camera": "AV-5",
+     "car": "target"
+    },
+    "B": {
+     "camera": "AV-5",
+     "car": "target"
+    },
+    "C": {
+     "camera": "AV-5",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 15,
+   "code": "F-15",
+   "t": 6.5,
+   "value": 8.5,
+   "teams": {
+    "A": {
+     "camera": "AV-6",
+     "car": "target"
+    },
+    "B": {
+     "camera": "AV-6",
+     "car": "target"
+    },
+    "C": {
+     "camera": "AV-6",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 16,
+   "code": "F-16",
+   "t": 7.5,
+   "value": 9.5,
+   "teams": {
+    "A": {
+     "camera": "AV-7",
+     "car": "target"
+    },
+    "B": {
+     "camera": "AV-7",
+     "car": "target"
+    },
+    "C": {
+     "camera": "AV-7",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 17,
+   "code": "F-08",
+   "t": 7.95,
+   "value": 9.95,
+   "teams": {
+    "A": {
+     "camera": "AV-8",
+     "car": "target"
+    },
+    "B": {
+     "camera": "AV-8",
+     "car": "target"
+    },
+    "C": {
+     "camera": "AV-8",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 18,
+   "code": "F-25",
+   "t": 8.0,
+   "value": 12.0,
+   "teams": {
+    "A": {
+     "camera": "EN-N",
+     "car": "target"
+    },
+    "B": {
+     "camera": "EN-N",
+     "car": "target"
+    },
+    "C": {
+     "camera": "EN-S",
+     "car": "alt"
+    }
+   }
+  },
+  {
+   "order": 19,
+   "code": "F-03",
+   "t": 8.05,
+   "value": 11.999189,
+   "teams": {
+    "A": {
+     "camera": "LB-1",
+     "car": "target"
+    },
+    "B": {
+     "camera": "LB-1",
+     "car": "target"
+    },
+    "C": {
+     "camera": "LB-1",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 20,
+   "code": "F-30",
+   "t": 8.5,
+   "value": 11.866025,
+   "teams": {
+    "A": {
+     "camera": "LB-2",
+     "car": "target"
+    },
+    "B": {
+     "camera": "LB-2",
+     "car": "target"
+    },
+    "C": {
+     "camera": "LB-2",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 21,
+   "code": "F-19",
+   "t": 9.0,
+   "value": 11.0,
+   "teams": {
+    "A": {
+     "camera": "LB-3",
+     "car": "target"
+    },
+    "B": {
+     "camera": "LB-3",
+     "car": "target"
+    },
+    "C": {
+     "camera": "LB-3",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 22,
+   "code": "F-11",
+   "t": 9.333333,
+   "value": 10.0,
+   "teams": {
+    "A": {
+     "camera": "LB-4",
+     "car": "target"
+    },
+    "B": {
+     "camera": "LB-4",
+     "car": "target"
+    },
+    "C": {
+     "camera": "LB-4",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 23,
+   "code": "F-22",
+   "t": 9.6,
+   "value": 12.0,
+   "teams": {
+    "A": {
+     "camera": "LB-5",
+     "car": "target"
+    },
+    "B": {
+     "camera": "LB-5",
+     "car": "target"
+    },
+    "C": {
+     "camera": "LB-5",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 24,
+   "code": "F-06",
+   "t": 9.714286,
+   "value": 10.0,
+   "teams": {
+    "A": {
+     "camera": "LB-6",
+     "car": "target"
+    },
+    "B": {
+     "camera": "LB-6",
+     "car": "target"
+    },
+    "C": {
+     "camera": "LB-6",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 25,
+   "code": "F-26",
+   "t": 9.777778,
+   "value": 12.0,
+   "teams": {
+    "A": {
+     "camera": "LB-7",
+     "car": "glare"
+    },
+    "B": {
+     "camera": "LB-7",
+     "car": "target"
+    },
+    "C": {
+     "camera": "LB-7",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 26,
+   "code": "F-32",
+   "t": 10.0,
+   "value": 12.0,
+   "teams": {
+    "A": {
+     "camera": "PL-1",
+     "car": "target"
+    },
+    "B": {
+     "camera": "PL-1",
+     "car": "target"
+    },
+    "C": {
+     "camera": "PL-1",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 27,
+   "code": "F-09",
+   "t": 10.1,
+   "value": 12.105263,
+   "teams": {
+    "A": {
+     "camera": "AU-1",
+     "car": "target"
+    },
+    "B": {
+     "camera": "AU-1",
+     "car": "target"
+    },
+    "C": {
+     "camera": "AU-1",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 28,
+   "code": "F-28",
+   "t": 10.5,
+   "value": 12.666667,
+   "teams": {
+    "A": {
+     "camera": "AU-2",
+     "car": "target"
+    },
+    "B": {
+     "camera": "AU-2",
+     "car": "target"
+    },
+    "C": {
+     "camera": "AU-2",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 29,
+   "code": "F-13",
+   "t": 11.0,
+   "value": 14.0,
+   "teams": {
+    "A": {
+     "camera": "AU-3",
+     "car": "target"
+    },
+    "B": {
+     "camera": "AU-3",
+     "car": "target"
+    },
+    "C": {
+     "camera": "AU-3",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 30,
+   "code": "F-20",
+   "t": 11.5,
+   "value": 18.0,
+   "teams": {
+    "A": {
+     "camera": "AU-4",
+     "car": "target"
+    },
+    "B": {
+     "camera": "AU-4",
+     "car": "target"
+    },
+    "C": {
+     "camera": "AU-4",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 31,
+   "code": "F-24",
+   "t": 11.8,
+   "value": 30.0,
+   "teams": {
+    "A": {
+     "camera": "AU-5",
+     "car": "target"
+    },
+    "B": {
+     "camera": "AU-5",
+     "car": "target"
+    },
+    "C": {
+     "camera": "AU-5",
+     "car": "target"
+    }
+   }
+  },
+  {
+   "order": 32,
+   "code": "F-17",
+   "t": 11.9,
+   "value": 50.0,
+   "teams": {
+    "A": {
+     "camera": "AU-6",
+     "car": "target"
+    },
+    "B": {
+     "camera": "AU-6",
+     "car": "target"
+    },
+    "C": {
+     "camera": "AU-6",
+     "car": "target"
+    }
+   }
+  }
+ ]
+}
