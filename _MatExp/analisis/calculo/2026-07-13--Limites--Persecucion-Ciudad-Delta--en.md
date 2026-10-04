@@ -20,7 +20,7 @@ sidebar:
 ---
 <link rel="stylesheet" href="{{ site.baseurl }}/assets/MatExp/calculus-cases/calculus-cases.css">
 
-A burgundy hatchback drives through the checkpoint at the **Delta City** harbour exit without stopping and crosses the city until it disappears along the north motorway. The patrol cannot keep up with it: all that remains of its route is the record of the plate-reading traffic cameras. The Chief Inspector, a role the teacher takes on, wants to know where the car went and what can be stated with certainty along each stretch. Three teams receive almost identical extracts of that record. Another car of the same model and colour, with a similar plate, drives around the city, and a hurried reading can lead to the wrong conclusion.
+A burgundy hatchback drives through the checkpoint at the **Delta City** harbour exit without stopping and crosses the city until it disappears along the north motorway. The patrol cannot keep up with it: all that remains of its route is the record of the plate-reading traffic cameras. The Chief Inspector, a role the teacher takes on, wants to know where the car went and what can be stated with certainty along each stretch. Three teams receive almost identical extracts of that record. Another car of the same model, in a similar red and with a similar plate, drives around the city, and a hurried reading can lead to the wrong conclusion.
 
 The activity has two phases that are never mixed:
 
@@ -48,7 +48,7 @@ $$
 
 ## Material generator
 
-Choose the city, the date, the start time and the plate of the pursued vehicle. The generator suggests a second, **look-alike** plate with the same format and two or three characters changed, which you can edit. It belongs to the other car, identical in model, colour and appearance. The plates are placed in perspective on every photograph, in the preview and in the PDFs alike.
+Choose the city, the date, the start time and the plate of the pursued vehicle. The generator suggests a second, **look-alike** plate with the same format and two or three characters changed, which you can edit. It belongs to the other car: the same model, in a copper red close to the wanted car's burgundy, but different on careful inspection. The plates are placed in perspective on every photograph, in the preview and in the PDFs alike.
 
 <section class="cc-case" data-case="delta-city" data-lang="en" aria-label="Delta City case generator">
   <section class="cc-workspace">
@@ -133,5 +133,5 @@ The map is stylised so that the route coincides with the graph: that is why it c
 
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-core.js?v=20261003f"></script>
-<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-generator.js?v=20261003f"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-core.js?v=20261004a"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-generator.js?v=20261004a"></script>

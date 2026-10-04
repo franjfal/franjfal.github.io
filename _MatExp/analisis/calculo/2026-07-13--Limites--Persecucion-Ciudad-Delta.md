@@ -20,7 +20,7 @@ sidebar:
 ---
 <link rel="stylesheet" href="{{ site.baseurl }}/assets/MatExp/calculus-cases/calculus-cases.css">
 
-Un turismo burdeos se salta el control de salida del puerto de **Ciudad Delta** y atraviesa la ciudad hasta perderse por la autovía del norte. La patrulla no consigue seguirlo: de su recorrido solo queda el registro de las cámaras de tráfico con lectura de matrículas. El inspector jefe, papel que asume el docente, quiere saber por dónde pasó el coche y qué puede afirmarse con seguridad en cada tramo. Tres equipos reciben extractos casi idénticos de ese registro. Por la ciudad circula otro coche del mismo modelo y color, con una matrícula parecida, y una lectura apresurada puede llevar a la conclusión equivocada.
+Un turismo burdeos se salta el control de salida del puerto de **Ciudad Delta** y atraviesa la ciudad hasta perderse por la autovía del norte. La patrulla no consigue seguirlo: de su recorrido solo queda el registro de las cámaras de tráfico con lectura de matrículas. El inspector jefe, papel que asume el docente, quiere saber por dónde pasó el coche y qué puede afirmarse con seguridad en cada tramo. Tres equipos reciben extractos casi idénticos de ese registro. Por la ciudad circula otro coche del mismo modelo, de un rojo parecido y con una matrícula parecida, y una lectura apresurada puede llevar a la conclusión equivocada.
 
 La actividad tiene dos fases que no se mezclan:
 
@@ -48,7 +48,7 @@ $$
 
 ## Generador de materiales
 
-Elige la ciudad, la fecha, la hora de inicio y la matrícula del vehículo perseguido. El generador propone una segunda matrícula **confundible**, del mismo formato y con dos o tres caracteres cambiados, que puedes editar. Esa es la matrícula del otro coche: idéntico en modelo, color y aspecto. Las matrículas se colocan en perspectiva sobre cada fotografía, igual en la vista previa que en los PDF.
+Elige la ciudad, la fecha, la hora de inicio y la matrícula del vehículo perseguido. El generador propone una segunda matrícula **confundible**, del mismo formato y con dos o tres caracteres cambiados, que puedes editar. Esa es la matrícula del otro coche: el mismo modelo, en un rojo cobrizo parecido al burdeos del coche buscado, pero distinto si se mira con atención. Las matrículas se colocan en perspectiva sobre cada fotografía, igual en la vista previa que en los PDF.
 
 <section class="cc-case" data-case="delta-city" data-lang="es" aria-label="Generador del caso de Ciudad Delta">
   <section class="cc-workspace">
@@ -133,5 +133,5 @@ El plano está estilizado para que la ruta coincida con la gráfica: por eso no 
 
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-core.js?v=20261003f"></script>
-<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-generator.js?v=20261003f"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-core.js?v=20261004a"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-generator.js?v=20261004a"></script>
