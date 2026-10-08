@@ -245,6 +245,11 @@
       const c = document.createElement("canvas"); c.width = img.naturalWidth; c.height = img.naturalHeight;
       c.getContext("2d").drawImage(img, 0, 0); A.banner = c.toDataURL("image/jpeg", 0.88); A.bannerRatio = c.height / c.width;
     } catch (e) { A.banner = null; }
+    try {   // the consultant's handwritten notes: a fixed image per language, placed in the envelope
+      const img = await DC.loadImage(`notes/consultant-notes-${LANG}.jpg`);
+      const c = document.createElement("canvas"); c.width = img.naturalWidth; c.height = img.naturalHeight;
+      c.getContext("2d").drawImage(img, 0, 0); A.notes = c.toDataURL("image/jpeg", 0.9); A.notesRatio = c.height / c.width;
+    } catch (e) { A.notes = null; }
     A.views = {};
     for (const v of d.views || []) {
       try {
@@ -554,7 +559,7 @@
       .map((s) => num(state.data.camera[s.teams.A.camera].y, 3)).join(", ");
   }
   /** Exhibits the consultant had already written up before leaving the case (codes F-01 to F-20). */
-  const CONSULTANT_LAST = 20;
+  const CONSULTANT_LAST = 5;   // a few worked examples; students write up the rest
   const byConsultant = (code) => Number(code.slice(2)) <= CONSULTANT_LAST;
   /** The slot where team A's frame is washed out by a reflection. */
   function glareSlot() { return state.data.slots.find((s) => TEAMS.some((tm) => s.teams[tm].car === "glare")); }
@@ -832,8 +837,8 @@
     w.paragraph(t(
       "La regularidad que anotó el consultor (la columna de la cámara coincide con el instante t) solo estaba comprobada en las fotografías. El modelo la da por buena en todo instante, también entre dos fotografías: en el instante t, el coche está en la columna t y en la cota f(t). Con esa hipótesis, la ruta del coche sobre el plano es la gráfica de f.",
       "The regularity the consultant noted (the camera's column equals the instant t) had only been checked at the photographs. The model accepts it at every instant, also between two photographs: at instant t, the car is at column t and at northing f(t). Under that hypothesis, the car's route on the map is the graph of f."));
-    w.paragraph(t("Este es el modelo M de la cota del coche buscado. Concuerda con todas las fotografías válidas, es decir, con todas las de la matrícula buscada. Sus dos primeros tramos, t² y t + 2, son probablemente los que propusisteis en casa. Los otros dos son nuevos: las fotografías pueden sugerir esos comportamientos, pero ninguna colección finita de fotografías podría determinar estas fórmulas ni establecer su comportamiento límite:",
-      "This is the model M of the wanted car's northing. It agrees with every valid photograph, that is, every photograph of the wanted plate. Its first two pieces, t² and t + 2, are probably the ones you proposed at home. The other two are new: the photographs may suggest these behaviours, but no finite collection of photographs could determine these formulas or establish their limiting behaviour:"));
+    w.paragraph(t("Este es el modelo M de la cota del coche buscado. Lo dejó el consultor en el sobre, con sus notas (página siguiente), donde explica cómo lo dedujo tramo a tramo de las fotografías válidas, las de la matrícula buscada. Sus dos primeros tramos, t² y t + 2, son probablemente los que propusisteis en casa. Los otros dos son nuevos: las fotografías pueden sugerir esos comportamientos, pero ninguna colección finita de fotografías podría determinar estas fórmulas ni establecer su comportamiento límite. Por eso el modelo es una hipótesis del consultor, no una consecuencia de las fotos:",
+      "This is the model M of the wanted car's northing. The consultant left it in the envelope, with his notes (next page), where he explains how he worked it out, stretch by stretch, from the valid photographs, those of the wanted plate. Its first two pieces, t² and t + 2, are probably the ones you proposed at home. The other two are new: the photographs may suggest these behaviours, but no finite collection of photographs could determine these formulas or establish their limiting behaviour. That is why the model is the consultant's hypothesis, not a consequence of the photos:"));
     w.formula(A.formulas.model, 150, 0.25);
     w.table([t("Tramo", "Piece"), t("Vía del plano", "Road on the map")], t([
       ["0 <= t <= 2", "Carretera del Puerto (curva)"], ["2 < t < 8", "Avenida Diagonal (incluye el túnel, 3 < t < 5)"],
@@ -842,6 +847,15 @@
       ["0 <= t <= 2", "Harbour Road (curve)"], ["2 < t < 8", "Diagonal Avenue (includes the tunnel, 3 < t < 5)"],
       ["8 <= t < 10", "Labyrinth Street, between the South Ring Road (northing 10) and the North Ring Road (northing 12)"], ["10 <= t < 12", "North Motorway, hugging the railway line (column 12)"]
     ]), [40, 140]);
+    if (A.notes) {   // the consultant's notes take a page of their own
+      w.page();
+      w.heading(t("Las notas del consultor", "The consultant's notes"));
+      const maxH = w.ph() - w.y - 26;   // stays above the footer band, so the image does not jump to a new page
+      let iw = w.W(), ih = iw * A.notesRatio;
+      if (ih > maxH) { iw *= maxH / ih; ih = maxH; }
+      w.image(A.notes, iw, ih, { alias: "consultant-notes", gap: 0 });
+      w.page();
+    }
     w.callout(t(
       "Un modelo es una idealización. Dentro del túnel, M supone la recta t + 2, y ninguna cámara lo confirma. En la Cuesta del Enlace el cambio de cota se trata como instantáneo, en El Laberinto las curvas se repiten infinitas veces y en la autovía la cota acaba superando cualquier valor. Ningún coche real hace exactamente eso, y precisamente por eso el modelo permite estudiar estos fenómenos con rigor.",
       "A model is an idealisation. Inside the tunnel, M assumes the line t + 2, and no camera confirms it. On Link Hill the change of northing is treated as instantaneous, in The Labyrinth the bends repeat infinitely often and on the motorway the northing eventually exceeds every value. No real car does exactly that, and that is precisely why the model lets us study these phenomena rigorously."), "blue");
@@ -953,12 +967,12 @@
     w.heading(t("Material de esta generación", "Material in this generation"));
     w.bullets(t([
       `Fase 1 (un paquete por estudiante, distinto para cada equipo; se trabaja en casa): apertura, plano con detalles y registro de cámaras, dossier fotográfico (${state.data.slots.length} registros) y hoja de investigación del consultor, a medio completar.`,
-      "Fase 2 (igual para todos, en un sobre que se abre en la segunda clase, después de la coordinación): hipótesis de continuidad, modelo M, registro automático g, gráfica sobre el plano y hoja de trabajo; transparencia para superponer.",
+      "Fase 2 (igual para todos, en un sobre que se abre en la segunda clase, después de la coordinación): hipótesis de continuidad, modelo M con las notas manuscritas del consultor, registro automático g, gráfica sobre el plano y hoja de trabajo; transparencia para superponer.",
       "Profesorado: esta guía, la solución y el inventario.",
       "Imprime el plano y la transparencia al 100 %, sin ajustar a la página, para que coincidan al superponerlos. Las páginas del plano están giradas dentro de una hoja vertical, así que todo el material se imprime en vertical."
     ], [
       `Phase 1 (one packet per student, different for each team; worked at home): opening, map with details and camera register, photographic dossier (${state.data.slots.length} records) and the consultant's half-completed investigation worksheet.`,
-      "Phase 2 (the same for everyone, in an envelope opened in the second class, after the coordination meeting): continuity hypothesis, model M, automatic record g, graph on the map and worksheet; transparency to overlay.",
+      "Phase 2 (the same for everyone, in an envelope opened in the second class, after the coordination meeting): continuity hypothesis, model M with the consultant's handwritten notes, automatic record g, graph on the map and worksheet; transparency to overlay.",
       "Teacher: this guide, the solution and the inventory.",
       "Print the map and the transparency at 100%, without fit-to-page, so that they match when overlaid. The map pages are turned inside a portrait sheet, so all the material prints in portrait."
     ]));
@@ -968,20 +982,20 @@
       "All other exhibits are identical in the three dossiers. With more than three teams, repeat the roles without saying who shares a file."));
     w.heading(t("Organización en dos clases", "Two-class organisation"));
     w.paragraph(t(
-      "La parte mecánica (calcular instantes, localizar cámaras, comprobar matrículas) se hace en casa; la clase se reserva para discutir. La hoja del consultor llega con las pruebas F-01 a F-20 ya pasadas a limpio, de modo que en casa queda poco cálculo y mucha interpretación.",
-      "The mechanical part (computing instants, locating cameras, checking plates) is done at home; class time is kept for discussion. The consultant's worksheet arrives with exhibits F-01 to F-20 already written up, so little calculation and much interpretation is left for home."));
+      "La parte mecánica (calcular instantes, localizar cámaras, comprobar matrículas) se hace en casa; la clase se reserva para discutir. La hoja del consultor llega con las cinco primeras pruebas pasadas a limpio, como ejemplo de cómo se hace; el resto lo completa el equipo.",
+      "The mechanical part (computing instants, locating cameras, checking plates) is done at home; class time is kept for discussion. The consultant's worksheet arrives with the first five exhibits written up, as an example of how it is done; the team completes the rest."));
     w.table([t("Momento", "When"), t("Tiempo", "Time"), t("Acción", "Action")], t([
       ["Clase 1 · final", "15–20 min", "Pregunta de diagnóstico. Lectura de la apertura en voz alta: la persecución, la pregunta del caso, la matrícula buscada, la cuadrícula del plano y la regularidad que anotó el consultor. Formar los equipos y entregar un paquete de la fase 1 a cada estudiante. Normas: el dossier no se enseña a otros equipos y la hoja se trae completa."],
-      ["En casa", "45–60 min por equipo", "Completar el registro del consultor, comprobar todas las matrículas, ordenar las pruebas, rellenar la tabla de zonas, proponer fórmulas para los dos primeros tramos y preparar dos afirmaciones defendibles y un punto indecidible. Conviene repartirse las pruebas dentro del equipo."],
+      ["En casa", "1 h aprox. por equipo", "Completar el registro del consultor, comprobar todas las matrículas, ordenar las pruebas, rellenar la tabla de zonas, proponer fórmulas para los dos primeros tramos y preparar dos afirmaciones defendibles y un punto indecidible. Conviene repartirse las pruebas dentro del equipo."],
       ["Clase 2 · coordinación", "15 min", "Comparar equipos por código de prueba. Descubrir la matrícula confundible, la detección sin imagen y la matrícula ilegible del equipo A; acordar qué valores son válidos, cuáles desconocidos y qué candidatos quedan."],
-      ["Clase 2 · sobre", "20 min", "Abrir el sobre: hipótesis de continuidad y TVI en el túnel; después, el modelo M (cuyos dos primeros tramos ya habrán propuesto) y el registro g. Los equipos rellenan la hoja de trabajo repartiéndose las filas."],
+      ["Clase 2 · sobre", "20 min", "Abrir el sobre: hipótesis de continuidad y TVI en el túnel; después, el modelo M y las notas del consultor que explican cómo lo dedujo (sus dos primeros tramos ya los habrán propuesto ellos), y el registro g. Los equipos rellenan la hoja de trabajo repartiéndose las filas."],
       ["Clase 2 · exposición", "10 min", "Cada equipo explica a la clase el punto donde falló su propio dossier: B, t = 6 (evitable en g); C, t = 8 (salto); A, t -> 10 (oscilación), o el túnel en la ruta introductoria. El docente cierra con lo que quede: el túnel y la asíntota."],
       ["Clase 2 · cierre", "5 min", "Pregunta individual sobre un fotograma que falta (ver solución). Ampliación para casa: la prueba de la oscilación con sucesiones."]
     ], [
       ["Class 1 · end", "15–20 min", "Diagnostic question. Read the opening aloud: the pursuit, the question of the case, the wanted plate, the map grid and the regularity the consultant noted. Form the teams and give a phase 1 packet to every student. Rules: the dossier is not shown to other teams and the worksheet comes back completed."],
-      ["At home", "45–60 min per team", "Complete the consultant's record, check every plate, order the exhibits, fill the zone table, propose formulas for the first two stretches and prepare two defensible statements and one undecidable point. Teams should share out the exhibits."],
+      ["At home", "about 1 h per team", "Complete the consultant's record, check every plate, order the exhibits, fill the zone table, propose formulas for the first two stretches and prepare two defensible statements and one undecidable point. Teams should share out the exhibits."],
       ["Class 2 · coordination", "15 min", "Compare teams by exhibit code. Discover the look-alike plate, the detection without an image and team A's unreadable plate; agree which values are valid, which are unknown and which candidates remain."],
-      ["Class 2 · envelope", "20 min", "Open the envelope: continuity hypothesis and IVT in the tunnel; then the model M (whose first two pieces they will already have proposed) and the record g. Teams fill in the worksheet, sharing out the rows."],
+      ["Class 2 · envelope", "20 min", "Open the envelope: continuity hypothesis and IVT in the tunnel; then the model M and the consultant's notes explaining how he worked it out (they will already have proposed its first two pieces), and the record g. Teams fill in the worksheet, sharing out the rows."],
       ["Class 2 · presentation", "10 min", "Each team explains to the class the point where its own dossier failed: B, t = 6 (removable in g); C, t = 8 (jump); A, t -> 10 (oscillation), or the tunnel in the introductory route. The teacher closes with what is left: the tunnel and the asymptote."],
       ["Class 2 · close", "5 min", "Individual question about a missing frame (see solution). Extension for home: the proof of the oscillation with sequences."]
     ]), [30, 22, 128]);

@@ -24,8 +24,8 @@ A burgundy hatchback drives through the checkpoint at the **Delta City** harbour
 
 The activity has two phases that are never mixed:
 
-1. **Evidence, at home.** Each photograph is a single data point: a camera, a time and a plate. The consultant who was working on the case left his investigation worksheet half done, with the first exhibits already written up; the teams pick it up, check every plate, discard identification errors and propose *candidates* for what happens near each delicate point. Only a photo of the wanted car gives a value \(f(t)\), and finitely many photographs prove no limit.
-2. **Coordination and model, in class.** The teams compare their reports exhibit by exhibit, and then an envelope is opened with an explicit function \(f\) that models the trajectory; its first two pieces are the ones students will have proposed at home. On it, values, one-sided limits and limits are computed, and continuity, removable discontinuity, jump, oscillation and infinite limit are classified. Before the formula, the continuity hypothesis alone lets students apply the intermediate value theorem in the tunnel.
+1. **Evidence, at home.** Each photograph is a single data point: a camera, a time and a plate. The consultant who was working on the case left his investigation worksheet half done, with five exhibits written up as examples; the teams pick it up, check every plate, discard identification errors and propose *candidates* for what happens near each delicate point. Only a photo of the wanted car gives a value \(f(t)\), and finitely many photographs prove no limit.
+2. **Coordination and model, in class.** The teams compare their reports exhibit by exhibit, and then an envelope is opened with an explicit function \(f\) that models the trajectory, together with the consultant's handwritten notes explaining how he worked it out from the photographs; its first two pieces are the ones students will have proposed at home. On it, values, one-sided limits and limits are computed, and continuity, removable discontinuity, jump, oscillation and infinite limit are classified. Before the formula, the continuity hypothesis alone lets students apply the intermediate value theorem in the tunnel.
 
 The map carries a grid of columns, from west to east, and northings (the north coordinate), from south to north, and it is drawn from that function. The consultant noted a regularity: in every photograph of the wanted car, the camera's column equals the minute \(t\). The model assumes that it holds at every instant and, under that hypothesis, the car's route on the map **is** the graph of \(f\).
 
@@ -133,5 +133,5 @@ The map is stylised so that the route coincides with the graph: that is why it c
 
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-core.js?v=20261004a"></script>
-<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-generator.js?v=20261004a"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-core.js?v=20261005a"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-generator.js?v=20261005a"></script>

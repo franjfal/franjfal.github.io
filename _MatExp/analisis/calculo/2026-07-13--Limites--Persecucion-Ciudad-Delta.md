@@ -24,8 +24,8 @@ Un turismo burdeos se salta el control de salida del puerto de **Ciudad Delta** 
 
 La actividad tiene dos fases que no se mezclan:
 
-1. **Evidencia, en casa.** Cada fotografía es un dato puntual: una cámara, una hora y una matrícula. El consultor que llevaba el caso dejó su hoja de investigación a medias, con las primeras pruebas ya pasadas a limpio; los equipos la retoman, comprueban todas las matrículas, descartan los errores de identificación y proponen *candidatos* para lo que ocurre cerca de cada punto delicado. Solo una foto del coche buscado da un valor \(f(t)\), y un número finito de fotografías no demuestra ningún límite.
-2. **Coordinación y modelo, en clase.** Los equipos comparan sus informes prueba a prueba y después se abre un sobre con una función explícita \(f\) que modeliza la trayectoria; sus dos primeros tramos son los que el alumnado habrá propuesto en casa. Sobre ella sí se calculan valores, límites laterales y límites, y se clasifican la continuidad, la discontinuidad evitable, el salto, la oscilación y el límite infinito. Antes de la fórmula, la sola hipótesis de continuidad permite usar el teorema del valor intermedio en el túnel.
+1. **Evidencia, en casa.** Cada fotografía es un dato puntual: una cámara, una hora y una matrícula. El consultor que llevaba el caso dejó su hoja de investigación a medias, con cinco pruebas pasadas a limpio como ejemplo; los equipos la retoman, comprueban todas las matrículas, descartan los errores de identificación y proponen *candidatos* para lo que ocurre cerca de cada punto delicado. Solo una foto del coche buscado da un valor \(f(t)\), y un número finito de fotografías no demuestra ningún límite.
+2. **Coordinación y modelo, en clase.** Los equipos comparan sus informes prueba a prueba y después se abre un sobre con una función explícita \(f\) que modeliza la trayectoria, acompañada de las notas manuscritas del consultor que explican cómo la dedujo de las fotografías; sus dos primeros tramos son los que el alumnado habrá propuesto en casa. Sobre ella sí se calculan valores, límites laterales y límites, y se clasifican la continuidad, la discontinuidad evitable, el salto, la oscilación y el límite infinito. Antes de la fórmula, la sola hipótesis de continuidad permite usar el teorema del valor intermedio en el túnel.
 
 El plano lleva una cuadrícula de columnas, de oeste a este, y de cotas, de sur a norte, y está dibujado a partir de esa función. El consultor dejó anotada una regularidad: en todas las fotografías del coche buscado, la columna de la cámara coincide con el minuto \(t\). El modelo supone que se cumple en todo instante y, con esa hipótesis, la ruta del coche sobre el plano **es** la gráfica de \(f\).
 
@@ -133,5 +133,5 @@ El plano está estilizado para que la ruta coincida con la gráfica: por eso no 
 
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-core.js?v=20261004a"></script>
-<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-generator.js?v=20261004a"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-core.js?v=20261005a"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-generator.js?v=20261005a"></script>
