@@ -2,7 +2,8 @@
 """Single source of truth for the Delta City / Ciudad Delta activity.
 
 Builds ../delta-city-data.json from:
-  * the trajectory model f (the function students study in phase 2),
+  * the trajectory model: two functions of the time t, the column e(t) (west to east) and the
+    northing n(t) (south to north); at instant t the car is at the point (e(t), n(t)) of the map,
   * the camera network (every camera is a point of the tracking map),
   * the photo slots (which camera saw which car at which instant, per team),
   * plate quadrilaterals annotated on each base photograph (plate_quads.json).
@@ -20,6 +21,7 @@ ROOT = os.path.dirname(HERE)
 
 
 # ---------------------------------------------------------------- the model
+# n(t): the northing of the wanted car (the function whose limits and continuity the class studies).
 PIECES = [
     {"kind": "quadratic", "a": 1, "from": 0, "to": 2, "closedFrom": True, "closedTo": True,
      "tex": "t^2", "road": "PU"},
@@ -29,6 +31,16 @@ PIECES = [
      "tex": "11+\\sin\\left(\\frac{\\pi}{10-t}\\right)", "road": "LB"},
     {"kind": "pole", "c": 10, "k": 4, "p": 12, "from": 10, "to": 12, "closedFrom": True, "closedTo": False,
      "tex": "10+\\frac{4}{12-t}", "road": "AU"},
+]
+
+
+# e(t): the column of the wanted car. Continuous, with a different speed on each stretch: quick
+# along Harbour Road, slow in the avenue traffic, quick again from Link Hill to the railway, which
+# it approaches (column 12) as t -> 12. Its corners are at t = 2 and t = 8; it has no breaks.
+EAST = [
+    {"kind": "linear", "m": 1.5, "b": 0, "from": 0, "to": 2, "closedFrom": True, "closedTo": True, "tex": "1.5t"},
+    {"kind": "linear", "m": 0.5, "b": 2, "from": 2, "to": 8, "closedFrom": False, "closedTo": True, "tex": "0.5t+2"},
+    {"kind": "linear", "m": 1.5, "b": -6, "from": 8, "to": 12, "closedFrom": False, "closedTo": False, "tex": "1.5t-6"},
 ]
 
 
@@ -45,17 +57,26 @@ def piece_value(piece, t):
     raise ValueError(k)
 
 
-def f(t):
-    for piece in PIECES:
+def evaluate(pieces, t, name):
+    for piece in pieces:
         lo_ok = t > piece["from"] or (piece["closedFrom"] and t == piece["from"])
         hi_ok = t < piece["to"] or (piece["closedTo"] and t == piece["to"])
         if lo_ok and hi_ok:
             return piece_value(piece, t)
-    raise ValueError(f"f undefined at {t}")
+    raise ValueError(f"{name} undefined at {t}")
+
+
+def n(t):
+    return evaluate(PIECES, t, "n")
+
+
+def e(t):
+    return evaluate(EAST, t, "e")
 
 
 # The automatic plate-reading system (LPR) attached two frames of the
-# look-alike car to the target. Its log g differs from f only there.
+# look-alike car to the target. Its log g of the northing differs from n only there; both
+# look-alike frames were taken in the target's own column, so its log of the column is e.
 RECORD_OVERRIDES = [
     {"t": 6, "value": 12, "camera": "RN-1", "teams": ["B"]},
     {"t": 8, "value": 10, "camera": "EN-S", "teams": ["C"]},
@@ -76,15 +97,17 @@ ROADS = {
 }
 
 # ---------------------------------------------------------------- cameras
-# id, road, x (map column = minute), cota (north coordinate), view, scene note
-def cam(cid, road, x, y, view, note):
-    return {"id": cid, "road": road, "x": round(x, 6), "y": round(y, 6), "view": view, "note": note}
+# id, road, t (instant at which the wanted car passes, or the instant of the look-alike frame),
+# column x = e(t), cota y (north coordinate), view, scene note
+def cam(cid, road, t, y, view, note):
+    return {"id": cid, "road": road, "t": round(t, 6), "x": round(e(t), 6), "y": round(y, 6), "view": view, "note": note}
 
 
-def sv(n):  # touch points of the serpentine with the ring roads: 10 - 2/(2n+1)
-    return 10 - 2 / (2 * n + 1)
+def sv(k):  # instants at which the serpentine touches the ring roads: 10 - 2/(2k+1)
+    return 10 - 2 / (2 * k + 1)
 
 
+f = n   # the cameras of the wanted car sit on its route: cota n(t) at column e(t)
 CAMERAS = [
     cam("PU-1", "PU", 0.5, f(0.5), "rear", "port gate, harbour road leaving the docks"),
     cam("PU-2", "PU", 1.0, f(1.0), "front", "harbour road curving between warehouses"),
@@ -124,11 +147,19 @@ CAMERAS = [
 CAM = {c["id"]: c for c in CAMERAS}
 
 # ---------------------------------------------------------------- map insets and city views
-INSETS = {
-    "tunnel": {"x0": 1.35, "x1": 5.4, "y0": 2.9, "y1": 7.9},
-    "avenue": {"x0": 5.15, "x1": 7.15, "y0": 6.6, "y1": 12.9},
-    "labyrinth": {"x0": 7.75, "x1": 10.45, "y0": 9.3, "y1": 12.7},
+def column(t):
+    """Map column of the point of the route at instant t (identity outside the pursuit, [0, 12])."""
+    return e(t) if 0 <= t < 12 else t
+
+
+# Frames of the details, given by the instants at which the route enters and leaves them.
+INSETS_T = {
+    "tunnel": {"t0": 1.35, "t1": 5.4, "y0": 2.9, "y1": 7.9},
+    "avenue": {"t0": 4.9, "t1": 7.6, "y0": 6.6, "y1": 12.9},
+    "labyrinth": {"t0": 7.45, "t1": 10.45, "y0": 9.3, "y1": 12.7},
 }
+INSETS = {name: {"x0": round(column(v["t0"]), 4), "x1": round(column(v["t1"]), 4), "y0": v["y0"], "y1": v["y1"]}
+          for name, v in INSETS_T.items()}
 VIEWS = []   # establishing views of the city, filled when the images exist (views/*.jpg)
 for vid, es, en in (("port", "El puerto y la Carretera del Puerto", "The harbour and Harbour Road"),
                     ("lonja", "Glorieta de la Lonja", "Fish Market Roundabout"),
@@ -141,7 +172,7 @@ for vid, es, en in (("port", "El puerto y la Carretera del Puerto", "The harbour
 
 # ---------------------------------------------------------------- photo slots
 # Each slot is one instant. Default: every team receives the frame of the
-# target from the camera located at (t, f(t)). Variants override per team.
+# target from the camera located at (e(t), n(t)). Variants override per team.
 TARGET_CAMERAS = [c for c in CAMERAS if c["id"] not in ("RN-1", "EN-S")]
 VARIANTS = {
     6.0: {"A": ("AV-4", "target"), "B": ("RN-1", "alt"), "C": ("AV-4", "none")},
@@ -168,9 +199,9 @@ def build():
     quads_path = os.path.join(HERE, "plate_quads.json")
     quads = json.load(open(quads_path)) if os.path.exists(quads_path) else {}
     slots = []
-    for index, c in enumerate(sorted(TARGET_CAMERAS, key=lambda c: c["x"])):
-        t = c["x"]
-        assert abs(c["y"] - f(t)) < 1e-5, c
+    for index, c in enumerate(sorted(TARGET_CAMERAS, key=lambda c: c["t"])):
+        t = c["t"]
+        assert abs(c["y"] - n(t)) < 1e-5 and abs(c["x"] - e(t)) < 1e-5, c
         per_team = {}
         for team in "ABC":
             camera_id, car = VARIANTS.get(t, {}).get(team, CAMERA_VARIANTS.get(c["id"], {}).get(team, (c["id"], "target")))
@@ -179,14 +210,15 @@ def build():
             "order": index + 1,
             "code": f"F-{SHUFFLE[index]:02d}",
             "t": round(t, 6),
-            "value": round(f(t), 6),
+            "value": round(n(t), 6),
+            "column": round(e(t), 6),
             "teams": per_team,
         })
     assert len(slots) == len(SHUFFLE) and len(set(SHUFFLE)) == len(SHUFFLE)
-    for s in slots:  # the look-alike cameras observe the same instant
+    for s in slots:  # the look-alike cameras observe the same instant, in the target's column
         for team, entry in s["teams"].items():
             cc = CAM[entry["camera"]]
-            assert abs(cc["x"] - s["t"]) < 1e-5, (s, team)
+            assert abs(cc["t"] - s["t"]) < 1e-5 and abs(cc["x"] - e(s["t"])) < 1e-5, (s, team)
     cameras = []
     for c in CAMERAS:
         entry = dict(c)
@@ -195,15 +227,15 @@ def build():
             entry["plate"] = quads[c["id"]]
         cameras.append(entry)
     data = {
-        "version": "2026-10-03",
+        "version": "2026-10-14",
         "names": {"es": "Ciudad Delta", "en": "Delta City"},
-        "model": {"domain": [0, 12], "pieces": PIECES, "recordOverrides": RECORD_OVERRIDES},
+        "model": {"domain": [0, 12], "north": PIECES, "east": EAST, "recordOverrides": RECORD_OVERRIDES},
         "tunnel": {"from": 3, "to": 5, "riverCota": 6},
         "map": {
             "image": {"es": "map/delta-map-es.jpg", "en": "map/delta-map-en.jpg"},
             "frame": {"x0": -1.0, "x1": 12.6, "y0": -2.0, "y1": 31.0},
             "pixels": {"width": 4080, "height": 2475},
-            "metres": {"perMinute": 400, "perCota": 100},
+            "metres": {"perColumn": 400, "perCota": 100},
             "insets": {name: {"frame": {k: v[k] for k in ("x0", "x1", "y0", "y1")},
                               "image": {lang: f"map/inset-{name}-{lang}.jpg" for lang in ("es", "en")}}
                        for name, v in INSETS.items()},

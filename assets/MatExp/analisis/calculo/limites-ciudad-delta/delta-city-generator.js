@@ -228,15 +228,21 @@
       { name: "avenue", data: jpeg(turnCCW(av)), u: area.u0 + size(tu).w + gap, v: top1, ...size(av) },
       { name: "labyrinth", data: jpeg(turnCCW(lab)), u: area.u0 + (full - size(lab).w) / 2, v: top2, ...size(lab) }
     ];
-    const withGraph = await DC.drawMap(d, { lang: LANG, width: 3000, cameras: false, graph: true });
+    // the route of the model, (e(t), n(t)), with the minute t marked along it
+    const marks = { timeMarks: true, markScale: 1.25, markOffsets: ROUTE_MARK_OFFSETS };
+    const withGraph = await DC.drawMap(d, { lang: LANG, width: 3000, cameras: false, graph: true, ...marks });
     A.maps.graph = jpeg(withGraph);
-    const withRecord = await DC.drawMap(d, { lang: LANG, width: 3000, cameras: false, graph: true, record: true });
-    A.maps.record = jpeg(withRecord);
-    const overlay = await DC.drawMap(d, { lang: LANG, width: 3000, cameras: false, graph: true, base: false, axisNames: false });
+    const overlay = await DC.drawMap(d, { lang: LANG, width: 3000, cameras: false, graph: true, base: false, axisNames: false, ...marks });
     A.turned.overlay = turnCCW(overlay).toDataURL("image/png");
-    const labGraph = await DC.drawMap(d, { lang: LANG, inset: "labyrinth", width: 2400, cameras: false, graph: true });
+    const labGraph = await DC.drawMap(d, { lang: LANG, inset: "labyrinth", width: 2400, cameras: false, graph: true, timeMarks: [8.5, 9, 9.5, 10], markScale: 1.3, markOffsets: { 8.5: [1, 1], 9: [1, -1], 9.5: [-1, 1], 10: [1, 1.2] } });
     A.maps.labyrinthGraph = jpeg(labGraph);
     A.maps.labyrinthRatio = labGraph.height / labGraph.width;
+    // the two coordinates against time, and the record of the automatic reader
+    A.graphs = {};
+    for (const which of ["east", "north", "record"]) {
+      const g = DC.drawTimeGraph(d, which, { lang: LANG, width: 1400, height: which === "east" ? 760 : 900 });
+      A.graphs[which] = { data: jpeg(g, 0.9), ratio: g.height / g.width };
+    }
     setStatus(t("Preparando fórmulas…", "Preparing formulas…"));
     await pause();
     A.formulas = buildFormulas();
@@ -245,11 +251,14 @@
       const c = document.createElement("canvas"); c.width = img.naturalWidth; c.height = img.naturalHeight;
       c.getContext("2d").drawImage(img, 0, 0); A.banner = c.toDataURL("image/jpeg", 0.88); A.bannerRatio = c.height / c.width;
     } catch (e) { A.banner = null; }
-    try {   // the consultant's handwritten notes: a fixed image per language, placed in the envelope
-      const img = await DC.loadImage(`notes/consultant-notes-${LANG}.jpg`);
-      const c = document.createElement("canvas"); c.width = img.naturalWidth; c.height = img.naturalHeight;
-      c.getContext("2d").drawImage(img, 0, 0); A.notes = c.toDataURL("image/jpeg", 0.9); A.notesRatio = c.height / c.width;
-    } catch (e) { A.notes = null; }
+    A.notes = [];   // the consultant's handwritten notes: fixed images per language, one page each in the envelope
+    for (const k of [1, 2]) {
+      try {
+        const img = await DC.loadImage(`notes/consultant-notes-${LANG}-${k}.jpg`);
+        const c = document.createElement("canvas"); c.width = img.naturalWidth; c.height = img.naturalHeight;
+        c.getContext("2d").drawImage(img, 0, 0); A.notes.push({ data: c.toDataURL("image/jpeg", 0.9), ratio: c.height / c.width });
+      } catch (e) { /* optional */ }
+    }
     A.views = {};
     for (const v of d.views || []) {
       try {
@@ -294,6 +303,9 @@
     return { main, labyrinth, tunnel, avenue };
   }
 
+  /** Where the minute labels sit along the route on the full map (multiples of the label size). */
+  const ROUTE_MARK_OFFSETS = { 1: [1, -0.9], 2: [-1, -0.9], 3: [-1, -0.9], 4: [1, 0.9], 5: [-1, -0.9], 6: [1, 0.9], 7: [-1, -0.9], 9: [0.6, -1.2], 10: [1, 1.1], 11: [-1, -0.6] };
+
   const PAPER = { a4: [210, 297], letter: [215.9, 279.4] };   // portrait, mm (as jsPDF)
   const PX_MM = 9;                                             // map details: about 230 dpi in print
   /** Usable box of a turned page, on the virtual landscape page (see writer.turned). */
@@ -309,14 +321,17 @@
     };
     const si = `\\text{${t("si", "if")}}`;
     return {
-      model: F(`f(t)=\\cases{t^{2} & ${si}\\, 0\\le t\\le 2 \\\\ t+2 & ${si}\\, 2<t<8 \\\\ 11+\\sin\\left(\\frac{\\pi}{10-t}\\right) & ${si}\\, 8\\le t<10 \\\\ 10+\\frac{4}{12-t} & ${si}\\, 10\\le t<12}`, 38),
-      record: F(`g(t)=\\cases{12 & ${si}\\, t=6 \\\\ 10 & ${si}\\, t=8 \\\\ f(t) & \\text{${t("en otro caso", "otherwise")}}}`, 36),
-      cont: F("\\lim_{t\\to a}f(t)=f(a)", 36),
-      osc1: F("t_{n}=10-\\frac{1}{n}\\quad\\to\\quad f(t_{n})=11+\\sin(n\\pi)=11", 32),
-      osc2: F("s_{n}=10-\\frac{2}{4n+1}\\quad\\to\\quad f(s_{n})=11+\\sin\\left(\\frac{(4n+1)\\pi}{2}\\right)=12", 32),
+      east: F(`e(t)=\\cases{1.5t & ${si}\\, 0\\le t\\le 2 \\\\ 0.5t+2 & ${si}\\, 2<t\\le 8 \\\\ 1.5t-6 & ${si}\\, 8<t<12}`, 38),
+      model: F(`n(t)=\\cases{t^{2} & ${si}\\, 0\\le t\\le 2 \\\\ t+2 & ${si}\\, 2<t<8 \\\\ 11+\\sin\\left(\\frac{\\pi}{10-t}\\right) & ${si}\\, 8\\le t<10 \\\\ 10+\\frac{4}{12-t} & ${si}\\, 10\\le t<12}`, 38),
+      record: F(`g(t)=\\cases{12 & ${si}\\, t=6 \\\\ 10 & ${si}\\, t=8 \\\\ n(t) & \\text{${t("en otro caso", "otherwise")}}}`, 36),
+      cont: F("\\lim_{t\\to a}h(t)=h(a)", 36),
+      osc1: F("t_{k}=10-\\frac{1}{k}\\quad\\to\\quad n(t_{k})=11+\\sin(k\\pi)=11", 32),
+      osc2: F("s_{k}=10-\\frac{2}{4k+1}\\quad\\to\\quad n(s_{k})=11+\\sin\\left(\\frac{(4k+1)\\pi}{2}\\right)=12", 32),
       inf: F("\\lim_{t\\to 12^{-}}\\left(10+\\frac{4}{12-t}\\right)=+\\infty", 34),
-      ivt: F(`f(3)=5<6<7=f(5)\\quad\\to\\quad \\text{${t("existe", "there is")}}\\, c\\in(3,5)\\, \\text{${t("con", "with")}}\\, f(c)=6`, 32),
-      jump: F("\\lim_{t\\to 8^{-}}f(t)=10\\ne 12=\\lim_{t\\to 8^{+}}f(t)", 34),
+      einf: F("\\lim_{t\\to 12^{-}}(1.5t-6)=12", 34),
+      ivt: F(`n(3)=5<6<7=n(5)\\quad\\to\\quad \\text{${t("existe", "there is")}}\\, c\\in(3,5)\\, \\text{${t("con", "with")}}\\, n(c)=6`, 32),
+      jump: F("\\lim_{t\\to 8^{-}}n(t)=10\\ne 12=\\lim_{t\\to 8^{+}}n(t)", 34),
+      ejump: F("\\lim_{t\\to 8^{-}}e(t)=6=\\lim_{t\\to 8^{+}}e(t)=e(8)", 34),
       rem: F("\\lim_{t\\to 6}g(t)=8\\ne 12=g(6)", 34)
     };
   }
@@ -520,7 +535,7 @@
     ...TEAMS.map((tm, k) => ({ id: `dossier-${tm}`, n: `1${k}`, team: tm, title: () => t(`Dossier fotográfico · Equipo ${tm}`, `Photographic dossier · Team ${tm}`), render: (w, d, c, A) => renderDossier(w, d, c, A, tm) })),
     ...TEAMS.map((tm, k) => ({ id: `sheet1-${tm}`, n: `2${k}`, team: tm, title: () => t(`Hoja de investigación (fase 1) · Equipo ${tm}`, `Investigation worksheet (phase 1) · Team ${tm}`), render: (w, d, c, A) => renderSheet1(w, d, c, A, tm) })),
     { id: "phase2", n: "30", title: () => t("Fase 2 · El modelo de la trayectoria", "Phase 2 · The trajectory model"), render: renderPhase2 },
-    { id: "overlay", n: "31", title: () => t("Transparencia de la gráfica de f", "Transparency of the graph of f"), render: renderOverlay },
+    { id: "overlay", n: "31", title: () => t("Transparencia de la ruta", "Transparency of the route"), render: renderOverlay },
     { id: "guide", n: "90", teacher: true, title: () => t("Guía docente", "Teacher guide"), render: renderGuide },
     { id: "solution", n: "91", teacher: true, title: () => t("Solución y comparación de equipos", "Solution and team comparison"), render: renderSolution },
     { id: "inventory", n: "92", teacher: true, title: () => t("Inventario de fotografías y variantes", "Photograph and variant inventory"), render: renderInventory }
@@ -558,8 +573,13 @@
     return state.data.slots.filter((s) => s.t >= a - 1e-9 && s.t <= b + 1e-9 && TEAMS.every((tm) => s.teams[tm].car === "target"))
       .map((s) => num(state.data.camera[s.teams.A.camera].y, 3)).join(", ");
   }
+  /** Columns of the cameras of those photographs, as the register prints them. */
+  function colsIn(a, b) {
+    return state.data.slots.filter((s) => s.t >= a - 1e-9 && s.t <= b + 1e-9 && TEAMS.every((tm) => s.teams[tm].car === "target"))
+      .map((s) => num(state.data.camera[s.teams.A.camera].x, 3)).join(", ");
+  }
   /** Exhibits the consultant had already written up before leaving the case (codes F-01 to F-20). */
-  const CONSULTANT_LAST = 5;   // a few worked examples; students write up the rest
+  const CONSULTANT_LAST = 10;   // worked examples (none of them disputed); students write up the rest
   const byConsultant = (code) => Number(code.slice(2)) <= CONSULTANT_LAST;
   /** The slot where team A's frame is washed out by a reflection. */
   function glareSlot() { return state.data.slots.find((s) => TEAMS.some((tm) => s.teams[tm].car === "glare")); }
@@ -603,24 +623,31 @@
       "The inset in the top-right corner enlarges the plate captured by the camera. Always check it, character by character."
     ]));
     w.heading(t("El plano de seguimiento", "The tracking map"));
+    const lo2 = state.data.camera["LO-2"];
     w.paragraph(t(
-      "La central trabaja con un plano cuadriculado de la ciudad. Las líneas verticales son las columnas, numeradas de oeste a este del 0 al 12; las horizontales marcan las cotas, numeradas de sur a norte. Cada cámara tiene así una columna y una cota. Del coche nos interesa su cota: llamamos f(t) a la cota del coche buscado en el instante t.",
-      "Control works with a gridded map of the city. The vertical lines are the columns, numbered from west to east from 0 to 12; the horizontal lines mark the northing, the north coordinate, numbered from south to north. Every camera therefore has a column and a northing. What matters about the car is its northing: we write f(t) for the northing of the wanted car at instant t."));
+      "La central trabaja con un plano cuadriculado de la ciudad. Las líneas verticales son las columnas, numeradas de oeste a este del 0 al 12; las horizontales marcan las cotas, numeradas de sur a norte. Cada cámara tiene así dos números, una columna y una cota, y el registro de cámaras (documento 01) los da para todas.",
+      "Control works with a gridded map of the city. The vertical lines are the columns, numbered from west to east from 0 to 12; the horizontal lines mark the northing, the north coordinate, numbered from south to north. Every camera therefore has two numbers, a column and a northing, and the camera register (document 01) gives them for all of them."));
     w.paragraph(t(
-      "El consultor dejó anotada una regularidad que la central ha confirmado en todas las detecciones del coche buscado: la columna de la cámara coincide con el minuto t de la fotografía. Por eso, sobre este plano, cada fotografía válida es directamente un punto (t, f(t)): la columna es el instante y la cota es la posición. Ojo: la regularidad solo está comprobada en las fotografías; lo que ocurre entre una y otra es otra cuestión.",
-      "The consultant noted a regularity that control has confirmed in every detection of the wanted car: the camera's column equals the minute t of the photograph. So, on this map, each valid photograph is directly a point (t, f(t)): the column is the instant and the northing is the position. Careful: the regularity has only been checked at the photographs; what happens between one and the next is another matter."));
+      "El coche también tiene una columna y una cota, pero las suyas cambian con el tiempo. Llamamos e(t) a la columna del coche buscado en el instante t (e de este: cuánto ha avanzado hacia el este) y n(t) a su cota (n de norte: cuánto ha avanzado hacia el norte). En el instante t, el coche está en el punto del plano de columna e(t) y cota n(t).",
+      "The car also has a column and a northing, but its own change with time. We write e(t) for the column of the wanted car at instant t (e for east: how far east it has gone) and n(t) for its northing (n for north: how far north it has gone). At instant t, the car is at the point of the map with column e(t) and northing n(t)."));
+    w.paragraph(t(
+      `Cada fotografía válida da los dos valores a la vez: la hora da el instante t, y la cámara, a través del registro, da la columna y la cota. Por ejemplo, la cámara LO-2 está en la columna ${num(lo2.x, 2)} y la cota ${num(lo2.y, 2)}; si fotografía al coche buscado a las ${DC.clockAt(cfg.start, lo2.t)}, es decir, en t = ${num(lo2.t, 2)}, entonces e(${num(lo2.t, 2)}) = ${num(lo2.x, 2)} y n(${num(lo2.t, 2)}) = ${num(lo2.y, 2)}.`,
+      `Each valid photograph gives both values at once: the time gives the instant t, and the camera, through the register, gives the column and the northing. For instance, camera LO-2 is at column ${num(lo2.x, 2)} and northing ${num(lo2.y, 2)}; if it photographs the wanted car at ${DC.clockAt(cfg.start, lo2.t)}, that is, at t = ${num(lo2.t, 2)}, then e(${num(lo2.t, 2)}) = ${num(lo2.x, 2)} and n(${num(lo2.t, 2)}) = ${num(lo2.y, 2)}.`));
+    w.paragraph(t(
+      "El plano muestra por dónde pasó el coche, pero no cuándo, y el coche no circula siempre a la misma velocidad. Por eso estudiaremos las dos coordenadas por separado, cada una frente al tiempo: una gráfica para la columna e(t) y otra para la cota n(t). Juntas reconstruyen la ruta sobre el plano. Ojo: las fotografías solo dan los valores en los instantes en que se tomaron; lo que ocurre entre una y otra es otra cuestión.",
+      "The map shows where the car went, but not when, and the car does not always travel at the same speed. That is why we shall study the two coordinates separately, each against time: one graph for the column e(t) and another for the northing n(t). Together they rebuild the route on the map. Careful: the photographs only give the values at the instants when they were taken; what happens between one and the next is another matter."));
     w.callout(t(
       `Atención a la identificación. En ${cfg.city} circula al menos otro turismo del mismo modelo, de un rojo parecido (cobrizo, no burdeos) y con una matrícula parecida. El sistema compara las matrículas con cierta tolerancia, porque sus lecturas no siempre son perfectas, así que un dossier puede contener fotografías de otro coche. Una fotografía cuya matrícula no sea ${cfg.plate} no dice nada sobre la posición del coche buscado: anotadla como posible error de identificación y dejad ese valor como desconocido.`,
       `Watch the identification. At least one other hatchback of the same model, in a similar red (copper rather than burgundy) and with a similar plate, drives around ${cfg.city}. The system matches plates with some tolerance, because its readings are not always perfect, so a dossier may contain photographs of another car. A photograph whose plate is not ${cfg.plate} says nothing about the position of the wanted car: record it as a possible identification error and leave that value unknown.`), "warn");
     w.heading(t("Tres capas que no hay que mezclar", "Three layers not to be mixed"));
     w.table([t("Capa", "Layer"), t("Qué es", "What it is"), t("Qué permite", "What it allows")], t([
-      ["1. Evidencia", "Fotografías: un número finito de puntos (t, cota).", "Ordenar, localizar, descartar errores, proponer candidatos."],
-      ["2. Modelo", "Una función f definida en todo instante (fase 2).", "Calcular valores, límites laterales y límites."],
-      ["3. Conclusión", "Lo que se demuestra sobre f.", "Afirmar continuidad o el tipo de discontinuidad, siempre bajo el modelo."]
+      ["1. Evidencia", "Fotografías: un número finito de instantes t, cada uno con su columna y su cota.", "Ordenar, localizar, descartar errores, proponer candidatos."],
+      ["2. Modelo", "Dos funciones, e y n, definidas en todo instante (fase 2).", "Calcular valores, límites laterales y límites."],
+      ["3. Conclusión", "Lo que se demuestra sobre e y n.", "Afirmar continuidad o el tipo de discontinuidad, siempre bajo el modelo."]
     ], [
-      ["1. Evidence", "Photographs: finitely many points (t, northing).", "Order, locate, discard errors, propose candidates."],
-      ["2. Model", "A function f defined at every instant (phase 2).", "Compute values, one-sided limits and limits."],
-      ["3. Conclusion", "What is proved about f.", "Assert continuity or the type of discontinuity, always under the model."]
+      ["1. Evidence", "Photographs: finitely many instants t, each with its column and its northing.", "Order, locate, discard errors, propose candidates."],
+      ["2. Model", "Two functions, e and n, defined at every instant (phase 2).", "Compute values, one-sided limits and limits."],
+      ["3. Conclusion", "What is proved about e and n.", "Assert continuity or the type of discontinuity, always under the model."]
     ]), [30, 75, 75]);
     w.paragraph(t(
       "Un candidato es lo que sugieren las fotografías cercanas a un punto: un valor o un comportamiento. Se anota como conjetura y se comprueba en la fase 2, porque unas pocas fotografías nunca demuestran por sí solas un límite, una continuidad, una oscilación o un límite infinito.",
@@ -783,20 +810,44 @@
     ]);
     w.table([t("Zona", "Zone"), t("¿Qué muestran realmente las fotografías?", "What do the photographs actually show?"), t("¿Qué podemos afirmar con seguridad?", "What can we state with certainty?"), t("¿Qué sigue siendo desconocido?", "What remains unknown?"), t("¿Qué comportamiento parece sugerir?", "What behaviour does it seem to suggest?")],
       zones.map((z) => [z[0], "", "", "", ""]), [30, 38, 37, 37, 38], { minRow: 18, keep: true });
-    w.heading(t("3. Preguntas de la fase 1", "3. Phase 1 questions"));
+    // the two graphs against time: every valid exhibit is plotted twice, (t, column) and (t, northing)
+    w.ensure(112);
+    w.heading(t("3. Las dos gráficas", "3. The two graphs"));
+    w.paragraph(t(
+      "Situad cada prueba válida dos veces: como punto (t, columna) en la cuadrícula de la izquierda y como punto (t, cota) en la de la derecha. La primera irá dibujando la columna e(t) del coche y la segunda su cota n(t). No unáis los puntos: entre dos fotografías no sabéis qué pasó. Las cotas mayores que 20 se indican con una flecha en el borde superior.",
+      "Plot every valid exhibit twice: as a point (t, column) on the left grid and as a point (t, northing) on the right one. The first will gradually draw the car's column e(t) and the second its northing n(t). Do not join the points: between two photographs you do not know what happened. Northings above 20 are shown with an arrow at the top edge."));
+    {
+      const gw = (w.W() - 16) / 2, gh = 58, top = w.y + 6;
+      const grid = (gx, ymax, ystep, name) => {
+        const X = (v) => gx + (v / 12) * gw, Y = (v) => top + gh - (v / ymax) * gh;
+        doc.setDrawColor(...CC.grid).setLineWidth(0.12);
+        for (let v = 0; v <= 12; v += 0.5) doc.line(X(v), top, X(v), top + gh);
+        for (let v = 0; v <= ymax + 1e-9; v += ystep / 2) doc.line(gx, Y(v), gx + gw, Y(v));
+        doc.setDrawColor(...CC.ink).setLineWidth(0.3).rect(gx, top, gw, gh);
+        doc.setFont("helvetica", "normal").setFontSize(7).setTextColor(...CC.ink);
+        for (let v = 0; v <= 12; v += 2) doc.text(String(v), X(v), top + gh + 3.4, { align: "center" });
+        for (let v = 0; v <= ymax + 1e-9; v += ystep * 2) doc.text(String(v), gx - 1.4, Y(v) + 1, { align: "right" });
+        doc.setFont("helvetica", "italic").setFontSize(7.5).text("t", gx + gw + 1.5, top + gh + 1);
+        doc.setFont("helvetica", "bold").setFontSize(8.5).setTextColor(...CC.blue).text(safe(name), gx, top - 2);
+      };
+      grid(w.margin + 6, 12, 1, t("Columna e(t)", "Column e(t)"));
+      grid(w.margin + 14 + gw, 20, 2, t("Cota n(t)", "Northing n(t)"));
+      w.y = top + gh + 10;
+    }
+    w.heading(t("4. Preguntas de la fase 1", "4. Phase 1 questions"));
     w.bullets(t([
       "Identificación. ¿Hay pruebas con una matrícula distinta de la buscada, ilegible o sin imagen? Para cada una, ¿qué podéis afirmar de la posición del coche buscado en ese instante? ¿Es lo mismo «no sabemos dónde estaba» que «no tenía posición»?",
-      "Túnel. En la cuadrícula de abajo, dibujad dos recorridos distintos sin saltos (continuos) que encajen con las fotografías de los dos portales. Después dibujad un tercero con un salto que encaje con los mismos dos valores. ¿Qué conclusiones se mantienen en los dos primeros dibujos pero pueden fallar en el tercero? ¿Podéis saber si la regularidad columna = t se cumple dentro del túnel?",
-      "Primeros tramos. Mirad las cotas de las fotografías entre t = 0 y t = 2, y entre t = 2 y t = 8. Proponed una fórmula sencilla para la cota en cada tramo y comprobadla con dos pruebas.",
-      "Cerca de t = 8 y cerca de t = 10, ¿a qué valores parecen acercarse las cotas por cada lado? ¿Por qué no basta con estas fotografías para afirmarlo?",
-      "Cerca de t = 12, ¿qué ocurre con las cotas? ¿Demuestra eso que crecen indefinidamente?",
+      "Túnel. En la cuadrícula de abajo, dibujad dos evoluciones distintas de la cota, sin saltos (continuas), que encajen con las fotografías de los dos portales. Después dibujad una tercera con un salto que encaje con los mismos dos valores. ¿Qué conclusiones se mantienen en los dos primeros dibujos pero pueden fallar en el tercero? ¿Y de la columna: qué podéis afirmar de e(t) dentro del túnel?",
+      "Primeros tramos. Mirad las columnas y las cotas de las fotografías entre t = 0 y t = 2, y entre t = 2 y t = 8. Proponed una fórmula sencilla para la columna e(t) y otra para la cota n(t) en cada tramo, y comprobadlas con dos pruebas. ¿Avanza el coche hacia el este al mismo ritmo en los dos tramos?",
+      "Cerca de t = 8 y cerca de t = 10, ¿a qué valores parecen acercarse las cotas por cada lado? ¿Y las columnas? ¿Por qué no basta con estas fotografías para afirmarlo?",
+      "Cerca de t = 12, ¿qué ocurre con las cotas? ¿Y con las columnas? ¿Demuestran las fotografías que la cota crece indefinidamente?",
       "Para la reunión de coordinación: dos afirmaciones que podáis defender y un punto que no podáis decidir."
     ], [
       "Identification. Are there exhibits with a plate other than the wanted one, an unreadable plate or no image? For each, what can you state about the wanted car's position at that instant? Is \"we do not know where it was\" the same as \"it had no position\"?",
-      "Tunnel. On the grid below, draw two different continuous routes (without jumps) compatible with the photographs of the two portals. Then draw a third route with a jump that fits the same two values. Which conclusions survive in the first two drawings but not in the third? Can you tell whether the regularity column = t holds inside the tunnel?",
-      "First stretches. Look at the northings of the photographs between t = 0 and t = 2, and between t = 2 and t = 8. Propose a simple formula for the northing on each stretch and check it with two exhibits.",
-      "Near t = 8 and near t = 10, which values do the northings seem to approach from each side? Why are these photographs not enough to state it?",
-      "Near t = 12, what happens to the northings? Does that prove that they grow without bound?",
+      "Tunnel. On the grid below, draw two different continuous evolutions of the northing (without jumps) that fit the photographs of the two portals. Then draw a third one with a jump that fits the same two values. Which conclusions survive in the first two drawings but may fail in the third? And the column: what can you state about e(t) inside the tunnel?",
+      "First stretches. Look at the columns and the northings of the photographs between t = 0 and t = 2, and between t = 2 and t = 8. Propose a simple formula for the column e(t) and another for the northing n(t) on each stretch, and check them with two exhibits. Does the car move east at the same rate on both stretches?",
+      "Near t = 8 and near t = 10, which values do the northings seem to approach from each side? And the columns? Why are these photographs not enough to state it?",
+      "Near t = 12, what happens to the northings? And to the columns? Do the photographs prove that the northing grows without bound?",
       "For the coordination meeting: two statements you can defend and one point you cannot decide."
     ]), true);
     // grid for question 2: the two portals and the river's axis are for the students to place
@@ -827,19 +878,23 @@
       "Contents of the envelope. It is opened in the second class, after the coordination meeting, once the teams have agreed which photographs are valid. From here on the photographs are not debated: we reason about functions."), "blue");
     w.heading(t("Paso 1 · Una sola hipótesis: continuidad en el túnel", "Step 1 · A single hypothesis: continuity in the tunnel"));
     w.paragraph(t(
-      "En casa dibujasteis dos recorridos sin saltos y uno con un salto entre los portales del túnel. En los dos primeros, el coche pasa siempre por la cota 6, la del eje del Río Delta; en el tercero puede saltársela. Antes de ver ninguna fórmula, hagamos explícita esa diferencia como única hipótesis: la cota del coche es una función continua en el intervalo [3, 5]. Las fotografías de los portales dan f(3) = 5 y f(5) = 7, y el eje del río está en la cota 6.",
-      "At home you drew two routes without jumps and one with a jump between the tunnel portals. In the first two the car always passes through northing 6, the axis of the Delta River; in the third it may skip it. Before seeing any formula, let us make that difference explicit as our only hypothesis: the car's northing is a continuous function on the interval [3, 5]. The portal photographs give f(3) = 5 and f(5) = 7, and the river's axis lies at northing 6."));
+      "En casa dibujasteis dos evoluciones de la cota sin saltos y una con un salto entre los portales del túnel. En las dos primeras, el coche pasa siempre por la cota 6, la del eje del Río Delta; en la tercera puede saltársela. Antes de ver ninguna fórmula, hagamos explícita esa diferencia como única hipótesis: la cota del coche, n(t), es una función continua en el intervalo [3, 5]. Las fotografías de los portales dan n(3) = 5 y n(5) = 7, y el eje del río está en la cota 6.",
+      "At home you drew two evolutions of the northing without jumps and one with a jump between the tunnel portals. In the first two the car always passes through northing 6, the axis of the Delta River; in the third it may skip it. Before seeing any formula, let us make that difference explicit as our only hypothesis: the car's northing, n(t), is a continuous function on the interval [3, 5]. The portal photographs give n(3) = 5 and n(5) = 7, and the river's axis lies at northing 6."));
     w.formula(A.formulas.ivt, 160);
     w.paragraph(t(
-      "Es el teorema del valor intermedio: sin saber qué hizo el coche dentro del túnel, podemos demostrar que en algún instante entre 3 y 5 estuvo exactamente bajo el eje del río. El teorema no dice cuándo, ni cuál era f(4), ni si el coche se detuvo en el aparcamiento subterráneo.",
-      "This is the intermediate value theorem: without knowing what the car did inside the tunnel, we can prove that at some instant between 3 and 5 it was exactly under the river's axis. The theorem does not say when, nor what f(4) was, nor whether the car stopped in the underground car park."));
+      "Es el teorema del valor intermedio: sin saber qué hizo el coche dentro del túnel, podemos demostrar que en algún instante entre 3 y 5 estuvo exactamente bajo el eje del río. El teorema no dice cuándo, ni cuál era n(4), ni si el coche se detuvo en el aparcamiento subterráneo.",
+      "This is the intermediate value theorem: without knowing what the car did inside the tunnel, we can prove that at some instant between 3 and 5 it was exactly under the river's axis. The theorem does not say when, nor what n(4) was, nor whether the car stopped in the underground car park."));
     w.heading(t("Paso 2 · El modelo M", "Step 2 · The model M"));
     w.paragraph(t(
-      "La regularidad que anotó el consultor (la columna de la cámara coincide con el instante t) solo estaba comprobada en las fotografías. El modelo la da por buena en todo instante, también entre dos fotografías: en el instante t, el coche está en la columna t y en la cota f(t). Con esa hipótesis, la ruta del coche sobre el plano es la gráfica de f.",
-      "The regularity the consultant noted (the camera's column equals the instant t) had only been checked at the photographs. The model accepts it at every instant, also between two photographs: at instant t, the car is at column t and at northing f(t). Under that hypothesis, the car's route on the map is the graph of f."));
-    w.paragraph(t("Este es el modelo M de la cota del coche buscado. Lo dejó el consultor en el sobre, con sus notas (página siguiente), donde explica cómo lo dedujo tramo a tramo de las fotografías válidas, las de la matrícula buscada. Sus dos primeros tramos, t² y t + 2, son probablemente los que propusisteis en casa. Los otros dos son nuevos: las fotografías pueden sugerir esos comportamientos, pero ninguna colección finita de fotografías podría determinar estas fórmulas ni establecer su comportamiento límite. Por eso el modelo es una hipótesis del consultor, no una consecuencia de las fotos:",
-      "This is the model M of the wanted car's northing. The consultant left it in the envelope, with his notes (next page), where he explains how he worked it out, stretch by stretch, from the valid photographs, those of the wanted plate. Its first two pieces, t² and t + 2, are probably the ones you proposed at home. The other two are new: the photographs may suggest these behaviours, but no finite collection of photographs could determine these formulas or establish their limiting behaviour. That is why the model is the consultant's hypothesis, not a consequence of the photos:"));
+      "El consultor dejó en el sobre su modelo de la trayectoria, con sus notas (páginas siguientes), donde explica cómo lo dedujo tramo a tramo de las fotografías válidas, las de la matrícula buscada. El modelo M describe la posición del coche con dos funciones del tiempo: la columna e(t) y la cota n(t). En cada instante t, el coche está en el punto (e(t), n(t)) del plano, y cuando t avanza de 0 a 12, ese punto recorre la ruta.",
+      "The consultant left his model of the trajectory in the envelope, with his notes (next pages), where he explains how he worked it out, stretch by stretch, from the valid photographs, those of the wanted plate. The model M describes the car's position with two functions of time: the column e(t) and the northing n(t). At each instant t the car is at the point (e(t), n(t)) of the map, and as t runs from 0 to 12 that point travels along the route."));
+    w.sub(t("La columna e(t)", "The column e(t)"));
+    w.formula(A.formulas.east, 120, 0.25);
+    w.sub(t("La cota n(t)", "The northing n(t)"));
     w.formula(A.formulas.model, 150, 0.25);
+    w.paragraph(t(
+      "Los dos primeros tramos de cada función (1.5t y 0.5t + 2 para la columna, t² y t + 2 para la cota) son probablemente los que propusisteis en casa. Los demás son nuevos: las fotografías pueden sugerir esos comportamientos, pero ninguna colección finita de fotografías podría determinar estas fórmulas ni establecer su comportamiento límite. Por eso el modelo es una hipótesis del consultor, no una consecuencia de las fotos.",
+      "The first two pieces of each function (1.5t and 0.5t + 2 for the column, t² and t + 2 for the northing) are probably the ones you proposed at home. The others are new: the photographs may suggest these behaviours, but no finite collection of photographs could determine these formulas or establish their limiting behaviour. That is why the model is the consultant's hypothesis, not a consequence of the photos."));
     w.table([t("Tramo", "Piece"), t("Vía del plano", "Road on the map")], t([
       ["0 <= t <= 2", "Carretera del Puerto (curva)"], ["2 < t < 8", "Avenida Diagonal (incluye el túnel, 3 < t < 5)"],
       ["8 <= t < 10", "Calle del Laberinto, entre la Ronda Sur (cota 10) y la Ronda Norte (cota 12)"], ["10 <= t < 12", "Autovía del Norte, que se pega a la línea del ferrocarril (columna 12)"]
@@ -847,76 +902,104 @@
       ["0 <= t <= 2", "Harbour Road (curve)"], ["2 < t < 8", "Diagonal Avenue (includes the tunnel, 3 < t < 5)"],
       ["8 <= t < 10", "Labyrinth Street, between the South Ring Road (northing 10) and the North Ring Road (northing 12)"], ["10 <= t < 12", "North Motorway, hugging the railway line (column 12)"]
     ]), [40, 140]);
-    if (A.notes) {   // the consultant's notes take a page of their own
+    (A.notes || []).forEach((note, k) => {   // the consultant's notes, one page each
       w.page();
-      w.heading(t("Las notas del consultor", "The consultant's notes"));
+      w.heading(k ? t("Las notas del consultor (continuación)", "The consultant's notes (continued)") : t("Las notas del consultor", "The consultant's notes"));
       const maxH = w.ph() - w.y - 26;   // stays above the footer band, so the image does not jump to a new page
-      let iw = w.W(), ih = iw * A.notesRatio;
+      let iw = w.W(), ih = iw * note.ratio;
       if (ih > maxH) { iw *= maxH / ih; ih = maxH; }
-      w.image(A.notes, iw, ih, { alias: "consultant-notes", gap: 0 });
-      w.page();
-    }
+      w.image(note.data, iw, ih, { alias: `consultant-notes-${k}`, gap: 0 });
+    });
+    w.page();
     w.callout(t(
-      "Un modelo es una idealización. Dentro del túnel, M supone la recta t + 2, y ninguna cámara lo confirma. En la Cuesta del Enlace el cambio de cota se trata como instantáneo, en El Laberinto las curvas se repiten infinitas veces y en la autovía la cota acaba superando cualquier valor. Ningún coche real hace exactamente eso, y precisamente por eso el modelo permite estudiar estos fenómenos con rigor.",
-      "A model is an idealisation. Inside the tunnel, M assumes the line t + 2, and no camera confirms it. On Link Hill the change of northing is treated as instantaneous, in The Labyrinth the bends repeat infinitely often and on the motorway the northing eventually exceeds every value. No real car does exactly that, and that is precisely why the model lets us study these phenomena rigorously."), "blue");
+      "Un modelo es una idealización. Dentro del túnel, M supone que la columna y la cota siguen las rectas 0.5t + 2 y t + 2, y ninguna cámara lo confirma. En la Cuesta del Enlace el cambio de cota se trata como instantáneo, en El Laberinto las curvas se repiten infinitas veces y en la autovía la cota acaba superando cualquier valor. Ningún coche real hace exactamente eso, y precisamente por eso el modelo permite estudiar estos fenómenos con rigor.",
+      "A model is an idealisation. Inside the tunnel, M assumes that the column and the northing follow the lines 0.5t + 2 and t + 2, and no camera confirms it. On Link Hill the change of northing is treated as instantaneous, in The Labyrinth the bends repeat infinitely often and on the motorway the northing eventually exceeds every value. No real car does exactly that, and that is precisely why the model lets us study these phenomena rigorously."), "blue");
     const iw = w.W(), ih = iw * A.maps.plainRatio;
-    w.ensure(ih + 14);
-    w.heading(t("La gráfica de f sobre el plano", "The graph of f on the map"));
+    w.ensure(ih + 22);
+    w.heading(t("La ruta sobre el plano", "The route on the map"));
     w.image(A.maps.graph, iw, ih, { alias: "map-graph" });
-    w.paragraph(t("Círculo relleno: valor de la función. Círculo vacío: punto que no pertenece a la gráfica. Línea discontinua: asíntota vertical t = 12 (el ferrocarril).",
-      "Filled circle: value of the function. Empty circle: point not on the graph. Dashed line: vertical asymptote t = 12 (the railway)."), { size: 9 });
+    w.paragraph(t("La ruta del modelo: el punto (e(t), n(t)) para t de 0 a 12; los rótulos t = 1, t = 2… marcan el minuto. Círculo relleno: posición del coche. Círculo vacío: punto que no pertenece a la ruta (en t = 8 la cota salta de 10 a 12). Línea discontinua: el ferrocarril (columna 12), al que la ruta se acerca cuando t tiende a 12. Esta página sirve también de alternativa a la transparencia.",
+      "The route of the model: the point (e(t), n(t)) for t from 0 to 12; the labels t = 1, t = 2… mark the minute. Filled circle: position of the car. Empty circle: point not on the route (at t = 8 the northing jumps from 10 to 12). Dashed line: the railway (column 12), which the route approaches as t tends to 12. This page also serves as an alternative to the transparency."), { size: 9 });
     if (A.maps.labyrinthGraph) {
       const lw = w.W(), lh = lw * A.maps.labyrinthRatio;
       w.ensure(lh + 10);
       w.sub(t("Detalle: El Laberinto", "Detail: The Labyrinth"));
       w.image(A.maps.labyrinthGraph, lw, lh, { alias: "lab-graph" });
     }
+    w.page();
+    w.heading(t("Las dos coordenadas frente al tiempo", "The two coordinates against time"));
+    w.paragraph(t(
+      "El plano muestra la ruta, pero no el tiempo: por eso no basta para estudiar límites. Separamos las dos coordenadas y dibujamos cada una frente al instante t. Para conocer la posición del coche en un instante cualquiera, también en uno sin fotografía, se calcula cada coordenada por separado y después se lleva el punto (e(t), n(t)) al plano.",
+      "The map shows the route, but not the time, so it is not enough to study limits. We separate the two coordinates and draw each one against the instant t. To know the car's position at any instant, including one without a photograph, each coordinate is computed separately and the point (e(t), n(t)) is then placed on the map."));
+    const gwid = w.W() * 0.9;
+    w.sub(t("La columna e(t)", "The column e(t)"));
+    w.image(A.graphs.east.data, gwid, gwid * A.graphs.east.ratio, { alias: "graph-east" });
+    w.sub(t("La cota n(t)", "The northing n(t)"));
+    w.image(A.graphs.north.data, gwid, gwid * A.graphs.north.ratio, { alias: "graph-north" });
+    w.paragraph(t("Mismas convenciones que en el plano: círculo relleno, valor de la función; círculo vacío, punto que no pertenece a la gráfica. En la gráfica de n, la línea discontinua es la asíntota vertical t = 12.",
+      "Same conventions as on the map: filled circle, value of the function; empty circle, point not on the graph. In the graph of n, the dashed line is the vertical asymptote t = 12."), { size: 9 });
     w.ensure(60);
     w.heading(t("Paso 3 · El registro automático g", "Step 3 · The automatic record g"));
     w.paragraph(t(
-      `El sistema de lectura compara las matrículas con cierta tolerancia y solo admite una posición por instante. En t = 6 y en t = 8, dos cámaras leyeron en el mismo instante matrículas compatibles con la buscada, y en los dos casos el sistema se quedó con la del coche ${cfg.alt}: la ${roadName(D.b6.road)} en t = 6 (cota ${num(D.b6.y, 2)}) y el pie de la ${roadName(D.c8.road)} en t = 8 (cota ${num(D.c8.y, 2)}). Su registro automático define otra función, g, que no describe el coche buscado:`,
-      `The reading system matches plates with some tolerance and allows only one position per instant. At t = 6 and at t = 8, two cameras read plates compatible with the wanted one at the same instant, and in both cases the system kept the reading of the car ${cfg.alt}: the ${roadName(D.b6.road)} at t = 6 (northing ${num(D.b6.y, 2)}) and the foot of ${roadName(D.c8.road)} at t = 8 (northing ${num(D.c8.y, 2)}). Its automatic record defines another function, g, which does not describe the wanted car:`));
+      `El sistema de lectura compara las matrículas con cierta tolerancia y solo admite una posición por instante. En t = 6 y en t = 8, dos cámaras leyeron en el mismo instante matrículas compatibles con la buscada, y en los dos casos el sistema se quedó con la del coche ${cfg.alt}: la ${roadName(D.b6.road)} en t = 6 (cota ${num(D.b6.y, 2)}) y el pie de la ${roadName(D.c8.road)} en t = 8 (cota ${num(D.c8.y, 2)}). Las dos fotografías del confundible se tomaron en la misma columna en la que estaba el coche buscado en ese instante, así que el registro de la columna coincide con e(t). El de la cota define otra función, g, que no describe el coche buscado:`,
+      `The reading system matches plates with some tolerance and allows only one position per instant. At t = 6 and at t = 8, two cameras read plates compatible with the wanted one at the same instant, and in both cases the system kept the reading of the car ${cfg.alt}: the ${roadName(D.b6.road)} at t = 6 (northing ${num(D.b6.y, 2)}) and the foot of ${roadName(D.c8.road)} at t = 8 (northing ${num(D.c8.y, 2)}). Both photographs of the look-alike were taken in the column where the wanted car was at that instant, so the record of the column agrees with e(t). The record of the northing defines another function, g, which does not describe the wanted car:`));
     w.formula(A.formulas.record, 120, 0.25);
-    w.image(A.maps.record, w.W() * 0.62, w.W() * 0.62 * A.maps.plainRatio, { alias: "map-record" });
-    w.ensure(130);   // heading, definition and the whole table together
-    w.y += 4;
+    w.image(A.graphs.record.data, w.W() * 0.72, w.W() * 0.72 * A.graphs.record.ratio, { alias: "graph-record" });
+    w.page();
     w.heading(t("Hoja de trabajo · Fase 2", "Worksheet · Phase 2"));
-    w.paragraph(t("Recordad la definición: f es continua en a si existe f(a), existe el límite cuando t tiende a a y ambos coinciden.",
-      "Recall the definition: f is continuous at a if f(a) exists, the limit as t tends to a exists and the two agree."));
+    w.paragraph(t("Recordad la definición: una función h es continua en a si existe h(a), existe el límite cuando t tiende a a y ambos coinciden.",
+      "Recall the definition: a function h is continuous at a if h(a) exists, the limit as t tends to a exists and the two agree."));
     w.formula(A.formulas.cont, 70);
-    w.paragraph(t("La última columna compara evidencia y modelo: qué sugerían las fotografías y qué podéis establecer ahora. Por ejemplo, en t = 10 las fotografías solo sugerían una alternancia; con el modelo se puede demostrar que el límite por la izquierda no existe. En t = 12 mostraban valores cada vez mayores; con el modelo se puede demostrar que el límite es +infinito.",
-      "The last column compares evidence and model: what the photographs suggested and what you can establish now. For instance, at t = 10 the photographs only suggested an alternation; with the model one can prove that the left-hand limit does not exist. At t = 12 they showed ever larger values; with the model one can prove that the limit is +infinity."));
-    w.table([t("Punto", "Point"), t("Límite por la izquierda", "Left-hand limit"), t("Límite por la derecha", "Right-hand limit"), t("Valor", "Value"), t("Continuidad / comportamiento", "Continuity / behaviour"), t("¿Qué podemos establecer ahora que las fotografías solas no permitían?", "What can we establish now that the photographs alone could not?")],
-      [["f, t = 2", "", "", "", "", ""], ["f, t = 6", "", "", "", "", ""], ["g, t = 6", "", "", "", "", ""], ["f, t = 8", "", "", "", "", ""], ["g, t = 8", "", "", "", "", ""], ["f, t -> 10", "", "", "", "", ""], ["f, t -> 12-", "", "", "", "", ""]],
-      [18, 22, 22, 15, 38, 65], { minRow: 12, keep: true });
+    w.paragraph(t("Estudiad las dos funciones del modelo por separado: primero la columna e(t) y después la cota n(t), junto con el registro g. La última columna compara evidencia y modelo: qué sugerían las fotografías y qué podéis establecer ahora. Por ejemplo, en t = 10 las fotografías solo sugerían una alternancia de la cota; con el modelo se puede demostrar que su límite por la izquierda no existe. Las filas de t = 0 y t = 1, en cursiva, las dejó resueltas el consultor como ejemplo.",
+      "Study the two functions of the model separately: first the column e(t), then the northing n(t), together with the record g. The last column compares evidence and model: what the photographs suggested and what you can establish now. For instance, at t = 10 the photographs only suggested an alternation of the northing; with the model one can prove that its left-hand limit does not exist. The rows for t = 0 and t = 1, in italics, were worked out by the consultant as examples."));
+    const head = [t("Punto", "Point"), t("Límite por la izquierda", "Left-hand limit"), t("Límite por la derecha", "Right-hand limit"), t("Valor", "Value"), t("Continuidad / comportamiento", "Continuity / behaviour"), t("¿Qué podemos establecer ahora que las fotografías solas no permitían?", "What can we establish now that the photographs alone could not?")];
+    const widths = [18, 20, 20, 14, 38, 70];
+    const hand = (row, i) => i >= 1 && row[1] !== "";
+    const blank = (label) => [label, "", "", "", "", ""];
+    w.sub(t("Parte 1 · La columna e(t)", "Part 1 · The column e(t)"));
+    w.table(head, [
+      ["e, t = 0", "—", "0", "0", t("Continua por la derecha (la persecución empieza en t = 0)", "Right-continuous (the pursuit starts at t = 0)"), t("Que el coche sale de la columna 0, el control del puerto; la primera foto es de t = 0.5.", "That the car starts from column 0, the harbour checkpoint; the first photo is at t = 0.5.")],
+      ["e, t = 1", "1.5", "1.5", "1.5", t("Continua", "Continuous"), t("Que las columnas cercanas se acercan a 1.5 por los dos lados; la foto de t = 1 solo daba el valor.", "That nearby columns approach 1.5 from both sides; the photo at t = 1 only gave the value.")],
+      blank("e, t = 2"), blank("e, t = 6"), blank("e, t = 8"), blank("e, t -> 10"), blank("e, t -> 12-")
+    ], widths, { minRow: 10.5, keep: true, hand });
+    w.sub(t("Parte 2 · La cota n(t) y el registro g", "Part 2 · The northing n(t) and the record g"));
+    w.table(head, [
+      ["n, t = 0", "—", "0", "0", t("Continua por la derecha", "Right-continuous"), t("Que el coche sale de la cota 0, en el puerto; ninguna foto muestra ese instante.", "That the car starts from northing 0, at the harbour; no photo shows that instant.")],
+      ["n, t = 1", "1", "1", "1", t("Continua", "Continuous"), t("Que el límite es exactamente 1 = n(1); la foto solo mostraba el valor en t = 1.", "That the limit is exactly 1 = n(1); the photo only showed the value at t = 1.")],
+      blank("n, t = 2"), blank("n, t = 6"), blank("g, t = 6"), blank("n, t = 8"), blank("g, t = 8"), blank("n, t -> 10"), blank("n, t -> 12-")
+    ], widths, { minRow: 10.5, keep: true, hand });
     w.bullets(t([
-      "Oscilación en t = 10. Mirad la gráfica de f cerca de 10 por la izquierda: ¿se acercan los valores a un único número? Ampliación: calculad f en t_n = 10 - 1/n y en s_n = 10 - 2/(4n+1) y explicad por qué esas dos sucesiones demuestran que no existe el límite por la izquierda.",
+      "Las dos partes. ¿En qué instantes se comporta bien e(t) y falla n(t)? ¿Qué significa eso sobre el plano? Pensad, por ejemplo, en la Cuesta del Enlace, que es una calle de sur a norte.",
+      "Oscilación en t = 10. Mirad la gráfica de n cerca de 10 por la izquierda: ¿se acercan los valores a un único número? ¿Y los de e? Ampliación: calculad n en t_k = 10 - 1/k y en s_k = 10 - 2/(4k+1) y explicad por qué esas dos sucesiones demuestran que no existe el límite por la izquierda.",
       "Comparad t = 6 y t = 8 (pregunta común para todos los equipos). ¿En cuál de los dos casos podría un único valor registrado distinto hacer continua la función? ¿Por qué? Razonad con lo que ocurre a cada lado del punto y con el valor en el punto, no solo con el nombre de la discontinuidad. ¿Qué significa esa corrección en la investigación?",
-      "Límite infinito. Calculad el límite de f cuando t tiende a 12 por la izquierda e interpretad la asíntota en el plano.",
-      "Túnel. Con el modelo M, ¿en qué instante exacto pasa el coche bajo el eje del río? ¿Es una conclusión de las cámaras o del modelo?"
+      "Límites en t = 12. Calculad el límite de e(t) y el de n(t) cuando t tiende a 12 por la izquierda. ¿Qué dice cada uno de la ruta sobre el plano?",
+      "Túnel. Con el modelo M, ¿en qué instante exacto pasa el coche bajo el eje del río, y en qué columna está entonces? ¿Es una conclusión de las cámaras o del modelo?"
     ], [
-      "Oscillation at t = 10. Look at the graph of f near 10 from the left: do the values approach a single number? Extension: compute f at t_n = 10 - 1/n and at s_n = 10 - 2/(4n+1) and explain why these two sequences prove that the left limit does not exist.",
+      "The two parts. At which instants does e(t) behave well while n(t) fails? What does that mean on the map? Think, for example, of Link Hill, which is a south-to-north street.",
+      "Oscillation at t = 10. Look at the graph of n near 10 from the left: do the values approach a single number? And those of e? Extension: compute n at t_k = 10 - 1/k and at s_k = 10 - 2/(4k+1) and explain why these two sequences prove that the left limit does not exist.",
       "Compare t = 6 and t = 8 (a question for every team). In which of the two cases could changing a single recorded value make the function continuous? Why? Argue from what happens on each side of the point and from the value at the point, not just from the name of the discontinuity. What does that correction mean for the investigation?",
-      "Infinite limit. Compute the limit of f as t tends to 12 from the left and interpret the asymptote on the map.",
-      "Tunnel. Under the model M, at what exact instant does the car pass under the river's axis? Is that a conclusion of the cameras or of the model?"
+      "Limits at t = 12. Compute the limit of e(t) and that of n(t) as t tends to 12 from the left. What does each one say about the route on the map?",
+      "Tunnel. Under the model M, at what exact instant does the car pass under the river's axis, and in which column is it then? Is that a conclusion of the cameras or of the model?"
     ]), true);
     w.lines(6, 7.5);
   }
 
   function renderOverlay(w, doc, cfg, A) {
     const D = disputed();
-    w.title(t("Transparencia de la gráfica de f", "Transparency of the graph of f"), kicker(cfg));
+    w.title(t("Transparencia de la ruta", "Transparency of the route"), kicker(cfg));
     w.paragraph(t(
-      "Imprimid la página siguiente en acetato, al 100 % y sin ajustar a la página, en el mismo formato de papel que el plano de seguimiento. Colocadla sobre la página del plano haciendo coincidir los marcos: la gráfica de f recorre las calles por las que pasó el coche, y todas las cámaras de sus fotografías quedan sobre la curva.",
-      "Print the next page on acetate, at 100% and without fit-to-page, on the same paper format as the tracking map. Lay it over the map page with the frames matching: the graph of f runs along the streets the car followed, and every camera of its photographs sits on the curve."));
+      "Imprimid la página siguiente en acetato, al 100 % y sin ajustar a la página, en el mismo formato de papel que el plano de seguimiento. Colocadla sobre la página del plano haciendo coincidir los marcos: la ruta del modelo, el punto (e(t), n(t)), recorre las calles por las que pasó el coche, y todas las cámaras de sus fotografías quedan sobre ella. Los rótulos t = 1, t = 2… marcan el minuto en que el coche pasa por cada punto.",
+      "Print the next page on acetate, at 100% and without fit-to-page, on the same paper format as the tracking map. Lay it over the map page with the frames matching: the route of the model, the point (e(t), n(t)), runs along the streets the car followed, and every camera of its photographs sits on it. The labels t = 1, t = 2… mark the minute at which the car passes each point."));
     w.paragraph(t(
-      `Fijaos en las dos cámaras del coche confundible. ${D.b6.id} queda lejos de la curva. ${D.c8.id} queda bajo el círculo vacío de t = 8: es el límite por la izquierda de f en 8, un punto que no pertenece a la gráfica.`,
-      `Look at the two cameras of the look-alike car. ${D.b6.id} lies far from the curve. ${D.c8.id} lies under the empty circle at t = 8: it is the left limit of f at 8, a point that is not on the graph.`));
+      `Fijaos en las dos cámaras del coche confundible. ${D.b6.id} está en la misma columna que el coche buscado en t = 6, pero mucho más al norte, lejos de la ruta. ${D.c8.id} queda bajo el círculo vacío de t = 8: es el punto al que se acerca la ruta justo antes de 8, y no pertenece a ella.`,
+      `Look at the two cameras of the look-alike car. ${D.b6.id} is in the same column as the wanted car at t = 6, but much further north, far from the route. ${D.c8.id} lies under the empty circle at t = 8: it is the point the route approaches just before 8, and it is not on the route.`));
+    w.paragraph(t("Si no tenéis acetatos, el sobre de la fase 2 trae la misma ruta impresa ya sobre el plano.",
+      "If you have no acetate sheets, the phase 2 envelope carries the same route already printed over the map."), { italic: true, size: 9 });
     const R = w.turned();
     const box = mapBox(R, A);
     R.image(A.turned.overlay, "PNG", box.u, box.v, box.wd, box.ht, "map-overlay");
     doc.setFont("helvetica", "bold").setFontSize(8).setTextColor(...CC.blue);
-    R.text(t(`${cfg.city} · Transparencia · gráfica de f (columna = t, cota = f(t))`, `${cfg.city} · Transparency · graph of f (column = t, northing = f(t))`), box.u, box.v + box.ht + 4.5);
+    R.text(t(`${cfg.city} · Transparencia · ruta del modelo (columna e(t), cota n(t))`, `${cfg.city} · Transparency · route of the model (column e(t), northing n(t))`), box.u, box.v + box.ht + 4.5);
   }
 
   function renderGuide(w, doc, cfg, A) {
@@ -925,16 +1008,18 @@
     w.meta([[t("Matrícula buscada", "Wanted plate"), cfg.plate], [t("Matrícula confundible", "Look-alike plate"), cfg.alt], [t("Inicio", "Start"), `${cfg.start} · ${cfg.dateLabel}`]]);
     w.heading(t("Objetivo de la actividad", "Aim of the activity"));
     w.paragraph(t(
-      "La clase reconstruye el recorrido de un coche a partir de un registro finito de fotografías y decide, punto a punto, qué está probado, qué es solo un candidato y qué queda desconocido. Primero trabaja solo con la evidencia; después recibe un modelo explícito y demuestra sobre él valores, límites laterales, límites, continuidad y tipos de discontinuidad.",
-      "The class reconstructs a car's route from a finite record of photographs and decides, point by point, what is proved, what is only a candidate and what remains unknown. It first works with the evidence alone; then it receives an explicit model and proves on it values, one-sided limits, limits, continuity and types of discontinuity."));
+      "La clase reconstruye el recorrido de un coche a partir de un registro finito de fotografías y decide, punto a punto, qué está probado, qué es solo un candidato y qué queda desconocido. Primero trabaja solo con la evidencia; después recibe un modelo explícito, dos funciones del tiempo para la columna y la cota del coche, y demuestra sobre ellas valores, límites laterales, límites, continuidad y tipos de discontinuidad.",
+      "The class reconstructs a car's route from a finite record of photographs and decides, point by point, what is proved, what is only a candidate and what remains unknown. It first works with the evidence alone; then it receives an explicit model, two functions of time for the car's column and northing, and proves on them values, one-sided limits, limits, continuity and types of discontinuity."));
     w.bullets(t([
       "Separar evidencia, modelo y conclusión: un conjunto finito de observaciones sugiere, una función permite demostrar.",
+      "Describir un movimiento en el plano con dos funciones del tiempo, la columna e(t) y la cota n(t), y estudiar cada una por separado: el plano dice por dónde, cada gráfica dice cuándo.",
       "Distinguir el valor de una función, sus límites laterales y su límite; distinguir «desconocido» de «no definido».",
       "Reconocer continuidad, discontinuidad evitable, salto, oscilación sin límite y límite infinito sobre una función explícita.",
       "Usar el teorema del valor intermedio para concluir algo cierto sin conocer toda la trayectoria.",
       "Tratar un error de identificación como tal y no como un dato de la función."
     ], [
       "Separate evidence, model and conclusion: a finite set of observations suggests, a function lets you prove.",
+      "Describe a motion in the plane with two functions of time, the column e(t) and the northing n(t), and study each one separately: the map says where, each graph says when.",
       "Distinguish the value of a function, its one-sided limits and its limit; distinguish \"unknown\" from \"undefined\".",
       "Recognise continuity, removable discontinuity, jump, oscillation without a limit and infinite limit on an explicit function.",
       "Use the intermediate value theorem to conclude something true without knowing the whole trajectory.",
@@ -967,14 +1052,14 @@
     w.heading(t("Material de esta generación", "Material in this generation"));
     w.bullets(t([
       `Fase 1 (un paquete por estudiante, distinto para cada equipo; se trabaja en casa): apertura, plano con detalles y registro de cámaras, dossier fotográfico (${state.data.slots.length} registros) y hoja de investigación del consultor, a medio completar.`,
-      "Fase 2 (igual para todos, en un sobre que se abre en la segunda clase, después de la coordinación): hipótesis de continuidad, modelo M con las notas manuscritas del consultor, registro automático g, gráfica sobre el plano y hoja de trabajo; transparencia para superponer.",
+      "Fase 2 (igual para todos, en un sobre que se abre en la segunda clase, después de la coordinación): hipótesis de continuidad, modelo M (la columna e y la cota n) con las notas manuscritas del consultor, la ruta sobre el plano, las gráficas de e y de n frente al tiempo, el registro automático g y la hoja de trabajo; transparencia para superponer.",
       "Profesorado: esta guía, la solución y el inventario.",
-      "Imprime el plano y la transparencia al 100 %, sin ajustar a la página, para que coincidan al superponerlos. Las páginas del plano están giradas dentro de una hoja vertical, así que todo el material se imprime en vertical."
+      "Imprime el plano y la transparencia al 100 %, sin ajustar a la página, para que coincidan al superponerlos. Las páginas del plano están giradas dentro de una hoja vertical, así que todo el material se imprime en vertical. Si no hay acetatos, el sobre ya trae la ruta impresa sobre el plano."
     ], [
       `Phase 1 (one packet per student, different for each team; worked at home): opening, map with details and camera register, photographic dossier (${state.data.slots.length} records) and the consultant's half-completed investigation worksheet.`,
-      "Phase 2 (the same for everyone, in an envelope opened in the second class, after the coordination meeting): continuity hypothesis, model M with the consultant's handwritten notes, automatic record g, graph on the map and worksheet; transparency to overlay.",
+      "Phase 2 (the same for everyone, in an envelope opened in the second class, after the coordination meeting): continuity hypothesis, model M (the column e and the northing n) with the consultant's handwritten notes, the route on the map, the graphs of e and n against time, the automatic record g and the worksheet; transparency to overlay.",
       "Teacher: this guide, the solution and the inventory.",
-      "Print the map and the transparency at 100%, without fit-to-page, so that they match when overlaid. The map pages are turned inside a portrait sheet, so all the material prints in portrait."
+      "Print the map and the transparency at 100%, without fit-to-page, so that they match when overlaid. The map pages are turned inside a portrait sheet, so all the material prints in portrait. If there are no acetate sheets, the envelope already carries the route printed over the map."
     ]));
     w.heading(t("Qué cambia entre equipos", "What differs between teams"));
     w.table([t("Prueba", "Exhibit"), t("Equipo A", "Team A"), t("Equipo B", "Team B"), t("Equipo C", "Team C")], variantRows(cfg), [22, 52, 52, 52]);
@@ -982,73 +1067,73 @@
       "All other exhibits are identical in the three dossiers. With more than three teams, repeat the roles without saying who shares a file."));
     w.heading(t("Organización en dos clases", "Two-class organisation"));
     w.paragraph(t(
-      "La parte mecánica (calcular instantes, localizar cámaras, comprobar matrículas) se hace en casa; la clase se reserva para discutir. La hoja del consultor llega con las cinco primeras pruebas pasadas a limpio, como ejemplo de cómo se hace; el resto lo completa el equipo.",
-      "The mechanical part (computing instants, locating cameras, checking plates) is done at home; class time is kept for discussion. The consultant's worksheet arrives with the first five exhibits written up, as an example of how it is done; the team completes the rest."));
+      "La parte mecánica (calcular instantes, localizar cámaras, comprobar matrículas) se hace en casa; la clase se reserva para discutir. La hoja del consultor llega con las diez primeras pruebas pasadas a limpio, como ejemplo de cómo se hace; el resto lo completa el equipo.",
+      "The mechanical part (computing instants, locating cameras, checking plates) is done at home; class time is kept for discussion. The consultant's worksheet arrives with the first ten exhibits written up, as an example of how it is done; the team completes the rest."));
     w.table([t("Momento", "When"), t("Tiempo", "Time"), t("Acción", "Action")], t([
-      ["Clase 1 · final", "15–20 min", "Pregunta de diagnóstico. Lectura de la apertura en voz alta: la persecución, la pregunta del caso, la matrícula buscada, la cuadrícula del plano y la regularidad que anotó el consultor. Formar los equipos y entregar un paquete de la fase 1 a cada estudiante. Normas: el dossier no se enseña a otros equipos y la hoja se trae completa."],
-      ["En casa", "1 h aprox. por equipo", "Completar el registro del consultor, comprobar todas las matrículas, ordenar las pruebas, rellenar la tabla de zonas, proponer fórmulas para los dos primeros tramos y preparar dos afirmaciones defendibles y un punto indecidible. Conviene repartirse las pruebas dentro del equipo."],
+      ["Clase 1 · final", "15–20 min", "Pregunta de diagnóstico. Lectura de la apertura en voz alta: la persecución, la pregunta del caso, la matrícula buscada, la cuadrícula del plano y las dos coordenadas del coche, la columna e(t) y la cota n(t). Formar los equipos y entregar un paquete de la fase 1 a cada estudiante. Normas: el dossier no se enseña a otros equipos y la hoja se trae completa."],
+      ["En casa", "1 h aprox. por equipo", "Completar el registro del consultor, comprobar todas las matrículas, ordenar las pruebas, rellenar la tabla de zonas, situar las pruebas en las dos gráficas, proponer fórmulas para la columna y la cota en los dos primeros tramos y preparar dos afirmaciones defendibles y un punto indecidible. Conviene repartirse las pruebas dentro del equipo."],
       ["Clase 2 · coordinación", "15 min", "Comparar equipos por código de prueba. Descubrir la matrícula confundible, la detección sin imagen y la matrícula ilegible del equipo A; acordar qué valores son válidos, cuáles desconocidos y qué candidatos quedan."],
-      ["Clase 2 · sobre", "20 min", "Abrir el sobre: hipótesis de continuidad y TVI en el túnel; después, el modelo M y las notas del consultor que explican cómo lo dedujo (sus dos primeros tramos ya los habrán propuesto ellos), y el registro g. Los equipos rellenan la hoja de trabajo repartiéndose las filas."],
+      ["Clase 2 · sobre", "20 min", "Abrir el sobre: hipótesis de continuidad y TVI en el túnel; después, el modelo M (la columna e y la cota n) y las notas del consultor que explican cómo lo dedujo (los dos primeros tramos de cada función ya los habrán propuesto ellos), la ruta sobre el plano y las dos gráficas, y el registro g. Los equipos rellenan la hoja de trabajo, primero la columna y después la cota, repartiéndose las filas."],
       ["Clase 2 · exposición", "10 min", "Cada equipo explica a la clase el punto donde falló su propio dossier: B, t = 6 (evitable en g); C, t = 8 (salto); A, t -> 10 (oscilación), o el túnel en la ruta introductoria. El docente cierra con lo que quede: el túnel y la asíntota."],
       ["Clase 2 · cierre", "5 min", "Pregunta individual sobre un fotograma que falta (ver solución). Ampliación para casa: la prueba de la oscilación con sucesiones."]
     ], [
-      ["Class 1 · end", "15–20 min", "Diagnostic question. Read the opening aloud: the pursuit, the question of the case, the wanted plate, the map grid and the regularity the consultant noted. Form the teams and give a phase 1 packet to every student. Rules: the dossier is not shown to other teams and the worksheet comes back completed."],
-      ["At home", "about 1 h per team", "Complete the consultant's record, check every plate, order the exhibits, fill the zone table, propose formulas for the first two stretches and prepare two defensible statements and one undecidable point. Teams should share out the exhibits."],
+      ["Class 1 · end", "15–20 min", "Diagnostic question. Read the opening aloud: the pursuit, the question of the case, the wanted plate, the map grid and the car's two coordinates, the column e(t) and the northing n(t). Form the teams and give a phase 1 packet to every student. Rules: the dossier is not shown to other teams and the worksheet comes back completed."],
+      ["At home", "about 1 h per team", "Complete the consultant's record, check every plate, order the exhibits, fill the zone table, plot the exhibits on the two graphs, propose formulas for the column and the northing on the first two stretches and prepare two defensible statements and one undecidable point. Teams should share out the exhibits."],
       ["Class 2 · coordination", "15 min", "Compare teams by exhibit code. Discover the look-alike plate, the detection without an image and team A's unreadable plate; agree which values are valid, which are unknown and which candidates remain."],
-      ["Class 2 · envelope", "20 min", "Open the envelope: continuity hypothesis and IVT in the tunnel; then the model M and the consultant's notes explaining how he worked it out (they will already have proposed its first two pieces), and the record g. Teams fill in the worksheet, sharing out the rows."],
+      ["Class 2 · envelope", "20 min", "Open the envelope: continuity hypothesis and IVT in the tunnel; then the model M (the column e and the northing n) and the consultant's notes explaining how he worked it out (they will already have proposed the first two pieces of each function), the route on the map and the two graphs, and the record g. Teams fill in the worksheet, first the column and then the northing, sharing out the rows."],
       ["Class 2 · presentation", "10 min", "Each team explains to the class the point where its own dossier failed: B, t = 6 (removable in g); C, t = 8 (jump); A, t -> 10 (oscillation), or the tunnel in the introductory route. The teacher closes with what is left: the tunnel and the asymptote."],
       ["Class 2 · close", "5 min", "Individual question about a missing frame (see solution). Extension for home: the proof of the oscillation with sequences."]
     ]), [30, 22, 128]);
     w.heading(t("La reunión de coordinación", "The coordination meeting"));
     w.bullets(t([
-      "Cada equipo lee sus códigos en orden cronológico y, prueba a prueba, se comparan la cámara, la hora y la cota. Ante una discrepancia, la pregunta es siempre la misma: ¿qué imagen exacta es distinta?",
-      `En ${D.s6.code}, A y B tienen la misma hora en dos cámaras distintas: ${D.a6.id}, en la cota ${num(D.a6.y, 2)}, y ${D.b6.id}, en la cota ${num(D.b6.y, 2)}. Un coche no puede estar en dos sitios a la vez, así que al menos una de las dos fotografías no es del coche buscado. El color ya hace sospechar (el coche de B es de un rojo cobrizo, no burdeos) y la matrícula lo decide. C aporta una detección de la misma cámara que A, pero sin imagen.`,
+      "Cada equipo lee sus códigos en orden cronológico y, prueba a prueba, se comparan la cámara, la hora, la columna y la cota. Ante una discrepancia, la pregunta es siempre la misma: ¿qué imagen exacta es distinta?",
+      `En ${D.s6.code}, A y B tienen la misma hora en dos cámaras distintas de la misma columna (${num(D.a6.x, 2)}): ${D.a6.id}, en la cota ${num(D.a6.y, 2)}, y ${D.b6.id}, en la cota ${num(D.b6.y, 2)}. Un coche no puede estar en dos sitios a la vez, así que al menos una de las dos fotografías no es del coche buscado. El color ya hace sospechar (el coche de B es de un rojo cobrizo, no burdeos) y la matrícula lo decide. C aporta una detección de la misma cámara que A, pero sin imagen.`,
       `En ${D.s8.code}, A y B ven ${cfg.plate} en lo alto de la ${roadName(D.a8.road)} y C ve ${cfg.alt} al pie, a la misma hora. El mismo razonamiento descarta la prueba de C.`,
       `En ${glareSlot().code}, la matrícula del equipo A es ilegible por un reflejo; B y C tienen un fotograma legible del mismo instante (cada detección guarda varios fotogramas, y cada operador eligió uno). Con su ayuda, A puede dar por válida la cota ${num(D.g.y, 2)}: es el único caso en que otro equipo resuelve la duda del A.`,
-      `Al terminar, la clase acuerda qué valores son válidos (f(6) = ${num(D.a6.y, 2)} y f(8) = ${num(D.a8.y, 2)}, con las fotografías de A), cuáles quedan desconocidos o sin verificar para cada equipo y qué candidatos se mantienen. Solo entonces se abre el sobre.`
+      `Al terminar, la clase acuerda qué valores son válidos (n(6) = ${num(D.a6.y, 2)} y n(8) = ${num(D.a8.y, 2)}, con las fotografías de A), cuáles quedan desconocidos o sin verificar para cada equipo y qué candidatos se mantienen. Las columnas no se discuten: en los instantes dudosos, todas las fotografías son de la misma columna. Solo entonces se abre el sobre.`
     ], [
-      "Each team reads its codes in time order and, exhibit by exhibit, the camera, the time and the northing are compared. When there is a discrepancy, the question is always the same: which exact image is different?",
-      `In ${D.s6.code}, A and B have the same time at two different cameras: ${D.a6.id}, at northing ${num(D.a6.y, 2)}, and ${D.b6.id}, at northing ${num(D.b6.y, 2)}. A car cannot be in two places at once, so at least one of the two photographs is not of the wanted car. The colour already raises a doubt (B's car is copper red, not burgundy) and the plate settles it. C brings a detection from the same camera as A, but without an image.`,
+      "Each team reads its codes in time order and, exhibit by exhibit, the camera, the time, the column and the northing are compared. When there is a discrepancy, the question is always the same: which exact image is different?",
+      `In ${D.s6.code}, A and B have the same time at two different cameras in the same column (${num(D.a6.x, 2)}): ${D.a6.id}, at northing ${num(D.a6.y, 2)}, and ${D.b6.id}, at northing ${num(D.b6.y, 2)}. A car cannot be in two places at once, so at least one of the two photographs is not of the wanted car. The colour already raises a doubt (B's car is copper red, not burgundy) and the plate settles it. C brings a detection from the same camera as A, but without an image.`,
       `In ${D.s8.code}, A and B see ${cfg.plate} at the top of ${roadName(D.a8.road)} and C sees ${cfg.alt} at its foot, at the same time. The same reasoning discards C's exhibit.`,
       `In ${glareSlot().code}, team A's plate is unreadable because of a reflection; B and C hold a readable frame of the same instant (each detection keeps several frames, and each operator chose one). With their help, A can accept northing ${num(D.g.y, 2)} as valid: it is the one case where another team settles A's doubt.`,
-      `At the end, the class agrees which values are valid (f(6) = ${num(D.a6.y, 2)} and f(8) = ${num(D.a8.y, 2)}, from A's photographs), which remain unknown or unverified for each team and which candidates stand. Only then is the envelope opened.`
+      `At the end, the class agrees which values are valid (n(6) = ${num(D.a6.y, 2)} and n(8) = ${num(D.a8.y, 2)}, from A's photographs), which remain unknown or unverified for each team and which candidates stand. The columns are not in dispute: at the doubtful instants, every photograph is from the same column. Only then is the envelope opened.`
     ]), true);
     w.sub(t("Preguntas para dirigir la reunión", "Questions to steer the meeting"));
     w.bullets(t([
       `¿Qué matrícula aparece en vuestra prueba ${D.s6.code}? ¿Y en la ${D.s8.code}?`,
       "Si una foto muestra otro coche, ¿qué sabemos del coche buscado en ese instante?",
       "¿Es lo mismo una detección sin imagen que un instante en que el coche no tiene posición?",
-      "¿Qué sabéis de la posición del coche cuando la matrícula es ilegible? ¿Y dentro del túnel, donde ni siquiera la regularidad columna = t puede comprobarse?",
+      "¿Qué sabéis de la posición del coche cuando la matrícula es ilegible? ¿Y dentro del túnel, donde ninguna cámara da ni la columna ni la cota?",
       "¿Qué dos evoluciones distintas de la cota encajan con los portales del túnel?",
       "¿Cuántas fotos alternantes harían falta para demostrar que no hay límite en 10?"
     ], [
       `Which plate appears in your exhibit ${D.s6.code}? And in ${D.s8.code}?`,
       "If a photo shows another car, what do we know about the wanted car at that instant?",
       "Is a detection without an image the same as an instant at which the car has no position?",
-      "What do you know about the car's position when the plate is unreadable? And inside the tunnel, where not even the regularity column = t can be checked?",
+      "What do you know about the car's position when the plate is unreadable? And inside the tunnel, where no camera gives either the column or the northing?",
       "Which two different evolutions of the northing fit the tunnel portals?",
       "How many alternating photos would be needed to prove there is no limit at 10?"
     ]));
     w.heading(t("Puntos de investigación", "Investigation checkpoints"));
     w.bullets(t([
-      `t = 2 (glorieta): fotos a ambos lados y en el instante exacto, todas con la matrícula buscada (cotas ${cotasIn(1.85, 2.25)}). Sugieren una ruta sin corte. Con el modelo: f(2) = 4 = límite; continua, aunque la ruta forme un ángulo.`,
-      "Túnel (3 < t < 5): solo los portales. Ningún valor interior se conoce, y la regularidad columna = t tampoco puede comprobarse dentro. Con la hipótesis de continuidad, el TVI garantiza un instante c en (3, 5) con f(c) = 6. Solo el modelo fija c = 4.",
-      `t = 6 (avenida): A ve el coche buscado en la cota ${num(D.a6.y, 2)}. B ve ${cfg.alt} en la ${roadName(D.b6.road)} (cota ${num(D.b6.y, 2)}): error de identificación, f(6) desconocido. C tiene una detección de ${D.c6.id} sin imagen: sugiere la cota ${num(D.c6.y, 2)}, que encaja con las vecinas, pero sin imagen la matrícula no puede comprobarse y el valor queda sin verificar. Para B y C, f(6) es desconocido, que no es lo mismo que indefinido; nadie debe escribir f(6) = ${num(D.b6.y, 2)}. En el registro automático g aparece una discontinuidad evitable.`,
-      `t = 8 (${roadName(D.a8.road)}): por la izquierda las cotas se acercan a 10 y por la derecha a 12. A y B ven el coche buscado arriba (cota ${num(D.a8.y, 2)}); C ve ${cfg.alt} abajo (cota ${num(D.c8.y, 2)}). El salto no depende de qué valor tenga la función en 8.`,
+      `t = 2 (glorieta): fotos a ambos lados y en el instante exacto, todas con la matrícula buscada (cotas ${cotasIn(1.85, 2.25)}; columnas ${colsIn(1.85, 2.25)}). Sugieren una ruta sin corte. Con el modelo: n(2) = 4 y e(2) = 3 coinciden con sus límites; las dos funciones son continuas, aunque la ruta forme un ángulo y el coche cambie de velocidad.`,
+      "Túnel (3 < t < 5): solo los portales. Ningún valor interior se conoce, ni de la columna ni de la cota. Con la hipótesis de continuidad, el TVI garantiza un instante c en (3, 5) con n(c) = 6. Solo el modelo fija c = 4, en la columna e(4) = 4.",
+      `t = 6 (avenida): A ve el coche buscado en la cota ${num(D.a6.y, 2)}. B ve ${cfg.alt} en la ${roadName(D.b6.road)} (cota ${num(D.b6.y, 2)}), en la misma columna: error de identificación, n(6) desconocido. C tiene una detección de ${D.c6.id} sin imagen: sugiere la cota ${num(D.c6.y, 2)}, que encaja con las vecinas, pero sin imagen la matrícula no puede comprobarse y el valor queda sin verificar. Para B y C, n(6) es desconocido, que no es lo mismo que indefinido; nadie debe escribir n(6) = ${num(D.b6.y, 2)}. En el registro automático g aparece una discontinuidad evitable; la columna, en cambio, no tiene ningún problema.`,
+      `t = 8 (${roadName(D.a8.road)}): por la izquierda las cotas se acercan a 10 y por la derecha a 12. A y B ven el coche buscado arriba (cota ${num(D.a8.y, 2)}); C ve ${cfg.alt} abajo (cota ${num(D.c8.y, 2)}). El salto no depende de qué valor tenga la función en 8. La columna no salta (${colsIn(7.9, 8.1)}): la cuesta es una calle de sur a norte, y solo la cota da el salto.`,
       `t -> 10 (El Laberinto): cuatro fotos que alternan las cotas 10 y 12 en instantes cada vez más próximos a 10; en la ${glareSlot().code} del equipo A la matrícula es ilegible. Solo motivan la sospecha. Con el modelo, la gráfica muestra que los valores no se acercan a un único número; la prueba rigurosa con dos sucesiones queda como ampliación.`,
-      `t -> 12 (autovía): cotas ${cotasIn(10.4, 12)}. La sospecha de límite infinito solo se demuestra con 10 + 4/(12 - t).`
+      `t -> 12 (autovía): cotas ${cotasIn(10.4, 12)}, que crecen sin tope a la vista, y columnas ${colsIn(10.4, 12)}, que se acercan a 12, el ferrocarril. La sospecha de límite infinito de la cota solo se demuestra con 10 + 4/(12 - t); la columna tiene límite finito, 12.`
     ], [
-      `t = 2 (roundabout): photos on both sides and at the exact instant, all with the wanted plate (northings ${cotasIn(1.85, 2.25)}). They suggest a route without a break. With the model: f(2) = 4 = limit; continuous, even though the route turns a corner.`,
-      "Tunnel (3 < t < 5): only the portals. No interior value is known, and the regularity column = t cannot be checked inside either. Under the continuity hypothesis, the IVT guarantees an instant c in (3, 5) with f(c) = 6. Only the model fixes c = 4.",
-      `t = 6 (avenue): A sees the wanted car at northing ${num(D.a6.y, 2)}. B sees ${cfg.alt} on the ${roadName(D.b6.road)} (northing ${num(D.b6.y, 2)}): identification error, f(6) unknown. C has a detection from ${D.c6.id} without an image: it suggests northing ${num(D.c6.y, 2)}, which fits the neighbours, but without an image the plate cannot be checked and the value stays unverified. For B and C, f(6) is unknown, which is not the same as undefined; nobody should write f(6) = ${num(D.b6.y, 2)}. The automatic record g shows a removable discontinuity.`,
-      `t = 8 (${roadName(D.a8.road)}): from the left the northings approach 10 and from the right 12. A and B see the wanted car at the top (northing ${num(D.a8.y, 2)}); C sees ${cfg.alt} at the bottom (northing ${num(D.c8.y, 2)}). The jump does not depend on the function's value at 8.`,
+      `t = 2 (roundabout): photos on both sides and at the exact instant, all with the wanted plate (northings ${cotasIn(1.85, 2.25)}; columns ${colsIn(1.85, 2.25)}). They suggest a route without a break. With the model: n(2) = 4 and e(2) = 3 agree with their limits; both functions are continuous, even though the route turns a corner and the car changes speed.`,
+      "Tunnel (3 < t < 5): only the portals. No interior value is known, neither of the column nor of the northing. Under the continuity hypothesis, the IVT guarantees an instant c in (3, 5) with n(c) = 6. Only the model fixes c = 4, at column e(4) = 4.",
+      `t = 6 (avenue): A sees the wanted car at northing ${num(D.a6.y, 2)}. B sees ${cfg.alt} on the ${roadName(D.b6.road)} (northing ${num(D.b6.y, 2)}), in the same column: identification error, n(6) unknown. C has a detection from ${D.c6.id} without an image: it suggests northing ${num(D.c6.y, 2)}, which fits the neighbours, but without an image the plate cannot be checked and the value stays unverified. For B and C, n(6) is unknown, which is not the same as undefined; nobody should write n(6) = ${num(D.b6.y, 2)}. The automatic record g shows a removable discontinuity; the column, by contrast, has no problem at all.`,
+      `t = 8 (${roadName(D.a8.road)}): from the left the northings approach 10 and from the right 12. A and B see the wanted car at the top (northing ${num(D.a8.y, 2)}); C sees ${cfg.alt} at the bottom (northing ${num(D.c8.y, 2)}). The jump does not depend on the function's value at 8. The column does not jump (${colsIn(7.9, 8.1)}): the hill is a south-to-north street, and only the northing jumps.`,
       `t -> 10 (The Labyrinth): four photos alternating northings 10 and 12 at instants ever closer to 10; in team A's ${glareSlot().code} the plate is unreadable. They only motivate the suspicion. With the model, the graph shows that the values do not approach a single number; the rigorous proof with two sequences is left as an extension.`,
-      `t -> 12 (motorway): northings ${cotasIn(10.4, 12)}. The suspected infinite limit is proved only with 10 + 4/(12 - t).`
+      `t -> 12 (motorway): northings ${cotasIn(10.4, 12)}, visibly growing without bound, and columns ${colsIn(10.4, 12)}, approaching 12, the railway. The suspected infinite limit of the northing is proved only with 10 + 4/(12 - t); the column has a finite limit, 12.`
     ]));
     w.heading(t("Un plano estilizado", "A stylised map"));
     w.paragraph(t(
-      "Para que la ruta coincida con la gráfica de f, el plano se ha dibujado de modo que la columna del coche coincide con el minuto t. En la avenida eso es verosímil, pero cerca de t = 8, t = 10 y t = 12 las fotografías, leídas sobre un plano a escala real, exigirían recorridos imposibles en pocos segundos. Por eso el plano no lleva escala en metros y la actividad no pide calcular distancias ni velocidades. Si alguien lo advierte, es una observación excelente: confirma que el salto, la oscilación y el límite infinito son idealizaciones del modelo y no hechos que una cámara pueda registrar.",
-      "For the route to coincide with the graph of f, the map has been drawn so that the car's column equals the minute t. On the avenue that is plausible, but near t = 8, t = 10 and t = 12 the photographs, read on a map at real scale, would require impossible journeys in a few seconds. That is why the map carries no scale in metres and the activity never asks for distances or speeds. If someone notices, it is an excellent observation: it confirms that the jump, the oscillation and the infinite limit are idealisations of the model, not facts that a camera could record."));
+      "La columna del coche avanza a un ritmo verosímil, distinto en cada tramo: deprisa por la Carretera del Puerto, despacio entre el tráfico de la avenida y de nuevo deprisa desde la Cuesta del Enlace. La cota, en cambio, está idealizada: cerca de t = 8, t = 10 y t = 12 exigiría, sobre un plano a escala real, recorridos imposibles en pocos segundos (subir la cuesta en un instante, recorrer infinitas curvas, alcanzar una cota infinita). Por eso el plano no lleva escala en metros y la actividad no pide calcular distancias ni velocidades. Si alguien lo advierte, es una observación excelente: confirma que el salto, la oscilación y el límite infinito son idealizaciones del modelo y no hechos que una cámara pueda registrar.",
+      "The car's column advances at a plausible rate, different on each stretch: quickly along Harbour Road, slowly through the avenue traffic and quickly again from Link Hill onwards. The northing, by contrast, is idealised: near t = 8, t = 10 and t = 12 it would require, on a map at real scale, impossible journeys in a few seconds (climbing the hill in an instant, driving through infinitely many bends, reaching an infinite northing). That is why the map carries no scale in metres and the activity never asks for distances or speeds. If someone notices, it is an excellent observation: it confirms that the jump, the oscillation and the infinite limit are idealisations of the model, not facts that a camera could record."));
   }
 
   function variantRows(cfg) {
@@ -1057,10 +1142,10 @@
       `${s.code} (t = ${num(s.t, 2)})`,
       ...TEAMS.map((tm) => {
         const e = s.teams[tm], cam = d.camera[e.camera];
-        if (e.car === "none") return t(`${cam.id} (cota ${num(cam.y, 2)}): detección sin imagen, matrícula sin verificar`, `${cam.id} (northing ${num(cam.y, 2)}): detection without an image, plate unverified`);
-        if (e.car === "glare") return t(`${cam.id}, cota ${num(cam.y, 2)}, matrícula ilegible por un reflejo`, `${cam.id}, northing ${num(cam.y, 2)}, plate unreadable because of a reflection`);
+        if (e.car === "none") return t(`${cam.id} (columna ${num(cam.x, 3)}, cota ${num(cam.y, 2)}): detección sin imagen, matrícula sin verificar`, `${cam.id} (column ${num(cam.x, 3)}, northing ${num(cam.y, 2)}): detection without an image, plate unverified`);
+        if (e.car === "glare") return t(`${cam.id}, columna ${num(cam.x, 3)}, cota ${num(cam.y, 2)}, matrícula ilegible por un reflejo`, `${cam.id}, column ${num(cam.x, 3)}, northing ${num(cam.y, 2)}, plate unreadable because of a reflection`);
         const plate = e.car === "alt" ? cfg.alt : cfg.plate;
-        return t(`${cam.id}, cota ${num(cam.y, 2)}, matrícula ${plate}${e.car === "alt" ? " (confundible)" : ""}`, `${cam.id}, northing ${num(cam.y, 2)}, plate ${plate}${e.car === "alt" ? " (look-alike)" : ""}`);
+        return t(`${cam.id}, columna ${num(cam.x, 3)}, cota ${num(cam.y, 2)}, matrícula ${plate}${e.car === "alt" ? " (confundible)" : ""}`, `${cam.id}, column ${num(cam.x, 3)}, northing ${num(cam.y, 2)}, plate ${plate}${e.car === "alt" ? " (look-alike)" : ""}`);
       })
     ]);
   }
@@ -1071,64 +1156,97 @@
     w.heading(t("Fase 1 · lo que cada equipo puede afirmar", "Phase 1 · what each team can state"));
     const n6 = cotasIn(5.9, 5.99) + t(" y ", " and ") + cotasIn(6.01, 6.1);
     w.table([t("Punto", "Point"), t("Equipo A", "Team A"), t("Equipo B", "Team B"), t("Equipo C", "Team C")], t([
+      ["e(t), todo el recorrido", `Las columnas crecen sin saltos: 1.5 por minuto hasta t = 2 (${colsIn(0, 2)}), 0.5 por minuto hasta t = 8 y otra vez 1.5 por minuto después; cerca de t = 12 se acercan a 12 (${colsIn(11, 12)}). En los instantes dudosos, todas las fotografías son de la misma columna.`, "Igual que A.", "Igual que A."],
       ["t = 2", `Cotas ${cotasIn(1.85, 2.25)}, a ambos lados de 2 y 4 en t = 2. Sugieren una ruta sin corte que pasa por 4; las fotos no dicen qué ocurre entre una y otra.`, "Igual que A.", "Igual que A."],
-      ["3 < t < 5", "Seguro: f(3) = 5 y f(5) = 7. Desconocido: todo el interior. Los dibujos sin salto cruzan la cota 6; el dibujo con salto puede no hacerlo.", "Igual que A.", "Igual que A."],
-      ["t = 6", `Seguro: el coche buscado está en la cota ${num(D.a6.y, 2)}; vecinas ${n6}. Sugieren una ruta sin corte.`, `${D.s6.code} muestra un coche rojo cobrizo con ${cfg.alt} en la ${roadName(D.b6.road)} (cota ${num(D.b6.y, 2)}): error de identificación. f(6) desconocido; las vecinas sugieren un valor próximo a 8.`, `${D.s6.code}: detección de ${D.c6.id} sin imagen. Sugiere la cota ${num(D.c6.y, 2)}, pero la matrícula no se puede comprobar: f(6) sin verificar (desconocido, no indefinido).`],
-      ["t = 8", `Por la izquierda, cotas que se acercan a 10 (${cotasIn(7.4, 7.99)}); en t = 8, ${num(D.a8.y, 2)}; por la derecha, cerca de 12 (${cotasIn(8.01, 8.6)}). Sugieren un cambio brusco de 10 a 12; los datos no dicen qué ocurre justo antes de 8.`, "Igual que A.", `${D.s8.code} muestra ${cfg.alt} al pie de la cuesta (cota ${num(D.c8.y, 2)}): error de identificación. f(8) desconocido; el cambio brusco de 10 a 12 sigue sugerido.`],
-      ["t -> 10", `Las cotas registradas alternan entre 10 y 12 en instantes cada vez más próximos a 10 (${D.sg.code} con la matrícula ilegible: cota ${num(D.g.y, 2)} sin verificar hasta la reunión). Sugiere una oscilación, pero el registro finito no establece qué ocurre arbitrariamente cerca de 10.`, `Igual que A, con ${D.sg.code} legible.`, `Igual que A, con ${D.sg.code} legible.`],
+      ["3 < t < 5", "Seguro: n(3) = 5 y n(5) = 7 (columnas 3.5 y 4.5). Desconocido: todo el interior, columna y cota. Los dibujos sin salto cruzan la cota 6; el dibujo con salto puede no hacerlo.", "Igual que A.", "Igual que A."],
+      ["t = 6", `Seguro: el coche buscado está en la cota ${num(D.a6.y, 2)}; vecinas ${n6}. Sugieren una ruta sin corte.`, `${D.s6.code} muestra un coche rojo cobrizo con ${cfg.alt} en la ${roadName(D.b6.road)} (cota ${num(D.b6.y, 2)}): error de identificación. n(6) desconocido; las vecinas sugieren un valor próximo a 8.`, `${D.s6.code}: detección de ${D.c6.id} sin imagen. Sugiere la cota ${num(D.c6.y, 2)}, pero la matrícula no se puede comprobar: n(6) sin verificar (desconocido, no indefinido).`],
+      ["t = 8", `Por la izquierda, cotas que se acercan a 10 (${cotasIn(7.4, 7.99)}); en t = 8, ${num(D.a8.y, 2)}; por la derecha, cerca de 12 (${cotasIn(8.01, 8.6)}). Sugieren un cambio brusco de 10 a 12; los datos no dicen qué ocurre justo antes de 8. Las columnas no cambian bruscamente.`, "Igual que A.", `${D.s8.code} muestra ${cfg.alt} al pie de la cuesta (cota ${num(D.c8.y, 2)}): error de identificación. n(8) desconocido; el cambio brusco de 10 a 12 sigue sugerido.`],
+      ["t -> 10", `Las cotas registradas alternan entre 10 y 12 en instantes cada vez más próximos a 10 (${D.sg.code} con la matrícula ilegible: cota ${num(D.g.y, 2)} sin verificar hasta la reunión). Sugiere una oscilación, pero el registro finito no establece qué ocurre arbitrariamente cerca de 10. Las columnas, en cambio, se acercan sin oscilar a 9.`, `Igual que A, con ${D.sg.code} legible.`, `Igual que A, con ${D.sg.code} legible.`],
       ["t -> 12", `Cotas ${cotasIn(10.4, 12)}: cada vez mayores. Sugieren un crecimiento sin tope, pero un número finito de datos no prueba un límite infinito.`, "Igual que A.", "Igual que A."]
     ], [
+      ["e(t), the whole route", `The columns grow without jumps: 1.5 per minute up to t = 2 (${colsIn(0, 2)}), 0.5 per minute up to t = 8 and 1.5 per minute again afterwards; near t = 12 they approach 12 (${colsIn(11, 12)}). At the doubtful instants, every photograph is from the same column.`, "Same as A.", "Same as A."],
       ["t = 2", `Northings ${cotasIn(1.85, 2.25)}, on both sides of 2 and 4 at t = 2. They suggest a route without a break through 4; the photos say nothing about what happens between them.`, "Same as A.", "Same as A."],
-      ["3 < t < 5", "Certain: f(3) = 5 and f(5) = 7. Unknown: the whole interior. The drawings without a jump cross northing 6; the drawing with a jump need not.", "Same as A.", "Same as A."],
-      ["t = 6", `Certain: the wanted car is at northing ${num(D.a6.y, 2)}; neighbours ${n6}. They suggest a route without a break.`, `${D.s6.code} shows a copper-red car with ${cfg.alt} on the ${roadName(D.b6.road)} (northing ${num(D.b6.y, 2)}): identification error. f(6) unknown; the neighbours suggest a value close to 8.`, `${D.s6.code}: detection from ${D.c6.id} without an image. It suggests northing ${num(D.c6.y, 2)}, but the plate cannot be checked: f(6) unverified (unknown, not undefined).`],
-      ["t = 8", `From the left, northings approaching 10 (${cotasIn(7.4, 7.99)}); at t = 8, ${num(D.a8.y, 2)}; from the right, close to 12 (${cotasIn(8.01, 8.6)}). They suggest a sudden change from 10 to 12; the data say nothing about what happens just before 8.`, "Same as A.", `${D.s8.code} shows ${cfg.alt} at the foot of the hill (northing ${num(D.c8.y, 2)}): identification error. f(8) unknown; the sudden change from 10 to 12 is still suggested.`],
-      ["t -> 10", `The recorded northings alternate between 10 and 12 at times increasingly close to 10 (${D.sg.code} with an unreadable plate: northing ${num(D.g.y, 2)} unverified until the meeting). This suggests oscillation, but the finite record does not establish what happens arbitrarily close to 10.`, `Same as A, with ${D.sg.code} readable.`, `Same as A, with ${D.sg.code} readable.`],
+      ["3 < t < 5", "Certain: n(3) = 5 and n(5) = 7 (columns 3.5 and 4.5). Unknown: the whole interior, column and northing. The drawings without a jump cross northing 6; the drawing with a jump need not.", "Same as A.", "Same as A."],
+      ["t = 6", `Certain: the wanted car is at northing ${num(D.a6.y, 2)}; neighbours ${n6}. They suggest a route without a break.`, `${D.s6.code} shows a copper-red car with ${cfg.alt} on the ${roadName(D.b6.road)} (northing ${num(D.b6.y, 2)}): identification error. n(6) unknown; the neighbours suggest a value close to 8.`, `${D.s6.code}: detection from ${D.c6.id} without an image. It suggests northing ${num(D.c6.y, 2)}, but the plate cannot be checked: n(6) unverified (unknown, not undefined).`],
+      ["t = 8", `From the left, northings approaching 10 (${cotasIn(7.4, 7.99)}); at t = 8, ${num(D.a8.y, 2)}; from the right, close to 12 (${cotasIn(8.01, 8.6)}). They suggest a sudden change from 10 to 12; the data say nothing about what happens just before 8. The columns do not change suddenly.`, "Same as A.", `${D.s8.code} shows ${cfg.alt} at the foot of the hill (northing ${num(D.c8.y, 2)}): identification error. n(8) unknown; the sudden change from 10 to 12 is still suggested.`],
+      ["t -> 10", `The recorded northings alternate between 10 and 12 at times increasingly close to 10 (${D.sg.code} with an unreadable plate: northing ${num(D.g.y, 2)} unverified until the meeting). This suggests oscillation, but the finite record does not establish what happens arbitrarily close to 10. The columns, by contrast, approach 9 without oscillating.`, `Same as A, with ${D.sg.code} readable.`, `Same as A, with ${D.sg.code} readable.`],
       ["t -> 12", `Northings ${cotasIn(10.4, 12)}: ever larger. They suggest growth without bound, but finitely many data do not prove an infinite limit.`, "Same as A.", "Same as A."]
     ]), [18, 54, 54, 54], { size: 7.6 });
     w.paragraph(t(
-      `Primeros tramos (pregunta 3): entre t = 0 y t = 2 las cotas son los cuadrados de t (${cotasIn(0, 2)}), luego t²; entre t = 2 y t = 8, cada cota supera en 2 al instante (${cotasIn(2.1, 7.99)}), luego t + 2. Basta comprobar cada fórmula con un par de pruebas. Túnel (pregunta 2): la regularidad columna = t no puede comprobarse dentro, porque no hay cámaras; es la hipótesis que el modelo adopta en la fase 2.`,
-      `First stretches (question 3): between t = 0 and t = 2 the northings are the squares of t (${cotasIn(0, 2)}), hence t²; between t = 2 and t = 8 each northing exceeds the instant by 2 (${cotasIn(2.1, 7.99)}), hence t + 2. Checking each formula with a couple of exhibits is enough. Tunnel (question 2): the regularity column = t cannot be checked inside, because there are no cameras; it is the hypothesis the model adopts in phase 2.`));
+      `Primeros tramos (pregunta 3): entre t = 0 y t = 2 las columnas son 1.5 veces el instante (${colsIn(0, 2)}) y las cotas, los cuadrados de t (${cotasIn(0, 2)}), luego e(t) = 1.5t y n(t) = t²; entre t = 2 y t = 8 la columna avanza 0.5 por minuto (${colsIn(2.1, 7.99)}) y cada cota supera en 2 al instante (${cotasIn(2.1, 7.99)}), luego e(t) = 0.5t + 2 y n(t) = t + 2. El coche avanza hacia el este tres veces más despacio en la avenida que en la Carretera del Puerto. Basta comprobar cada fórmula con un par de pruebas. Túnel (pregunta 2): dentro no hay cámaras, así que no se conoce ni la columna ni la cota; el modelo de la fase 2 supone que siguen las dos rectas.`,
+      `First stretches (question 3): between t = 0 and t = 2 the columns are 1.5 times the instant (${colsIn(0, 2)}) and the northings are the squares of t (${cotasIn(0, 2)}), hence e(t) = 1.5t and n(t) = t²; between t = 2 and t = 8 the column advances 0.5 per minute (${colsIn(2.1, 7.99)}) and each northing exceeds the instant by 2 (${cotasIn(2.1, 7.99)}), hence e(t) = 0.5t + 2 and n(t) = t + 2. The car moves east three times more slowly on the avenue than on Harbour Road. Checking each formula with a couple of exhibits is enough. Tunnel (question 2): there are no cameras inside, so neither the column nor the northing is known; the phase 2 model assumes that both follow the lines.`));
     w.callout(t(
-      `Ninguna fotografía de la matrícula ${cfg.alt} se usa como valor de f. Las pruebas ${D.s6.code} del equipo B y ${D.s8.code} del equipo C se clasifican como errores de identificación; la ${D.s6.code} del equipo C es una detección sin verificar, y la ${D.sg.code} del equipo A, una fotografía con la matrícula ilegible. En esos instantes, el valor del coche buscado queda desconocido para ese equipo hasta la reunión de coordinación, donde las fotografías de los otros equipos lo fijan: f(6) = ${num(D.a6.y, 2)}, f(8) = ${num(D.a8.y, 2)} y la cota ${num(D.g.y, 2)} de la ${D.sg.code}.`,
-      `No photograph of plate ${cfg.alt} is used as a value of f. Exhibits ${D.s6.code} of team B and ${D.s8.code} of team C are classified as identification errors; exhibit ${D.s6.code} of team C is an unverified detection, and exhibit ${D.sg.code} of team A a photograph with an unreadable plate. At those instants the wanted car's value remains unknown to that team until the coordination meeting, where the other teams' photographs fix it: f(6) = ${num(D.a6.y, 2)}, f(8) = ${num(D.a8.y, 2)} and the northing ${num(D.g.y, 2)} of ${D.sg.code}.`), "warn");
+      `Ninguna fotografía de la matrícula ${cfg.alt} se usa como valor de n. Las pruebas ${D.s6.code} del equipo B y ${D.s8.code} del equipo C se clasifican como errores de identificación; la ${D.s6.code} del equipo C es una detección sin verificar, y la ${D.sg.code} del equipo A, una fotografía con la matrícula ilegible. En esos instantes, el valor del coche buscado queda desconocido para ese equipo hasta la reunión de coordinación, donde las fotografías de los otros equipos lo fijan: n(6) = ${num(D.a6.y, 2)}, n(8) = ${num(D.a8.y, 2)} y la cota ${num(D.g.y, 2)} de la ${D.sg.code}.`,
+      `No photograph of plate ${cfg.alt} is used as a value of n. Exhibits ${D.s6.code} of team B and ${D.s8.code} of team C are classified as identification errors; exhibit ${D.s6.code} of team C is an unverified detection, and exhibit ${D.sg.code} of team A a photograph with an unreadable plate. At those instants the wanted car's value remains unknown to that team until the coordination meeting, where the other teams' photographs fix it: n(6) = ${num(D.a6.y, 2)}, n(8) = ${num(D.a8.y, 2)} and the northing ${num(D.g.y, 2)} of ${D.sg.code}.`), "warn");
     w.heading(t("Fase 2 · resultados con el modelo M", "Phase 2 · results under the model M"));
-    w.table([t("Punto", "Point"), t("Lím. izq.", "Left lim."), t("Lím. der.", "Right lim."), t("Valor", "Value"), t("Continuidad / comportamiento", "Continuity / behaviour"), t("Lo que el modelo establece y las fotos no", "What the model establishes that the photos could not")], t([
-      ["f, 2", "4", "4", "4", "Continua (la ruta tiene un ángulo, no un corte)", "Que el límite es exactamente 4 y coincide con el valor; las fotos solo mostraban cotas próximas a 4."],
-      ["f, 6", "8", "8", "8", "Continua", "Que el límite y el valor son 8; antes de la reunión, B y C no podían saberlo."],
-      ["g, 6", "8", "8", "12", "Discontinuidad evitable: el límite existe y solo falla el valor", "Que el error está en un único valor: redefinir g(6) = 8 lo corrige."],
-      ["f, 8", "10", "12", "12", "Salto finito; continua por la derecha", "Que los límites laterales son exactamente 10 y 12, luego no hay límite; las fotos solo se acercaban."],
-      ["g, 8", "10", "12", "10", "Salto finito; continua por la izquierda", "Que cambiar el valor en 8 no elimina el salto."],
-      ["f, 10", "No existe", "12", "12", "Discontinuidad esencial por oscilación; continua por la derecha", "Antes: las fotos sugerían una alternancia. Ahora: se demuestra que el límite por la izquierda no existe."],
-      ["f, 12-", "+inf.", "—", "No definida", "Límite infinito; asíntota vertical t = 12", "Antes: valores cada vez mayores. Ahora: se demuestra que el límite es +infinito."]
+    const head = [t("Punto", "Point"), t("Lím. izq.", "Left lim."), t("Lím. der.", "Right lim."), t("Valor", "Value"), t("Continuidad / comportamiento", "Continuity / behaviour"), t("Lo que el modelo establece y las fotos no", "What the model establishes that the photos could not")];
+    const widths = [13, 15, 15, 15, 50, 72];
+    w.sub(t("Parte 1 · La columna e(t)", "Part 1 · The column e(t)"));
+    w.table(head, t([
+      ["e, 0", "—", "0", "0", "Continua por la derecha", "Que el coche sale de la columna 0, el control del puerto."],
+      ["e, 1", "1.5", "1.5", "1.5", "Continua", "Que las columnas cercanas se acercan a 1.5."],
+      ["e, 2", "3", "3", "3", "Continua; la gráfica tiene un ángulo (cambia la velocidad)", "Que el límite es exactamente 3 y coincide con el valor."],
+      ["e, 6", "5", "5", "5", "Continua", "Que la columna en t = 6 es 5, también para B y C, que no tenían una foto válida."],
+      ["e, 8", "6", "6", "6", "Continua; otro ángulo", "Que la columna no salta aunque la cota sí: la cuesta va de sur a norte."],
+      ["e, 10", "9", "9", "9", "Continua", "Que la columna tiende a 9 mientras la cota oscila."],
+      ["e, 12-", "12", "—", "No definida", "Límite finito 12: el ferrocarril", "Que el coche se acerca a la columna 12 sin alcanzarla, mientras su cota crece sin tope."]
     ], [
-      ["f, 2", "4", "4", "4", "Continuous (the route has a corner, not a break)", "That the limit is exactly 4 and equals the value; the photos only showed northings close to 4."],
-      ["f, 6", "8", "8", "8", "Continuous", "That the limit and the value are 8; before the meeting, B and C could not know it."],
+      ["e, 0", "—", "0", "0", "Right-continuous", "That the car starts from column 0, the harbour checkpoint."],
+      ["e, 1", "1.5", "1.5", "1.5", "Continuous", "That nearby columns approach 1.5."],
+      ["e, 2", "3", "3", "3", "Continuous; the graph has a corner (the speed changes)", "That the limit is exactly 3 and equals the value."],
+      ["e, 6", "5", "5", "5", "Continuous", "That the column at t = 6 is 5, also for B and C, who had no valid photo."],
+      ["e, 8", "6", "6", "6", "Continuous; another corner", "That the column does not jump although the northing does: the hill runs south to north."],
+      ["e, 10", "9", "9", "9", "Continuous", "That the column tends to 9 while the northing oscillates."],
+      ["e, 12-", "12", "—", "Undefined", "Finite limit 12: the railway", "That the car approaches column 12 without reaching it, while its northing grows without bound."]
+    ]), widths, { size: 7.4 });
+    w.sub(t("Parte 2 · La cota n(t) y el registro g", "Part 2 · The northing n(t) and the record g"));
+    w.table(head, t([
+      ["n, 0", "—", "0", "0", "Continua por la derecha", "Que el coche sale de la cota 0, en el puerto."],
+      ["n, 1", "1", "1", "1", "Continua", "Que el límite es exactamente 1 = n(1)."],
+      ["n, 2", "4", "4", "4", "Continua (la ruta tiene un ángulo, no un corte)", "Que el límite es exactamente 4 y coincide con el valor; las fotos solo mostraban cotas próximas a 4."],
+      ["n, 6", "8", "8", "8", "Continua", "Que el límite y el valor son 8; antes de la reunión, B y C no podían saberlo."],
+      ["g, 6", "8", "8", "12", "Discontinuidad evitable: el límite existe y solo falla el valor", "Que el error está en un único valor: redefinir g(6) = 8 lo corrige."],
+      ["n, 8", "10", "12", "12", "Salto finito; continua por la derecha", "Que los límites laterales son exactamente 10 y 12, luego no hay límite; las fotos solo se acercaban."],
+      ["g, 8", "10", "12", "10", "Salto finito; continua por la izquierda", "Que cambiar el valor en 8 no elimina el salto."],
+      ["n, 10", "No existe", "12", "12", "Discontinuidad esencial por oscilación; continua por la derecha", "Antes: las fotos sugerían una alternancia. Ahora: se demuestra que el límite por la izquierda no existe."],
+      ["n, 12-", "+inf.", "—", "No definida", "Límite infinito; asíntota vertical t = 12", "Antes: valores cada vez mayores. Ahora: se demuestra que el límite es +infinito."]
+    ], [
+      ["n, 0", "—", "0", "0", "Right-continuous", "That the car starts from northing 0, at the harbour."],
+      ["n, 1", "1", "1", "1", "Continuous", "That the limit is exactly 1 = n(1)."],
+      ["n, 2", "4", "4", "4", "Continuous (the route has a corner, not a break)", "That the limit is exactly 4 and equals the value; the photos only showed northings close to 4."],
+      ["n, 6", "8", "8", "8", "Continuous", "That the limit and the value are 8; before the meeting, B and C could not know it."],
       ["g, 6", "8", "8", "12", "Removable discontinuity: the limit exists and only the value fails", "That the error lies in a single value: redefining g(6) = 8 corrects it."],
-      ["f, 8", "10", "12", "12", "Finite jump; right-continuous", "That the one-sided limits are exactly 10 and 12, so there is no limit; the photos only approached them."],
+      ["n, 8", "10", "12", "12", "Finite jump; right-continuous", "That the one-sided limits are exactly 10 and 12, so there is no limit; the photos only approached them."],
       ["g, 8", "10", "12", "10", "Finite jump; left-continuous", "That changing the value at 8 does not remove the jump."],
-      ["f, 10", "Does not exist", "12", "12", "Essential (oscillating) discontinuity; right-continuous", "Before: the photos suggested an alternation. Now: the left-hand limit is proved not to exist."],
-      ["f, 12-", "+inf.", "—", "Undefined", "Infinite limit; vertical asymptote t = 12", "Before: ever larger values. Now: the limit is proved to be +infinity."]
-    ]), [13, 15, 15, 15, 50, 72], { size: 7.4 });
+      ["n, 10", "Does not exist", "12", "12", "Essential (oscillating) discontinuity; right-continuous", "Before: the photos suggested an alternation. Now: the left-hand limit is proved not to exist."],
+      ["n, 12-", "+inf.", "—", "Undefined", "Infinite limit; vertical asymptote t = 12", "Before: ever larger values. Now: the limit is proved to be +infinity."]
+    ]), widths, { size: 7.4 });
+    w.sub(t("Las dos partes (pregunta 1)", "The two parts (question 1)"));
+    w.paragraph(t(
+      "La columna e(t) es continua en todo el recorrido; sus únicos accidentes son dos ángulos, en t = 2 y en t = 8, donde cambia la velocidad hacia el este. Todos los fenómenos del caso están en la cota: el salto de la Cuesta del Enlace, la oscilación de El Laberinto y el límite infinito de la autovía. Sobre el plano, eso significa que en esos tramos el coche apenas cambia de columna mientras su cota hace algo extremo: la cuesta es una calle de sur a norte, y en la autovía el coche corre hacia el norte pegado al ferrocarril.",
+      "The column e(t) is continuous along the whole route; its only features are two corners, at t = 2 and at t = 8, where the speed eastwards changes. All the phenomena of the case are in the northing: the jump of Link Hill, the oscillation of The Labyrinth and the infinite limit of the motorway. On the map, this means that on those stretches the car hardly changes column while its northing does something extreme: the hill is a south-to-north street, and on the motorway the car races north alongside the railway."));
     w.sub(t("Comparación de t = 6 y t = 8 (pregunta común)", "Comparing t = 6 and t = 8 (common question)"));
     w.paragraph(t(
-      "En t = 6, en el registro g, los valores cercanos se acercan a 8 por los dos lados: el límite existe y solo falla el valor registrado, 12. Cambiar ese único valor por 8 hace continua a g, y eso es exactamente corregir el error de identificación. En t = 8 los valores se acercan a 10 por la izquierda y a 12 por la derecha: los límites laterales son distintos, así que no hay límite, y ningún valor en el punto (ni el 12 de f ni el 10 de g) puede eliminar el salto. Una respuesta completa razona con los dos lados y con el valor en el punto, no solo con los nombres «evitable» y «salto».",
-      "At t = 6, in the record g, the nearby values approach 8 from both sides: the limit exists and only the recorded value, 12, fails. Changing that single value to 8 makes g continuous, and that is exactly what correcting the identification error means. At t = 8 the values approach 10 from the left and 12 from the right: the one-sided limits differ, so there is no limit, and no value at the point (neither f's 12 nor g's 10) can remove the jump. A complete answer argues from both sides and from the value at the point, not just from the names \"removable\" and \"jump\"."));
+      "En t = 6, en el registro g, los valores cercanos se acercan a 8 por los dos lados: el límite existe y solo falla el valor registrado, 12. Cambiar ese único valor por 8 hace continua a g, y eso es exactamente corregir el error de identificación. En t = 8 los valores se acercan a 10 por la izquierda y a 12 por la derecha: los límites laterales son distintos, así que no hay límite, y ningún valor en el punto (ni el 12 de n ni el 10 de g) puede eliminar el salto. Una respuesta completa razona con los dos lados y con el valor en el punto, no solo con los nombres «evitable» y «salto».",
+      "At t = 6, in the record g, the nearby values approach 8 from both sides: the limit exists and only the recorded value, 12, fails. Changing that single value to 8 makes g continuous, and that is exactly what correcting the identification error means. At t = 8 the values approach 10 from the left and 12 from the right: the one-sided limits differ, so there is no limit, and no value at the point (neither n's 12 nor g's 10) can remove the jump. A complete answer argues from both sides and from the value at the point, not just from the names \"removable\" and \"jump\"."));
     w.sub(t("Oscilación en 10 (ampliación)", "Oscillation at 10 (extension)"));
     w.formula(A.formulas.osc1, 150, 0.24);
     w.formula(A.formulas.osc2, 160, 0.24);
-    w.paragraph(t("Dos sucesiones que tienden a 10 por la izquierda dan valores con límites distintos (11 y 12), así que el límite por la izquierda no existe. Las fotos de la fase 1 están en los instantes s_n (cota 12) y 10 - 2/(4n+3) (cota 10): eran puntos de estas sucesiones, pero un número finito de ellos no lo demostraba.",
-      "Two sequences tending to 10 from the left give values with different limits (11 and 12), so the left limit does not exist. The phase 1 photos are at the instants s_n (northing 12) and 10 - 2/(4n+3) (northing 10): they were points of these sequences, but finitely many of them did not prove it."));
+    w.paragraph(t("Dos sucesiones que tienden a 10 por la izquierda dan valores con límites distintos (11 y 12), así que el límite por la izquierda no existe. Las fotos de la fase 1 están en los instantes s_k (cota 12) y 10 - 2/(4k+3) (cota 10): eran puntos de estas sucesiones, pero un número finito de ellos no lo demostraba.",
+      "Two sequences tending to 10 from the left give values with different limits (11 and 12), so the left limit does not exist. The phase 1 photos are at the instants s_k (northing 12) and 10 - 2/(4k+3) (northing 10): they were points of these sequences, but finitely many of them did not prove it."));
     w.sub(t("Salto en 8 y discontinuidad evitable en 6", "Jump at 8 and removable discontinuity at 6"));
     w.formula(A.formulas.jump, 150, 0.24);
+    w.formula(A.formulas.ejump, 150, 0.24);
     w.formula(A.formulas.rem, 120, 0.24);
-    w.sub(t("Límite infinito y túnel", "Infinite limit and tunnel"));
+    w.sub(t("Límites en 12 y túnel", "Limits at 12 and tunnel"));
     w.formula(A.formulas.inf, 130, 0.24);
-    w.paragraph(t("Túnel: con la sola hipótesis de continuidad, el TVI asegura un c en (3, 5) con f(c) = 6. Con el modelo, c = 4. Lo primero es una consecuencia de una hipótesis; lo segundo depende de suponer que dentro del túnel la cota sigue la recta t + 2.",
-      "Tunnel: with only the continuity hypothesis, the IVT guarantees some c in (3, 5) with f(c) = 6. With the model, c = 4. The first is a consequence of a hypothesis; the second depends on assuming that inside the tunnel the northing follows the line t + 2."));
+    w.formula(A.formulas.einf, 110, 0.24);
+    w.paragraph(t("Túnel: con la sola hipótesis de continuidad, el TVI asegura un c en (3, 5) con n(c) = 6. Con el modelo, c = 4, y en ese instante el coche está en la columna e(4) = 4. Lo primero es una consecuencia de una hipótesis; lo segundo depende de suponer que dentro del túnel la columna y la cota siguen las rectas 0.5t + 2 y t + 2.",
+      "Tunnel: with only the continuity hypothesis, the IVT guarantees some c in (3, 5) with n(c) = 6. With the model, c = 4, and at that instant the car is at column e(4) = 4. The first is a consequence of a hypothesis; the second depends on assuming that inside the tunnel the column and the northing follow the lines 0.5t + 2 and t + 2."));
     w.heading(t("Pregunta individual de cierre", "Individual closing question"));
     w.paragraph(t(
-      "«Falta el fotograma de un instante a. ¿Puedes concluir que f(a) no está definido, que no existe el límite en a o que f es discontinua en a?» Una respuesta suficiente rechaza las tres conclusiones si se apoyan solo en la ausencia. Una respuesta sólida distingue un valor físico desconocido de una función definida deliberadamente sin ese punto.",
-      "\"The frame for an instant a is missing. Can you conclude that f(a) is undefined, that the limit at a does not exist, or that f is discontinuous at a?\" A satisfactory answer rejects all three conclusions when they rest only on the absence. A strong answer distinguishes an unknown physical value from a function deliberately defined without that point."));
+      "«Falta el fotograma de un instante a. ¿Puedes concluir que n(a) no está definido, que no existe el límite en a o que n es discontinua en a?» Una respuesta suficiente rechaza las tres conclusiones si se apoyan solo en la ausencia. Una respuesta sólida distingue un valor físico desconocido de una función definida deliberadamente sin ese punto.",
+      "\"The frame for an instant a is missing. Can you conclude that n(a) is undefined, that the limit at a does not exist, or that n is discontinuous at a?\" A satisfactory answer rejects all three conclusions when they rest only on the absence. A strong answer distinguishes an unknown physical value from a function deliberately defined without that point."));
   }
 
   function renderInventory(w, doc, cfg, A) {
@@ -1146,13 +1264,13 @@
       Object.values(groups).forEach(({ e, teams }) => {
         const cam = d.camera[e.camera];
         const car = e.car === "target" ? t("objetivo", "target") : e.car === "glare" ? t("objetivo, ilegible", "target, unreadable") : e.car === "alt" ? t("confundible", "look-alike") : t("sin imagen", "no image");
-        rows.push([s.code, num(s.t, 4), DC.clockAt(cfg.start, s.t), cam.id, roadName(cam.road), num(cam.y, 3), car, teams.join("/"), e.car === "target" || e.car === "glare" ? num(DC.modelValue(d, s.t), 3) : "—"]);
+        rows.push([s.code, num(s.t, 4), DC.clockAt(cfg.start, s.t), cam.id, roadName(cam.road), num(cam.x, 3), num(cam.y, 3), car, teams.join("/"), e.car === "target" || e.car === "glare" ? num(DC.northValue(d, s.t), 3) : "—"]);
       });
     });
-    w.table([t("Prueba", "Exhibit"), "t", t("Hora", "Time"), t("Cámara", "Camera"), t("Vía", "Road"), t("Cota", "Northing"), t("Coche", "Car"), t("Equipos", "Teams"), "f(t)"], rows,
-      [14, 14, 22, 14, 38, 15, 20, 15, 14], { size: 7, minRow: 5, zebra: true });
-    w.paragraph(t("La columna f(t) solo se rellena cuando la fotografía muestra el coche buscado: coincide con la cota de la cámara y con el modelo M.",
-      "The f(t) column is filled only when the photograph shows the wanted car: it matches the camera's northing and the model M."), { italic: true, size: 9 });
+    w.table([t("Prueba", "Exhibit"), "t", t("Hora", "Time"), t("Cámara", "Camera"), t("Vía", "Road"), t("Columna", "Column"), t("Cota", "Northing"), t("Coche", "Car"), t("Equipos", "Teams"), "n(t)"], rows,
+      [13, 13, 21, 13, 33, 14, 14, 19, 14, 13], { size: 6.8, minRow: 5, zebra: true });
+    w.paragraph(t("La columna de la cámara coincide siempre con e(t), también en las dos fotografías del confundible, tomadas en la columna en la que estaba el coche buscado. La columna n(t) solo se rellena cuando la fotografía muestra el coche buscado: coincide con la cota de la cámara y con el modelo M.",
+      "The camera's column always equals e(t), also in the two photographs of the look-alike, taken in the column where the wanted car was. The n(t) column is filled only when the photograph shows the wanted car: it matches the camera's northing and the model M."), { italic: true, size: 9 });
     w.paragraph(t(`Las pruebas F-01 a F-${String(CONSULTANT_LAST).padStart(2, "0")} llegan a los equipos ya pasadas a limpio en la hoja del consultor (hora, t, cámara, columna y cota); ninguna de ellas es una de las pruebas discutidas.`,
       `Exhibits F-01 to F-${String(CONSULTANT_LAST).padStart(2, "0")} reach the teams already written up on the consultant's worksheet (time, t, camera, column and northing); none of them is a disputed exhibit.`), { italic: true, size: 9 });
   }

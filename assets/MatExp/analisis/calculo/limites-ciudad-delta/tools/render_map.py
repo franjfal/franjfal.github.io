@@ -2,10 +2,17 @@
 """Render the tracking map of Delta City / Ciudad Delta.
 
 The map uses the coordinates of the activity: the horizontal axis is the
-minute t of the pursuit (1 minute = 400 m east) and the vertical axis is the
-north coordinate or "cota" (1 cota = 100 m north).  The map is isotropic in
-metres, and the roads used by the target are drawn from the very function f
-that students study in phase 2, so the graph of f lies exactly on the streets.
+column (1 column = 400 m east) and the vertical axis is the north coordinate
+or "cota" (1 cota = 100 m north).  The map is isotropic in metres.  The roads
+used by the target are drawn from the very model students study in phase 2:
+at instant t the car is at column e(t) and cota n(t), so its route is the
+curve (e(t), n(t)).
+
+Inside this script every horizontal position is written in "route time": a
+point given as (x, y) is drawn at column E(x), where E is the column function
+e of delta-city-data.json (the identity outside the pursuit, x < 0 or x > 12).
+So a road sampled as (t, n(t)) lands exactly on the route, and the rest of the
+city is stretched with it, strip by strip.
 
 Camera pins, the reference grid and the graph overlay are NOT drawn here:
 the web generator draws them at run time from delta-city-data.json.
@@ -33,6 +40,29 @@ INSET_WIDTHS = {"labyrinth": 3000, "tunnel": 2600, "avenue": 2000}
 INSETS = {name: {**spec["frame"], "width": INSET_WIDTHS.get(name, 2400)}
           for name, spec in DATA["map"]["insets"].items()}
 
+EAST = DATA["model"]["east"]
+
+
+def E(x):
+    """Column of the map for a horizontal position written in route time (see the docstring)."""
+    if x < 0 or x >= 12:
+        return x
+    for p in EAST:
+        if x <= p["to"] or p is EAST[-1]:
+            return p["m"] * x + p["b"]
+    return x
+
+
+def dE(x):
+    """Local horizontal stretch of the map, E'(x)."""
+    if x < 0 or x >= 12:
+        return 1.0
+    for p in EAST:
+        if x < p["to"] or p is EAST[-1]:
+            return p["m"]
+    return 1.0
+
+
 class View:
     def __init__(self, frame, width):
         self.f = frame
@@ -47,7 +77,7 @@ V = None
 
 
 def X(x):
-    return (x - V.f["x0"]) * V.sx
+    return (E(x) - V.f["x0"]) * V.sx
 
 
 def Y(y):
@@ -563,7 +593,7 @@ def draw_main_roads(ctx):
     for (x, y) in ((3.0, 5.0), (5.0, 7.0)):
         ctx.save()
         ctx.translate(X(x), Y(y))
-        ctx.rotate(-math.atan2(V.sy, V.sx) + math.pi / 2)
+        ctx.rotate(-math.atan2(V.sy, V.sx * dE(x)) + math.pi / 2)
         ctx.set_source_rgb(0.30, 0.28, 0.26)
         ctx.rectangle(-m(19), -m(2.5), m(38), m(5))
         ctx.fill()
@@ -644,7 +674,7 @@ def font(ctx, size, bold=False, italic=False):
 
 
 def label(ctx, text, x, y, size=26, angle=0.0, colour=None, bold=False, italic=False, spacing=0.0, halo=None):
-    if not (V.f["x0"] - 1 < x < V.f["x1"] + 1 and V.f["y0"] - 2 < y < V.f["y1"] + 2):
+    if not (V.f["x0"] - 1 < E(x) < V.f["x1"] + 1 and V.f["y0"] - 2 < y < V.f["y1"] + 2):
         return
     size *= V.label_scale
     halo = (halo or 5) * V.label_scale
@@ -680,23 +710,25 @@ def label(ctx, text, x, y, size=26, angle=0.0, colour=None, bold=False, italic=F
     ctx.restore()
 
 
-def ang(dx_min, dy_cota):
-    return -math.atan2(dy_cota * V.sy, dx_min * V.sx)
+def ang(dx_min, dy_cota, at=None):
+    """Angle of a direction (dx, dy) given in route time, at the horizontal position `at`."""
+    k = dE(at) if at is not None else 1.0
+    return -math.atan2(dy_cota * V.sy, dx_min * k * V.sx)
 
 
 def draw_labels(ctx, L, inset=None):
     D = C["label_district"]
     if inset is None:
-        label(ctx, L["AV"], 6.6, 8.6 + 0.45, 30, ang(1, 1), bold=True)
-        label(ctx, L["AV"], 2.5, 4.5 + 0.45, 22, ang(1, 1), bold=True)
-        label(ctx, L["TU"], 4.15, 6.15 - 0.62, 22, ang(1, 1), italic=True)
+        label(ctx, L["AV"], 6.6, 8.6 + 0.45, 30, ang(1, 1, at=6.6), bold=True)
+        label(ctx, L["AV"], 2.5, 4.5 + 0.45, 22, ang(1, 1, at=2.5), bold=True)
+        label(ctx, L["TU"], 4.15, 6.15 - 0.62, 22, ang(1, 1, at=4.15), italic=True)
         t = 1.15
-        label(ctx, L["PU"], t + 0.3, t * t - 0.55, 24, ang(1, 2 * t), bold=True)
+        label(ctx, L["PU"], t + 0.3, t * t - 0.55, 24, ang(1, 2 * t, at=t + 0.3), bold=True)
         label(ctx, L["RN"], 5.6, 12.45, 26, 0, bold=True)
         label(ctx, L["RS"], 9.0, 9.55, 20, 0, bold=True)
         label(ctx, L["EN"], 7.84, 11.0, 17, -math.pi / 2, bold=True)
-        label(ctx, L["AU"], 11.0, 15.2, 28, ang(1, 4 / (12 - 11.0) ** 2), bold=True)
-        label(ctx, L["AU"], 11.66, 25.5, 26, ang(1, 4 / (12 - 11.66) ** 2), bold=True)
+        label(ctx, L["AU"], 11.0, 15.2, 28, ang(1, 4 / (12 - 11.0) ** 2, at=11.0), bold=True)
+        label(ctx, L["AU"], 11.66, 25.5, 26, ang(1, 4 / (12 - 11.66) ** 2, at=11.66), bold=True)
         label(ctx, L["rail"], 12.18, 19.0, 20, -math.pi / 2, italic=True)
         label(ctx, L["station"], 12.32, 8.3, 18, 0)
         label(ctx, L["LO"], 1.68, 3.62, 17, 0, italic=True)
@@ -705,7 +737,7 @@ def draw_labels(ctx, L, inset=None):
         label(ctx, L["laberinto"], 9.0, 12.95, 24, 0, colour=D, bold=True, spacing=6)
         label(ctx, L["parking"], 3.05, 4.62, 14, 0, italic=True, halo=4)
         label(ctx, L["market"], 3.12, 7.15, 15, 0)
-        label(ctx, L["river"], 8.3, river_y(8.3) + 0.02, 30, ang(1, (river_y(8.4) - river_y(8.2)) / 0.2),
+        label(ctx, L["river"], 8.3, river_y(8.3) + 0.02, 30, ang(1, (river_y(8.4) - river_y(8.2)) / 0.2, at=8.3),
               colour=C["label_water"], italic=True, spacing=7)
         label(ctx, L["river"], 1.35, 6.02, 22, 0, colour=C["label_water"], italic=True, spacing=4)
         label(ctx, L["sea"], -0.72, 19, 32, -math.pi / 2, colour=C["label_water"], italic=True, spacing=12)
@@ -724,20 +756,20 @@ def draw_labels(ctx, L, inset=None):
         label(ctx, L["RN"], 8.75, 12.32, 30, 0, bold=True)
         label(ctx, L["RS"], 8.75, 9.68, 30, 0, bold=True)
         label(ctx, L["EN"], 7.93, 11.0, 26, -math.pi / 2, bold=True)
-        label(ctx, L["AV"], 7.86, 9.55, 24, ang(1, 1), bold=True)
-        label(ctx, L["LB"], 8.62, 11.62, 24, ang(1, -0.55), italic=True)
+        label(ctx, L["AV"], 7.66, 9.42, 24, ang(1, 1, at=7.66), bold=True)
+        label(ctx, L["LB"], 8.62, 11.62, 24, ang(1, -0.55, at=8.62), italic=True)
         label(ctx, L["PL"], 10.16, 11.0, 22, -math.pi / 2, italic=True)
-        label(ctx, L["AU"], 10.33, 12.55, 26, ang(1, 4 / (12 - 10.33) ** 2), bold=True)
+        label(ctx, L["AU"], 10.33, 12.55, 26, ang(1, 4 / (12 - 10.33) ** 2, at=10.33), bold=True)
         label(ctx, L["maze_note"], 9.985, 11.0, 16, -math.pi / 2, italic=True, colour=D, halo=6)
     elif inset == "avenue":
-        label(ctx, L["AV"], 6.55, 8.55 + 0.25, 34, ang(1, 1), bold=True)
+        label(ctx, L["AV"], 6.55, 8.55 + 0.25, 34, ang(1, 1, at=6.55), bold=True)
         label(ctx, L["RN"], 6.5, 12.3, 34, 0, bold=True)
         label(ctx, L["river"], 5.7, river_y(5.7) + 0.02, 34, 0, colour=C["label_water"], italic=True, spacing=8)
-        label(ctx, L["TU"], 5.0 - 0.02, 7.0 - 0.45, 24, ang(1, 1), italic=True)
+        label(ctx, L["TU"], 5.0 - 0.02, 7.0 - 0.45, 24, ang(1, 1, at=5.0 - 0.02), italic=True)
     elif inset == "tunnel":
-        label(ctx, L["AV"], 2.62, 4.62 + 0.18, 30, ang(1, 1), bold=True)
-        label(ctx, L["TU"], 4.08, 6.08 - 0.28, 30, ang(1, 1), italic=True)
-        label(ctx, L["PU"], 1.78, 2.75, 26, ang(1, 3.5), bold=True)
+        label(ctx, L["AV"], 2.62, 4.62 + 0.18, 30, ang(1, 1, at=2.62), bold=True)
+        label(ctx, L["TU"], 4.08, 6.08 - 0.28, 30, ang(1, 1, at=4.08), italic=True)
+        label(ctx, L["PU"], 1.62, 3.3, 26, ang(1, 3.6, at=1.62), bold=True)
         label(ctx, L["LO"], 1.98, 3.55, 24, 0, italic=True)
         label(ctx, L["lonja"], 2.27, 3.2, 22, 0)
         label(ctx, L["river"], 4.85, 6.0, 34, 0, colour=C["label_water"], italic=True, spacing=8)

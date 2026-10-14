@@ -3,7 +3,8 @@
  * Everything visual that depends on the configuration is built here from
  * delta-city-data.json: licence plates, the perspective composition of each
  * plate on its photograph, the camera OSD, the tracking map with its camera
- * pins and the graph of the model, and small formula images for the PDFs.
+ * pins and the route of the model, the graphs of the two coordinates against
+ * time, and small formula images for the PDFs.
  * The same functions are used by the live web preview and by the PDFs.
  */
 (function () {
@@ -46,6 +47,8 @@
   }
 
   // ------------------------------------------------------------------ the model
+  // Two functions of the time t (minutes): the column e(t) and the northing n(t) of the wanted
+  // car. At instant t the car is at the point (e(t), n(t)) of the map.
   function pieceValue(p, t) {
     switch (p.kind) {
       case "quadratic": return p.a * t * t;
@@ -55,17 +58,22 @@
       default: throw new Error(p.kind);
     }
   }
-  function modelValue(data, t) {
-    for (const p of data.model.pieces) {
+  function piecewise(pieces, t) {
+    for (const p of pieces) {
       const lo = t > p.from || (p.closedFrom && t === p.from);
       const hi = t < p.to || (p.closedTo && t === p.to);
       if (lo && hi) return pieceValue(p, t);
     }
     return NaN;
   }
+  /** n(t): the northing of the wanted car. */
+  function northValue(data, t) { return piecewise(data.model.north, t); }
+  /** e(t): the column of the wanted car. */
+  function eastValue(data, t) { return piecewise(data.model.east, t); }
+  /** g(t): the northing logged by the automatic reader (the look-alike's frames at t = 6 and 8). */
   function recordValue(data, t) {
     const o = data.model.recordOverrides.find((r) => Math.abs(r.t - t) < 1e-9);
-    return o ? o.value : modelValue(data, t);
+    return o ? o.value : northValue(data, t);
   }
 
   // ------------------------------------------------------------------ plates
@@ -569,15 +577,15 @@
   }
 
   /**
-   * Frame, ticks and axis names. The plain map is geography: columns (west to east) and
-   * cotas / northings (south to north). Once the graph of f is drawn, the phase 2 model
-   * reads column t as the instant t, and the names say so.
+   * Frame, ticks and axis names. The map is geography: columns (west to east) and cotas /
+   * northings (south to north). With the route of the model drawn, the names recall that the
+   * car is at column e(t) and northing n(t) at instant t.
    */
   function drawAxes(ctx, X, Y, fr, margin, innerW, innerH, lang, inset, graph, withNames) {
     const af = margin.af;
     const en = lang === "en";
     const names = graph
-      ? [en ? "column = t (minutes)" : "columna = t (minutos)", en ? "northing = f(t)" : "cota = f(t)"]
+      ? [en ? "column e(t)" : "columna e(t)", en ? "northing n(t)" : "cota n(t)"]
       : [en ? "column" : "columna", en ? "northing" : "cota"];
     ctx.strokeStyle = "#202a3d"; ctx.lineWidth = Math.max(2, af / 12);
     ctx.strokeRect(margin.l, margin.t, innerW, innerH);
@@ -640,8 +648,15 @@
     });
   }
 
+  /**
+   * The route of the model on the map: the point (e(t), n(t)) as t runs from 0 to 12, drawn piece
+   * by piece of n (the route breaks where n jumps, at Link Hill). Filled circles are positions of
+   * the car; the empty circle at t = 8 is the left limit of the route there. With timeMarks, small
+   * numbered dots give the minute t along the route.
+   */
   function drawGraph(ctx, data, X, Y, fr, u, opts) {
     const lw = 4.2 * u;
+    const E = (t) => eastValue(data, t);
     ctx.save();
     ctx.lineCap = "round"; ctx.lineJoin = "round";
     const stroke = (pts, colour, width, dash) => {
@@ -651,39 +666,147 @@
       ctx.beginPath(); pts.forEach(([x, y], i) => (i ? ctx.lineTo(X(x), Y(y)) : ctx.moveTo(X(x), Y(y)))); ctx.stroke();
       ctx.setLineDash([]);
     };
-    const pxPerMin = X(1) - X(0);
-    data.model.pieces.forEach((p) => {
+    const pxPerCol = X(1) - X(0);
+    data.model.north.forEach((p) => {
       const pts = [];
-      const a = p.from, b = p.kind === "osc" ? p.to - 0.0004 : p.kind === "pole" ? Math.min(p.to - 0.0005, fr.x1) : p.to;
+      const a = p.from, b = p.kind === "osc" ? p.to - 0.0004 : p.kind === "pole" ? p.to - 0.0005 : p.to;
       let t = a;
       while (t <= b) {
         const v = pieceValue(p, t);
         if (v > fr.y1 + 5) break;
-        pts.push([t, v]);
-        const step = p.kind === "osc" ? Math.max(0.15 / pxPerMin, Math.pow(p.p - t, 2) / 120) : p.kind === "pole" ? Math.max(0.3 / pxPerMin, Math.pow(p.p - t, 2) / 60) : (b - a) / 200;
+        pts.push([E(Math.min(t, 11.9999)), v]);
+        const step = p.kind === "osc" ? Math.max(0.1 / pxPerCol, Math.pow(p.p - t, 2) / 120) : p.kind === "pole" ? Math.max(0.2 / pxPerCol, Math.pow(p.p - t, 2) / 60) : (b - a) / 200;
         t += step;
       }
-      pts.push([b, pieceValue(p, b)]);
+      if (pieceValue(p, b) <= fr.y1 + 5) pts.push([E(b), pieceValue(p, b)]);
       stroke(pts, MAP_COLORS.graph, lw);
     });
-    // asymptote and accumulation band
+    // the railway, which the route approaches as t -> 12, and the band where The Labyrinth folds too fast to draw
     stroke([[12, fr.y0], [12, fr.y1]], MAP_COLORS.graph, 1.8 * u, [10 * u, 8 * u]);
     ctx.fillStyle = "rgba(18,99,168,0.55)";
-    ctx.fillRect(X(9.996), Y(12), Math.max(1.5 * u, X(10) - X(9.996)), Y(10) - Y(12));
-    const dot = (x, y, filled, colour) => {
-      ctx.beginPath(); ctx.arc(X(x), Y(y), 7.5 * u, 0, Math.PI * 2);
+    ctx.fillRect(X(E(9.996)), Y(12), Math.max(1.5 * u, X(E(10)) - X(E(9.996))), Y(10) - Y(12));
+    const dot = (t, y, filled, colour) => {
+      ctx.beginPath(); ctx.arc(X(E(t)), Y(y), 7.5 * u, 0, Math.PI * 2);
       ctx.fillStyle = filled ? (colour || MAP_COLORS.graph) : "#ffffff"; ctx.fill();
       ctx.lineWidth = 3 * u; ctx.strokeStyle = colour || MAP_COLORS.graph; ctx.stroke();
     };
     dot(8, 10, false); dot(8, 12, true); dot(10, 12, true); dot(0, 0, true);
     if (opts.record) {
       data.model.recordOverrides.forEach((o) => {
-        const fv = modelValue(data, o.t);
+        const fv = northValue(data, o.t);
         if (Math.abs(fv - o.value) > 1e-9 && o.t !== 8) dot(o.t, fv, false);
         dot(o.t, o.value, true, MAP_COLORS.record);
       });
     }
+    if (opts.timeMarks) {
+      const fs = Math.round((opts.pxPerMM ? 2.4 * opts.pxPerMM : 15 * u) * (opts.markScale || 1));
+      ctx.font = `700 ${fs}px system-ui, -apple-system, "Segoe UI", sans-serif`;
+      ctx.textBaseline = "middle";
+      const marks = opts.timeMarks === true ? [1, 2, 3, 4, 5, 6, 7, 9, 10, 11] : opts.timeMarks;
+      marks.forEach((t) => {
+        const x = X(E(t)), y = Y(northValue(data, t));
+        if (y < 0 || y > ctx.canvas.height) return;
+        ctx.beginPath(); ctx.arc(x, y, 4.6 * u, 0, Math.PI * 2);
+        ctx.fillStyle = "#ffffff"; ctx.fill(); ctx.lineWidth = 2.4 * u; ctx.strokeStyle = "#202a3d"; ctx.stroke();
+        const [dx, dy] = (opts.markOffsets && opts.markOffsets[t]) || [1, -1];
+        const tx = x + dx * fs * 0.75, ty = y + dy * fs * 0.75;
+        const label = `t=${t}`;
+        ctx.textAlign = dx >= 0 ? "left" : "right";
+        ctx.lineWidth = 4 * u; ctx.strokeStyle = "rgba(255,255,255,0.95)"; ctx.lineJoin = "round";
+        ctx.strokeText(label, tx, ty);
+        ctx.fillStyle = "#202a3d"; ctx.fillText(label, tx, ty);
+      });
+    }
     ctx.restore();
+  }
+
+  /**
+   * Graph of one coordinate against time, t from 0 to 12 on the horizontal axis:
+   * which = "east" (e), "north" (n) or "record" (g, the northing logged by the automatic reader).
+   * opts: {lang, width, height, ymax, title, axisLabel}. Same conventions as the map: filled circle,
+   * value of the function; empty circle, point that does not belong to the graph.
+   */
+  function drawTimeGraph(data, which, opts = {}) {
+    const W = opts.width || 1400, H = opts.height || 900;
+    const en = (opts.lang || "es") === "en";
+    const ymax = opts.ymax || (which === "east" ? 13 : 21);
+    const c = document.createElement("canvas");
+    c.width = W; c.height = H;
+    const ctx = c.getContext("2d");
+    ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
+    const s = W / 1400, af = Math.round(30 * s);
+    const m = { l: Math.round(110 * s), r: Math.round(40 * s), t: Math.round(opts.title ? 80 * s : 30 * s), b: Math.round(95 * s) };
+    const x0 = -0.3, x1 = 12.6, y0 = which === "east" ? -0.5 : -1, y1 = ymax;
+    const X = (t) => m.l + (t - x0) / (x1 - x0) * (W - m.l - m.r);
+    const Y = (v) => H - m.b - (v - y0) / (y1 - y0) * (H - m.t - m.b);
+    const colour = which === "record" ? MAP_COLORS.record : MAP_COLORS.graph;
+    const value = (t) => which === "east" ? eastValue(data, t) : northValue(data, t);
+    // grid, axes, ticks
+    const stepY = which === "east" ? 1 : 2;
+    ctx.lineWidth = Math.max(1, 1.2 * s);
+    for (let t = 0; t <= 12; t += 1) { ctx.strokeStyle = t % 2 ? "rgba(11,96,127,0.10)" : "rgba(11,96,127,0.22)"; ctx.beginPath(); ctx.moveTo(X(t), Y(y0)); ctx.lineTo(X(t), Y(y1)); ctx.stroke(); }
+    for (let v = 0; v <= y1; v += stepY) { ctx.strokeStyle = v % (2 * stepY) ? "rgba(11,96,127,0.10)" : "rgba(11,96,127,0.22)"; ctx.beginPath(); ctx.moveTo(X(x0), Y(v)); ctx.lineTo(X(x1), Y(v)); ctx.stroke(); }
+    ctx.strokeStyle = "#202a3d"; ctx.lineWidth = Math.max(2, 2.4 * s);
+    ctx.beginPath(); ctx.moveTo(X(x0), Y(0)); ctx.lineTo(X(x1), Y(0)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(X(0), Y(y0)); ctx.lineTo(X(0), Y(y1)); ctx.stroke();
+    ctx.fillStyle = "#202a3d";
+    ctx.font = `600 ${af}px system-ui, -apple-system, "Segoe UI", sans-serif`;
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    for (let t = 0; t <= 12; t += 1) { ctx.beginPath(); ctx.moveTo(X(t), Y(0)); ctx.lineTo(X(t), Y(0) + 9 * s); ctx.stroke(); ctx.fillText(String(t), X(t), Y(y0) + 12 * s); }
+    ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    for (let v = 0; v <= y1; v += stepY * (which === "east" ? 2 : 2)) ctx.fillText(String(v), X(x0) - 10 * s, Y(v));
+    ctx.font = `italic 600 ${af}px system-ui, -apple-system, "Segoe UI", sans-serif`;
+    ctx.textAlign = "right"; ctx.textBaseline = "top";
+    ctx.fillText(en ? "t (minutes)" : "t (minutos)", X(x1), Y(y0) + 50 * s);
+    ctx.save(); ctx.translate(30 * s, (Y(y0) + Y(y1)) / 2); ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText(opts.axisLabel || (which === "east" ? (en ? "column e(t)" : "columna e(t)") : which === "north" ? (en ? "northing n(t)" : "cota n(t)") : (en ? "northing g(t)" : "cota g(t)")), 0, 0);
+    ctx.restore();
+    if (opts.title) {
+      ctx.font = `700 ${Math.round(34 * s)}px system-ui, -apple-system, "Segoe UI", sans-serif`;
+      ctx.textAlign = "left"; ctx.textBaseline = "alphabetic"; ctx.fillStyle = colour;
+      ctx.fillText(opts.title, m.l, 50 * s);
+    }
+    // curve
+    ctx.save();
+    ctx.beginPath(); ctx.rect(X(x0), Y(y1), X(x1) - X(x0), Y(y0) - Y(y1)); ctx.clip();
+    ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = colour; ctx.lineWidth = 4.2 * s;
+    const pieces = which === "east" ? data.model.east : data.model.north;
+    const pxPerT = X(1) - X(0);
+    pieces.forEach((p) => {
+      const a = p.from, b = p.kind === "osc" ? p.to - 0.0006 : p.kind === "pole" ? p.to - 0.0005 : which === "east" && p.to === 12 ? 11.9999 : p.to;
+      ctx.beginPath();
+      let t = a, first = true;
+      while (t <= b) {
+        const v = pieceValue(p, t);
+        if (v > y1 + 2) break;
+        if (first) { ctx.moveTo(X(t), Y(v)); first = false; } else ctx.lineTo(X(t), Y(v));
+        t += p.kind === "osc" ? Math.max(0.12 / pxPerT, Math.pow(p.p - t, 2) / 140) : p.kind === "pole" ? Math.max(0.3 / pxPerT, Math.pow(p.p - t, 2) / 60) : (b - a) / 160;
+      }
+      if (pieceValue(p, b) <= y1 + 2) ctx.lineTo(X(b), Y(pieceValue(p, b)));
+      ctx.stroke();
+    });
+    if (which !== "east") {
+      ctx.fillStyle = which === "record" ? "rgba(231,121,36,0.55)" : "rgba(18,99,168,0.55)";
+      ctx.fillRect(X(9.994), Y(12), Math.max(1.5 * s, X(10) - X(9.994)), Y(10) - Y(12));
+      ctx.strokeStyle = "#7a8291"; ctx.lineWidth = 2 * s; ctx.setLineDash([12 * s, 9 * s]);
+      ctx.beginPath(); ctx.moveTo(X(12), Y(y0)); ctx.lineTo(X(12), Y(y1)); ctx.stroke(); ctx.setLineDash([]);
+    }
+    ctx.restore();
+    const dot = (t, v, filled, col) => {
+      ctx.beginPath(); ctx.arc(X(t), Y(v), 8.5 * s, 0, Math.PI * 2);
+      ctx.fillStyle = filled ? (col || colour) : "#ffffff"; ctx.fill();
+      ctx.lineWidth = 3.2 * s; ctx.strokeStyle = col || colour; ctx.stroke();
+    };
+    if (which === "east") {
+      dot(0, 0, true); dot(12, 12, false);
+    } else {
+      dot(0, 0, true); dot(8, 10, false); dot(10, 12, true);
+      if (which === "record") {
+        dot(6, 8, false); dot(6, 12, true); dot(8, 12, false); dot(8, 10, true);
+      } else dot(8, 12, true);
+    }
+    return c;
   }
 
   // ------------------------------------------------------------------ formula images
@@ -845,7 +968,7 @@
   }
 
   window.DeltaCity = {
-    loadData, loadImage, url, modelValue, recordValue, pieceValue,
+    loadData, loadImage, url, northValue, eastValue, modelValue: northValue, recordValue, pieceValue, drawTimeGraph,
     normalizePlate, confusablePlate, plateDistance, checkPlates, renderPlate,
     homography, compositePlate, composePhoto, plateCrop, noImageFrame, clockAt, drawMap, formulaImage, fmtNum
   };

@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
-"""The consultant's handwritten notes: how he arrived at the model f from the valid photographs.
+"""The consultant's handwritten notes: how he arrived at the model from the valid photographs.
 
-Writes notes/consultant-notes-<lang>.jpg (es, en). A fixed image, placed by the web generator on
-a page of the phase 2 envelope. White paper with very light rules and no border, so that it
-prints as part of the sheet; dark blue pen, red pen for checks and the final box.
-Every number below is a camera of delta-city-data.json (the script checks them).
+Writes notes/consultant-notes-<lang>-1.jpg (the column e(t)) and -2.jpg (the northing n(t)), for
+es and en. Fixed images, placed by the web generator on two pages of the phase 2 envelope. White
+paper with very light rules and no border, so that they print as part of the sheet; dark blue pen,
+red pen for checks and the final boxes. Every number below is a camera of delta-city-data.json
+(the script checks them).
 """
 import json, math, os, random
 from PIL import Image, ImageDraw, ImageFont
@@ -19,15 +19,37 @@ INK, RED, LINE, MARGIN = (24, 44, 112), (178, 36, 36), (214, 226, 242), (240, 19
 # ------------------------------------------------------------------ data check
 data = json.load(open(os.path.join(ROOT, "delta-city-data.json")))
 cams = {c["id"]: c for c in data["cameras"]}
-def cota(cid): return cams[cid]["y"]
-f = lambda t: t * t if t <= 2 else t + 2 if t < 8 else 11 + math.sin(math.pi / (10 - t)) if t < 10 else 10 + 4 / (12 - t)
-for cid in ("PU-1", "PU-2", "PU-3", "PU-4", "LO-2", "AV-1", "TU-S", "TU-N", "AV-2", "AV-5", "AV-7", "LB-4", "LB-5", "LB-6", "LB-7", "AU-2", "AU-3", "AU-4", "AU-5", "AU-6"):
-    assert abs(cota(cid) - f(cams[cid]["x"])) < 1e-3, cid
+n = lambda t: t * t if t <= 2 else t + 2 if t < 8 else 11 + math.sin(math.pi / (10 - t)) if t < 10 else 10 + 4 / (12 - t)
+e = lambda t: 1.5 * t if t <= 2 else 0.5 * t + 2 if t <= 8 else 1.5 * t - 6
+for cid in ("PU-1", "PU-2", "PU-3", "PU-4", "LO-2", "AV-1", "TU-S", "TU-N", "AV-2", "AV-5", "AV-7", "LB-2", "LB-3", "LB-4", "LB-5", "LB-6", "LB-7",
+            "PL-1", "AU-2", "AU-3", "AU-4", "AU-5", "AU-6"):
+    c = cams[cid]
+    assert abs(c["y"] - n(c["t"])) < 1e-3 and abs(c["x"] - e(c["t"])) < 1e-3, cid
 
 TEXT = {
 "es": dict(
- title="Persecución · la cota f(t) del coche buscado",
- intro="Junto todas las fotos válidas (las de su matrícula) y busco una regla por tramos.",
+ title1="Persecución · ¿dónde estaba el coche, y cuándo?",
+ intro1="Cada foto válida (las de su matrícula) me da tres números: el instante t, la columna y la cota.",
+ intro2="Columna y minuto no van a la par: el coche cambia de velocidad.",
+ intro3="Separo la posición en dos:  columna e(t)  y  cota n(t).",
+ hA="A)  La columna e(t)",
+ e1="1)  Carretera del Puerto,  0 ≤ t ≤ 2",
+ e1a="t:              0.5      1       1.5      1.9      2",
+ e1b="columna:    0.75    1.5     2.25    2.85     3",
+ e1c="columna ÷ t = 1.5 siempre",
+ e2="2)  Avenida Diagonal,  2 < t ≤ 8",
+ e2a="t:              2.2     3      5      5.5     6.05     7.5",
+ e2b="columna:    3.1     3.5   4.5   4.75   5.025   5.75",
+ e2c="0.5 más por minuto (más despacio: tráfico)",
+ e3="3)  De la Cuesta del Enlace a la vía,  8 < t < 12",
+ e3a="t:              8.5      9      10      11      11.5",
+ e3b="columna:    6.75    7.5     9     10.5    11.25",
+ e3c="otra vez 1.5 por minuto",
+ e3d="cerca de t = 12 la columna se acerca a 12 (la vía)",
+ ebox="Sin saltos: los tramos empalman (3 en t = 2, 6 en t = 8).",
+ enext="Lo raro tiene que estar en la cota (página siguiente).",
+ title="Persecución · la cota n(t) del coche buscado",
+ intro="Junto todas las fotos válidas y busco una regla por tramos.",
  s1="1)  Carretera del Puerto,  0 ≤ t ≤ 2",
  s1a="t:        0.5      1      1.5      1.9      2",
  s1b="cota:   0.25     1     2.25    3.61     4",
@@ -51,14 +73,34 @@ TEXT = {
  s4b="cota − 10:    2.667     4        8        20       40",
  s4c="12 − t:         1.5       1      0.5      0.2      0.1",
  s4d="el producto da siempre 4",
- s4e="cerca de la vía (t = 12) se dispara: nunca la alcanza",
+ s4e="cerca de t = 12 se dispara: nunca la alcanza",
  box="Encaja con todas las fotos válidas.",
- warn1="Ojo: es MI hipótesis. Las fotos la sugieren,",
- warn2="pero no la demuestran. Entre foto y foto, manda el modelo.",
+ warn1="Pero entre foto y foto es una suposición mía:",
+ warn2="ahí las cámaras no vieron nada (¡el túnel!).",
  si="si"),
 "en": dict(
- title="Pursuit · the northing f(t) of the wanted car",
- intro="I put together every valid photo (those with its plate) and look for a rule, stretch by stretch.",
+ title1="Pursuit · where was the car, and when?",
+ intro1="Each valid photo (those with its plate) gives me three numbers: the instant t, the column and the northing.",
+ intro2="Column and minute do not keep in step: the car changes speed.",
+ intro3="I split the position in two:  column e(t)  and  northing n(t).",
+ hA="A)  The column e(t)",
+ e1="1)  Harbour Road,  0 ≤ t ≤ 2",
+ e1a="t:            0.5      1       1.5      1.9      2",
+ e1b="column:   0.75    1.5     2.25    2.85     3",
+ e1c="column ÷ t = 1.5 every time",
+ e2="2)  Diagonal Avenue,  2 < t ≤ 8",
+ e2a="t:            2.2     3      5      5.5     6.05     7.5",
+ e2b="column:   3.1     3.5   4.5   4.75   5.025   5.75",
+ e2c="0.5 more per minute (slower: traffic)",
+ e3="3)  From Link Hill to the railway,  8 < t < 12",
+ e3a="t:            8.5      9      10      11      11.5",
+ e3b="column:   6.75    7.5     9     10.5    11.25",
+ e3c="1.5 per minute again",
+ e3d="near t = 12 the column gets close to 12 (the railway)",
+ ebox="No jumps: the pieces join up (3 at t = 2, 6 at t = 8).",
+ enext="The odd things must be in the northing (next page).",
+ title="Pursuit · the northing n(t) of the wanted car",
+ intro="I put together every valid photo and look for a rule, stretch by stretch.",
  s1="1)  Harbour Road,  0 ≤ t ≤ 2",
  s1a="t:              0.5      1      1.5      1.9      2",
  s1b="northing:   0.25     1     2.25    3.61     4",
@@ -82,10 +124,10 @@ TEXT = {
  s4b="northing − 10:  2.667     4        8        20       40",
  s4c="12 − t:              1.5       1      0.5      0.2      0.1",
  s4d="the product is always 4",
- s4e="near the railway (t = 12) it shoots up: it never reaches it",
+ s4e="near t = 12 it shoots up: it never gets there",
  box="It fits every valid photo.",
- warn1="Careful: this is MY hypothesis. The photos suggest it,",
- warn2="but they do not prove it. Between photos, the model decides.",
+ warn1="Between two photos, though, it is my guess:",
+ warn2="the cameras saw nothing there (the tunnel!).",
  si="if"),
 }
 
@@ -150,6 +192,16 @@ class Page:
         """Small hand-drawn graph: the photo points and the curve the consultant guessed."""
         self.stroke([(x0, y0 + h), (x0 + w, y0 + h)], INK, 3)
         self.stroke([(x0, y0 + h), (x0, y0)], INK, 3)
+        if kind == "east":   # column against t: three straight pieces, no jumps
+            P = lambda t, v: (x0 + t / 12.5 * w, y0 + h - v / 12.5 * h)
+            xa = P(12, 0)[0]
+            for k in range(0, h, 22):
+                self.stroke([(xa, y0 + k), (xa, y0 + k + 10)], (120, 130, 160), 2)
+            self.stroke([P(0, 0), P(2, 3), P(8, 6), P(11.97, 11.95)], INK, 3)
+            for t in (0.5, 1, 1.5, 2, 3, 5, 6.05, 7.5, 8.5, 9, 10, 11, 11.5):
+                cx, cy = P(t, e(t))
+                self.d.ellipse([cx - 6, cy - 6, cx + 6, cy + 6], fill=RED)
+            return
         if kind == "lab":
             lo, hi = y0 + h * 0.75, y0 + h * 0.25
             for yy in (lo, hi):
@@ -181,7 +233,56 @@ class Page:
                 self.d.ellipse([cx - 7, cy - 7, cx + 7, cy + 7], fill=RED)
 
 
+def build_east(lang):
+    """Page 1: the column e(t), three straight pieces."""
+    T = TEXT[lang]
+    p = Page(5 if lang == "es" else 13)
+    L = LEFT
+    x = p.text(L, 0, T["title1"], 54); p.underline(L, x, 0)
+    p.text(L, 1, T["intro1"], 38)
+    p.text(L, 2, T["intro2"], 40)
+    p.text(L, 3, T["intro3"], 40, RED)
+    p.text(L, 5, T["hA"], 54, RED)
+    # 1
+    p.text(L, 7, T["e1"], 46, RED)
+    p.text(L + 30, 8, T["e1a"], 42); p.text(L + 30, 9, T["e1b"], 42)
+    x = p.text(L + 30, 10, T["e1c"], 42); x = p.arrow(x + 20, 10)
+    x = p.text(x, 10, "e(t) = 1.5 t", 50); p.check(x + 20, 10)
+    # 2
+    p.text(L, 12, T["e2"], 46, RED)
+    p.text(L + 30, 13, T["e2a"], 42); p.text(L + 30, 14, T["e2b"], 42)
+    x = p.text(L + 30, 15, T["e2c"], 42); x = p.arrow(x + 20, 15)
+    x = p.text(x, 15, "e(t) = 0.5 t + 2", 50); p.check(x + 20, 15)
+    # 3
+    p.text(L, 17, T["e3"], 46, RED)
+    p.text(L + 30, 18, T["e3a"], 42); p.text(L + 30, 19, T["e3b"], 42)
+    x = p.text(L + 30, 20, T["e3c"], 42); x = p.arrow(x + 20, 20)
+    x = p.text(x, 20, "e(t) = 1.5 t − 6", 50); p.check(x + 20, 20)
+    p.text(L + 30, 21, T["e3d"], 38)
+    # final box
+    r0 = 23.6
+    x = p.text(L + 40, r0 + 1, "e(t) =", 56)
+    bx = x + 30
+    by0, by1 = TOP + (r0 - 0.2) * RULE, TOP + (r0 + 2.4) * RULE
+    mid = (by0 + by1) / 2
+    p.stroke([(bx + 24, by0), (bx + 6, by0 + 20), (bx + 6, mid - 24), (bx - 12, mid), (bx + 6, mid + 24), (bx + 6, by1 - 20), (bx + 24, by1)], INK, 5)
+    c1, c2 = bx + 50, bx + 520
+    p.text(c1, r0 + 0.1, "1.5 t", 48); p.text(c2, r0 + 0.1, f"{T['si']}  0 ≤ t ≤ 2", 44)
+    p.text(c1, r0 + 1.1, "0.5 t + 2", 48); p.text(c2, r0 + 1.1, f"{T['si']}  2 < t ≤ 8", 44)
+    p.text(c1, r0 + 2.1, "1.5 t − 6", 48); p.text(c2, r0 + 2.1, f"{T['si']}  8 < t < 12", 44)
+    p.box(L + 10, TOP + (r0 - 1.0) * RULE, W - 120, TOP + (r0 + 3.0) * RULE)
+    p.text(L + 30, r0 + 4.0, T["ebox"], 42)
+    p.sketch(L + 120, TOP + 29 * RULE, 760, 470, "east")
+    p.text(L + 120 + 790, 36.4, "t", 44)
+    p.text(L + 60, 28.6, "e", 44)
+    p.text(L + 30, 38.3, T["enext"], 42, RED)
+    out = os.path.join(OUT, f"consultant-notes-{lang}-1.jpg")
+    p.im.save(out, quality=88, optimize=True, progressive=True)
+    print("wrote", os.path.relpath(out, ROOT), p.im.size)
+
+
 def build(lang):
+    """Page 2: the northing n(t), four pieces."""
     T = TEXT[lang]
     p = Page(7 if lang == "es" else 11)
     L = LEFT
@@ -191,12 +292,12 @@ def build(lang):
     p.text(L, 3, T["s1"], 48, RED)
     p.text(L + 30, 4, T["s1a"], 42); p.text(L + 30, 5, T["s1b"], 42)
     x = p.text(L + 30, 6, T["s1c"], 42); x = p.arrow(x + 20, 6)
-    x = p.text(x, 6, "f(t) = t²", 50); p.check(x + 20, 6)
+    x = p.text(x, 6, "n(t) = t²", 50); p.check(x + 20, 6)
     # 2
     p.text(L, 8, T["s2"], 48, RED)
     p.text(L + 30, 9, T["s2a"], 42); p.text(L + 30, 10, T["s2b"], 42)
     x = p.text(L + 30, 11, T["s2c"], 42); x = p.arrow(x + 20, 11)
-    x = p.text(x, 11, "f(t) = t + 2", 50); p.check(x + 20, 11)
+    x = p.text(x, 11, "n(t) = t + 2", 50); p.check(x + 20, 11)
     p.text(L + 30, 12, T["s2d"], 38)
     p.text(L + 30, 13, T["s2e"], 38, RED)
     # 3
@@ -207,7 +308,7 @@ def build(lang):
     p.text(L + 30, 19, T["s3d"], 42)
     p.text(L + 30, 20, T["s3e"], 42)
     x = p.text(L + 30, 21, T["s3f"], 42); x = p.arrow(x + 20, 21); x = p.text(x, 21, "10, 12, 10, 12", 42); p.check(x + 20, 21)
-    x = p.text(L + 30, 23, "f(t) = 11 + sin", 50); x = p.text(x + 4, 23, "(", 62)
+    x = p.text(L + 30, 23, "n(t) = 11 + sin", 50); x = p.text(x + 4, 23, "(", 62)
     x = p.frac(x + 6, 23, "π", "10 − t", 42); x = p.text(x, 23, ")", 62)
     x = p.text(x + 50, 23, T["s3g"], 38); p.check(x + 16, 23)
     p.sketch(1440, TOP + 15 * RULE - 30, 420, 230, "lab")
@@ -215,12 +316,12 @@ def build(lang):
     p.text(L, 25, T["s4"], 48, RED)
     p.text(L + 30, 26, T["s4a"], 40); p.text(L + 30, 27, T["s4b"], 40); p.text(L + 30, 28, T["s4c"], 40)
     x = p.text(L + 30, 29, T["s4d"], 42); x = p.arrow(x + 20, 29)
-    x = p.text(x, 29, "f(t) = 10 + ", 50); x = p.frac(x + 4, 29, "4", "12 − t", 42); p.check(x + 16, 29)
+    x = p.text(x, 29, "n(t) = 10 + ", 50); x = p.frac(x + 4, 29, "4", "12 − t", 42); p.check(x + 16, 29)
     p.text(L + 30, 30, T["s4e"], 38)
     p.sketch(1520, TOP + 25 * RULE - 40, 330, 230, "aut")
     # final box with the four pieces
     r0 = 32
-    x = p.text(L + 40, r0 + 2, "f(t) =", 56)
+    x = p.text(L + 40, r0 + 2, "n(t) =", 56)
     bx = x + 30
     by0, by1 = TOP + (r0 - 0.15) * RULE, TOP + (r0 + 4.9) * RULE
     mid = (by0 + by1) / 2
@@ -236,10 +337,14 @@ def build(lang):
     p.text(L + 30, r0 + 6.3, T["box"], 42)
     p.text(L + 30, r0 + 7.5, T["warn1"], 42, RED)
     p.text(L + 30, r0 + 8.5, T["warn2"], 42, RED)
-    out = os.path.join(OUT, f"consultant-notes-{lang}.jpg")
+    out = os.path.join(OUT, f"consultant-notes-{lang}-2.jpg")
     p.im.save(out, quality=88, optimize=True, progressive=True)
     print("wrote", os.path.relpath(out, ROOT), p.im.size)
 
 
 for lang in ("es", "en"):
+    build_east(lang)
     build(lang)
+    old = os.path.join(OUT, f"consultant-notes-{lang}.jpg")
+    if os.path.exists(old):
+        os.remove(old)

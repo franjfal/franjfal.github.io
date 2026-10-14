@@ -24,15 +24,21 @@ A burgundy hatchback drives through the checkpoint at the **Delta City** harbour
 
 The activity has two phases that are never mixed:
 
-1. **Evidence, at home.** Each photograph is a single data point: a camera, a time and a plate. The consultant who was working on the case left his investigation worksheet half done, with five exhibits written up as examples; the teams pick it up, check every plate, discard identification errors and propose *candidates* for what happens near each delicate point. Only a photo of the wanted car gives a value \(f(t)\), and finitely many photographs prove no limit.
-2. **Coordination and model, in class.** The teams compare their reports exhibit by exhibit, and then an envelope is opened with an explicit function \(f\) that models the trajectory, together with the consultant's handwritten notes explaining how he worked it out from the photographs; its first two pieces are the ones students will have proposed at home. On it, values, one-sided limits and limits are computed, and continuity, removable discontinuity, jump, oscillation and infinite limit are classified. Before the formula, the continuity hypothesis alone lets students apply the intermediate value theorem in the tunnel.
+1. **Evidence, at home.** Each photograph is a single data point: a camera, a time and a plate. The consultant who was working on the case left his investigation worksheet half done, with ten exhibits written up as examples; the teams pick it up, check every plate, discard identification errors and propose *candidates* for what happens near each delicate point. Only a photo of the wanted car gives its position at that instant, and finitely many photographs prove no limit.
+2. **Coordination and model, in class.** The teams compare their reports exhibit by exhibit, and then an envelope is opened with an explicit model of the trajectory, two functions of time, together with the consultant's handwritten notes explaining how he worked it out from the photographs; the first two pieces of each function are the ones students will have proposed at home. On those functions, values, one-sided limits and limits are computed, and continuity, removable discontinuity, jump, oscillation and infinite limit are classified. Before the formula, the continuity hypothesis alone lets students apply the intermediate value theorem in the tunnel.
 
-The map carries a grid of columns, from west to east, and northings (the north coordinate), from south to north, and it is drawn from that function. The consultant noted a regularity: in every photograph of the wanted car, the camera's column equals the minute \(t\). The model assumes that it holds at every instant and, under that hypothesis, the car's route on the map **is** the graph of \(f\).
+The map carries a grid of columns, from west to east, and northings (the north coordinate), from south to north. The car's position at instant \(t\) is given by two numbers: its column \(e(t)\) (for *east*) and its northing \(n(t)\) (for *north*). Each valid photograph gives both at once: the time fixes \(t\) and the camera gives the column and the northing. On the map, the point \((e(t),n(t))\) traces the street the car follows; to study limits and continuity, each coordinate is looked at separately, against time. A parametric representation thus appears without being named: the column advances without jumps, at a different speed on each stretch, and all the phenomena of the case are in the northing.
 
 The activity takes two classes. At the end of the first, the teacher, as Chief Inspector, presents the case and hands out the packets; the mechanical part is done at home, and the second class is given to the coordination meeting, the model and each team's presentation.
 
 $$
-f(t)=\begin{cases}
+e(t)=\begin{cases}
+1.5t & \text{if } 0\le t\le 2,\\
+0.5t+2 & \text{if } 2<t\le 8,\\
+1.5t-6 & \text{if } 8<t<12,
+\end{cases}
+\qquad
+n(t)=\begin{cases}
 t^{2} & \text{if } 0\le t\le 2,\\
 t+2 & \text{if } 2<t<8,\\
 11+\sin\!\left(\dfrac{\pi}{10-t}\right) & \text{if } 8\le t<10,\\
@@ -118,20 +124,20 @@ Choose the city, the date, the start time and the plate of the pursued vehicle. 
 
 | Place on the map | Evidence (phase 1) | With the model (phase 2) |
 |---|---|---|
-| Fish Market Roundabout, \(t=2\) | Photos on both sides and at the exact instant | Continuous: \(f(2)=4\) |
+| Fish Market Roundabout, \(t=2\) | Photos on both sides and at the exact instant | Both coordinates are continuous: \(e(2)=3\), \(n(2)=4\) |
 | River Tunnel, \(3<t<5\) | Only the two portals | Under the continuity hypothesis, the IVT guarantees an instant under the river (northing 6) |
-| Diagonal Avenue, \(t=6\) | Depending on the team: the wanted car, the look-alike or a detection without an image | \(f\) is continuous; the automatic record \(g\) has a removable discontinuity |
-| Link Hill, \(t=8\) | Northings towards 10 from the left and towards 12 from the right | Finite jump |
-| The Labyrinth, \(t\to10^-\) | Northings alternating between 10 and 12 | The left limit does not exist (oscillation) |
-| North Motorway, \(t\to12^-\) | Northings 14, 18, 30, 50… | Infinite limit; asymptote \(t=12\) (the railway) |
+| Diagonal Avenue, \(t=6\) | Depending on the team: the wanted car, the look-alike or a detection without an image | \(e\) and \(n\) are continuous; the automatic record \(g\) of the northing has a removable discontinuity |
+| Link Hill, \(t=8\) | Northings towards 10 from the left and towards 12 from the right; the column does not change | Finite jump of \(n\); \(e\) continuous |
+| The Labyrinth, \(t\to10^-\) | Northings alternating between 10 and 12 | The left limit of \(n\) does not exist (oscillation); \(e\) tends to 9 |
+| North Motorway, \(t\to12^-\) | Northings 14, 18, 30, 50…; columns ever closer to 12 | \(n\) has an infinite limit (asymptote \(t=12\)); \(e\) tends to 12, the railway |
 
-A photograph of the look-alike plate is **not** a value of \(f\): it is classified as an identification error, and at that instant the wanted car's position remains unknown to that team. Nor does a detection without an image mean that the car had no position: it was somewhere, but nobody can check the plate.
+A photograph of the look-alike plate is **not** a position of the wanted car: it is classified as an identification error, and at that instant the wanted car's position remains unknown to that team. Nor does a detection without an image mean that the car had no position: it was somewhere, but nobody can check the plate.
 
-The map is stylised so that the route coincides with the graph: that is why it carries no scale in metres and the activity never asks for distances or speeds. The jump, the oscillation and the infinite limit are idealisations of the model, not facts that a camera could record; the teacher guide explains how to handle it if the class notices.
+The map is stylised: the column advances at a plausible rate, but the northing would require, at real scale, impossible journeys near \(t=8\), \(t=10\) and \(t=12\). That is why it carries no scale in metres and the activity never asks for distances or speeds. The jump, the oscillation and the infinite limit are idealisations of the model, not facts that a camera could record; the teacher guide explains how to handle it if the class notices.
 
 <p class="cc-disclaimer">The city, plates, vehicles and record are fictional and purely educational. The photographs were generated with artificial intelligence and do not depict real places or people.</p>
 
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-core.js?v=20261005a"></script>
-<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-generator.js?v=20261005a"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-core.js?v=20261014a"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-generator.js?v=20261014a"></script>

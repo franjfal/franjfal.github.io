@@ -24,15 +24,21 @@ Un turismo burdeos se salta el control de salida del puerto de **Ciudad Delta** 
 
 La actividad tiene dos fases que no se mezclan:
 
-1. **Evidencia, en casa.** Cada fotografía es un dato puntual: una cámara, una hora y una matrícula. El consultor que llevaba el caso dejó su hoja de investigación a medias, con cinco pruebas pasadas a limpio como ejemplo; los equipos la retoman, comprueban todas las matrículas, descartan los errores de identificación y proponen *candidatos* para lo que ocurre cerca de cada punto delicado. Solo una foto del coche buscado da un valor \(f(t)\), y un número finito de fotografías no demuestra ningún límite.
-2. **Coordinación y modelo, en clase.** Los equipos comparan sus informes prueba a prueba y después se abre un sobre con una función explícita \(f\) que modeliza la trayectoria, acompañada de las notas manuscritas del consultor que explican cómo la dedujo de las fotografías; sus dos primeros tramos son los que el alumnado habrá propuesto en casa. Sobre ella sí se calculan valores, límites laterales y límites, y se clasifican la continuidad, la discontinuidad evitable, el salto, la oscilación y el límite infinito. Antes de la fórmula, la sola hipótesis de continuidad permite usar el teorema del valor intermedio en el túnel.
+1. **Evidencia, en casa.** Cada fotografía es un dato puntual: una cámara, una hora y una matrícula. El consultor que llevaba el caso dejó su hoja de investigación a medias, con diez pruebas pasadas a limpio como ejemplo; los equipos la retoman, comprueban todas las matrículas, descartan los errores de identificación y proponen *candidatos* para lo que ocurre cerca de cada punto delicado. Solo una foto del coche buscado da su posición en ese instante, y un número finito de fotografías no demuestra ningún límite.
+2. **Coordinación y modelo, en clase.** Los equipos comparan sus informes prueba a prueba y después se abre un sobre con un modelo explícito de la trayectoria, dos funciones del tiempo, acompañado de las notas manuscritas del consultor que explican cómo lo dedujo de las fotografías; los dos primeros tramos de cada función son los que el alumnado habrá propuesto en casa. Sobre esas funciones sí se calculan valores, límites laterales y límites, y se clasifican la continuidad, la discontinuidad evitable, el salto, la oscilación y el límite infinito. Antes de la fórmula, la sola hipótesis de continuidad permite usar el teorema del valor intermedio en el túnel.
 
-El plano lleva una cuadrícula de columnas, de oeste a este, y de cotas, de sur a norte, y está dibujado a partir de esa función. El consultor dejó anotada una regularidad: en todas las fotografías del coche buscado, la columna de la cámara coincide con el minuto \(t\). El modelo supone que se cumple en todo instante y, con esa hipótesis, la ruta del coche sobre el plano **es** la gráfica de \(f\).
+El plano lleva una cuadrícula de columnas, de oeste a este, y de cotas, de sur a norte. La posición del coche en el instante \(t\) se da con dos números: su columna \(e(t)\) (de *este*) y su cota \(n(t)\) (de *norte*). Cada fotografía válida da los dos a la vez: la hora fija \(t\) y la cámara, la columna y la cota. Sobre el plano, el punto \((e(t),n(t))\) dibuja la calle por la que pasa el coche; para estudiar límites y continuidad, cada coordenada se mira por separado, frente al tiempo. Así aparece sin nombrarla una representación paramétrica: la columna avanza sin saltos, a distinta velocidad en cada tramo, y todos los fenómenos del caso están en la cota.
 
 La actividad ocupa dos clases. Al final de la primera, el docente, en el papel de inspector jefe, presenta el caso y entrega los paquetes; la parte mecánica se hace en casa, y la segunda clase se dedica a la reunión de coordinación, el modelo y la exposición de cada equipo.
 
 $$
-f(t)=\begin{cases}
+e(t)=\begin{cases}
+1.5t & \text{si } 0\le t\le 2,\\
+0.5t+2 & \text{si } 2<t\le 8,\\
+1.5t-6 & \text{si } 8<t<12,
+\end{cases}
+\qquad
+n(t)=\begin{cases}
 t^{2} & \text{si } 0\le t\le 2,\\
 t+2 & \text{si } 2<t<8,\\
 11+\sin\!\left(\dfrac{\pi}{10-t}\right) & \text{si } 8\le t<10,\\
@@ -118,20 +124,20 @@ Elige la ciudad, la fecha, la hora de inicio y la matrícula del vehículo perse
 
 | Lugar del plano | Evidencia (fase 1) | Con el modelo (fase 2) |
 |---|---|---|
-| Glorieta de la Lonja, \(t=2\) | Fotos a ambos lados y en el instante exacto | Continua: \(f(2)=4\) |
+| Glorieta de la Lonja, \(t=2\) | Fotos a ambos lados y en el instante exacto | Las dos coordenadas son continuas: \(e(2)=3\), \(n(2)=4\) |
 | Túnel del Río, \(3<t<5\) | Solo los dos portales | Con la hipótesis de continuidad, el TVI asegura un instante bajo el río (cota 6) |
-| Avenida Diagonal, \(t=6\) | Según el equipo: el coche buscado, el confundible o una detección sin imagen | \(f\) es continua; el registro automático \(g\) tiene una discontinuidad evitable |
-| Cuesta del Enlace, \(t=8\) | Cotas hacia 10 por la izquierda y hacia 12 por la derecha | Salto finito |
-| El Laberinto, \(t\to10^-\) | Cotas que alternan entre 10 y 12 | No existe el límite por la izquierda (oscilación) |
-| Autovía del Norte, \(t\to12^-\) | Cotas 14, 18, 30, 50… | Límite infinito; asíntota \(t=12\) (el ferrocarril) |
+| Avenida Diagonal, \(t=6\) | Según el equipo: el coche buscado, el confundible o una detección sin imagen | \(e\) y \(n\) son continuas; el registro automático \(g\) de la cota tiene una discontinuidad evitable |
+| Cuesta del Enlace, \(t=8\) | Cotas hacia 10 por la izquierda y hacia 12 por la derecha; la columna no cambia | Salto finito de \(n\); \(e\) continua |
+| El Laberinto, \(t\to10^-\) | Cotas que alternan entre 10 y 12 | No existe el límite de \(n\) por la izquierda (oscilación); \(e\) tiende a 9 |
+| Autovía del Norte, \(t\to12^-\) | Cotas 14, 18, 30, 50…; columnas cada vez más cerca de 12 | \(n\) tiene límite infinito (asíntota \(t=12\)); \(e\) tiende a 12, el ferrocarril |
 
-Una fotografía de la matrícula confundible **no** es un valor de \(f\): se clasifica como error de identificación y, en ese instante, la posición del coche buscado queda desconocida para ese equipo. Tampoco una detección sin imagen significa que el coche no tuviera posición: estaba en algún sitio, pero nadie puede comprobar la matrícula.
+Una fotografía de la matrícula confundible **no** es una posición del coche buscado: se clasifica como error de identificación y, en ese instante, la posición del coche buscado queda desconocida para ese equipo. Tampoco una detección sin imagen significa que el coche no tuviera posición: estaba en algún sitio, pero nadie puede comprobar la matrícula.
 
-El plano está estilizado para que la ruta coincida con la gráfica: por eso no lleva escala en metros y la actividad no pide calcular distancias ni velocidades. El salto, la oscilación y el límite infinito son idealizaciones del modelo, no hechos que una cámara pueda registrar; la guía docente explica cómo tratarlo si la clase lo advierte.
+El plano está estilizado: la columna avanza a un ritmo verosímil, pero la cota exigiría, a escala real, recorridos imposibles cerca de \(t=8\), \(t=10\) y \(t=12\). Por eso no lleva escala en metros y la actividad no pide calcular distancias ni velocidades. El salto, la oscilación y el límite infinito son idealizaciones del modelo, no hechos que una cámara pueda registrar; la guía docente explica cómo tratarlo si la clase lo advierte.
 
 <p class="cc-disclaimer">La ciudad, las matrículas, los vehículos y el registro son ficticios y exclusivamente educativos. Las fotografías se han generado con inteligencia artificial y no representan lugares ni personas reales.</p>
 
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-core.js?v=20261005a"></script>
-<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-generator.js?v=20261005a"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-core.js?v=20261014a"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-generator.js?v=20261014a"></script>
