@@ -85,14 +85,31 @@ Las actividades continúan formando parte de **Matemáticas Experimentales**. El
 
 - [La persecución de Ciudad Delta]({{ "/MatExp/analisis/calculo/limites/persecucion-ciudad-delta/" | relative_url }})
 
+### Capítulo 2. El túnel
+
+- [El informe del túnel]({{ "/MatExp/analisis/derivadas/tunel/" | relative_url }})
+
 ### Capítulo 3. La caja de palomitas perfecta
 
 - [El caso de la caja óptima]({{ "/MatExp/analisis/derivadas/caja-palomitas-optima/" | relative_url }})
+
+### Capítulo 4. La calculadora de Vektor
+
+- [La calculadora de Vektor]({{ "/MatExp/analisis/calculo/taylor/calculadora-vektor/" | relative_url }})
+
+### Capítulo 5. La presa
+
+- [El comité de la presa]({{ "/MatExp/analisis/integrales/presa/" | relative_url }})
 
 ### Capítulo 6. La batalla de genios
 
 - [El duelo del cálculo]({{ "/MatExp/analisis/calculo/duelo/" | relative_url }})
 
-### Capítulo 7. El asesinato del profesor
+### Capítulo 7. El final de la serie
+
+- [El final de la serie: generador del docente]({{ "/MatExp/analisis/calculo/series/final-de-la-serie/" | relative_url }})
+- [Sala de montaje ZENO: puesta en común]({{ "/MatExp/analisis/calculo/series/final-de-la-serie/sala/" | relative_url }})
+
+### Capítulo 8. El asesinato del profesor
 
 - [El asesinato del profesor]({{ "/MatExp/analisis/modelacion/ode/juicio-profesor-falco/" | relative_url }})

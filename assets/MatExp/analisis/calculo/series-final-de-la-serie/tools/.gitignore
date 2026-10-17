@@ -1,0 +1,4 @@
+# local outputs of the PDF pipeline and the generated harness
+out/
+harness-*.html
+__pycache__/

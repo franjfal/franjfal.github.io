@@ -160,15 +160,33 @@ calculus-casebook:
     children:
       - title: "La persecución de Ciudad Delta"
         url: /MatExp/analisis/calculo/limites/persecucion-ciudad-delta/
+  - title: "Capítulo 2. El túnel"
+    children:
+      - title: "El informe del túnel"
+        url: /MatExp/analisis/derivadas/tunel/
   - title: "Capítulo 3. La caja de palomitas perfecta"
     children:
       - title: "El caso de la caja óptima"
         url: /MatExp/analisis/derivadas/caja-palomitas-optima/
+  - title: "Capítulo 4. La calculadora de Vektor"
+    children:
+      - title: "La calculadora de Vektor"
+        url: /MatExp/analisis/calculo/taylor/calculadora-vektor/
+  - title: "Capítulo 5. La presa"
+    children:
+      - title: "El comité de la presa"
+        url: /MatExp/analisis/integrales/presa/
   - title: "Capítulo 6. La batalla de genios"
     children:
       - title: "El duelo del cálculo"
         url: /MatExp/analisis/calculo/duelo/
-  - title: "Capítulo 7. El asesinato del profesor"
+  - title: "Capítulo 7. El final de la serie"
+    children:
+      - title: "El final de la serie (generador del docente)"
+        url: /MatExp/analisis/calculo/series/final-de-la-serie/
+      - title: "Sala de montaje ZENO (puesta en común)"
+        url: /MatExp/analisis/calculo/series/final-de-la-serie/sala/
+  - title: "Capítulo 8. El asesinato del profesor"
     children:
       - title: "El asesinato del profesor"
         url: /MatExp/analisis/modelacion/ode/juicio-profesor-falco/

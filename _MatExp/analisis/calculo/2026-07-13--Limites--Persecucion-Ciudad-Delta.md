@@ -18,7 +18,7 @@ sidebar:
   nav:
     - calculus-casebook
 ---
-<link rel="stylesheet" href="{{ site.baseurl }}/assets/MatExp/calculus-cases/calculus-cases.css">
+<link rel="stylesheet" href="{{ site.baseurl }}/assets/MatExp/calculus-cases/calculus-cases.css?v=20261016d">
 
 Un turismo burdeos se salta el control de salida del puerto de **Ciudad Delta** y atraviesa la ciudad hasta perderse por la autovía del norte. La patrulla no consigue seguirlo: de su recorrido solo queda el registro de las cámaras de tráfico con lectura de matrículas. El inspector jefe, papel que asume el docente, quiere saber por dónde pasó el coche y qué puede afirmarse con seguridad en cada tramo. Tres equipos reciben extractos casi idénticos de ese registro. Por la ciudad circula otro coche del mismo modelo, de un rojo parecido y con una matrícula parecida, y una lectura apresurada puede llevar a la conclusión equivocada.
 
@@ -29,7 +29,7 @@ La actividad tiene dos fases que no se mezclan:
 
 El plano lleva una cuadrícula de columnas, de oeste a este, y de cotas, de sur a norte. La posición del coche en el instante \(t\) se da con dos números: su columna \(e(t)\) (de *este*) y su cota \(n(t)\) (de *norte*). Cada fotografía válida da los dos a la vez: la hora fija \(t\) y la cámara, la columna y la cota. Sobre el plano, el punto \((e(t),n(t))\) dibuja la calle por la que pasa el coche; para estudiar límites y continuidad, cada coordenada se mira por separado, frente al tiempo. Así aparece sin nombrarla una representación paramétrica: la columna avanza sin saltos, a distinta velocidad en cada tramo, y todos los fenómenos del caso están en la cota.
 
-La actividad ocupa dos clases. Al final de la primera, el docente, en el papel de inspector jefe, presenta el caso y entrega los paquetes; la parte mecánica se hace en casa, y la segunda clase se dedica a la reunión de coordinación, el modelo y la exposición de cada equipo.
+La actividad sigue el formato de todos los Calculus Cases: se lanza al final de una clase (15–20 minutos, con la presentación proyectada y el reparto de los paquetes), la parte mecánica se hace en casa y la clase siguiente se dedica a la reunión de coordinación, el modelo y la exposición de cada equipo.
 
 $$
 e(t)=\begin{cases}
@@ -60,16 +60,17 @@ Elige la ciudad, la fecha, la hora de inicio y la matrícula del vehículo perse
   <section class="cc-workspace">
     <form id="delta-form" class="cc-panel" novalidate>
       <h2>Configura el caso</h2>
-      <div class="cc-form-grid">
-        <label class="cc-full">Nombre de la ciudad
-          <input id="delta-city" type="text" value="Ciudad Delta" maxlength="40" required>
+      <section class="cc-step" data-cc-step-title="Tu clase">
+        <h3>1. Tu clase</h3>
+        <p class="cc-step-help">¿Cuántos estudiantes tienes? La web forma equipos de cuatro o cinco y les asigna los dossieres A, B y C por turno; con más de tres equipos se repiten, sin decir a nadie quién comparte expediente. La guía de impresión dará las copias exactas.</p>
+        <label>Número de estudiantes
+          <input id="delta-students" type="number" min="9" max="60" step="1" value="24">
         </label>
-        <label>Fecha del caso
-          <input id="delta-date" type="date" value="2026-10-02">
-        </label>
-        <label>Hora de inicio (t = 0)
-          <input id="delta-start" type="time" value="18:00" step="60">
-        </label>
+        <div id="delta-groups" aria-live="polite"></div>
+      </section>
+      <section class="cc-step" data-cc-step-title="Matrículas">
+        <h3>2. Las matrículas</h3>
+        <p class="cc-step-help">La matrícula del coche perseguido y la del coche confundible, del mismo modelo y en un rojo parecido. La web propone una confundible del mismo formato con dos o tres caracteres cambiados; puedes pedir otra o escribirla.</p>
         <fieldset>
           <legend>Matrículas</legend>
           <div class="cc-form-grid">
@@ -85,18 +86,38 @@ Elige la ciudad, la fecha, la hora de inicio y la matrícula del vehículo perse
           </div>
           <p id="delta-check" class="cc-note" role="status" aria-live="polite"></p>
         </fieldset>
+      </section>
+      <section class="cc-step" data-cc-step-title="Personalizar (opcional)">
+        <h3>3. Personalizar (opcional)</h3>
+        <p class="cc-step-help">La ciudad, la fecha y la hora cambian los rótulos y las horas de todas las fotografías; el plano, los instantes y el modelo no cambian.</p>
+        <div class="cc-form-grid">
+        <label class="cc-full">Nombre de la ciudad
+          <input id="delta-city" type="text" value="Ciudad Delta" maxlength="40" required>
+        </label>
+        <label>Fecha del caso
+          <input id="delta-date" type="date" value="2026-10-02">
+        </label>
+        <label>Hora de inicio (t = 0)
+          <input id="delta-start" type="time" value="18:00" step="60">
+        </label>
         <label class="cc-full">Formato PDF
           <select id="delta-format">
             <option value="a4" selected>A4</option>
             <option value="letter">Carta / Letter</option>
           </select>
         </label>
-      </div>
-      <div class="cc-actions">
-        <button id="delta-generate" type="submit">Generar documentos</button>
-        <button id="delta-clear" class="cc-secondary" type="button">Limpiar descargas</button>
-      </div>
-      <div id="delta-status" class="cc-status" role="status" aria-live="polite"></div>
+        </div>
+      </section>
+      <section class="cc-step" data-cc-step-title="Generar">
+        <h3>4. Generar</h3>
+        <p class="cc-step-help">La web compone las fotografías y los documentos. Empieza por la guía de impresión y reparto. La presentación del lanzamiento se proyecta desde aquí.</p>
+        <div class="cc-actions">
+          <button id="delta-generate" type="submit">Generar documentos</button>
+          <button id="delta-project" class="cc-secondary" type="button">Proyectar la presentación</button>
+          <button id="delta-clear" class="cc-secondary" type="button">Limpiar descargas</button>
+        </div>
+        <div id="delta-status" class="cc-status" role="status" aria-live="polite"></div>
+      </section>
     </form>
 
     <aside class="cc-panel" aria-labelledby="delta-summary-title">
@@ -108,10 +129,11 @@ Elige la ciudad, la fecha, la hora de inicio y la matrícula del vehículo perse
 
   <section id="delta-documents" class="cc-panel cc-documents cc-hidden" aria-labelledby="delta-documents-title">
     <h2 id="delta-documents-title">Documentos de la actividad</h2>
-    <p class="cc-download-note">Al final de la primera clase, reparte los paquetes de la fase 1: un ejemplar por estudiante, distinto para cada equipo. El paquete de la fase 2 se entrega en la segunda clase, después de la reunión de coordinación. El paquete docente contiene la comparación de equipos y no debe circular antes. En cada pestaña, la fila roja descarga un ZIP con todo su contenido; los iconos permiten ver o descargar cada archivo.</p>
+    <p class="cc-download-note">Empieza por la <strong>guía de impresión y reparto</strong>: dice qué imprimir, cómo, cuántas copias y cuándo se entrega cada documento. El paquete docente contiene la comparación de equipos y no debe circular. En cada pestaña, la fila roja descarga un ZIP con todo su contenido; los iconos permiten ver o descargar cada archivo.</p>
     <div class="cc-tabs" role="tablist" aria-label="Tipos de documentos">
       <button class="cc-tab-button" type="button" role="tab" aria-selected="true" aria-controls="delta-panel-bundles" data-cc-tab-target="delta-panel-bundles">Paquetes por rol</button>
       <button class="cc-tab-button" type="button" role="tab" aria-selected="false" aria-controls="delta-panel-separate" data-cc-tab-target="delta-panel-separate">Documentos separados</button>
+      <a id="delta-printguide" class="cc-tab-button cc-complete cc-hidden" href="#" download>Guía de impresión y reparto</a>
       <a id="delta-complete" class="cc-tab-button cc-complete cc-hidden" href="#" download>PDF completo</a>
     </div>
     <div id="delta-panel-bundles" class="cc-tab-panel" role="tabpanel"><div id="delta-bundles" class="cc-file-list"></div></div>
@@ -140,4 +162,6 @@ El plano está estilizado: la columna avanza a un ritmo verosímil, pero la cota
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-core.js?v=20261014a"></script>
-<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-generator.js?v=20261014a"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/calculus-cases/cc-wizard.js?v=20261016c"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/calculus-cases/cc-projector.js?v=20261016c"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-generator.js?v=20261016d"></script>

@@ -1,0 +1,62 @@
+/* Calculus Cases · Case 7 · The Series Finale — the students' room. House colours as in calculus-cases.css. */
+.sf-room { --ink: #202a3d; --muted: #5d6570; --paper: #f7f2e5; --panel: #fffdf8; --line: #d9d5c8; --blue: #1385ae; --blue-dark: #0b607f; --orange: #e77924; --red: #a43d35; --yellow: #f3b632;
+  color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 14px; font-size: 0.95rem; line-height: 1.45; }
+.sf-room *, .sf-room *::before, .sf-room *::after { box-sizing: border-box; }
+.sf-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.sf-head h2 { margin: 0 0 8px; font-size: 1.25rem; }
+.sf-status { color: var(--blue-dark); font-size: 0.9em; min-height: 1.2em; }
+.sf-tabbar { display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 2px solid var(--blue-dark); margin-bottom: 12px; }
+.sf-tab { border: 1px solid var(--line); border-bottom: none; background: #fff; color: var(--ink); padding: 7px 12px; border-radius: 6px 6px 0 0; cursor: pointer; font: inherit; }
+.sf-tab[aria-selected="true"] { background: var(--blue-dark); color: #fff; border-color: var(--blue-dark); }
+.sf-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin-bottom: 12px; }
+.sf-card h3 { margin: 0 0 8px; font-size: 1.05rem; color: var(--blue-dark); }
+.sf-card h4 { margin: 10px 0 6px; font-size: 0.95rem; }
+.sf-grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px 14px; }
+.sf-room label { display: flex; flex-direction: column; gap: 3px; font-weight: 600; font-size: 0.9em; }
+.sf-room input[type="text"], .sf-room input[type="number"], .sf-room select, .sf-room textarea { font: inherit; font-weight: 400; padding: 6px 8px; border: 1px solid var(--line); border-radius: 5px; background: #fff; color: var(--ink); width: 100%; }
+.sf-room input[type="checkbox"] { width: auto; }
+.sf-checks label, .sf-opt { flex-direction: row; align-items: center; gap: 6px; font-weight: 400; }
+.sf-btn { font: inherit; background: var(--orange); color: #fff; border: 1px solid var(--orange); border-radius: 6px; padding: 6px 12px; cursor: pointer; margin: 4px 6px 4px 0; text-decoration: none; display: inline-block; }
+.sf-btn.sf-secondary { background: #fff; color: var(--ink); border-color: #9aa0a6; }
+.sf-btn:disabled { opacity: 0.5; cursor: default; }
+.sf-help { color: var(--muted); font-size: 0.88em; font-weight: 400; }
+.sf-viewer .sf-pdf { width: 100%; height: 70vh; border: 1px solid var(--line); border-radius: 6px; margin-top: 8px; background: #fff; }
+.sf-ex { border-top: 1px dashed var(--line); padding-top: 8px; margin-top: 8px; }
+.sf-answer { display: grid; grid-template-columns: minmax(150px, 0.8fr) minmax(200px, 1.4fr) minmax(160px, 1fr); gap: 8px; align-items: start; margin: 6px 0; }
+.sf-inline { display: flex; gap: 6px; }
+.sf-inline input { flex: 1; }
+.sf-feedback { font-size: 0.88em; padding: 4px 8px; border-radius: 5px; }
+.sf-feedback.sf-correct { background: #e7f4ea; color: #1d5b2c; }
+.sf-feedback.sf-incorrect { background: #f8e8e6; color: #7a2a24; }
+.sf-feedback.sf-review { background: #fff4d6; color: #6b4e00; }
+.sf-feedback.sf-invalid { background: #eef1f4; color: var(--muted); }
+.sf-icon { font-weight: 700; }
+.sf-just { display: flex; flex-direction: column; gap: 4px; }
+.sf-badge { display: inline-block; font-size: 0.75em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; padding: 1px 6px; border-radius: 10px; border: 1px solid currentColor; }
+.sf-badge.sf-exact { color: #1d5b2c; } .sf-badge.sf-proved { color: var(--blue-dark); } .sf-badge.sf-computed { color: #8a5a00; }
+.sf-badge.sf-known { color: #6a4c93; } .sf-badge.sf-visual { color: var(--muted); } .sf-badge.sf-approx { color: #8a5a00; } .sf-badge.sf-review { color: #6b4e00; }
+.sf-lab { display: grid; grid-template-columns: minmax(240px, 1fr) minmax(280px, 1.4fr); gap: 12px; }
+.sf-param { display: grid !important; grid-template-columns: 52px 1fr 80px; align-items: center; gap: 8px; }
+.sf-expr { overflow-x: auto; }
+.sf-facts, .sf-rules { margin: 4px 0; padding-left: 1.1em; }
+.sf-facts li, .sf-rules li { margin: 3px 0; }
+.sf-ok { color: #1d5b2c; } .sf-ko { color: #7a2a24; }
+.sf-graph, .sf-preview, .sf-player { width: 100%; height: auto; display: block; border-radius: 6px; background: #000; }
+.sf-graph { background: #fffdf8; border: 1px solid var(--line); }
+.sf-table-wrap { overflow-x: auto; }
+.sf-table { border-collapse: collapse; font-size: 0.85em; margin-top: 8px; }
+.sf-table th { background: #20506e; color: #fff; padding: 3px 8px; text-align: left; }
+.sf-table td { border: 1px solid #c8cbce; padding: 3px 8px; }
+.sf-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.sf-seek { flex: 1; min-width: 160px; }
+.sf-clock { font-variant-numeric: tabular-nums; color: var(--muted); }
+.sf-shot { border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; margin: 6px 0; background: #fff; }
+.sf-shot summary { cursor: pointer; font-weight: 600; }
+.sf-festival { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+.sf-festival figure { margin: 0; } .sf-festival figcaption { font-size: 0.85em; color: var(--muted); }
+.sf-field { margin: 6px 0; }
+.sf-math var { font-family: "Times New Roman", Times, serif; font-style: italic; }
+.sf-math sub, .sf-math sup { font-size: 0.72em; }
+.sf-formula { display: block; margin: 4px 0; max-width: 100%; }
+.sf-q { font-weight: 600; }
+@media (max-width: 760px) { .sf-lab { grid-template-columns: 1fr; } .sf-answer { grid-template-columns: 1fr; } .sf-room { padding: 8px; } }

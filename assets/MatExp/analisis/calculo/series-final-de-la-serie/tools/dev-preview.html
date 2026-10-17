@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZENO · previsualización de planos (herramienta de desarrollo)</title>
+<style>
+  body { background: #111; color: #ddd; font: 14px -apple-system, Helvetica, sans-serif; margin: 16px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 12px; }
+  figure { margin: 0; } canvas { width: 100%; display: block; background: #000; }
+  figcaption { font-size: 12px; color: #aaa; margin-top: 4px; }
+  #player { width: 100%; max-width: 1100px; }
+</style>
+</head>
+<body>
+<h1>ZENO · previsualización</h1>
+<p><button id="play">▶ Reproducir tráiler</button> <span id="time"></span></p>
+<canvas id="player" width="1280" height="720"></canvas>
+<h2>Planos (fotogramas fijos)</h2>
+<div class="grid" id="grid"></div>
+<h2>Fotogramas de evidencia</h2>
+<div class="grid" id="evid"></div>
+<script src="../data/sf-public.js"></script>
+<script src="../data/sf-episodes.js"></script>
+<script src="../sf-math.js"></script>
+<script src="../sf-tex.js"></script>
+<script src="../sf-trailer.js"></script>
+<script>
+  const lang = new URLSearchParams(location.search).get("lang") || "es";
+  const env = { SF: SFData, lang };
+  const P = SFTrailer.painter(env);
+  const cfg = SFTrailer.defaultConfig(SFData);
+  const add = (host, c, cap) => { const f = document.createElement("figure"); f.append(c); const fc = document.createElement("figcaption"); fc.textContent = cap; f.append(fc); host.append(f); };
+  const shots = [["S0", 3.2], ["S0", 9.9], ["S0", 10.8], ["S1", 1.5], ["S1", 9], ["S2", 7], ["S3", 9], ["S4", 8], ["S5", 9], ["S6", 9], ["S7", 3], ["S7", 11], ["S7", 16]];
+  for (const [id, t] of shots) {
+    const c = document.createElement("canvas"); c.width = 960; c.height = 540;
+    P.drawShot(c.getContext("2d"), c.width, c.height, id, t, cfg, {});
+    add(document.getElementById("grid"), c, `${id} · t = ${t} s`);
+  }
+  const ev = document.getElementById("evid");
+  add(ev, SFTrailer.evidenceFrame(env, "leak", 1200, 675, { r: 0.64, user: "punto_z", forum: "Archivo Orba", time: "07:40", frameLabel: "31/240" }), "leak r = 0.64");
+  for (const m of [2, 11]) add(ev, SFTrailer.evidenceFrame(env, "altS5", 900, 506, { p: 1.5, minute: m }), `alt S5 minuto ${m}`);
+  for (const k of [5, 10]) add(ev, SFTrailer.evidenceFrame(env, "altS6", 900, 506, { L: 15, swing: k, alcove: 12 * Math.LN2 }), `alt S6 oscilación ${k}`);
+  const player = new SFTrailer.Player(document.getElementById("player"), env, cfg);
+  player.onTime = (t, d) => { document.getElementById("time").textContent = `${t.toFixed(1)} / ${d.toFixed(1)} s`; };
+  player.seek(0);
+  document.getElementById("play").onclick = () => (player.playing ? player.pause() : player.play());
+</script>
+</body>
+</html>

@@ -19,7 +19,7 @@
   // ---------------------------------------------------------------- init
   async function init() {
     ["form", "city", "format", "date", "start", "plate", "alt", "suggest", "generate", "clear", "status",
-      "summary", "preview", "check", "documents", "bundles", "doclist", "complete"].forEach((k) => {
+      "summary", "preview", "check", "documents", "bundles", "doclist", "complete", "printguide", "students", "groups", "project"].forEach((k) => {
       els[k] = document.getElementById(`delta-${k}`);
     });
     els.tabButtons = Array.from(root.querySelectorAll("[data-cc-tab-target]"));
@@ -31,6 +31,9 @@
     els.plate.addEventListener("input", () => { if (!state.altEdited) suggestAlt(); schedulePreview(); });
     els.alt.addEventListener("input", () => { state.altEdited = true; schedulePreview(); });
     [els.city, els.date, els.start].forEach((e) => e.addEventListener("input", schedulePreview));
+    if (els.students) els.students.addEventListener("input", schedulePreview);
+    if (els.project) els.project.addEventListener("click", project);
+    if (window.CCWizard) window.CCWizard.init(els.form);
     try {
       state.data = await DC.loadData();
       suggestAlt();
@@ -57,6 +60,7 @@
       city, date, start,
       dateLabel: formatDate(date),
       format: els.format.value === "letter" ? "letter" : "a4",
+      students: els.students ? Number(els.students.value) || 24 : 24,
       plate: DC.normalizePlate(els.plate.value),
       alt: DC.normalizePlate(els.alt.value)
     };
@@ -114,6 +118,50 @@
     }
   }
 
+  /** The launch presentation, projected full screen (cc-projector.js); its text follows the opening. */
+  async function project() {
+    if (!window.CCProjector || !state.data) return;
+    els.project.disabled = true;
+    try {
+      const cfg = readConfig(), d = state.data, R = classroom(cfg.students);
+      const slot = d.slots.find((x) => TEAMS.every((tm) => x.teams[tm].camera === "AV-4")) || d.slots.find((x) => x.teams.A.camera === "AV-4");
+      const photo = await DC.composePhoto(d, "AV-4", { plate: cfg.plate, city: cfg.city, dateISO: cfg.date, start: cfg.start, t: slot ? slot.t : 6, width: 1100 });
+      const map = await DC.drawMap(d, { lang: LANG, width: 1800, cameras: "all", labels: mapLabelOffsets().main });
+      const img = (c) => `<img src="${c.toDataURL("image/jpeg", 0.86)}" alt="" style="display:block;height:52vh;width:auto;max-width:100%;object-fit:contain;margin:0 auto;border-radius:6px">`;
+      const ul = (xs) => `<ul>${xs.map((x) => `<li>${x}</li>`).join("")}</ul>`;
+      const kicker = kicker_(cfg);
+      const slides = [
+        { kicker, title: t("La persecución de " + esc(cfg.city), esc(cfg.city) + " pursuit"), banner: "header-brand.jpg",
+          html: `<p>${esc(t(`A las ${cfg.start} del ${cfg.dateLabel}, un turismo burdeos con matrícula ${cfg.plate} se salta el control de salida del puerto y atraviesa la ciudad hasta perderse por la autovía del norte. De su recorrido solo queda el registro de las cámaras de tráfico.`, `At ${cfg.start} on ${cfg.dateLabel}, a burgundy hatchback with plate ${cfg.plate} drives through the harbour checkpoint and crosses the city until it disappears along the north motorway. All that remains of its route is the record of the traffic cameras.`))}</p>` },
+        { kicker, title: t("Lo que pide el inspector jefe", "What the Chief Inspector wants"),
+          html: ul([t("Tramo a tramo, por dónde pasó el coche y qué puede afirmarse: qué está probado, qué es solo probable y qué no se sabe.", "Stretch by stretch, where the car went and what can be stated: what is proved, what is only likely and what is unknown."),
+            t("Cada equipo recibe un dossier con las detecciones que el sistema asoció a la matrícula. Cada dossier lo preparó un operador distinto: no son iguales.", "Each team receives a dossier with the detections the system linked to the plate. Each dossier was prepared by a different operator: they are not the same."),
+            t("El consultor dejó su hoja de investigación a medias, con diez pruebas pasadas a limpio. Vuestro trabajo es retomarla.", "The consultant left his worksheet half done, with ten exhibits written up. Your job is to pick it up.")]) },
+        { kicker, title: t("Cómo leer una fotografía", "How to read a photograph"),
+          html: img(photo) + `<p class="ccp-note">${esc(t("Banda superior: ciudad, cámara, fecha y hora con centésimas. El instante t se mide en minutos desde el inicio. El recuadro amplía la matrícula: comprobadla carácter a carácter.", "Top band: city, camera, date and time to the hundredth. The instant t is measured in minutes from the start. The inset enlarges the plate: check it character by character."))}</p>` },
+        { kicker, title: t("El plano: columna e(t) y cota n(t)", "The map: column e(t) and northing n(t)"),
+          html: img(map) + `<p class="ccp-note">${esc(t("Cada cámara tiene una columna (de oeste a este) y una cota (de sur a norte). El coche, en el instante t, está en (e(t), n(t)).", "Each camera has a column (west to east) and a northing (south to north). At instant t the car is at (e(t), n(t))."))}</p>` },
+        { kicker, title: t("Tres capas que no hay que mezclar", "Three layers not to be mixed"),
+          html: `<table><thead><tr><th>${t("Capa", "Layer")}</th><th>${t("Qué es", "What it is")}</th><th>${t("Qué permite", "What it allows")}</th></tr></thead><tbody>`
+            + t([["1. Evidencia", "Fotografías: un número finito de instantes.", "Ordenar, localizar, descartar errores, proponer candidatos."], ["2. Modelo", "Dos funciones, e y n, en todo instante (fase 2).", "Calcular valores, límites laterales y límites."], ["3. Conclusión", "Lo que se demuestra sobre e y n.", "Afirmar continuidad o el tipo de discontinuidad."]],
+              [["1. Evidence", "Photographs: finitely many instants.", "Order, locate, discard errors, propose candidates."], ["2. Model", "Two functions, e and n, at every instant (phase 2).", "Compute values, one-sided limits and limits."], ["3. Conclusion", "What is proved about e and n.", "Assert continuity or the type of discontinuity."]]).map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join("")}</tr>`).join("") + "</tbody></table>"
+            + `<p class="ccp-note">${esc(t(`Atención: en ${cfg.city} circula otro coche del mismo modelo, cobrizo, con una matrícula parecida.`, `Careful: another car of the same model, copper red, with a similar plate, drives around ${cfg.city}.`))}</p>` },
+        { kicker, title: t("Los equipos de esta clase", "This class's teams"),
+          html: `<table><thead><tr><th>${t("Equipo", "Team")}</th><th>${t("Dossier", "Dossier")}</th><th>${t("Estudiantes", "Students")}</th></tr></thead><tbody>${R.teams.map((x) => `<tr><td>${x.n}</td><td>${x.role}</td><td>${x.size}</td></tr>`).join("")}</tbody></table>`
+            + `<p class="ccp-note">${esc(t("Vuestro dossier es reservado: no lo enseñéis a otros equipos antes de la reunión.", "Your dossier is confidential: do not show it to other teams before the meeting."))}</p>` },
+        { kicker, title: t("Para la clase siguiente", "For the next class"),
+          html: ul([t("La hoja del consultor completada: pruebas ordenadas, tabla de zonas, las dos gráficas y las preguntas.", "The consultant's worksheet completed: exhibits in order, zone table, the two graphs and the questions."), t("Dos afirmaciones que podáis defender y un punto que no podáis decidir.", "Two statements you can defend and one point you cannot decide.")]) },
+        { kicker, title: t("La clase de cierre", "The closing class"),
+          html: `<table><thead><tr><th>${t("Minutos", "Minutes")}</th><th>${t("Qué hacemos", "What we do")}</th></tr></thead><tbody>` + t([["15", "Reunión de coordinación: comparar los dossieres prueba a prueba."], ["20", "El sobre: continuidad en el túnel, el modelo e(t), n(t) y la hoja de trabajo."], ["10", "Cada equipo expone el punto en que falló su dossier."], ["5", "Pregunta individual."]], [["15", "Coordination meeting: compare the dossiers exhibit by exhibit."], ["20", "The envelope: continuity in the tunnel, the model e(t), n(t) and the worksheet."], ["10", "Each team presents the point where its dossier failed."], ["5", "Individual question."]]).map((r) => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join("") + "</tbody></table>" },
+      ];
+      const base = DC.url ? DC.url("header-brand.jpg") : "header-brand.jpg";
+      slides[0].banner = base;
+      window.CCProjector.open(slides, { lang: LANG });
+    } catch (e) { console.error(e); setStatus(t("No se ha podido preparar la presentación.", "The presentation could not be prepared."), true); }
+    finally { els.project.disabled = false; }
+  }
+  const kicker_ = (cfg) => t(`Calculus Cases · Caso 1 · ${cfg.city}`, `Calculus Cases · Case 1 · ${cfg.city}`);
+
   /** Photos shown in the post body carry the configured plate as well. */
   async function updateGallery(d, cfg) {
     for (const img of document.querySelectorAll("img[data-delta-camera]")) {
@@ -129,8 +177,14 @@
 
   function summaryRows(cfg) {
     const d = state.data;
+    state.room = classroom(cfg.students);
+    if (els.groups) els.groups.innerHTML = `<table class="cc-groups"><thead><tr><th>${t("Equipo", "Team")}</th><th>${t("Papel", "Role")}</th><th>${t("Estudiantes", "Students")}</th></tr></thead><tbody>`
+      + state.room.teams.map((x) => `<tr><td>${x.n}</td><td>${x.role}</td><td>${x.size}</td></tr>`).join("") + "</tbody></table>";
     const count = (tm) => d.slots.filter((s) => s.teams[tm].car !== "none").length;
     return [
+      [t("Estudiantes", "Students"), String(state.room.students)],
+      [t("Equipos", "Teams"), `${state.room.teams.length} (A, B, C ${t("repetidos", "repeated")})`],
+      [t("Formato", "Format"), t("lanzamiento + casa + 1 clase", "launch + home + 1 class")],
       [t("Instantes registrados", "Recorded instants"), String(d.slots.length)],
       [t("Cámaras en el plano", "Cameras on the map"), String(d.cameras.length)],
       [t("Dossier A / B / C", "Dossier A / B / C"), `${count("A")} / ${count("B")} / ${count("C")} ${t("fotos", "photos")}`],
@@ -151,15 +205,11 @@
     try {
       if (!window.jspdf || !window.jspdf.jsPDF) throw new Error(t("No se ha cargado jsPDF. Revisa la conexión.", "jsPDF did not load. Check the connection."));
       if (!window.JSZip) throw new Error(t("No se ha cargado JSZip. Revisa la conexión.", "JSZip did not load. Check the connection."));
-      const assets = await prepareAssets(cfg);
-      setStatus(t("Componiendo los documentos…", "Composing the documents…"));
-      await pause();
-      const files = DOCS.map((spec) => buildDoc(spec, cfg, assets));
-      const bundles = BUNDLES.map((b) => buildBundle(b, cfg, assets));
-      const complete = buildBundle({ id: "complete", label: t("Expediente completo", "Complete case file"), docs: DOCS.map((d) => d.id) }, cfg, assets);
+      const { files, bundles, complete, guide } = await buildAll(cfg);
       const stemName = stem(cfg.city);
-      const [sepZip, bunZip] = await Promise.all([zip(files), zip(bundles)]);
-      showFiles(files, bundles, complete,
+      // the printing guide travels in both ZIPs
+      const [sepZip, bunZip] = await Promise.all([zip(files), zip([guide, ...bundles])]);
+      showFiles(files, bundles, complete, guide,
         { label: t("Todos los documentos separados · ZIP", "All separate documents · ZIP"), fileName: `${stemName}_${t("documentos_separados", "separate_documents")}.zip`, blob: sepZip },
         { label: t("Todos los paquetes · ZIP", "All packets · ZIP"), fileName: `${stemName}_${t("paquetes", "packets")}.zip`, blob: bunZip });
       setStatus(t(`Listo: ${files.length} documentos, ${bundles.length} paquetes y el expediente completo.`, `Done: ${files.length} documents, ${bundles.length} packets and the complete case file.`));
@@ -172,6 +222,24 @@
   }
 
   const pause = () => new Promise((r) => setTimeout(r, 30));
+
+  /** Every PDF of one generation: the documents, the packets and the complete file. */
+  async function buildAll(cfg) {
+    state.room = classroom(cfg.students);
+    const assets = await prepareAssets(cfg);
+    setStatus(t("Componiendo los documentos…", "Composing the documents…"));
+    await pause();
+    const files = DOCS.filter((d) => d.id !== "print").map((spec) => buildDoc(spec, cfg, assets));
+    // the printing guide lists the pages of every document and packet, its own included
+    assets.pages = Object.fromEntries(files.map((f) => [f.id, f.pages]));
+    const guideSpec = DOCS.find((d) => d.id === "print");
+    assets.pages.print = 2;
+    let guide = buildDoc(guideSpec, cfg, assets);
+    if (guide.pages !== assets.pages.print) { assets.pages.print = guide.pages; guide = buildDoc(guideSpec, cfg, assets); }
+    const bundles = BUNDLES.map((b) => buildBundle(b, cfg, assets));
+    const complete = buildBundle({ id: "complete", label: t("Expediente completo", "Complete case file"), docs: DOCS.map((d) => d.id) }, cfg, assets);
+    return { files: [guide, ...files], bundles, complete, guide };
+  }
 
   /** Render every image once per generation: photos with plates, crops, maps, formulas. */
   async function prepareAssets(cfg) {
@@ -229,12 +297,12 @@
       { name: "labyrinth", data: jpeg(turnCCW(lab)), u: area.u0 + (full - size(lab).w) / 2, v: top2, ...size(lab) }
     ];
     // the route of the model, (e(t), n(t)), with the minute t marked along it
-    const marks = { timeMarks: true, markScale: 1.25, markOffsets: ROUTE_MARK_OFFSETS };
+    const marks = { timeMarks: true, markScale: 2.4, markOffsets: ROUTE_MARK_OFFSETS };
     const withGraph = await DC.drawMap(d, { lang: LANG, width: 3000, cameras: false, graph: true, ...marks });
     A.maps.graph = jpeg(withGraph);
     const overlay = await DC.drawMap(d, { lang: LANG, width: 3000, cameras: false, graph: true, base: false, axisNames: false, ...marks });
     A.turned.overlay = turnCCW(overlay).toDataURL("image/png");
-    const labGraph = await DC.drawMap(d, { lang: LANG, inset: "labyrinth", width: 2400, cameras: false, graph: true, timeMarks: [8.5, 9, 9.5, 10], markScale: 1.3, markOffsets: { 8.5: [1, 1], 9: [1, -1], 9.5: [-1, 1], 10: [1, 1.2] } });
+    const labGraph = await DC.drawMap(d, { lang: LANG, inset: "labyrinth", width: 2400, cameras: false, graph: true, timeMarks: [8.5, 9, 9.5, 10], markScale: 1.6, markOffsets: { 8.5: [1, 1], 9: [1, -1], 9.5: [-1, 1], 10: [1, 1.2] } });
     A.maps.labyrinthGraph = jpeg(labGraph);
     A.maps.labyrinthRatio = labGraph.height / labGraph.width;
     // the two coordinates against time, and the record of the automatic reader
@@ -291,8 +359,8 @@
     const main = {};
     ["PU-4", "LO-1", "LO-2", "LO-3", "AV-1", "AV-3", "AV-4", "AV-5", "AV-8", "EN-S", "EN-N",
       "LB-1", "LB-2", "LB-3", "LB-4", "LB-5", "LB-6", "LB-7", "LB-8", "LB-9", "LB-10", "PL-1", "AU-1"].forEach((id) => { main[id] = false; });
-    Object.assign(main, { "PU-1": [12, -16], "PU-2": [14, -12], "PU-3": [-14, -14], "TU-S": [-14, -16], "TU-N": [-14, -16],
-      "AV-2": [-14, -16], "AV-6": [14, 16], "AV-7": [-14, -16], "RN-1": [0, -20], "AU-2": [16, 14], "AU-3": [16, 0], "AU-4": [16, 0], "AU-5": [-16, 0] });
+    Object.assign(main, { "PU-1": [12, -16], "PU-2": [14, -12], "PU-3": [14, 12], "TU-S": [-14, -16], "TU-N": [-14, -16],
+      "AV-2": [-14, -16], "AV-6": [14, 16], "AV-7": [14, 12], "RN-1": [16, 14], "AU-2": [16, 14], "AU-3": [16, 0], "AU-4": [16, 0], "AU-5": [-16, 0] });
     const tunnel = { "PU-4": [-5, 0], "LO-1": [-5, -5], "LO-2": [4, 5.5], "LO-3": [-2, -7], "AV-1": [3, -6], "TU-S": [-3, -6], "TU-N": [-4, -4.5] };
     const avenue = { "AV-2": [-3, -5], "AV-3": [-4, -6], "AV-4": [1, 7], "AV-5": [3, -6], "AV-6": [3, 5], "RN-1": [2, -5] };
     const labyrinth = {
@@ -308,6 +376,7 @@
 
   const PAPER = { a4: [210, 297], letter: [215.9, 279.4] };   // portrait, mm (as jsPDF)
   const PX_MM = 9;                                             // map details: about 230 dpi in print
+  const EM_MM = 4.1;                                           // displayed formulas: letters of about 11.5 pt, like the text
   /** Usable box of a turned page, on the virtual landscape page (see writer.turned). */
   function turnedArea(format) {
     const [PW, PH] = PAPER[format] || PAPER.a4;
@@ -317,7 +386,7 @@
   function buildFormulas() {
     const F = (tex, size = 40) => {
       const r = DC.formulaImage(tex, { size, scale: 2.4 });
-      return { data: r.canvas.toDataURL("image/png"), w: r.width, h: r.height };
+      return { data: r.canvas.toDataURL("image/png"), w: r.width, h: r.height, size };
     };
     const si = `\\text{${t("si", "if")}}`;
     return {
@@ -362,15 +431,27 @@
     const W = () => pw() - 2 * margin;
     const lines = (text, width) => doc.splitTextToSize(safe(text), width || W());
     const ensure = (h) => { if (y + h > ph() - bottom) { doc.addPage(cfg.format, "portrait"); y = 18; } };
-    const body = (size = 10.5, style = "normal") => doc.setFont("times", style).setFontSize(size).setTextColor(...CC.ink);
+    // house sizes (ESTANDAR_WEB_ACTIVIDADES.md, 4.1): body 11 pt with 5.2 mm leading
+    // jsPDF spaces the lines of doc.text(array) by size × lineHeightFactor; the leading used to
+    // measure (lead) must be the one drawn, so every multi-line call passes LHF
+    const BODY = 11, lead = (size) => size * 0.4726, LHF = 0.4726 / 0.3528;
+    const body = (size = BODY, style = "normal") => doc.setFont("times", style).setFontSize(size).setTextColor(...CC.ink);
     const stamp = (label, x, yy) => {
-      doc.setFont("helvetica", "bold").setFontSize(7);
+      doc.setFont("helvetica", "bold").setFontSize(8);
       const w = doc.getTextWidth(label) + 4;
       doc.setDrawColor(...CC.stamp).setLineWidth(0.35).rect(x - w, yy - 3.4, w, 4.8);
       doc.setTextColor(...CC.stamp).text(label, x - w / 2, yy, { align: "center" });
     };
     const api = {
       get y() { return y; }, set y(v) { y = v; }, margin, W, pw, ph, ensure,
+      /** Space left on the current page, above the footer band. */
+      room() { return ph() - bottom - y; },
+      /** Height a paragraph would take (same options as paragraph()). */
+      measure(text, opts = {}) {
+        const size = opts.size || BODY;
+        body(size, opts.italic ? "italic" : "normal");
+        return lines(text, opts.width).length * lead(size) + (opts.gap == null ? 3 : opts.gap);
+      },
       title(title, kicker, confidential) {
         let top = 14;
         if (A.banner) {
@@ -378,68 +459,91 @@
           doc.addImage(A.banner, "JPEG", 0, 0, pw(), h, "banner", "FAST");
           top = h + 8;
         }
-        doc.setFont("helvetica", "normal").setFontSize(7.5).setTextColor(...CC.muted).text(safe(kicker).toUpperCase(), margin, top);
+        doc.setFont("helvetica", "normal").setFontSize(8).setTextColor(...CC.muted).text(safe(kicker).toUpperCase(), margin, top);
         if (confidential) stamp(t("SOLO PROFESORADO", "TEACHER ONLY"), pw() - margin, top);
         doc.setDrawColor(...CC.blue).setLineWidth(0.35).line(margin, top + 2.2, pw() - margin, top + 2.2);
-        doc.setFont("helvetica", "bold").setFontSize(18).setTextColor(...CC.ink);
+        doc.setFont("helvetica", "bold").setFontSize(20).setTextColor(...CC.ink);
         const ls = lines(title, W());
-        doc.text(ls, margin, top + 10.5);
-        y = top + 10.5 + (ls.length - 1) * 7.2 + 8;
+        doc.text(ls, margin, top + 11);
+        y = top + 11 + (ls.length - 1) * 8 + 8.5;
         doc.setLineWidth(0.2);
       },
       meta(rows) {
         rows.forEach(([label, value]) => {
-          doc.setFont("helvetica", "bold").setFontSize(8.5).setTextColor(...CC.muted).text(`${safe(label)}`, margin, y);
-          doc.setFont("helvetica", "normal").setFontSize(8.5).setTextColor(...CC.ink).text(lines(value, W() - 36), margin + 34, y);
-          y += 5;
+          doc.setFont("helvetica", "normal").setFontSize(9.5);
+          const ls = lines(value, W() - 42);
+          doc.setFont("helvetica", "bold").setTextColor(...CC.muted).text(`${safe(label)}`, margin, y);
+          doc.setFont("helvetica", "normal").setTextColor(...CC.ink).text(ls, margin + 40, y);
+          y += 5.4 * ls.length;
         });
         y += 3;
       },
-      heading(text) {
-        ensure(14);
-        doc.setFont("helvetica", "bold").setFontSize(12.5).setTextColor(...CC.blue).text(lines(text), margin, y);
-        y += 7.5;
+      heading(text, keep = 16) {
+        if (y > 30) y += 2.5;   // air above a section, except at the top of a page
+        ensure(8.5 + keep);   // a heading never stays alone at the foot of a page
+        const ls = lines(text);
+        doc.setFont("helvetica", "bold").setFontSize(14).setTextColor(...CC.blue).text(ls, margin, y, { lineHeightFactor: 1.2 });
+        y += 8.5 + (ls.length - 1) * 5.9;
       },
-      sub(text) { ensure(10); doc.setFont("helvetica", "bold").setFontSize(10).setTextColor(...CC.ink).text(lines(text), margin, y); y += 6; },
+      sub(text, keep = 12) {
+        if (y > 30) y += 1.5;
+        ensure(6.5 + keep);
+        const ls = lines(text);
+        doc.setFont("helvetica", "bold").setFontSize(11.5).setTextColor(...CC.ink).text(ls, margin, y, { lineHeightFactor: 1.2 });
+        y += 6.5 + (ls.length - 1) * 4.9;
+      },
+      /** A paragraph; a long one may break across pages, leaving at least two lines on each. */
       paragraph(text, opts = {}) {
-        body(opts.size ? opts.size + 0.5 : 10.5, opts.bold ? "bold" : opts.italic ? "italic" : "normal");
-        const ls = lines(text, opts.width);
-        ensure(ls.length * 4.9 + 3);
-        doc.text(ls, opts.x || margin, y);
-        y += ls.length * 4.9 + (opts.gap == null ? 3 : opts.gap);
+        const size = opts.size || BODY, lh = lead(size);
+        const style = opts.bold ? "bold" : opts.italic ? "italic" : "normal";
+        body(size, style);
+        let ls = lines(text, opts.width);
+        for (;;) {
+          const fit = Math.floor((ph() - bottom - y + lh - 3.5) / lh);   // lines whose baseline fits
+          if (fit >= ls.length) break;
+          if (fit >= 2 && ls.length - fit >= 2) {
+            doc.text(ls.slice(0, fit), opts.x || margin, y, { lineHeightFactor: LHF });
+            ls = ls.slice(fit);
+          }
+          doc.addPage(cfg.format, "portrait"); y = 18; body(size, style);
+        }
+        doc.text(ls, opts.x || margin, y, { lineHeightFactor: LHF });
+        y += ls.length * lh + (opts.gap == null ? 3 : opts.gap);
       },
       bullets(items, numbered) {
         items.forEach((item, k) => {
           body();
           const ls = lines(item, W() - 7);
-          ensure(ls.length * 4.9 + 2.5);
-          if (numbered) doc.setFont("helvetica", "bold").setFontSize(9.5).setTextColor(...CC.orange).text(`${k + 1}.`, margin, y);
-          else doc.setFillColor(...CC.orange).rect(margin + 0.6, y - 2.2, 1.8, 1.8, "F");
+          ensure(ls.length * lead(BODY) + 2.5);
+          if (numbered) doc.setFont("helvetica", "bold").setFontSize(10.5).setTextColor(...CC.orange).text(`${k + 1}.`, margin, y);
+          else doc.setFillColor(...CC.orange).rect(margin + 0.6, y - 2.4, 1.9, 1.9, "F");
           body();
-          doc.text(ls, margin + 6.5, y);
-          y += ls.length * 4.9 + 2.2;
+          doc.text(ls, margin + 6.5, y, { lineHeightFactor: LHF });
+          y += ls.length * lead(BODY) + 2.4;
         });
         y += 2;
       },
       callout(text, tone) {
-        body(10);
+        body(10.5);
         const ls = lines(text, W() - 10);
-        const h = ls.length * 4.7 + 6;
+        const h = (ls.length - 1) * lead(10.5) + 9.5;   // 3 mm of tint above and below the text
         ensure(h + 3);
         const key = tone === "warn" ? "warn" : tone === "blue" ? "blue" : "note";
         const bar = key === "warn" ? CC.stamp : key === "blue" ? CC.blue : CC.orange;
         doc.setFillColor(...CC.tint[key]).rect(margin, y - 4, W(), h, "F");
         doc.setFillColor(...bar).rect(margin, y - 4, 1.2, h, "F");
-        body(10);
-        doc.text(ls, margin + 5, y + 0.6);
+        body(10.5);
+        doc.text(ls, margin + 5, y + 1.6, { lineHeightFactor: LHF });
         y += h + 3;
       },
-      formula(f, maxW = 150, scale = 0.27) {
-        let w = f.w * scale, h = f.h * scale;
+      /** A displayed formula, its letters at the size of the body text (one em = EM_MM). */
+      formula(f, maxW = W()) {
+        const k = EM_MM / f.size;
+        let w = f.w * k, h = f.h * k;
         if (w > maxW) { h *= maxW / w; w = maxW; }
         ensure(h + 4);
-        doc.addImage(f.data, "PNG", margin + (W() - w) / 2, y - 3, w, h, undefined, "FAST");
-        y += h + 2;
+        doc.addImage(f.data, "PNG", margin + (W() - w) / 2, y - 1.5, w, h, undefined, "FAST");
+        y += h + 4;
       },
       image(data, w, h, opts = {}) {
         ensure(h + 3);
@@ -448,42 +552,65 @@
         y += h + (opts.gap == null ? 4 : opts.gap);
       },
       table(headers, rows, widths, opts = {}) {
-        const fs = opts.size || 8;
-        const pad = 1.6;
+        const fs = opts.size || 9.5;
+        const pad = 1.6, vpad = opts.tight ? 2.4 : 3.2, lineH = fs * 0.42;
+        const x0 = opts.x == null ? margin : opts.x, tw = opts.width || W();
         const total = widths.reduce((s, w) => s + w, 0);
-        const scale = W() / total;
-        const ws = widths.map((w) => w * scale);
-        const rowLines = (row, bold) => {
-          doc.setFont("helvetica", bold ? "bold" : "normal").setFontSize(fs);
-          return row.map((cell, i) => doc.splitTextToSize(safe(cell), ws[i] - 2 * pad));
-        };
-        const heightOf = (ls) => Math.max(opts.minRow || 6.5, Math.max(...ls.map((l) => l.length)) * fs * 0.42 + 3.2);
+        const ws = widths.map((w) => w * tw / total);
+        // a header word is never split: widen its column at the expense of the widest one
+        doc.setFont("helvetica", "bold").setFontSize(fs);
+        headers.forEach((h, i) => {
+          const need = Math.max(...safe(h).split(/\s+/).map((wd) => doc.getTextWidth(wd))) + 2 * pad + 0.4;
+          if (ws[i] < need) {
+            const j = ws.indexOf(Math.max(...ws));
+            if (j !== i) { ws[j] -= need - ws[i]; ws[i] = need; }
+          }
+        });
+        const rowLines = (row, bold) => row.map((cell, i) => {
+          if (!bold && opts.hand && opts.hand(row, i)) doc.setFont("times", "italic").setFontSize(fs + 1);
+          else doc.setFont("helvetica", bold ? "bold" : "normal").setFontSize(fs);
+          return doc.splitTextToSize(safe(cell), ws[i] - 2 * pad);
+        });
+        const heightOf = (ls, header) => Math.max(header ? 0 : opts.minRow || 0, Math.max(...ls.map((l) => l.length)) * lineH + vpad);
         const drawRow = (row, header, shade) => {
           const ls = rowLines(row, header);
-          const h = heightOf(ls);
+          const h = heightOf(ls, header);
           if (y + h > ph() - bottom) { doc.addPage(cfg.format, "portrait"); y = 18; if (!header) drawRow(headers, true); }
-          let x = margin;
+          let x = x0;
           row.forEach((cell, i) => {
             if (header) doc.setFillColor(...CC.blue).setDrawColor(...CC.blue);
             else doc.setFillColor(...(shade ? CC.zebra : [255, 255, 255])).setDrawColor(...CC.grid);
             doc.setLineWidth(0.15).rect(x, y, ws[i], h, "FD");
             const hand = !header && opts.hand && opts.hand(row, i);   // the consultant's handwriting
-            if (hand) doc.setFont("times", "italic").setFontSize(fs + 1.2).setTextColor(...CC.hand);
+            if (hand) doc.setFont("times", "italic").setFontSize(fs + 1).setTextColor(...CC.hand);
             else doc.setFont("helvetica", header ? "bold" : "normal").setFontSize(fs).setTextColor(...(header ? [255, 255, 255] : CC.ink));
-            doc.text(ls[i], x + pad, y + fs * 0.42 + 1.2);
+            // one-line cells are centred vertically; taller rows start at the top
+            const top = ls[i].length === 1 && h <= lineH + vpad + 4 ? y + (h - lineH) / 2 : y + vpad / 2;
+            doc.text(ls[i], x + pad, top + lineH * 0.74, { lineHeightFactor: 1.19 });   // lineH = fs * 0.42 mm
             x += ws[i];
           });
           y += h;
         };
+        if (opts.fillRows) {   // [min, max]: the rows share the rest of the page
+          const hh = heightOf(rowLines(headers, true), true), fit = () => (ph() - bottom - y - hh - 4 - (opts.reserve || 0)) / rows.length;
+          if (fit() < opts.fillRows[0]) { doc.addPage(cfg.format, "portrait"); y = 18; }
+          opts = Object.assign({}, opts, { minRow: Math.min(opts.fillRows[1], fit()), keep: false });
+        }
         if (opts.keep) {
-          const total = [headers, ...rows].reduce((sum, row, k) => sum + heightOf(rowLines(row, k === 0)), 0);
+          const total = [headers, ...rows].reduce((sum, row, k) => sum + heightOf(rowLines(row, k === 0), k === 0), 0);
           ensure(Math.min(total + 4, ph() - bottom - 18));
         } else ensure(30);
         drawRow(headers, true);
         rows.forEach((row, k) => drawRow(row, false, opts.zebra && k % 2 === 1));
         y += 4;
       },
-      lines(count, gap = 7) { ensure(count * gap + 2); doc.setDrawColor(...CC.grid).setLineWidth(0.2); for (let k = 0; k < count; k += 1) { y += gap; doc.line(margin, y, pw() - margin, y); } y += 4; },
+      /** Writing lines; count "fill" draws them down to the foot of the page. */
+      lines(count, gap = 8) {
+        if (count === "fill") count = Math.max(2, Math.floor((ph() - bottom - y - 2) / gap));
+        ensure(count * gap + 2); doc.setDrawColor(...CC.grid).setLineWidth(0.2);
+        for (let k = 0; k < count; k += 1) { y += gap; doc.line(margin, y, pw() - margin, y); }
+        y += 4;
+      },
       page() { doc.addPage(cfg.format, "portrait"); y = 18; },
       /**
        * New portrait page that carries landscape content turned 90° anticlockwise, so the
@@ -491,8 +618,9 @@
        * given on a virtual landscape page (u to the right, v downwards); the band u < 16
        * is the portrait footer.
        */
-      turned() {
-        doc.addPage(cfg.format, "portrait"); y = 18;
+      turned(reuse) {   // reuse: draw on the current, still empty, page
+        if (!reuse) doc.addPage(cfg.format, "portrait");
+        y = 18;
         const PH = ph();
         return {
           ...turnedArea(cfg.format),
@@ -516,7 +644,7 @@
       doc.setPage(p);
       const w = doc.internal.pageSize.getWidth(), h = doc.internal.pageSize.getHeight();
       doc.setDrawColor(...CC.rule).setLineWidth(0.2).line(18, h - 12, w - 18, h - 12);
-      doc.setFont("helvetica", "normal").setFontSize(7.5).setTextColor(...CC.muted)
+      doc.setFont("helvetica", "normal").setFontSize(8).setTextColor(...CC.muted)
         .text(safe(`${label} · ${t("Calculus Cases · Material educativo ficticio", "Calculus Cases · Fictional educational material")}`), 18, h - 7);
       doc.text(`${p}/${n}`, w - 18, h - 7, { align: "right" });
     }
@@ -529,28 +657,68 @@
   const roadName = (key) => state.data.roads[key][LANG === "en" ? 1 : 0];
 
   // ---------------------------------------------------------------- documents
+  /*
+   * What each document is for, as the printing and distribution guide prints it: who receives
+   * it, how many copies, how to print it and when it is handed out. The documents themselves
+   * carry no printing instructions (ESTANDAR_WEB_ACTIVIDADES.md, section 5).
+   */
+  /**
+   * The class from its number of students: teams of four or five, with the roles A, B and C
+   * repeated in order (A, B, C, A, B, C…); nobody is told which teams share a file.
+   */
+  function classroom(students) {
+    const n = Math.max(9, Math.min(60, Math.round(Number(students) || 24)));
+    const g = Math.max(3, Math.round(n / 4.5));
+    const teams = Array.from({ length: g }, (_, k) => ({ n: k + 1, role: TEAMS[k % 3], size: Math.floor(n / g) + (k < n % g ? 1 : 0) }));
+    const byRole = Object.fromEntries(TEAMS.map((r) => [r, teams.filter((x) => x.role === r)]));
+    return { students: n, teams, byRole, students_of: (r) => byRole[r].reduce((s, x) => s + x.size, 0) };
+  }
+  const room = () => state.room || classroom(24);
+  const P = {
+    everyone: () => t("Todos los estudiantes (igual para todos)", "Every student (the same for all)"),
+    perStudent: () => t(`${room().students} (1 por estudiante)`, `${room().students} (1 per student)`),
+    phase1: () => t("Final de la clase 1, en el paquete de la fase 1", "End of class 1, in the phase 1 packet"),
+    teacher: () => t("Solo para ti", "For you only"),
+    one: () => t("1", "1"),
+    beforeClass: () => t("Antes de la clase 1; no circula", "Before class 1; it does not circulate")
+  };
   const DOCS = [
-    { id: "briefing", n: "00", title: () => t("Apertura del expediente", "Case file opening"), render: renderBriefing },
-    { id: "map", n: "01", title: () => t("Plano de seguimiento y registro de cámaras", "Tracking map and camera register"), render: renderMap },
-    ...TEAMS.map((tm, k) => ({ id: `dossier-${tm}`, n: `1${k}`, team: tm, title: () => t(`Dossier fotográfico · Equipo ${tm}`, `Photographic dossier · Team ${tm}`), render: (w, d, c, A) => renderDossier(w, d, c, A, tm) })),
-    ...TEAMS.map((tm, k) => ({ id: `sheet1-${tm}`, n: `2${k}`, team: tm, title: () => t(`Hoja de investigación (fase 1) · Equipo ${tm}`, `Investigation worksheet (phase 1) · Team ${tm}`), render: (w, d, c, A) => renderSheet1(w, d, c, A, tm) })),
-    { id: "phase2", n: "30", title: () => t("Fase 2 · El modelo de la trayectoria", "Phase 2 · The trajectory model"), render: renderPhase2 },
-    { id: "overlay", n: "31", title: () => t("Transparencia de la ruta", "Transparency of the route"), render: renderOverlay },
-    { id: "guide", n: "90", teacher: true, title: () => t("Guía docente", "Teacher guide"), render: renderGuide },
-    { id: "solution", n: "91", teacher: true, title: () => t("Solución y comparación de equipos", "Solution and team comparison"), render: renderSolution },
-    { id: "inventory", n: "92", teacher: true, title: () => t("Inventario de fotografías y variantes", "Photograph and variant inventory"), render: renderInventory }
+    { id: "print", n: "", teacher: true, title: () => t("Guía de impresión y reparto", "Printing and distribution guide"),
+      file: () => t("LEEME_guia_de_impresion_y_reparto.pdf", "README_printing_and_distribution_guide.pdf"), render: renderPrintGuide },
+    { id: "briefing", n: "00", title: () => t("Apertura del expediente", "Case file opening"), render: renderBriefing,
+      print: () => ({ who: P.everyone(), copies: P.perStudent(), how: t("Doble cara; en color si es posible (la guía visual son fotografías)", "Double-sided; in colour if possible (the visual guide is photographs)"), when: P.phase1() }) },
+    { id: "map", n: "01", title: () => t("Plano de seguimiento y registro de cámaras", "Tracking map and camera register"), render: renderMap,
+      print: () => ({ who: P.everyone(), copies: P.perStudent(), how: t("Al 100 %, sin «ajustar a la página», para que la transparencia coincida; en color si es posible", "At 100%, without \"fit to page\", so that the transparency matches; in colour if possible"), when: P.phase1() }) },
+    ...TEAMS.map((tm, k) => ({ id: `dossier-${tm}`, n: `1${k}`, team: tm, title: () => t(`Dossier fotográfico · Equipo ${tm}`, `Photographic dossier · Team ${tm}`), render: (w, d, c, A) => renderDossier(w, d, c, A, tm),
+      print: () => ({ who: t(`Equipo ${tm}`, `Team ${tm}`), copies: t(`${room().students_of(tm)} (1 por estudiante; equipos ${room().byRole[tm].map((x) => x.n).join(", ")})`, `${room().students_of(tm)} (1 per student; teams ${room().byRole[tm].map((x) => x.n).join(", ")})`), how: t("En color: el tono del coche (burdeos o cobrizo) es una prueba; doble cara", "In colour: the shade of the car (burgundy or copper) is evidence; double-sided"), when: P.phase1() }) })),
+    ...TEAMS.map((tm, k) => ({ id: `sheet1-${tm}`, n: `2${k}`, team: tm, title: () => t(`Hoja de investigación (fase 1) · Equipo ${tm}`, `Investigation worksheet (phase 1) · Team ${tm}`), render: (w, d, c, A) => renderSheet1(w, d, c, A, tm),
+      print: () => ({ who: t(`Equipo ${tm}`, `Team ${tm}`), copies: t(`${room().students_of(tm)} (1 por estudiante); cada equipo entrega una completa`, `${room().students_of(tm)} (1 per student); each team hands in one completed copy`), how: t("Doble cara; blanco y negro", "Double-sided; black and white"), when: t("Final de la clase 1; vuelve completa al empezar la clase 2", "End of class 1; back, completed, at the start of class 2") }) })),
+    { id: "phase2", n: "30", title: () => t("Fase 2 · El modelo de la trayectoria", "Phase 2 · The trajectory model"), render: renderPhase2,
+      print: () => ({ who: P.everyone(), copies: t(`${room().students} (1 por estudiante), en ${room().teams.length} sobres cerrados, uno por equipo`, `${room().students} (1 per student), in ${room().teams.length} sealed envelopes, one per team`), how: t("Doble cara; en color si es posible (gráficas y ruta sobre el plano)", "Double-sided; in colour if possible (graphs and route on the map)"), when: t("Clase 2, después de la reunión de coordinación", "Class 2, after the coordination meeting") }) },
+    { id: "overlay", n: "31", title: () => t("Transparencia de la ruta", "Transparency of the route"), render: renderOverlay,
+      print: () => ({ who: t("Cada equipo", "Each team"), copies: t(`${room().teams.length} acetatos (1 por equipo), dentro del sobre`, `${room().teams.length} acetates (1 per team), inside the envelope`), how: t("En acetato para impresora, al 100 %, sin «ajustar a la página», en el mismo papel que el plano. Sin acetatos, no la imprimas: la ruta sobre el plano del documento 30 cumple la misma función", "On printer acetate, at 100%, without \"fit to page\", on the same paper size as the map. Without acetate, do not print it: the route over the map in document 30 does the same job"), when: t("Clase 2, con el sobre", "Class 2, with the envelope") }) },
+    { id: "guide", n: "90", teacher: true, title: () => t("Guía docente", "Teacher guide"), render: renderGuide,
+      print: () => ({ who: P.teacher(), copies: P.one(), how: t("Doble cara; blanco y negro", "Double-sided; black and white"), when: t("Antes de la clase 1", "Before class 1") }) },
+    { id: "solution", n: "91", teacher: true, title: () => t("Solución y comparación de equipos", "Solution and team comparison"), render: renderSolution,
+      print: () => ({ who: P.teacher(), copies: P.one(), how: t("Doble cara; blanco y negro", "Double-sided; black and white"), when: P.beforeClass() }) },
+    { id: "inventory", n: "92", teacher: true, title: () => t("Inventario de fotografías y variantes", "Photograph and variant inventory"), render: renderInventory,
+      print: () => ({ who: P.teacher(), copies: P.one(), how: t("Blanco y negro; opcional, es de consulta", "Black and white; optional, for reference"), when: P.beforeClass() }) }
   ];
   const BUNDLES = [
-    ...TEAMS.map((tm) => ({ id: `team-${tm}`, label: t(`Equipo ${tm} · fase 1`, `Team ${tm} · phase 1`), docs: ["briefing", "map", `dossier-${tm}`, `sheet1-${tm}`] })),
-    { id: "phase2", label: t("Fase 2 · para todos los equipos", "Phase 2 · for every team"), docs: ["phase2", "overlay"] },
-    { id: "teacher", label: t("Paquete docente", "Teacher packet"), docs: ["guide", "solution", "inventory", "phase2", "overlay"] }
+    ...TEAMS.map((tm) => ({ id: `team-${tm}`, label: t(`Equipo ${tm} · fase 1`, `Team ${tm} · phase 1`), docs: ["briefing", "map", `dossier-${tm}`, `sheet1-${tm}`],
+      use: () => t(`${room().students_of(tm)} copias, 1 por estudiante de los equipos ${room().byRole[tm].map((x) => x.n).join(", ")} (papel ${tm}), en el lanzamiento`, `${room().students_of(tm)} copies, 1 per student of teams ${room().byRole[tm].map((x) => x.n).join(", ")} (role ${tm}), at the launch`) })),
+    { id: "phase2", label: t("Fase 2 · para todos los equipos", "Phase 2 · for every team"), docs: ["phase2", "overlay"],
+      use: () => t("1 por estudiante, en el sobre; su última página es la transparencia: imprímela aparte en acetato, una por equipo", "1 per student, in the envelope; its last page is the transparency: print that one separately on acetate, one per team") },
+    { id: "teacher", label: t("Paquete docente", "Teacher packet"), docs: ["print", "guide", "solution", "inventory", "phase2", "overlay"],
+      use: () => t("1, para ti", "1, for you") }
   ];
 
   function buildDoc(spec, cfg, A) {
     const doc = newDoc(cfg);
     spec.render(writer(doc, cfg, A), doc, cfg, A, spec);
     footer(doc, spec.title());
-    return { id: spec.id, label: spec.title(), teacher: spec.teacher, fileName: `${spec.n}_${stem(spec.title())}.pdf`, blob: doc.output("blob") };
+    const fileName = spec.file ? spec.file() : `${spec.n}_${stem(spec.title())}.pdf`;
+    return { id: spec.id, label: spec.title(), teacher: spec.teacher, fileName, pages: doc.getNumberOfPages(), blob: doc.output("blob") };
   }
 
   function buildBundle(bundle, cfg, A) {
@@ -671,8 +839,8 @@
         const x = w.margin + (k % 2) * (colW + 6);
         const y0 = w.y;
         doc.addImage(A.views[v.id], "JPEG", x, y0, colW, imgH, `view-${v.id}`, "FAST");
-        doc.setFont("helvetica", "bold").setFontSize(8.5).setTextColor(...CC.ink).text(safe(v.title[LANG]), x, y0 + imgH + 4.5);
-        if (k % 2 === 1 || k === views.length - 1) w.y = y0 + imgH + 10;
+        doc.setFont("helvetica", "bold").setFontSize(9.5).setTextColor(...CC.ink).text(safe(v.title[LANG]), x, y0 + imgH + 5);
+        if (k % 2 === 1 || k === views.length - 1) w.y = y0 + imgH + 11;
       });
     }
   }
@@ -690,15 +858,27 @@
     w.paragraph(t(
       "Cuadrícula de la central: columnas del 0 al 12, de oeste a este, y cotas de sur a norte. Los marcadores rojos son las cámaras de la red. El plano y sus detalles ocupan las dos páginas siguientes, girados para aprovechar el papel: para leerlos, girad la hoja un cuarto de vuelta en el sentido de las agujas del reloj. Los detalles muestran con más precisión las zonas con cámaras muy próximas.",
       "Control's grid: columns 0 to 12, from west to east, and northings from south to north. Red markers are the network cameras. The map and its details fill the next two pages, turned to make the most of the paper: to read them, turn the sheet a quarter turn clockwise. The details show the zones with closely spaced cameras more precisely."));
-    w.paragraph(t("Imprimid el plano al 100 %, sin ajustar a la página: en la fase 2 se le superpondrá una transparencia.", "Print the map at 100%, without fit-to-page: in phase 2 a transparency will be laid over it."), { italic: true, size: 9 });
     w.heading(t("Registro de cámaras de la red", "Network camera register"));
     w.paragraph(t("Posición de cada cámara en la cuadrícula del plano.", "Position of every camera on the map grid."));
-    const rows = state.data.cameras.map((c) => [c.id, roadName(c.road), num(c.x, 3), num(c.y, 3)]);
-    w.table([t("Cámara", "Camera"), t("Vía", "Road"), t("Columna", "Column"), t("Cota", "Northing")], rows, [20, 70, 30, 30], { zebra: true, size: 8, minRow: 5.4 });
-    w.paragraph(t("AU-6 es el pórtico del límite municipal en la autovía: queda fuera del plano, por encima de su borde superior.", "AU-6 is the city-limit gantry on the motorway: it lies outside the map, above its top edge."), { italic: true, size: 9 });
+    {   // two columns side by side: the register fits on the page of the map's introduction
+      const rows = state.data.cameras.map((c) => [c.id, roadName(c.road), num(c.x, 3), num(c.y, 3)]);
+      const half = Math.ceil(rows.length / 2), gap = 6, cw = (w.W() - gap) / 2;
+      const head = [t("Cámara", "Camera"), t("Vía", "Road"), t("Columna", "Column"), t("Cota", "Northing")];
+      w.ensure((half + 1) * 7.2 + 4);
+      const top = w.y;
+      // both halves have the same number of rows, so they fill the page alike (rows up to 9 mm),
+      // leaving room for the note on AU-6 below them
+      const opts = { zebra: true, width: cw, fillRows: [7.2, 9], reserve: 15 };
+      w.table(head, rows.slice(0, half), [15, 41, 16, 14], opts);
+      const end = w.y;
+      w.y = top;
+      w.table(head, rows.slice(half), [15, 41, 16, 14], Object.assign({}, opts, { x: w.margin + cw + gap }));
+      w.y = Math.max(end, w.y);
+    }
+    w.paragraph(t("AU-6 es el pórtico del límite municipal en la autovía: queda fuera del plano, por encima de su borde superior.", "AU-6 is the city-limit gantry on the motorway: it lies outside the map, above its top edge."), { italic: true, size: 9.5 });
     const R = w.turned();
     const box = mapBox(R, A);
-    doc.setFont("helvetica", "bold").setFontSize(9).setTextColor(...CC.blue);
+    doc.setFont("helvetica", "bold").setFontSize(10).setTextColor(...CC.blue);
     R.text(t(`${cfg.city} · Plano de seguimiento · cámaras de la red`, `${cfg.city} · Tracking map · network cameras`), box.u, box.v - 2.2);
     R.image(A.turned.plain, "JPEG", box.u, box.v, box.wd, box.ht, "map-plain");
     const R2 = w.turned();
@@ -708,7 +888,7 @@
       labyrinth: t("Detalle 3 · Cuesta del Enlace, El Laberinto y salida a la autovía", "Detail 3 · Link Hill, The Labyrinth and motorway exit")
     };
     A.details.forEach((dt) => {
-      doc.setFont("helvetica", "bold").setFontSize(9).setTextColor(...CC.blue);
+      doc.setFont("helvetica", "bold").setFontSize(10).setTextColor(...CC.blue);
       R2.text(captions[dt.name], dt.u, dt.v - 2);
       R2.image(dt.data, "JPEG", dt.u, dt.v, dt.w, dt.h, `inset-${dt.name}`);
     });
@@ -722,7 +902,6 @@
     w.paragraph(t(
       `Las pruebas están numeradas de F-01 a F-${items.length} en el orden en que llegaron a la central, no en orden cronológico. El pie de cada tarjeta indica la cámara y la hora del disparo; el recuadro amplía la matrícula. Los otros equipos tienen pruebas con los mismos códigos: si en la reunión de coordinación dos equipos discrepan, comparad el código y buscad qué imagen exacta es distinta.`,
       `Exhibits are numbered F-01 to F-${items.length} in the order they reached control, not in time order. The caption of each card gives the camera and the time of the shot; the inset enlarges the plate. The other teams hold exhibits with the same codes: if two teams disagree at the coordination meeting, compare the code and look for the exact image that differs.`));
-    w.paragraph(t("Podéis recortar las tarjetas para ordenarlas sobre la mesa.", "You may cut out the cards to order them on the table."), { italic: true });
     const cols = 2, gap = 5;
     // Card size chosen per paper format: fewest pages, never a lonely last row,
     // cards between 78 % and 100 % of the full column width.
@@ -765,7 +944,7 @@
         doc.addImage(A.crops[key], "JPEG", cx, cy, cropW, ch, `cr-${key}`, "FAST");
       }
       doc.setFont("helvetica", "bold").setFontSize(12).setTextColor(...CC.stamp).text(it.slot.code, x + 2, y + imgH + 7);
-      doc.setFont("helvetica", "normal").setFontSize(8.5).setTextColor(...CC.ink)
+      doc.setFont("helvetica", "normal").setFontSize(9.5).setTextColor(...CC.ink)
         .text(safe(`CAM ${it.cam.id} · ${DC.clockAt(cfg.start, it.slot.t)}`), x + cardW - 2, y + imgH + 6.6, { align: "right" });
       k += 1;
       if (col === cols - 1) w.y = y + cardH + gap;
@@ -786,10 +965,12 @@
       ? [it.slot.code, DC.clockAt(cfg.start, it.slot.t), num(it.slot.t, 3), it.cam.id, num(it.cam.x, 3), num(it.cam.y, 3), "", ""]
       : [it.slot.code, "", "", "", "", "", "", ""]);
     w.table([t("Prueba", "Exhibit"), t("Hora", "Time"), "t (min)", t("Cámara", "Camera"), t("Columna", "Column"), t("Cota", "Northing"), t("¿Matrícula?", "Plate?"), t("Observaciones", "Notes")],
-      rows, [14, 23, 15, 15, 16, 15, 23, 59], { minRow: 5.8, size: 8, hand: (row, i) => i >= 1 && i <= 5 && row[1] !== "" });
+      rows, [15, 23, 14, 16, 17, 14, 21, 54], { tight: true, minRow: 6.5, hand: (row, i) => i >= 1 && i <= 5 && row[1] !== "" });
     w.sub(t("Orden cronológico de los códigos:", "Codes in time order:"));
-    w.lines(3, 8);
-    w.ensure(140);   // heading, explanation and the whole zone table on one page
+    // section 2 needs about 156 mm (rows of 17 mm or more): if it cannot start on this page,
+    // the lines for the order run down to the foot of the page instead of leaving it half empty
+    w.lines(w.room() - 27 >= 156 ? 3 : "fill", 7.5);
+    w.ensure(156);
     w.heading(t("2. Lo que los datos permiten afirmar", "2. What the data allow you to state"));
     w.paragraph(t("Para cada zona, describid primero los datos: qué muestran las fotografías, qué podéis afirmar con seguridad y qué sigue sin saberse. Solo en la última columna anotad el comportamiento que parecen sugerir, como conjetura y sin convertir una tendencia en una conclusión. Una buena redacción tiene esta forma: «Las cotas registradas … Esto sugiere …, pero las fotografías no establecen …».",
       "For each zone, first describe the data: what the photographs show, what you can state with certainty and what remains unknown. Only in the last column write the behaviour they seem to suggest, as a conjecture, without turning a trend into a conclusion. A good answer has this shape: \"The recorded northings … This suggests …, but the photographs do not establish …\""));
@@ -809,31 +990,32 @@
       ["North Motorway (t approaching 12)", "", "", ""]
     ]);
     w.table([t("Zona", "Zone"), t("¿Qué muestran realmente las fotografías?", "What do the photographs actually show?"), t("¿Qué podemos afirmar con seguridad?", "What can we state with certainty?"), t("¿Qué sigue siendo desconocido?", "What remains unknown?"), t("¿Qué comportamiento parece sugerir?", "What behaviour does it seem to suggest?")],
-      zones.map((z) => [z[0], "", "", "", ""]), [30, 38, 37, 37, 38], { minRow: 18, keep: true });
+      zones.map((z) => [z[0], "", "", "", ""]), [30, 38, 37, 37, 38], { fillRows: [17, 34] });
     // the two graphs against time: every valid exhibit is plotted twice, (t, column) and (t, northing)
-    w.ensure(112);
+    w.ensure(175);
     w.heading(t("3. Las dos gráficas", "3. The two graphs"));
     w.paragraph(t(
       "Situad cada prueba válida dos veces: como punto (t, columna) en la cuadrícula de la izquierda y como punto (t, cota) en la de la derecha. La primera irá dibujando la columna e(t) del coche y la segunda su cota n(t). No unáis los puntos: entre dos fotografías no sabéis qué pasó. Las cotas mayores que 20 se indican con una flecha en el borde superior.",
       "Plot every valid exhibit twice: as a point (t, column) on the left grid and as a point (t, northing) on the right one. The first will gradually draw the car's column e(t) and the second its northing n(t). Do not join the points: between two photographs you do not know what happened. Northings above 20 are shown with an arrow at the top edge."));
     {
-      const gw = (w.W() - 16) / 2, gh = 58, top = w.y + 6;
+      const gw = (w.W() - 16) / 2, top = w.y + 7, gh = Math.max(110, Math.min(185, w.ph() - 18 - top - 12));
       const grid = (gx, ymax, ystep, name) => {
         const X = (v) => gx + (v / 12) * gw, Y = (v) => top + gh - (v / ymax) * gh;
         doc.setDrawColor(...CC.grid).setLineWidth(0.12);
         for (let v = 0; v <= 12; v += 0.5) doc.line(X(v), top, X(v), top + gh);
         for (let v = 0; v <= ymax + 1e-9; v += ystep / 2) doc.line(gx, Y(v), gx + gw, Y(v));
         doc.setDrawColor(...CC.ink).setLineWidth(0.3).rect(gx, top, gw, gh);
-        doc.setFont("helvetica", "normal").setFontSize(7).setTextColor(...CC.ink);
-        for (let v = 0; v <= 12; v += 2) doc.text(String(v), X(v), top + gh + 3.4, { align: "center" });
-        for (let v = 0; v <= ymax + 1e-9; v += ystep * 2) doc.text(String(v), gx - 1.4, Y(v) + 1, { align: "right" });
-        doc.setFont("helvetica", "italic").setFontSize(7.5).text("t", gx + gw + 1.5, top + gh + 1);
-        doc.setFont("helvetica", "bold").setFontSize(8.5).setTextColor(...CC.blue).text(safe(name), gx, top - 2);
+        doc.setFont("helvetica", "normal").setFontSize(8.5).setTextColor(...CC.ink);
+        for (let v = 0; v <= 12; v += 2) doc.text(String(v), X(v), top + gh + 4, { align: "center" });
+        for (let v = 0; v <= ymax + 1e-9; v += ystep * 2) doc.text(String(v), gx - 1.5, Y(v) + 1.2, { align: "right" });
+        doc.setFont("helvetica", "italic").setFontSize(9).text("t", gx + gw + 1.5, top + gh + 1.2);
+        doc.setFont("helvetica", "bold").setFontSize(10).setTextColor(...CC.blue).text(safe(name), gx, top - 2.5);
       };
-      grid(w.margin + 6, 12, 1, t("Columna e(t)", "Column e(t)"));
-      grid(w.margin + 14 + gw, 20, 2, t("Cota n(t)", "Northing n(t)"));
+      grid(w.margin + 7, 12, 1, t("Columna e(t)", "Column e(t)"));
+      grid(w.margin + 15 + gw, 20, 2, t("Cota n(t)", "Northing n(t)"));
       w.y = top + gh + 10;
     }
+    w.page();
     w.heading(t("4. Preguntas de la fase 1", "4. Phase 1 questions"));
     w.bullets(t([
       "Identificación. ¿Hay pruebas con una matrícula distinta de la buscada, ilegible o sin imagen? Para cada una, ¿qué podéis afirmar de la posición del coche buscado en ese instante? ¿Es lo mismo «no sabemos dónde estaba» que «no tenía posición»?",
@@ -858,40 +1040,40 @@
     for (let v = 2.5; v <= 5.5 + 1e-9; v += 0.5) doc.line(X(v), gy, X(v), gy + gh);
     for (let v = 4; v <= 8 + 1e-9; v += 0.5) doc.line(gx, Y(v), gx + gw, Y(v));
     doc.setDrawColor(...CC.ink).setLineWidth(0.3).rect(gx, gy, gw, gh);
-    doc.setFont("helvetica", "normal").setFontSize(7.5).setTextColor(...CC.ink);
-    [3, 4, 5].forEach((v) => doc.text(String(v), X(v), gy + gh + 3.6, { align: "center" }));
-    [4, 5, 6, 7, 8].forEach((v) => doc.text(String(v), gx - 1.6, Y(v) + 1, { align: "right" }));
-    doc.setFont("helvetica", "italic").setFontSize(8).text("t", gx + gw + 2, gy + gh + 1);
-    doc.text(t("cota", "northing"), gx, gy - 1.8);
-    doc.setFont("helvetica", "bold").setFontSize(9).setTextColor(...CC.blue).text(safe(t("Pregunta 2 · túnel", "Question 2 · tunnel")), gx + gw + 12, gy + 4);
+    doc.setFont("helvetica", "normal").setFontSize(8.5).setTextColor(...CC.ink);
+    [3, 4, 5].forEach((v) => doc.text(String(v), X(v), gy + gh + 4, { align: "center" }));
+    [4, 5, 6, 7, 8].forEach((v) => doc.text(String(v), gx - 1.6, Y(v) + 1.2, { align: "right" }));
+    doc.setFont("helvetica", "italic").setFontSize(9).text("t", gx + gw + 2, gy + gh + 1.2);
+    doc.text(t("cota", "northing"), gx, gy - 2);
+    doc.setFont("helvetica", "bold").setFontSize(10).setTextColor(...CC.blue).text(safe(t("Pregunta 2 · túnel", "Question 2 · tunnel")), gx + gw + 12, gy + 4);
     doc.setDrawColor(...CC.grid).setLineWidth(0.2);
-    for (let k = 1; k <= 5; k += 1) doc.line(gx + gw + 12, gy + 4 + k * 7.5, w.pw() - w.margin, gy + 4 + k * 7.5);
+    for (let k = 1; k <= 5; k += 1) doc.line(gx + gw + 12, gy + 4 + k * 8, w.pw() - w.margin, gy + 4 + k * 8);
     w.y = gy + gh + 10;
-    w.lines(7, 7.5);
+    w.lines("fill");
   }
 
   function renderPhase2(w, doc, cfg, A) {
     const D = disputed();
     w.title(t("Fase 2 · El modelo de la trayectoria", "Phase 2 · The trajectory model"), kicker(cfg));
     w.callout(t(
-      "Contenido del sobre. Se abre en la segunda clase, después de la reunión de coordinación, cuando los equipos ya han acordado qué fotografías son válidas. A partir de aquí las fotografías no se discuten: se razona sobre funciones.",
-      "Contents of the envelope. It is opened in the second class, after the coordination meeting, once the teams have agreed which photographs are valid. From here on the photographs are not debated: we reason about functions."), "blue");
+      "Contenido del sobre. Los equipos ya han acordado qué fotografías son válidas: a partir de aquí las fotografías no se discuten, se razona sobre funciones.",
+      "Contents of the envelope. The teams have already agreed which photographs are valid: from here on the photographs are not debated, we reason about functions."), "blue");
     w.heading(t("Paso 1 · Una sola hipótesis: continuidad en el túnel", "Step 1 · A single hypothesis: continuity in the tunnel"));
     w.paragraph(t(
       "En casa dibujasteis dos evoluciones de la cota sin saltos y una con un salto entre los portales del túnel. En las dos primeras, el coche pasa siempre por la cota 6, la del eje del Río Delta; en la tercera puede saltársela. Antes de ver ninguna fórmula, hagamos explícita esa diferencia como única hipótesis: la cota del coche, n(t), es una función continua en el intervalo [3, 5]. Las fotografías de los portales dan n(3) = 5 y n(5) = 7, y el eje del río está en la cota 6.",
       "At home you drew two evolutions of the northing without jumps and one with a jump between the tunnel portals. In the first two the car always passes through northing 6, the axis of the Delta River; in the third it may skip it. Before seeing any formula, let us make that difference explicit as our only hypothesis: the car's northing, n(t), is a continuous function on the interval [3, 5]. The portal photographs give n(3) = 5 and n(5) = 7, and the river's axis lies at northing 6."));
-    w.formula(A.formulas.ivt, 160);
+    w.formula(A.formulas.ivt);
     w.paragraph(t(
       "Es el teorema del valor intermedio: sin saber qué hizo el coche dentro del túnel, podemos demostrar que en algún instante entre 3 y 5 estuvo exactamente bajo el eje del río. El teorema no dice cuándo, ni cuál era n(4), ni si el coche se detuvo en el aparcamiento subterráneo.",
       "This is the intermediate value theorem: without knowing what the car did inside the tunnel, we can prove that at some instant between 3 and 5 it was exactly under the river's axis. The theorem does not say when, nor what n(4) was, nor whether the car stopped in the underground car park."));
     w.heading(t("Paso 2 · El modelo M", "Step 2 · The model M"));
     w.paragraph(t(
-      "El consultor dejó en el sobre su modelo de la trayectoria, con sus notas (páginas siguientes), donde explica cómo lo dedujo tramo a tramo de las fotografías válidas, las de la matrícula buscada. El modelo M describe la posición del coche con dos funciones del tiempo: la columna e(t) y la cota n(t). En cada instante t, el coche está en el punto (e(t), n(t)) del plano, y cuando t avanza de 0 a 12, ese punto recorre la ruta.",
-      "The consultant left his model of the trajectory in the envelope, with his notes (next pages), where he explains how he worked it out, stretch by stretch, from the valid photographs, those of the wanted plate. The model M describes the car's position with two functions of time: the column e(t) and the northing n(t). At each instant t the car is at the point (e(t), n(t)) of the map, and as t runs from 0 to 12 that point travels along the route."));
+      "El consultor dejó en el sobre su modelo de la trayectoria, con sus notas (más adelante), donde explica cómo lo dedujo tramo a tramo de las fotografías válidas, las de la matrícula buscada. El modelo M describe la posición del coche con dos funciones del tiempo: la columna e(t) y la cota n(t). En cada instante t, el coche está en el punto (e(t), n(t)) del plano, y cuando t avanza de 0 a 12, ese punto recorre la ruta.",
+      "The consultant left his model of the trajectory in the envelope, with his notes (further on), where he explains how he worked it out, stretch by stretch, from the valid photographs, those of the wanted plate. The model M describes the car's position with two functions of time: the column e(t) and the northing n(t). At each instant t the car is at the point (e(t), n(t)) of the map, and as t runs from 0 to 12 that point travels along the route."));
     w.sub(t("La columna e(t)", "The column e(t)"));
-    w.formula(A.formulas.east, 120, 0.25);
-    w.sub(t("La cota n(t)", "The northing n(t)"));
-    w.formula(A.formulas.model, 150, 0.25);
+    w.formula(A.formulas.east);
+    w.sub(t("La cota n(t)", "The northing n(t)"), 34);
+    w.formula(A.formulas.model);
     w.paragraph(t(
       "Los dos primeros tramos de cada función (1.5t y 0.5t + 2 para la columna, t² y t + 2 para la cota) son probablemente los que propusisteis en casa. Los demás son nuevos: las fotografías pueden sugerir esos comportamientos, pero ninguna colección finita de fotografías podría determinar estas fórmulas ni establecer su comportamiento límite. Por eso el modelo es una hipótesis del consultor, no una consecuencia de las fotos.",
       "The first two pieces of each function (1.5t and 0.5t + 2 for the column, t² and t + 2 for the northing) are probably the ones you proposed at home. The others are new: the photographs may suggest these behaviours, but no finite collection of photographs could determine these formulas or establish their limiting behaviour. That is why the model is the consultant's hypothesis, not a consequence of the photos."));
@@ -901,7 +1083,27 @@
     ], [
       ["0 <= t <= 2", "Harbour Road (curve)"], ["2 < t < 8", "Diagonal Avenue (includes the tunnel, 3 < t < 5)"],
       ["8 <= t < 10", "Labyrinth Street, between the South Ring Road (northing 10) and the North Ring Road (northing 12)"], ["10 <= t < 12", "North Motorway, hugging the railway line (column 12)"]
-    ]), [40, 140]);
+    ]), [40, 140], { keep: true });
+    w.callout(t(
+      "Un modelo es una idealización. Dentro del túnel, M supone que la columna y la cota siguen las rectas 0.5t + 2 y t + 2, y ninguna cámara lo confirma. En la Cuesta del Enlace el cambio de cota se trata como instantáneo, en El Laberinto las curvas se repiten infinitas veces y en la autovía la cota acaba superando cualquier valor. Ningún coche real hace exactamente eso, y precisamente por eso el modelo permite estudiar estos fenómenos con rigor.",
+      "A model is an idealisation. Inside the tunnel, M assumes that the column and the northing follow the lines 0.5t + 2 and t + 2, and no camera confirms it. On Link Hill the change of northing is treated as instantaneous, in The Labyrinth the bends repeat infinitely often and on the motorway the northing eventually exceeds every value. No real car does exactly that, and that is precisely why the model lets us study these phenomena rigorously."), "blue");
+    const routeCaption = t("La ruta del modelo: el punto (e(t), n(t)) para t de 0 a 12; los rótulos t = 1, t = 2… marcan el minuto. Círculo relleno: posición del coche. Círculo vacío: punto que no pertenece a la ruta (en t = 8 la cota salta de 10 a 12). Línea discontinua: el ferrocarril (columna 12), al que la ruta se acerca cuando t tiende a 12.",
+      "The route of the model: the point (e(t), n(t)) for t from 0 to 12; the labels t = 1, t = 2… mark the minute. Filled circle: position of the car. Empty circle: point not on the route (at t = 8 the northing jumps from 10 to 12). Dashed line: the railway (column 12), which the route approaches as t tends to 12.");
+    const routeOverlay = t(
+      `La transparencia (documento 31) lleva la misma ruta para superponerla a vuestro plano de seguimiento: colocadla sobre la página del plano haciendo coincidir los marcos. La ruta recorre las calles por las que pasó el coche, y todas las cámaras de sus fotografías quedan sobre ella. Fijaos en las dos cámaras del coche confundible: ${D.b6.id} está en la misma columna que el coche buscado en t = 6, pero mucho más al norte, lejos de la ruta; ${D.c8.id} queda bajo el círculo vacío de t = 8, el punto al que se acerca la ruta justo antes de 8 y que no pertenece a ella.`,
+      `The transparency (document 31) carries the same route, to lay over your tracking map: place it on the map page with the frames matching. The route runs along the streets the car followed, and every camera of its photographs sits on it. Look at the two cameras of the look-alike car: ${D.b6.id} is in the same column as the wanted car at t = 6, but much further north, far from the route; ${D.c8.id} lies under the empty circle at t = 8, the point the route approaches just before 8 and which is not on the route.`);
+    {   // the route on the map: full width, or smaller (down to 70 %) if that keeps it, its caption
+        // and the paragraph on the transparency on this page
+      let iw = w.W(), ih = iw * A.maps.plainRatio;
+      const text = w.measure(routeCaption, { size: 9.5 }) + w.measure(routeOverlay) + 2;
+      const room = w.room() - 13 - text;
+      if (ih > room && ih * 0.7 <= room) { ih = room; iw = ih / A.maps.plainRatio; }
+      w.ensure(ih + 13);
+      w.heading(t("La ruta sobre el plano", "The route on the map"), ih);
+      w.image(A.maps.graph, iw, ih, { alias: "map-graph" });
+    }
+    w.paragraph(routeCaption, { size: 9.5 });
+    w.paragraph(routeOverlay);
     (A.notes || []).forEach((note, k) => {   // the consultant's notes, one page each
       w.page();
       w.heading(k ? t("Las notas del consultor (continuación)", "The consultant's notes (continued)") : t("Las notas del consultor", "The consultant's notes"));
@@ -911,49 +1113,44 @@
       w.image(note.data, iw, ih, { alias: `consultant-notes-${k}`, gap: 0 });
     });
     w.page();
-    w.callout(t(
-      "Un modelo es una idealización. Dentro del túnel, M supone que la columna y la cota siguen las rectas 0.5t + 2 y t + 2, y ninguna cámara lo confirma. En la Cuesta del Enlace el cambio de cota se trata como instantáneo, en El Laberinto las curvas se repiten infinitas veces y en la autovía la cota acaba superando cualquier valor. Ningún coche real hace exactamente eso, y precisamente por eso el modelo permite estudiar estos fenómenos con rigor.",
-      "A model is an idealisation. Inside the tunnel, M assumes that the column and the northing follow the lines 0.5t + 2 and t + 2, and no camera confirms it. On Link Hill the change of northing is treated as instantaneous, in The Labyrinth the bends repeat infinitely often and on the motorway the northing eventually exceeds every value. No real car does exactly that, and that is precisely why the model lets us study these phenomena rigorously."), "blue");
-    const iw = w.W(), ih = iw * A.maps.plainRatio;
-    w.ensure(ih + 22);
-    w.heading(t("La ruta sobre el plano", "The route on the map"));
-    w.image(A.maps.graph, iw, ih, { alias: "map-graph" });
-    w.paragraph(t("La ruta del modelo: el punto (e(t), n(t)) para t de 0 a 12; los rótulos t = 1, t = 2… marcan el minuto. Círculo relleno: posición del coche. Círculo vacío: punto que no pertenece a la ruta (en t = 8 la cota salta de 10 a 12). Línea discontinua: el ferrocarril (columna 12), al que la ruta se acerca cuando t tiende a 12. Esta página sirve también de alternativa a la transparencia.",
-      "The route of the model: the point (e(t), n(t)) for t from 0 to 12; the labels t = 1, t = 2… mark the minute. Filled circle: position of the car. Empty circle: point not on the route (at t = 8 the northing jumps from 10 to 12). Dashed line: the railway (column 12), which the route approaches as t tends to 12. This page also serves as an alternative to the transparency."), { size: 9 });
-    if (A.maps.labyrinthGraph) {
-      const lw = w.W(), lh = lw * A.maps.labyrinthRatio;
-      w.ensure(lh + 10);
-      w.sub(t("Detalle: El Laberinto", "Detail: The Labyrinth"));
-      w.image(A.maps.labyrinthGraph, lw, lh, { alias: "lab-graph" });
-    }
-    w.page();
     w.heading(t("Las dos coordenadas frente al tiempo", "The two coordinates against time"));
     w.paragraph(t(
       "El plano muestra la ruta, pero no el tiempo: por eso no basta para estudiar límites. Separamos las dos coordenadas y dibujamos cada una frente al instante t. Para conocer la posición del coche en un instante cualquiera, también en uno sin fotografía, se calcula cada coordenada por separado y después se lleva el punto (e(t), n(t)) al plano.",
       "The map shows the route, but not the time, so it is not enough to study limits. We separate the two coordinates and draw each one against the instant t. To know the car's position at any instant, including one without a photograph, each coordinate is computed separately and the point (e(t), n(t)) is then placed on the map."));
-    const gwid = w.W() * 0.9;
-    w.sub(t("La columna e(t)", "The column e(t)"));
-    w.image(A.graphs.east.data, gwid, gwid * A.graphs.east.ratio, { alias: "graph-east" });
-    w.sub(t("La cota n(t)", "The northing n(t)"));
-    w.image(A.graphs.north.data, gwid, gwid * A.graphs.north.ratio, { alias: "graph-north" });
+    {   // both graphs share the rest of the page
+      const fixed = 2 * (6.5 + 4) + 16, total = A.graphs.east.ratio + A.graphs.north.ratio;
+      const gwid = Math.min(w.W(), (w.room() - fixed) / total);
+      w.sub(t("La columna e(t)", "The column e(t)"));
+      w.image(A.graphs.east.data, gwid, gwid * A.graphs.east.ratio, { alias: "graph-east" });
+      w.sub(t("La cota n(t)", "The northing n(t)"));
+      w.image(A.graphs.north.data, gwid, gwid * A.graphs.north.ratio, { alias: "graph-north" });
+    }
     w.paragraph(t("Mismas convenciones que en el plano: círculo relleno, valor de la función; círculo vacío, punto que no pertenece a la gráfica. En la gráfica de n, la línea discontinua es la asíntota vertical t = 12.",
-      "Same conventions as on the map: filled circle, value of the function; empty circle, point not on the graph. In the graph of n, the dashed line is the vertical asymptote t = 12."), { size: 9 });
-    w.ensure(60);
+      "Same conventions as on the map: filled circle, value of the function; empty circle, point not on the graph. In the graph of n, the dashed line is the vertical asymptote t = 12."), { size: 9.5 });
+    w.page();
+    if (A.maps.labyrinthGraph) {   // the oscillation near t = 10, now on the map
+      const lw = w.W(), lh = lw * A.maps.labyrinthRatio;
+      w.sub(t("Detalle: El Laberinto", "Detail: The Labyrinth"), lh);
+      w.image(A.maps.labyrinthGraph, lw, lh, { alias: "lab-graph" });
+    }
     w.heading(t("Paso 3 · El registro automático g", "Step 3 · The automatic record g"));
     w.paragraph(t(
       `El sistema de lectura compara las matrículas con cierta tolerancia y solo admite una posición por instante. En t = 6 y en t = 8, dos cámaras leyeron en el mismo instante matrículas compatibles con la buscada, y en los dos casos el sistema se quedó con la del coche ${cfg.alt}: la ${roadName(D.b6.road)} en t = 6 (cota ${num(D.b6.y, 2)}) y el pie de la ${roadName(D.c8.road)} en t = 8 (cota ${num(D.c8.y, 2)}). Las dos fotografías del confundible se tomaron en la misma columna en la que estaba el coche buscado en ese instante, así que el registro de la columna coincide con e(t). El de la cota define otra función, g, que no describe el coche buscado:`,
       `The reading system matches plates with some tolerance and allows only one position per instant. At t = 6 and at t = 8, two cameras read plates compatible with the wanted one at the same instant, and in both cases the system kept the reading of the car ${cfg.alt}: the ${roadName(D.b6.road)} at t = 6 (northing ${num(D.b6.y, 2)}) and the foot of ${roadName(D.c8.road)} at t = 8 (northing ${num(D.c8.y, 2)}). Both photographs of the look-alike were taken in the column where the wanted car was at that instant, so the record of the column agrees with e(t). The record of the northing defines another function, g, which does not describe the wanted car:`));
-    w.formula(A.formulas.record, 120, 0.25);
-    w.image(A.graphs.record.data, w.W() * 0.72, w.W() * 0.72 * A.graphs.record.ratio, { alias: "graph-record" });
+    w.formula(A.formulas.record);
+    {
+      const gw = Math.min(w.W(), (w.room() - 6) / A.graphs.record.ratio);
+      w.image(A.graphs.record.data, gw, gw * A.graphs.record.ratio, { alias: "graph-record" });
+    }
     w.page();
     w.heading(t("Hoja de trabajo · Fase 2", "Worksheet · Phase 2"));
     w.paragraph(t("Recordad la definición: una función h es continua en a si existe h(a), existe el límite cuando t tiende a a y ambos coinciden.",
       "Recall the definition: a function h is continuous at a if h(a) exists, the limit as t tends to a exists and the two agree."));
-    w.formula(A.formulas.cont, 70);
+    w.formula(A.formulas.cont);
     w.paragraph(t("Estudiad las dos funciones del modelo por separado: primero la columna e(t) y después la cota n(t), junto con el registro g. La última columna compara evidencia y modelo: qué sugerían las fotografías y qué podéis establecer ahora. Por ejemplo, en t = 10 las fotografías solo sugerían una alternancia de la cota; con el modelo se puede demostrar que su límite por la izquierda no existe. Las filas de t = 0 y t = 1, en cursiva, las dejó resueltas el consultor como ejemplo.",
       "Study the two functions of the model separately: first the column e(t), then the northing n(t), together with the record g. The last column compares evidence and model: what the photographs suggested and what you can establish now. For instance, at t = 10 the photographs only suggested an alternation of the northing; with the model one can prove that its left-hand limit does not exist. The rows for t = 0 and t = 1, in italics, were worked out by the consultant as examples."));
     const head = [t("Punto", "Point"), t("Límite por la izquierda", "Left-hand limit"), t("Límite por la derecha", "Right-hand limit"), t("Valor", "Value"), t("Continuidad / comportamiento", "Continuity / behaviour"), t("¿Qué podemos establecer ahora que las fotografías solas no permitían?", "What can we establish now that the photographs alone could not?")];
-    const widths = [18, 20, 20, 14, 38, 70];
+    const widths = [18, 20, 20, 16, 38, 68];
     const hand = (row, i) => i >= 1 && row[1] !== "";
     const blank = (label) => [label, "", "", "", "", ""];
     w.sub(t("Parte 1 · La columna e(t)", "Part 1 · The column e(t)"));
@@ -961,7 +1158,8 @@
       ["e, t = 0", "—", "0", "0", t("Continua por la derecha (la persecución empieza en t = 0)", "Right-continuous (the pursuit starts at t = 0)"), t("Que el coche sale de la columna 0, el control del puerto; la primera foto es de t = 0.5.", "That the car starts from column 0, the harbour checkpoint; the first photo is at t = 0.5.")],
       ["e, t = 1", "1.5", "1.5", "1.5", t("Continua", "Continuous"), t("Que las columnas cercanas se acercan a 1.5 por los dos lados; la foto de t = 1 solo daba el valor.", "That nearby columns approach 1.5 from both sides; the photo at t = 1 only gave the value.")],
       blank("e, t = 2"), blank("e, t = 6"), blank("e, t = 8"), blank("e, t -> 10"), blank("e, t -> 12-")
-    ], widths, { minRow: 10.5, keep: true, hand });
+    ], widths, { fillRows: [10.5, 20], hand });   // the rows share the rest of the page
+    w.ensure(112);
     w.sub(t("Parte 2 · La cota n(t) y el registro g", "Part 2 · The northing n(t) and the record g"));
     w.table(head, [
       ["n, t = 0", "—", "0", "0", t("Continua por la derecha", "Right-continuous"), t("Que el coche sale de la cota 0, en el puerto; ninguna foto muestra ese instante.", "That the car starts from northing 0, at the harbour; no photo shows that instant.")],
@@ -981,25 +1179,101 @@
       "Limits at t = 12. Compute the limit of e(t) and that of n(t) as t tends to 12 from the left. What does each one say about the route on the map?",
       "Tunnel. Under the model M, at what exact instant does the car pass under the river's axis, and in which column is it then? Is that a conclusion of the cameras or of the model?"
     ]), true);
-    w.lines(6, 7.5);
+    w.lines("fill");
   }
 
+  /** The transparency: one turned page, the same box as the map, nothing else on it (it goes on acetate). */
   function renderOverlay(w, doc, cfg, A) {
-    const D = disputed();
-    w.title(t("Transparencia de la ruta", "Transparency of the route"), kicker(cfg));
-    w.paragraph(t(
-      "Imprimid la página siguiente en acetato, al 100 % y sin ajustar a la página, en el mismo formato de papel que el plano de seguimiento. Colocadla sobre la página del plano haciendo coincidir los marcos: la ruta del modelo, el punto (e(t), n(t)), recorre las calles por las que pasó el coche, y todas las cámaras de sus fotografías quedan sobre ella. Los rótulos t = 1, t = 2… marcan el minuto en que el coche pasa por cada punto.",
-      "Print the next page on acetate, at 100% and without fit-to-page, on the same paper format as the tracking map. Lay it over the map page with the frames matching: the route of the model, the point (e(t), n(t)), runs along the streets the car followed, and every camera of its photographs sits on it. The labels t = 1, t = 2… mark the minute at which the car passes each point."));
-    w.paragraph(t(
-      `Fijaos en las dos cámaras del coche confundible. ${D.b6.id} está en la misma columna que el coche buscado en t = 6, pero mucho más al norte, lejos de la ruta. ${D.c8.id} queda bajo el círculo vacío de t = 8: es el punto al que se acerca la ruta justo antes de 8, y no pertenece a ella.`,
-      `Look at the two cameras of the look-alike car. ${D.b6.id} is in the same column as the wanted car at t = 6, but much further north, far from the route. ${D.c8.id} lies under the empty circle at t = 8: it is the point the route approaches just before 8, and it is not on the route.`));
-    w.paragraph(t("Si no tenéis acetatos, el sobre de la fase 2 trae la misma ruta impresa ya sobre el plano.",
-      "If you have no acetate sheets, the phase 2 envelope carries the same route already printed over the map."), { italic: true, size: 9 });
-    const R = w.turned();
+    const R = w.turned(true);
     const box = mapBox(R, A);
     R.image(A.turned.overlay, "PNG", box.u, box.v, box.wd, box.ht, "map-overlay");
-    doc.setFont("helvetica", "bold").setFontSize(8).setTextColor(...CC.blue);
-    R.text(t(`${cfg.city} · Transparencia · ruta del modelo (columna e(t), cota n(t))`, `${cfg.city} · Transparency · route of the model (column e(t), northing n(t))`), box.u, box.v + box.ht + 4.5);
+    doc.setFont("helvetica", "bold").setFontSize(9.5).setTextColor(...CC.blue);
+    R.text(t(`${cfg.city} · Transparencia · ruta del modelo (columna e(t), cota n(t))`, `${cfg.city} · Transparency · route of the model (column e(t), northing n(t))`), box.u, box.v + box.ht + 5);
+  }
+
+  /** Printing and distribution guide (teacher): everything about paper, copies and hand-outs. */
+  function renderPrintGuide(w, doc, cfg, A) {
+    const pages = (id) => String((A.pages || {})[id] || "");
+    const label = (spec) => `${spec.n} ${spec.title()}`;
+    const paper = cfg.format === "letter" ? t("Carta", "Letter") : "A4";
+    w.title(t("Guía de impresión y reparto", "Printing and distribution guide"), kicker(cfg), true);
+    w.meta([
+      [t("Papel", "Paper"), t(`${paper}, todas las páginas en vertical`, `${paper}, every page portrait`)],
+      [t("Generación", "Generation"), `${cfg.city} · ${cfg.plate} / ${cfg.alt} · ${cfg.start}, ${cfg.dateLabel}`],
+      [t("Documentos", "Documents"), t(`${DOCS.length - 1} documentos y ${BUNDLES.length} paquetes`, `${DOCS.length - 1} documents and ${BUNDLES.length} packets`)]
+    ]);
+    w.heading(t("1. Antes de imprimir", "1. Before printing"));
+    w.bullets(t([
+      "Imprime todo de la misma generación: las fotografías, las hojas y la solución de una generación coinciden entre sí. Si cambias la configuración, vuelve a imprimirlo todo.",
+      "Escala: siempre al 100 % («tamaño real»), nunca «ajustar a la página». El plano (documento 01) y la transparencia (documento 31) tienen que coincidir al superponerse.",
+      "Orientación: todas las páginas son verticales. El plano, sus detalles y la transparencia van girados dentro de la hoja; imprímelos en vertical, sin rotar.",
+      "Caras: a doble cara por el borde largo, salvo la transparencia, que va en acetato y por una sola cara.",
+      "Color: imprescindible en los dossieres fotográficos (el tono del coche es una prueba); recomendable en la apertura, el plano y el sobre de la fase 2. El resto, en blanco y negro.",
+      "Grapa cada documento por separado o cada paquete de la web, según imprimas por documentos (sección 2) o por paquetes (sección 3)."
+    ], [
+      "Print everything from the same generation: the photographs, the worksheets and the solution of one generation agree with each other. If you change the configuration, print everything again.",
+      "Scale: always at 100% (\"actual size\"), never \"fit to page\". The map (document 01) and the transparency (document 31) must match when overlaid.",
+      "Orientation: every page is portrait. The map, its details and the transparency are turned inside the sheet; print them portrait, without rotating.",
+      "Sides: double-sided along the long edge, except the transparency, which goes on acetate, one side only.",
+      "Colour: essential for the photographic dossiers (the shade of the car is evidence); advisable for the opening, the map and the phase 2 envelope. The rest, black and white.",
+      "Staple each document separately or each packet from the website, depending on whether you print by document (section 2) or by packet (section 3)."
+    ]));
+    w.heading(t("2. Documento a documento", "2. Document by document"), 40);
+    // the three team versions of a document share one row
+    const rows = [], seen = new Set();
+    DOCS.filter((d) => d.print).forEach((d) => {
+      const kind = d.team ? d.id.replace(/-[A-Z]$/, "") : d.id;
+      if (seen.has(kind)) return;
+      seen.add(kind);
+      const pr = d.print(), group = DOCS.filter((x) => x.team && x.id.replace(/-[A-Z]$/, "") === kind);
+      if (!group.length) { rows.push([label(d), pages(d.id), pr.who, pr.copies, pr.how, pr.when]); return; }
+      const ps = [...new Set(group.map((x) => pages(x.id)))];
+      const name = d.title().replace(/ · (Equipo|Team) [A-Z]$/, "");
+      rows.push([`${group[0].n}–${group[group.length - 1].n} ${name} · ${TEAMS.join(", ")}`, ps.length === 1 ? t(`${ps[0]} cada uno`, `${ps[0]} each`) : ps.join(" / "),
+        t("Cada equipo, el de su letra", "Each team, its own letter"),
+        t(`1 por estudiante: ${TEAMS.map((r) => `${r}, ${room().students_of(r)}`).join("; ")}`, `1 per student: ${TEAMS.map((r) => `${r}, ${room().students_of(r)}`).join("; ")}`), pr.how, pr.when]);
+    });
+    w.table([t("Documento", "Document"), t("Págs.", "Pages"), t("Quién lo recibe", "Who receives it"), t("Copias", "Copies"), t("Cómo se imprime", "How to print"), t("Cuándo", "When")],
+      rows, [31, 12, 29, 27, 45, 31], { zebra: true });
+    w.paragraph(t("Con más de tres equipos se repiten los papeles A, B y C, sin decir a nadie qué equipos comparten expediente: cada equipo nuevo recibe los documentos de su letra.",
+      "With more than three teams, roles A, B and C are repeated without telling anyone which teams share a file: each new team receives the documents of its letter."), { size: 9.5, italic: true });
+    w.heading(t("3. Los paquetes de la web", "3. The packets on the website"), 30);
+    w.paragraph(t("La pestaña «Paquetes por rol» reúne los documentos en un PDF por destinatario, ya ordenados. Imprimir por paquetes da el mismo resultado que imprimir los documentos uno a uno.",
+      "The \"Role packets\" tab gathers the documents into one PDF per recipient, already in order. Printing by packet gives the same result as printing the documents one by one."));
+    const byId = (id) => DOCS.find((d) => d.id === id);
+    w.table([t("Paquete", "Packet"), t("Contiene", "Contains"), t("Págs.", "Pages"), t("Para quién", "For whom")],
+      BUNDLES.map((b) => [b.label, b.docs.map((id) => (id === "print" ? t("esta guía", "this guide") : byId(id).n)).join(", "), String(b.docs.reduce((n, id) => n + Number(pages(id) || 0), 0)), b.use()]),
+      [38, 38, 12, 86], { zebra: true });
+    w.heading(t("4. Reparto paso a paso", "4. Hand-outs step by step"), 30);
+    w.bullets(t([
+      "Antes de la clase 1. Imprime un paquete de la fase 1 por estudiante (el de su equipo), el paquete docente y los sobres de la fase 2: uno por equipo, con un ejemplar del documento 30 para cada estudiante y la transparencia. Cierra los sobres.",
+      "Final de la clase 1 (15–20 min). Después de la pregunta de diagnóstico y de leer la apertura en voz alta, forma los equipos y entrega a cada estudiante el paquete de la fase 1 de su equipo. Recuerda las normas: el dossier no se enseña a otros equipos y la hoja vuelve completa.",
+      "En casa. Cada equipo trabaja con su paquete y prepara la hoja de investigación.",
+      "Clase 2, reunión de coordinación (15 min). Los equipos comparan sus dossieres con las hojas completas; los sobres siguen cerrados.",
+      "Clase 2, el sobre (20 min). Entrega un sobre a cada equipo: el documento 30 para cada estudiante y la transparencia para superponer al plano.",
+      "Clase 2, exposición y cierre. La pregunta individual de cierre está en la solución (documento 91): se lee o se proyecta, no hay hoja para ella.",
+      "La guía docente, la solución y el inventario no salen de tus manos."
+    ], [
+      "Before class 1. Print one phase 1 packet per student (their team's), the teacher packet and the phase 2 envelopes: one per team, with a copy of document 30 for each student and the transparency. Seal the envelopes.",
+      "End of class 1 (15–20 min). After the diagnostic question and reading the opening aloud, form the teams and give each student the phase 1 packet of their team. Recall the rules: the dossier is not shown to other teams and the worksheet comes back completed.",
+      "At home. Each team works with its packet and prepares the investigation worksheet.",
+      "Class 2, coordination meeting (15 min). The teams compare their dossiers with the completed worksheets; the envelopes stay sealed.",
+      "Class 2, the envelope (20 min). Give each team an envelope: document 30 for each student and the transparency to lay over the map.",
+      "Class 2, presentation and close. The individual closing question is in the solution (document 91): read it out or project it; there is no sheet for it.",
+      "The teacher guide, the solution and the inventory stay with you."
+    ]), true);
+    w.heading(t("5. Material adicional", "5. Additional material"), 24);
+    w.bullets(t([
+      "Sobres: uno por equipo.",
+      "Acetatos para impresora: uno por equipo, del tipo que admita tu impresora (láser o de tinta). Sin acetatos, la ruta impresa sobre el plano del documento 30 cumple la misma función.",
+      "Tijeras, si se quiere: las tarjetas del dossier se pueden recortar para ordenarlas sobre la mesa. Díselo a los equipos al repartir.",
+      "Grapadora."
+    ], [
+      "Envelopes: one per team.",
+      "Printer acetate: one per team, of the kind your printer accepts (laser or inkjet). Without acetate, the route printed over the map in document 30 does the same job.",
+      "Scissors, if wanted: the dossier cards can be cut out to order them on the table. Tell the teams when you hand them out.",
+      "Stapler."
+    ]));
   }
 
   function renderGuide(w, doc, cfg, A) {
@@ -1038,7 +1312,7 @@
       "Full route, for consolidation, with a class that has already worked with limits: it adds t = 10 and t = 12, with the oscillation and the infinite limit. The rigorous proof of the oscillation with sequences stays as an extension."
     ]));
     w.paragraph(t("Ninguna ruta elimina contenido: solo decide qué es núcleo y qué es ampliación según el nivel del grupo.",
-      "Neither route removes content: it only decides what is core and what is extension, depending on the group."), { italic: true, size: 9 });
+      "Neither route removes content: it only decides what is core and what is extension, depending on the group."), { italic: true, size: 9.5 });
     w.heading(t("Pregunta de diagnóstico: dos versiones", "Diagnostic question: two versions"));
     w.bullets(t([
       "Versión conceptual, sin terminología previa de límites: «Para t distinto de 6, el valor sigue la regla t + 2, y en t = 6 el valor registrado es 12. ¿Cuál es el valor exactamente en 6? ¿A qué número se acercan los valores cercanos?». Después se dice que esa segunda cantidad es lo que llamaremos límite. Respuestas: 12 y 8.",
@@ -1051,15 +1325,15 @@
     ]));
     w.heading(t("Material de esta generación", "Material in this generation"));
     w.bullets(t([
-      `Fase 1 (un paquete por estudiante, distinto para cada equipo; se trabaja en casa): apertura, plano con detalles y registro de cámaras, dossier fotográfico (${state.data.slots.length} registros) y hoja de investigación del consultor, a medio completar.`,
-      "Fase 2 (igual para todos, en un sobre que se abre en la segunda clase, después de la coordinación): hipótesis de continuidad, modelo M (la columna e y la cota n) con las notas manuscritas del consultor, la ruta sobre el plano, las gráficas de e y de n frente al tiempo, el registro automático g y la hoja de trabajo; transparencia para superponer.",
+      `Fase 1, para trabajar en casa (distinta para cada equipo): apertura, plano con detalles y registro de cámaras, dossier fotográfico (${state.data.slots.length} registros) y hoja de investigación del consultor, a medio completar.`,
+      "Fase 2, el sobre (igual para todos): hipótesis de continuidad, modelo M (la columna e y la cota n) con las notas manuscritas del consultor, la ruta sobre el plano, las gráficas de e y de n frente al tiempo, el registro automático g y la hoja de trabajo; y la transparencia, para superponer al plano.",
       "Profesorado: esta guía, la solución y el inventario.",
-      "Imprime el plano y la transparencia al 100 %, sin ajustar a la página, para que coincidan al superponerlos. Las páginas del plano están giradas dentro de una hoja vertical, así que todo el material se imprime en vertical. Si no hay acetatos, el sobre ya trae la ruta impresa sobre el plano."
+      "Qué imprimir, cómo, cuántas copias y cuándo se entrega cada documento: «Guía de impresión y reparto», que acompaña a esta generación."
     ], [
-      `Phase 1 (one packet per student, different for each team; worked at home): opening, map with details and camera register, photographic dossier (${state.data.slots.length} records) and the consultant's half-completed investigation worksheet.`,
-      "Phase 2 (the same for everyone, in an envelope opened in the second class, after the coordination meeting): continuity hypothesis, model M (the column e and the northing n) with the consultant's handwritten notes, the route on the map, the graphs of e and n against time, the automatic record g and the worksheet; transparency to overlay.",
+      `Phase 1, worked at home (different for each team): opening, map with details and camera register, photographic dossier (${state.data.slots.length} records) and the consultant's half-completed investigation worksheet.`,
+      "Phase 2, the envelope (the same for everyone): continuity hypothesis, model M (the column e and the northing n) with the consultant's handwritten notes, the route on the map, the graphs of e and n against time, the automatic record g and the worksheet; and the transparency, to lay over the map.",
       "Teacher: this guide, the solution and the inventory.",
-      "Print the map and the transparency at 100%, without fit-to-page, so that they match when overlaid. The map pages are turned inside a portrait sheet, so all the material prints in portrait. If there are no acetate sheets, the envelope already carries the route printed over the map."
+      "What to print, how, how many copies and when each document is handed out: the \"Printing and distribution guide\" that comes with this generation."
     ]));
     w.heading(t("Qué cambia entre equipos", "What differs between teams"));
     w.table([t("Prueba", "Exhibit"), t("Equipo A", "Team A"), t("Equipo B", "Team B"), t("Equipo C", "Team C")], variantRows(cfg), [22, 52, 52, 52]);
@@ -1171,7 +1445,7 @@
       ["t = 8", `From the left, northings approaching 10 (${cotasIn(7.4, 7.99)}); at t = 8, ${num(D.a8.y, 2)}; from the right, close to 12 (${cotasIn(8.01, 8.6)}). They suggest a sudden change from 10 to 12; the data say nothing about what happens just before 8. The columns do not change suddenly.`, "Same as A.", `${D.s8.code} shows ${cfg.alt} at the foot of the hill (northing ${num(D.c8.y, 2)}): identification error. n(8) unknown; the sudden change from 10 to 12 is still suggested.`],
       ["t -> 10", `The recorded northings alternate between 10 and 12 at times increasingly close to 10 (${D.sg.code} with an unreadable plate: northing ${num(D.g.y, 2)} unverified until the meeting). This suggests oscillation, but the finite record does not establish what happens arbitrarily close to 10. The columns, by contrast, approach 9 without oscillating.`, `Same as A, with ${D.sg.code} readable.`, `Same as A, with ${D.sg.code} readable.`],
       ["t -> 12", `Northings ${cotasIn(10.4, 12)}: ever larger. They suggest growth without bound, but finitely many data do not prove an infinite limit.`, "Same as A.", "Same as A."]
-    ]), [18, 54, 54, 54], { size: 7.6 });
+    ]), [18, 54, 54, 54]);
     w.paragraph(t(
       `Primeros tramos (pregunta 3): entre t = 0 y t = 2 las columnas son 1.5 veces el instante (${colsIn(0, 2)}) y las cotas, los cuadrados de t (${cotasIn(0, 2)}), luego e(t) = 1.5t y n(t) = t²; entre t = 2 y t = 8 la columna avanza 0.5 por minuto (${colsIn(2.1, 7.99)}) y cada cota supera en 2 al instante (${cotasIn(2.1, 7.99)}), luego e(t) = 0.5t + 2 y n(t) = t + 2. El coche avanza hacia el este tres veces más despacio en la avenida que en la Carretera del Puerto. Basta comprobar cada fórmula con un par de pruebas. Túnel (pregunta 2): dentro no hay cámaras, así que no se conoce ni la columna ni la cota; el modelo de la fase 2 supone que siguen las dos rectas.`,
       `First stretches (question 3): between t = 0 and t = 2 the columns are 1.5 times the instant (${colsIn(0, 2)}) and the northings are the squares of t (${cotasIn(0, 2)}), hence e(t) = 1.5t and n(t) = t²; between t = 2 and t = 8 the column advances 0.5 per minute (${colsIn(2.1, 7.99)}) and each northing exceeds the instant by 2 (${cotasIn(2.1, 7.99)}), hence e(t) = 0.5t + 2 and n(t) = t + 2. The car moves east three times more slowly on the avenue than on Harbour Road. Checking each formula with a couple of exhibits is enough. Tunnel (question 2): there are no cameras inside, so neither the column nor the northing is known; the phase 2 model assumes that both follow the lines.`));
@@ -1180,7 +1454,7 @@
       `No photograph of plate ${cfg.alt} is used as a value of n. Exhibits ${D.s6.code} of team B and ${D.s8.code} of team C are classified as identification errors; exhibit ${D.s6.code} of team C is an unverified detection, and exhibit ${D.sg.code} of team A a photograph with an unreadable plate. At those instants the wanted car's value remains unknown to that team until the coordination meeting, where the other teams' photographs fix it: n(6) = ${num(D.a6.y, 2)}, n(8) = ${num(D.a8.y, 2)} and the northing ${num(D.g.y, 2)} of ${D.sg.code}.`), "warn");
     w.heading(t("Fase 2 · resultados con el modelo M", "Phase 2 · results under the model M"));
     const head = [t("Punto", "Point"), t("Lím. izq.", "Left lim."), t("Lím. der.", "Right lim."), t("Valor", "Value"), t("Continuidad / comportamiento", "Continuity / behaviour"), t("Lo que el modelo establece y las fotos no", "What the model establishes that the photos could not")];
-    const widths = [13, 15, 15, 15, 50, 72];
+    const widths = [16, 15, 15, 18, 45, 70];
     w.sub(t("Parte 1 · La columna e(t)", "Part 1 · The column e(t)"));
     w.table(head, t([
       ["e, 0", "—", "0", "0", "Continua por la derecha", "Que el coche sale de la columna 0, el control del puerto."],
@@ -1198,7 +1472,7 @@
       ["e, 8", "6", "6", "6", "Continuous; another corner", "That the column does not jump although the northing does: the hill runs south to north."],
       ["e, 10", "9", "9", "9", "Continuous", "That the column tends to 9 while the northing oscillates."],
       ["e, 12-", "12", "—", "Undefined", "Finite limit 12: the railway", "That the car approaches column 12 without reaching it, while its northing grows without bound."]
-    ]), widths, { size: 7.4 });
+    ]), widths);
     w.sub(t("Parte 2 · La cota n(t) y el registro g", "Part 2 · The northing n(t) and the record g"));
     w.table(head, t([
       ["n, 0", "—", "0", "0", "Continua por la derecha", "Que el coche sale de la cota 0, en el puerto."],
@@ -1220,27 +1494,28 @@
       ["g, 8", "10", "12", "10", "Finite jump; left-continuous", "That changing the value at 8 does not remove the jump."],
       ["n, 10", "Does not exist", "12", "12", "Essential (oscillating) discontinuity; right-continuous", "Before: the photos suggested an alternation. Now: the left-hand limit is proved not to exist."],
       ["n, 12-", "+inf.", "—", "Undefined", "Infinite limit; vertical asymptote t = 12", "Before: ever larger values. Now: the limit is proved to be +infinity."]
-    ]), widths, { size: 7.4 });
+    ]), widths);
     w.sub(t("Las dos partes (pregunta 1)", "The two parts (question 1)"));
     w.paragraph(t(
       "La columna e(t) es continua en todo el recorrido; sus únicos accidentes son dos ángulos, en t = 2 y en t = 8, donde cambia la velocidad hacia el este. Todos los fenómenos del caso están en la cota: el salto de la Cuesta del Enlace, la oscilación de El Laberinto y el límite infinito de la autovía. Sobre el plano, eso significa que en esos tramos el coche apenas cambia de columna mientras su cota hace algo extremo: la cuesta es una calle de sur a norte, y en la autovía el coche corre hacia el norte pegado al ferrocarril.",
       "The column e(t) is continuous along the whole route; its only features are two corners, at t = 2 and at t = 8, where the speed eastwards changes. All the phenomena of the case are in the northing: the jump of Link Hill, the oscillation of The Labyrinth and the infinite limit of the motorway. On the map, this means that on those stretches the car hardly changes column while its northing does something extreme: the hill is a south-to-north street, and on the motorway the car races north alongside the railway."));
+    w.ensure(45);
     w.sub(t("Comparación de t = 6 y t = 8 (pregunta común)", "Comparing t = 6 and t = 8 (common question)"));
     w.paragraph(t(
       "En t = 6, en el registro g, los valores cercanos se acercan a 8 por los dos lados: el límite existe y solo falla el valor registrado, 12. Cambiar ese único valor por 8 hace continua a g, y eso es exactamente corregir el error de identificación. En t = 8 los valores se acercan a 10 por la izquierda y a 12 por la derecha: los límites laterales son distintos, así que no hay límite, y ningún valor en el punto (ni el 12 de n ni el 10 de g) puede eliminar el salto. Una respuesta completa razona con los dos lados y con el valor en el punto, no solo con los nombres «evitable» y «salto».",
       "At t = 6, in the record g, the nearby values approach 8 from both sides: the limit exists and only the recorded value, 12, fails. Changing that single value to 8 makes g continuous, and that is exactly what correcting the identification error means. At t = 8 the values approach 10 from the left and 12 from the right: the one-sided limits differ, so there is no limit, and no value at the point (neither n's 12 nor g's 10) can remove the jump. A complete answer argues from both sides and from the value at the point, not just from the names \"removable\" and \"jump\"."));
     w.sub(t("Oscilación en 10 (ampliación)", "Oscillation at 10 (extension)"));
-    w.formula(A.formulas.osc1, 150, 0.24);
-    w.formula(A.formulas.osc2, 160, 0.24);
+    w.formula(A.formulas.osc1);
+    w.formula(A.formulas.osc2);
     w.paragraph(t("Dos sucesiones que tienden a 10 por la izquierda dan valores con límites distintos (11 y 12), así que el límite por la izquierda no existe. Las fotos de la fase 1 están en los instantes s_k (cota 12) y 10 - 2/(4k+3) (cota 10): eran puntos de estas sucesiones, pero un número finito de ellos no lo demostraba.",
       "Two sequences tending to 10 from the left give values with different limits (11 and 12), so the left limit does not exist. The phase 1 photos are at the instants s_k (northing 12) and 10 - 2/(4k+3) (northing 10): they were points of these sequences, but finitely many of them did not prove it."));
     w.sub(t("Salto en 8 y discontinuidad evitable en 6", "Jump at 8 and removable discontinuity at 6"));
-    w.formula(A.formulas.jump, 150, 0.24);
-    w.formula(A.formulas.ejump, 150, 0.24);
-    w.formula(A.formulas.rem, 120, 0.24);
+    w.formula(A.formulas.jump);
+    w.formula(A.formulas.ejump);
+    w.formula(A.formulas.rem);
     w.sub(t("Límites en 12 y túnel", "Limits at 12 and tunnel"));
-    w.formula(A.formulas.inf, 130, 0.24);
-    w.formula(A.formulas.einf, 110, 0.24);
+    w.formula(A.formulas.inf);
+    w.formula(A.formulas.einf);
     w.paragraph(t("Túnel: con la sola hipótesis de continuidad, el TVI asegura un c en (3, 5) con n(c) = 6. Con el modelo, c = 4, y en ese instante el coche está en la columna e(4) = 4. Lo primero es una consecuencia de una hipótesis; lo segundo depende de suponer que dentro del túnel la columna y la cota siguen las rectas 0.5t + 2 y t + 2.",
       "Tunnel: with only the continuity hypothesis, the IVT guarantees some c in (3, 5) with n(c) = 6. With the model, c = 4, and at that instant the car is at column e(4) = 4. The first is a consequence of a hypothesis; the second depends on assuming that inside the tunnel the column and the northing follow the lines 0.5t + 2 and t + 2."));
     w.heading(t("Pregunta individual de cierre", "Individual closing question"));
@@ -1268,11 +1543,11 @@
       });
     });
     w.table([t("Prueba", "Exhibit"), "t", t("Hora", "Time"), t("Cámara", "Camera"), t("Vía", "Road"), t("Columna", "Column"), t("Cota", "Northing"), t("Coche", "Car"), t("Equipos", "Teams"), "n(t)"], rows,
-      [13, 13, 21, 13, 33, 14, 14, 19, 14, 13], { size: 6.8, minRow: 5, zebra: true });
+      [13, 13, 21, 13, 33, 14, 14, 19, 14, 13], { size: 8.5, minRow: 5.6, zebra: true });
     w.paragraph(t("La columna de la cámara coincide siempre con e(t), también en las dos fotografías del confundible, tomadas en la columna en la que estaba el coche buscado. La columna n(t) solo se rellena cuando la fotografía muestra el coche buscado: coincide con la cota de la cámara y con el modelo M.",
-      "The camera's column always equals e(t), also in the two photographs of the look-alike, taken in the column where the wanted car was. The n(t) column is filled only when the photograph shows the wanted car: it matches the camera's northing and the model M."), { italic: true, size: 9 });
+      "The camera's column always equals e(t), also in the two photographs of the look-alike, taken in the column where the wanted car was. The n(t) column is filled only when the photograph shows the wanted car: it matches the camera's northing and the model M."), { italic: true, size: 9.5 });
     w.paragraph(t(`Las pruebas F-01 a F-${String(CONSULTANT_LAST).padStart(2, "0")} llegan a los equipos ya pasadas a limpio en la hoja del consultor (hora, t, cámara, columna y cota); ninguna de ellas es una de las pruebas discutidas.`,
-      `Exhibits F-01 to F-${String(CONSULTANT_LAST).padStart(2, "0")} reach the teams already written up on the consultant's worksheet (time, t, camera, column and northing); none of them is a disputed exhibit.`), { italic: true, size: 9 });
+      `Exhibits F-01 to F-${String(CONSULTANT_LAST).padStart(2, "0")} reach the teams already written up on the consultant's worksheet (time, t, camera, column and northing); none of them is a disputed exhibit.`), { italic: true, size: 9.5 });
   }
 
   // ---------------------------------------------------------------- downloads (house standard)
@@ -1282,11 +1557,16 @@
     return z.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: { level: 6 } });
   }
 
-  function showFiles(files, bundles, complete, sepZip, bunZip) {
+  function showFiles(files, bundles, complete, guide, sepZip, bunZip) {
     [...files, ...bundles, complete, sepZip, bunZip].forEach((f) => { f.url = URL.createObjectURL(f.blob); state.urls.push(f.url); });
     els.complete.href = complete.url;
     els.complete.download = complete.fileName;
     els.complete.classList.remove("cc-hidden");
+    if (els.printguide) {
+      els.printguide.href = guide.url;
+      els.printguide.download = guide.fileName;
+      els.printguide.classList.remove("cc-hidden");
+    }
     els.bundles.innerHTML = [bunZip, ...bundles].map((f, k) => fileRow(f, k === 0)).join("");
     els.doclist.innerHTML = fileRow(sepZip, true) + files.map((f) => fileRow(f, false, f.teacher ? `${f.label} · ${t("Profesorado", "Teacher only")}` : f.label)).join("");
     els.documents.classList.remove("cc-hidden");
@@ -1305,6 +1585,7 @@
     state.urls = [];
     els.bundles.innerHTML = ""; els.doclist.innerHTML = "";
     els.complete.classList.add("cc-hidden"); els.complete.removeAttribute("href"); els.complete.removeAttribute("download");
+    if (els.printguide) { els.printguide.classList.add("cc-hidden"); els.printguide.removeAttribute("href"); els.printguide.removeAttribute("download"); }
     els.documents.classList.add("cc-hidden");
     setStatus("");
   }
@@ -1324,6 +1605,6 @@
     return new Intl.DateTimeFormat(LANG === "en" ? "en-GB" : "es-ES", { day: "numeric", month: "long", year: "numeric" }).format(d);
   }
 
-  window.DeltaCityGenerator = { readConfig, prepareAssets: (cfg) => prepareAssets(cfg || readConfig()), DOCS, BUNDLES };
-  init();
+  const ready = init();
+  window.DeltaCityGenerator = { readConfig, prepareAssets: (cfg) => prepareAssets(cfg || readConfig()), buildAll: (cfg) => buildAll(cfg || readConfig()), ready, DOCS, BUNDLES };
 })();

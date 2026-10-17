@@ -18,7 +18,7 @@ sidebar:
   nav:
     - calculus-casebook
 ---
-<link rel="stylesheet" href="{{ site.baseurl }}/assets/MatExp/calculus-cases/calculus-cases.css">
+<link rel="stylesheet" href="{{ site.baseurl }}/assets/MatExp/calculus-cases/calculus-cases.css?v=20261016d">
 
 A burgundy hatchback drives through the checkpoint at the **Delta City** harbour exit without stopping and crosses the city until it disappears along the north motorway. The patrol cannot keep up with it: all that remains of its route is the record of the plate-reading traffic cameras. The Chief Inspector, a role the teacher takes on, wants to know where the car went and what can be stated with certainty along each stretch. Three teams receive almost identical extracts of that record. Another car of the same model, in a similar red and with a similar plate, drives around the city, and a hurried reading can lead to the wrong conclusion.
 
@@ -29,7 +29,7 @@ The activity has two phases that are never mixed:
 
 The map carries a grid of columns, from west to east, and northings (the north coordinate), from south to north. The car's position at instant \(t\) is given by two numbers: its column \(e(t)\) (for *east*) and its northing \(n(t)\) (for *north*). Each valid photograph gives both at once: the time fixes \(t\) and the camera gives the column and the northing. On the map, the point \((e(t),n(t))\) traces the street the car follows; to study limits and continuity, each coordinate is looked at separately, against time. A parametric representation thus appears without being named: the column advances without jumps, at a different speed on each stretch, and all the phenomena of the case are in the northing.
 
-The activity takes two classes. At the end of the first, the teacher, as Chief Inspector, presents the case and hands out the packets; the mechanical part is done at home, and the second class is given to the coordination meeting, the model and each team's presentation.
+The activity follows the format of every Calculus Case: it is launched at the end of a class (15–20 minutes, with the projected presentation and the hand-out of the packets), the mechanical part is done at home and the next class is devoted to the coordination meeting, the model and each team's presentation.
 
 $$
 e(t)=\begin{cases}
@@ -60,16 +60,17 @@ Choose the city, the date, the start time and the plate of the pursued vehicle. 
   <section class="cc-workspace">
     <form id="delta-form" class="cc-panel" novalidate>
       <h2>Set up the case</h2>
-      <div class="cc-form-grid">
-        <label class="cc-full">City name
-          <input id="delta-city" type="text" value="Delta City" maxlength="40" required>
+      <section class="cc-step" data-cc-step-title="Your class">
+        <h3>1. Your class</h3>
+        <p class="cc-step-help">How many students do you have? The website forms teams of four or five and gives them dossiers A, B and C in turn; with more than three teams they repeat, without telling anyone who shares a file. The printing guide will give the exact copies.</p>
+        <label>Number of students
+          <input id="delta-students" type="number" min="9" max="60" step="1" value="24">
         </label>
-        <label>Case date
-          <input id="delta-date" type="date" value="2026-10-02">
-        </label>
-        <label>Start time (t = 0)
-          <input id="delta-start" type="time" value="18:00" step="60">
-        </label>
+        <div id="delta-groups" aria-live="polite"></div>
+      </section>
+      <section class="cc-step" data-cc-step-title="Plates">
+        <h3>2. The plates</h3>
+        <p class="cc-step-help">The plate of the pursued car and that of the look-alike, the same model in a similar red. The website proposes a look-alike of the same format with two or three characters changed; you can ask for another or type it.</p>
         <fieldset>
           <legend>Licence plates</legend>
           <div class="cc-form-grid">
@@ -85,18 +86,38 @@ Choose the city, the date, the start time and the plate of the pursued vehicle. 
           </div>
           <p id="delta-check" class="cc-note" role="status" aria-live="polite"></p>
         </fieldset>
+      </section>
+      <section class="cc-step" data-cc-step-title="Customise (optional)">
+        <h3>3. Customise (optional)</h3>
+        <p class="cc-step-help">The city, the date and the time change the labels and the times of every photograph; the map, the instants and the model do not change.</p>
+        <div class="cc-form-grid">
+        <label class="cc-full">City name
+          <input id="delta-city" type="text" value="Delta City" maxlength="40" required>
+        </label>
+        <label>Case date
+          <input id="delta-date" type="date" value="2026-10-02">
+        </label>
+        <label>Start time (t = 0)
+          <input id="delta-start" type="time" value="18:00" step="60">
+        </label>
         <label class="cc-full">PDF format
           <select id="delta-format">
             <option value="a4" selected>A4</option>
             <option value="letter">US Letter</option>
           </select>
         </label>
-      </div>
-      <div class="cc-actions">
-        <button id="delta-generate" type="submit">Generate documents</button>
-        <button id="delta-clear" class="cc-secondary" type="button">Clear downloads</button>
-      </div>
-      <div id="delta-status" class="cc-status" role="status" aria-live="polite"></div>
+        </div>
+      </section>
+      <section class="cc-step" data-cc-step-title="Generate">
+        <h3>4. Generate</h3>
+        <p class="cc-step-help">The website composes the photographs and the documents. Start with the printing and distribution guide. The launch presentation is projected from here.</p>
+        <div class="cc-actions">
+          <button id="delta-generate" type="submit">Generate documents</button>
+          <button id="delta-project" class="cc-secondary" type="button">Project the presentation</button>
+          <button id="delta-clear" class="cc-secondary" type="button">Clear downloads</button>
+        </div>
+        <div id="delta-status" class="cc-status" role="status" aria-live="polite"></div>
+      </section>
     </form>
 
     <aside class="cc-panel" aria-labelledby="delta-summary-title">
@@ -108,10 +129,11 @@ Choose the city, the date, the start time and the plate of the pursued vehicle. 
 
   <section id="delta-documents" class="cc-panel cc-documents cc-hidden" aria-labelledby="delta-documents-title">
     <h2 id="delta-documents-title">Activity documents</h2>
-    <p class="cc-download-note">At the end of the first class, hand out the phase 1 packets: one copy per student, different for each team. The phase 2 packet is handed out in the second class, after the coordination meeting. The teacher packet contains the team comparison and must not circulate before then. In each tab, the red row downloads a ZIP with all its content; the icons let you view or download each file.</p>
+    <p class="cc-download-note">Start with the <strong>printing and distribution guide</strong>: it says what to print, how, how many copies and when each document is handed out. The teacher packet contains the team comparison and must not circulate. In each tab, the red row downloads a ZIP with all its content; the icons let you view or download each file.</p>
     <div class="cc-tabs" role="tablist" aria-label="Document types">
       <button class="cc-tab-button" type="button" role="tab" aria-selected="true" aria-controls="delta-panel-bundles" data-cc-tab-target="delta-panel-bundles">Packets by role</button>
       <button class="cc-tab-button" type="button" role="tab" aria-selected="false" aria-controls="delta-panel-separate" data-cc-tab-target="delta-panel-separate">Separate documents</button>
+      <a id="delta-printguide" class="cc-tab-button cc-complete cc-hidden" href="#" download>Printing and distribution guide</a>
       <a id="delta-complete" class="cc-tab-button cc-complete cc-hidden" href="#" download>Complete PDF</a>
     </div>
     <div id="delta-panel-bundles" class="cc-tab-panel" role="tabpanel"><div id="delta-bundles" class="cc-file-list"></div></div>
@@ -140,4 +162,6 @@ The map is stylised: the column advances at a plausible rate, but the northing w
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-core.js?v=20261014a"></script>
-<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-generator.js?v=20261014a"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/calculus-cases/cc-wizard.js?v=20261016c"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/calculus-cases/cc-projector.js?v=20261016c"></script>
+<script src="{{ site.baseurl }}/assets/MatExp/analisis/calculo/limites-ciudad-delta/delta-city-generator.js?v=20261016d"></script>

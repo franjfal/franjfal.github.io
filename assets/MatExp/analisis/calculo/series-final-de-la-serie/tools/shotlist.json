@@ -1,0 +1,64 @@
+{
+  "format": "calculus-cases/series-finale-shotlist",
+  "version": 1,
+  "note": "Brief for replacing the procedural PREVIEW plates with final art. 1920x1080, no embedded text, fictional places and people only (no real shows, actors, studios or brands). Keep the 'free' areas clear: the engine draws the mathematics there. Coordinates are fractions of the frame (x from left, y from top).",
+  "style": "Moody science-fiction thriller, night, volumetric haze, cold cyan practical lights with a single warm amber accent for Irene and the door, 35 mm film grain, anamorphic framing safe for a 2.39:1 crop.",
+  "shots": [
+    {
+      "id": "S0",
+      "title": "Cold open: the countdown",
+      "plate": "none (pure black; the engine draws the red flashes and the time ruler)",
+      "free": [{ "x": 0, "y": 0, "w": 1, "h": 1 }],
+      "prompt": null
+    },
+    {
+      "id": "S1",
+      "title": "The laboratory and its 240 cameras",
+      "plate": "Night exterior of a mountain research zone seen from directly above: concentric terraces around a dark central shaft, scattered work lights, mist in the valleys.",
+      "free": [{ "x": 0.2, "y": 0.1, "w": 0.6, "h": 0.8, "why": "the ten camera rings are drawn as concentric circles centred at (0.5, 0.5)" }],
+      "prompt": "overhead night photograph of a fictional mountain research complex, concentric terraced rings around a dark central shaft, sparse cold work lights, low mist, no text, cinematic, 1920x1080"
+    },
+    {
+      "id": "S2",
+      "title": "Achilles: the chase",
+      "plate": "A long concrete corridor in one-point perspective, flashlight point of view, a closed steel door at the vanishing point, a distant silhouette.",
+      "free": [{ "x": 0.25, "y": 0.2, "w": 0.5, "h": 0.6, "why": "echo rings are drawn as glowing ellipses converging on the door at (0.5, 0.48)" }],
+      "prompt": "first-person flashlight view down a long narrow concrete service corridor, one-point perspective, heavy steel door at the vanishing point, faint silhouette ahead, haze in the beam, no text, cinematic thriller still"
+    },
+    {
+      "id": "S3",
+      "title": "The Rope: the probe",
+      "plate": "An impossibly long tunnel stretching to a vanishing horizon, a tiny moving light far ahead.",
+      "free": [{ "x": 0.05, "y": 0.75, "w": 0.9, "h": 0.2, "why": "minute counter and covered-fraction bar" }],
+      "prompt": "endless straight tunnel receding to a pinpoint horizon, ribbed walls, a tiny probe light far ahead, cold blue haze, sense of infinite length, no text, cinematic"
+    },
+    {
+      "id": "S4",
+      "title": "The erased log",
+      "plate": "A dark control room screen in close-up, scan lines, reflections of a face.",
+      "free": [{ "x": 0.15, "y": 0.12, "w": 0.7, "h": 0.76, "why": "log lines appear and strike out in pairs" }],
+      "prompt": "close-up of an old monochrome control room monitor in a dark room, empty screen with scan lines and faint reflection of a face, no text on screen, cinematic"
+    },
+    {
+      "id": "S5",
+      "title": "Dose",
+      "plate": "Two analogue dosimeters side by side on a metal bench under a red warning lamp.",
+      "free": [{ "x": 0.1, "y": 0.15, "w": 0.8, "h": 0.7, "why": "two gauges with needles and the red line at 2 are drawn by the engine" }],
+      "prompt": "two empty analogue gauge housings side by side on a scratched metal bench, red warning lamp above, dark room, shallow depth of field, gauge faces blank, no text, cinematic"
+    },
+    {
+      "id": "S6",
+      "title": "Pendulum",
+      "plate": "A scanner view of a corridor wall with a niche (the alcove), a beacon light swinging inside.",
+      "free": [{ "x": 0.08, "y": 0.35, "w": 0.84, "h": 0.3, "why": "beacon positions and the growing trail are drawn along a horizontal scale from 0 to 14 m" }],
+      "prompt": "side view of a dark corridor wall with a recessed alcove in the middle, thermal scanner aesthetic, horizontal composition, empty space along the centre line, no text, cinematic"
+    },
+    {
+      "id": "S7",
+      "title": "Closing: the door",
+      "plate": "Backlit steel door of Point Z, a hand resting on it, warm light leaking through the seams.",
+      "free": [{ "x": 0.2, "y": 0.7, "w": 0.6, "h": 0.2, "why": "end card with the tagline and the date" }],
+      "prompt": "backlit heavy steel door in darkness, a woman's hand resting flat on it, warm amber light leaking through the seams, dust in the air, no text, cinematic final shot"
+    }
+  ]
+}

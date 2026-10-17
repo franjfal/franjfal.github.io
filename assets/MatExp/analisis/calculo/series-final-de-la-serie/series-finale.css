@@ -1,0 +1,14 @@
+/* Calculus Cases · Case 7 · The Series Finale — only what is specific to this activity.
+   The shared block (.cc-case, panels, tabs, file rows) is in calculus-cases/calculus-cases.css. */
+.sf-case .sf-episodes { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 4px 12px; }
+.sf-case .sf-episodes label, .sf-case .sf-check { display: flex; align-items: center; gap: 6px; font-weight: 400; }
+.sf-case .sf-advanced { border: 1px solid var(--cc-line, #d9d5c8); border-radius: 6px; padding: 6px 10px; background: var(--cc-paper, #f7f2e5); }
+.sf-case .sf-advanced summary { cursor: pointer; font-weight: 600; color: var(--cc-blue-dark, #0b607f); }
+.sf-case .sf-advanced[open] summary { margin-bottom: 8px; }
+.sf-case .sf-packages { margin-top: 16px; }
+.sf-case .sf-packages p { margin: 0.4em 0; }
+.sf-case .cc-preview figure { margin: 0; }
+.sf-case .cc-preview canvas { display: block; border-radius: 4px; }
+.sf-case .cc-preview figcaption { font-size: 0.8em; color: var(--cc-muted, #5d6570); margin-top: 4px; }
+.sf-case input[type="checkbox"] { width: auto; min-width: 0; height: auto; padding: 0; margin: 0; flex: none; box-shadow: none; }
+.sf-case .sf-solution-note { font-size: 0.78em; color: var(--cc-muted, #5d6570); margin: 6px 0 2px; text-transform: uppercase; letter-spacing: 0.04em; }

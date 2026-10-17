@@ -720,7 +720,6 @@ def draw_labels(ctx, L, inset=None):
     D = C["label_district"]
     if inset is None:
         label(ctx, L["AV"], 6.6, 8.6 + 0.45, 30, ang(1, 1, at=6.6), bold=True)
-        label(ctx, L["AV"], 2.5, 4.5 + 0.45, 22, ang(1, 1, at=2.5), bold=True)
         label(ctx, L["TU"], 4.15, 6.15 - 0.62, 22, ang(1, 1, at=4.15), italic=True)
         t = 1.15
         label(ctx, L["PU"], t + 0.3, t * t - 0.55, 24, ang(1, 2 * t, at=t + 0.3), bold=True)
@@ -756,21 +755,20 @@ def draw_labels(ctx, L, inset=None):
         label(ctx, L["RN"], 8.75, 12.32, 30, 0, bold=True)
         label(ctx, L["RS"], 8.75, 9.68, 30, 0, bold=True)
         label(ctx, L["EN"], 7.93, 11.0, 26, -math.pi / 2, bold=True)
-        label(ctx, L["AV"], 7.66, 9.42, 24, ang(1, 1, at=7.66), bold=True)
         label(ctx, L["LB"], 8.62, 11.62, 24, ang(1, -0.55, at=8.62), italic=True)
         label(ctx, L["PL"], 10.16, 11.0, 22, -math.pi / 2, italic=True)
         label(ctx, L["AU"], 10.33, 12.55, 26, ang(1, 4 / (12 - 10.33) ** 2, at=10.33), bold=True)
         label(ctx, L["maze_note"], 9.985, 11.0, 16, -math.pi / 2, italic=True, colour=D, halo=6)
     elif inset == "avenue":
-        label(ctx, L["AV"], 6.55, 8.55 + 0.25, 34, ang(1, 1, at=6.55), bold=True)
+        label(ctx, L["AV"], 7.1, 9.1 + 0.25, 34, ang(1, 1, at=7.1), bold=True)
         label(ctx, L["RN"], 6.5, 12.3, 34, 0, bold=True)
         label(ctx, L["river"], 5.7, river_y(5.7) + 0.02, 34, 0, colour=C["label_water"], italic=True, spacing=8)
         label(ctx, L["TU"], 5.0 - 0.02, 7.0 - 0.45, 24, ang(1, 1, at=5.0 - 0.02), italic=True)
     elif inset == "tunnel":
-        label(ctx, L["AV"], 2.62, 4.62 + 0.18, 30, ang(1, 1, at=2.62), bold=True)
+        label(ctx, L["AV"], 2.85, 4.85 - 0.3, 30, ang(1, 1, at=2.85), bold=True)
         label(ctx, L["TU"], 4.08, 6.08 - 0.28, 30, ang(1, 1, at=4.08), italic=True)
         label(ctx, L["PU"], 1.62, 3.3, 26, ang(1, 3.6, at=1.62), bold=True)
-        label(ctx, L["LO"], 1.98, 3.55, 24, 0, italic=True)
+        label(ctx, L["LO"], 1.55, 3.55, 24, 0, italic=True)
         label(ctx, L["lonja"], 2.27, 3.2, 22, 0)
         label(ctx, L["river"], 4.85, 6.0, 34, 0, colour=C["label_water"], italic=True, spacing=8)
         label(ctx, L["parking"], 3.3, 4.85, 22, 0, italic=True)

@@ -706,7 +706,7 @@
       marks.forEach((t) => {
         const x = X(E(t)), y = Y(northValue(data, t));
         if (y < 0 || y > ctx.canvas.height) return;
-        ctx.beginPath(); ctx.arc(x, y, 4.6 * u, 0, Math.PI * 2);
+        ctx.beginPath(); ctx.arc(x, y, Math.max(4.6 * u, fs * 0.2), 0, Math.PI * 2);
         ctx.fillStyle = "#ffffff"; ctx.fill(); ctx.lineWidth = 2.4 * u; ctx.strokeStyle = "#202a3d"; ctx.stroke();
         const [dx, dy] = (opts.markOffsets && opts.markOffsets[t]) || [1, -1];
         const tx = x + dx * fs * 0.75, ty = y + dy * fs * 0.75;
