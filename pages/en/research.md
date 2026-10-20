@@ -61,6 +61,7 @@ My research focuses on **functional analysis and the geometry of Banach spaces**
 ## Research projects
 
 {: reversed="reversed"}
+6. _Real and Complex Analysis: Operators, Lipschitz Structures and Applications_ (ARCOLA), PID2025-168101NB-I00, funded by MICIU/AEI/10.13039/501100011033. Principal investigators: Pablo Sevilla Peris and Francisco Javier Falcó Benavent. Universitat Politècnica de València, Universitat de València and Universidad Complutense de Madrid, 2026-2030.
 5. _Análisis complejo y geometría de espacios de Banach_ PID2021-122126NB-C31 funded by MICIU/AEI/10.13039/501100011033 and by ERDF/EU, 2022-2026.
 4. _Análisis complejo y geometría en espacios de Banach_, Ministry of Economy and Competitiveness of Spain, 2018-2022.
 3. _Algebraic structures in Linear dynamics_, Fonds de la Recherche Scientifique - FNRS (Belgium), 2016-2017.
