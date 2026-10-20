@@ -5,6 +5,15 @@ lang: en
 page_id: research
 ---
 
+My research focuses on **functional analysis and the geometry of Banach spaces**, with particular emphasis on norm-attaining operators and polynomials, nonlinear functional analysis, and the interplay between symmetry and geometric properties of infinite-dimensional spaces. My interests also extend to **complex analysis and approximation theory**, including holomorphic functions in several variables, as well as **linear dynamics, hypercyclicity, and algebraic structures in spaces of functions and operators**.
+
+## Research profiles
+
+- [ORCID](https://orcid.org/0000-0001-5435-3053){:target="_blank"}
+- [ResearchGate](https://www.researchgate.net/profile/Javier-Falco){:target="_blank"}
+- [Scientific output UV (researcher)](https://producciocientifica.uv.es/investigadores/334859/detalle){:target="_blank"}
+- [Scientific output UV (research group)](https://producciocientifica.uv.es/grupos/40375/detalle){:target="_blank"}
+
 ## Published articles
 
 {: reversed="reversed"}

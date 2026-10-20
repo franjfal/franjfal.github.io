@@ -5,6 +5,15 @@ lang: es
 page_id: research
 ---
 
+Mi investigación se centra en el **análisis funcional y la geometría de los espacios de Banach**, con especial énfasis en los operadores y polinomios que alcanzan la norma, el análisis funcional no lineal y la interacción entre la simetría y las propiedades geométricas de los espacios de dimensión infinita. Mis intereses se extienden también al **análisis complejo y la teoría de aproximación**, incluyendo las funciones holomorfas en varias variables, así como a la **dinámica lineal, la hiperciclicidad y las estructuras algebraicas en espacios de funciones y operadores**.
+
+## Perfiles de investigación
+
+- [ORCID](https://orcid.org/0000-0001-5435-3053){:target="_blank"}
+- [ResearchGate](https://www.researchgate.net/profile/Javier-Falco){:target="_blank"}
+- [Producción científica UV (investigador)](https://producciocientifica.uv.es/investigadores/334859/detalle){:target="_blank"}
+- [Producción científica UV (grupo de investigación)](https://producciocientifica.uv.es/grupos/40375/detalle){:target="_blank"}
+
 ## Artículos publicados
 
 {: reversed="reversed"}
