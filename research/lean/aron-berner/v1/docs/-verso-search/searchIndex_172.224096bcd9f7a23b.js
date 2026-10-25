@@ -1,0 +1,1 @@
+window.docContents[172].resolve({"/LindenstraussPolynomials/Chain/#LindenstraussPolynomials___zv":{"contents":"The points z₀,…,z_{d-1}, z_d of the proof of Lemma lem:geometry:\nzᵢ = fᵢ(x) uᵢ for i < d and z_d = x. \n\n","context":"","header":"LindenstraussPolynomials.zv","id":"/LindenstraussPolynomials/Chain/#LindenstraussPolynomials___zv"}});

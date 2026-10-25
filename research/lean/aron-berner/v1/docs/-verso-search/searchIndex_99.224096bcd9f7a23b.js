@@ -1,0 +1,1 @@
+window.docContents[99].resolve({"/LindenstraussPolynomials/Polarization/#LindenstraussPolynomials___cPol":{"contents":"The polarization constant c_n = n^n / n!. \n\n","context":"","header":"LindenstraussPolynomials.cPol","id":"/LindenstraussPolynomials/Polarization/#LindenstraussPolynomials___cPol"}});

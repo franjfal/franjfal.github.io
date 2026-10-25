@@ -1,0 +1,1 @@
+window.docContents[208].resolve({"/LindenstraussPolynomials/Substitution/#mod-doc-LindenstraussPolynomials___Substitution-21-0":{"contents":"The averaging operator \n\n","context":"","header":"LindenstraussPolynomials.Substitution","id":"/LindenstraussPolynomials/Substitution/#mod-doc-LindenstraussPolynomials___Substitution-21-0"}});

@@ -1,0 +1,1 @@
+window.docContents[189].resolve({"/LindenstraussPolynomials/Extension/#LindenstraussPolynomials___abExt_inclusion":{"contents":"The canonical extension extends P: P̃(Jx) = P(x). \n\n","context":"","header":"LindenstraussPolynomials.abExt_inclusion","id":"/LindenstraussPolynomials/Extension/#LindenstraussPolynomials___abExt_inclusion"}});

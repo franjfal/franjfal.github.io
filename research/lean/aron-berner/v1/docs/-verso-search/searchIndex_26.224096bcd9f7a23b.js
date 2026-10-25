@@ -1,0 +1,1 @@
+window.docContents[26].resolve({"/LindenstraussPolynomials/Polarization/#LindenstraussPolynomials___opNorm_le_cPol_mul":{"contents":"The polarization estimate (eq:polarnorm), upper half: ‖Ǎ‖ ≤ c_n ‖P‖. \n\n","context":"","header":"LindenstraussPolynomials.opNorm_le_cPol_mul","id":"/LindenstraussPolynomials/Polarization/#LindenstraussPolynomials___opNorm_le_cPol_mul"}});

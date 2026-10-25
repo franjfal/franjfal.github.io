@@ -1,0 +1,1 @@
+window.docContents[44].resolve({"/LindenstraussPolynomials/Theorems/#LindenstraussPolynomials___norm_diagExtV_scalar":{"contents":"For scalar-valued forms, the vector-valued extension has the same modulus. \n\n","context":"","header":"LindenstraussPolynomials.norm_diagExtV_scalar","id":"/LindenstraussPolynomials/Theorems/#LindenstraussPolynomials___norm_diagExtV_scalar"}});

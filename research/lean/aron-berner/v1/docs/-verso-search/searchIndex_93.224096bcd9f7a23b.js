@@ -1,0 +1,1 @@
+window.docContents[93].resolve({"/LindenstraussPolynomials/Geometry/#LindenstraussPolynomials___sum_card_pow_eq":{"contents":"∑_{F ⊆ {1,…,n}} |F|^n = n! D_n. \n\n","context":"","header":"LindenstraussPolynomials.sum_card_pow_eq","id":"/LindenstraussPolynomials/Geometry/#LindenstraussPolynomials___sum_card_pow_eq"}});

@@ -1,0 +1,1 @@
+window.docContents[43].resolve({"/LindenstraussPolynomials/Basic/#LindenstraussPolynomials___MLin":{"contents":"Continuous n-linear maps X × ⋯ × X → Y. \n\n","context":"","header":"LindenstraussPolynomials.MLin","id":"/LindenstraussPolynomials/Basic/#LindenstraussPolynomials___MLin"}});

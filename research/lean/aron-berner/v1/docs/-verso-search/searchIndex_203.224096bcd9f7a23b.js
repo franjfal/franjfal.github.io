@@ -1,0 +1,1 @@
+window.docContents[203].resolve({"/LindenstraussPolynomials/Deficit/#LindenstraussPolynomials___lam":{"contents":"The loss λ_k = (1 + α_k) M_k - M_{k+1}. \n\n","context":"","header":"LindenstraussPolynomials.lam","id":"/LindenstraussPolynomials/Deficit/#LindenstraussPolynomials___lam"}});

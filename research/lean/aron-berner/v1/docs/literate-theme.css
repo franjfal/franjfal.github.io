@@ -1,0 +1,53 @@
+:root {
+    --verso-background-color: #ffffff;
+    --verso-border-color: #e2e2df;
+    --verso-code-box-background-color: #fbfbfa;
+    --verso-code-box-border-color: #e2e2df;
+    --verso-code-font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    --verso-current-bg: #111111;
+    --verso-current-fg: #ffffff;
+    --verso-link-color: #1d4ed8;
+    --verso-link-hover-bg: #eef2ff;
+    --verso-link-visited-color: #1d4ed8;
+    --verso-structure-color: #111111;
+    --verso-structure-font-family: -apple-system, BlinkMacSystemFont, Roboto, "Segoe UI", "Helvetica Neue", "Lucida Grande", Arial, sans-serif;
+    --verso-surface-color: #f7f7f5;
+    --verso-text-color: #1f2328;
+    --verso-text-font-family: -apple-system, BlinkMacSystemFont, Roboto, "Segoe UI", "Helvetica Neue", "Lucida Grande", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --verso-background-color: #ffffff;
+        --verso-border-color: #e2e2df;
+        --verso-code-box-background-color: #fbfbfa;
+        --verso-code-box-border-color: #e2e2df;
+        --verso-code-font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        --verso-current-bg: #111111;
+        --verso-current-fg: #ffffff;
+        --verso-link-color: #1d4ed8;
+        --verso-link-hover-bg: #eef2ff;
+        --verso-link-visited-color: #1d4ed8;
+        --verso-structure-color: #111111;
+        --verso-structure-font-family: -apple-system, BlinkMacSystemFont, Roboto, "Segoe UI", "Helvetica Neue", "Lucida Grande", Arial, sans-serif;
+        --verso-surface-color: #f7f7f5;
+        --verso-text-color: #1f2328;
+        --verso-text-font-family: -apple-system, BlinkMacSystemFont, Roboto, "Segoe UI", "Helvetica Neue", "Lucida Grande", Arial, sans-serif;
+    }
+}
+:root[data-theme="dark"] {
+    --verso-background-color: #ffffff;
+    --verso-border-color: #e2e2df;
+    --verso-code-box-background-color: #fbfbfa;
+    --verso-code-box-border-color: #e2e2df;
+    --verso-code-font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    --verso-current-bg: #111111;
+    --verso-current-fg: #ffffff;
+    --verso-link-color: #1d4ed8;
+    --verso-link-hover-bg: #eef2ff;
+    --verso-link-visited-color: #1d4ed8;
+    --verso-structure-color: #111111;
+    --verso-structure-font-family: -apple-system, BlinkMacSystemFont, Roboto, "Segoe UI", "Helvetica Neue", "Lucida Grande", Arial, sans-serif;
+    --verso-surface-color: #f7f7f5;
+    --verso-text-color: #1f2328;
+    --verso-text-font-family: -apple-system, BlinkMacSystemFont, Roboto, "Segoe UI", "Helvetica Neue", "Lucida Grande", Arial, sans-serif;
+}

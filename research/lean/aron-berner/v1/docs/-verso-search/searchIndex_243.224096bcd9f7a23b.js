@@ -1,0 +1,1 @@
+window.docContents[243].resolve({"/LindenstraussPolynomials/Limit/#LindenstraussPolynomials___opNorm_seq_diff":{"contents":"The operator-norm version. \n\n","context":"","header":"LindenstraussPolynomials.opNorm_seq_diff","id":"/LindenstraussPolynomials/Limit/#LindenstraussPolynomials___opNorm_seq_diff"}});

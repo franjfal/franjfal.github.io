@@ -1,0 +1,1 @@
+window.docContents[20].resolve({"/LindenstraussPolynomials/Basic/#LindenstraussPolynomials___symmetrize":{"contents":"Symmetrization (1/n!) ∑_σ A ∘ σ of a multilinear map. \n\n","context":"","header":"LindenstraussPolynomials.symmetrize","id":"/LindenstraussPolynomials/Basic/#LindenstraussPolynomials___symmetrize"}});

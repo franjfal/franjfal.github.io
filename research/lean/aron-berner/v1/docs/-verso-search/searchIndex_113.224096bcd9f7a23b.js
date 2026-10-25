@@ -1,0 +1,1 @@
+window.docContents[113].resolve({"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___seqM_succ_bounds":{"contents":"(1 + α_k)(M_k - α_k²) ≤ M_{k+1} ≤ (1 + α_k) M_k (eq:normbounds). \n\n","context":"","header":"LindenstraussPolynomials.seqM_succ_bounds","id":"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___seqM_succ_bounds"}});

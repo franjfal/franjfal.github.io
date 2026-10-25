@@ -1,0 +1,1 @@
+window.docContents[175].resolve({"/LindenstraussPolynomials/Geometry/#LindenstraussPolynomials___chain_pair_value":{"contents":"The vector S_i(1) S_j(1/2) x used in the compatibility step. \n\n","context":"","header":"LindenstraussPolynomials.chain_pair_value","id":"/LindenstraussPolynomials/Geometry/#LindenstraussPolynomials___chain_pair_value"}});

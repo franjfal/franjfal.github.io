@@ -1,0 +1,1 @@
+window.docContents[115].resolve({"/LindenstraussPolynomials/Limit/#LindenstraussPolynomials___polyNorm_limQ_sub_A":{"contents":"‖Q - P‖ ≤ 4a. \n\n","context":"","header":"LindenstraussPolynomials.polyNorm_limQ_sub_A","id":"/LindenstraussPolynomials/Limit/#LindenstraussPolynomials___polyNorm_limQ_sub_A"}});

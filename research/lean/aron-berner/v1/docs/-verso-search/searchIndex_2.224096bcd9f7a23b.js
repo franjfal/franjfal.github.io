@@ -1,0 +1,1 @@
+window.docContents[2].resolve({"/LindenstraussPolynomials/Alpha/#LindenstraussPolynomials___prod_one_add_alpha":{"contents":"(1-a) ∏_{h<k} (1 + α_h) = 1 - α_k (proof of eq:product). \n\n","context":"","header":"LindenstraussPolynomials.prod_one_add_alpha","id":"/LindenstraussPolynomials/Alpha/#LindenstraussPolynomials___prod_one_add_alpha"}});

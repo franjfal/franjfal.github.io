@@ -1,0 +1,1 @@
+window.docContents[125].resolve({"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___seqP":{"contents":"The sequence P_k. \n\n","context":"","header":"LindenstraussPolynomials.seqP","id":"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___seqP"}});

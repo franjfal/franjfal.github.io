@@ -1,0 +1,1 @@
+window.docContents[167].resolve({"/LindenstraussPolynomials/Extension/#LindenstraussPolynomials___norm_diagExt_le":{"contents":"|Ā(z,…,z)| ≤ ‖A‖ ‖z‖^m. \n\n","context":"","header":"LindenstraussPolynomials.norm_diagExt_le","id":"/LindenstraussPolynomials/Extension/#LindenstraussPolynomials___norm_diagExt_le"}});

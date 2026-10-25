@@ -2,7 +2,8 @@
   The formalizations Proofline has published, newest first, from
   _data/lean_formalizations.json (written by every export). Renders nothing
   until the first one is published. Include it as lean/formalizations-list.html;
-  pass heading=false to leave out the heading and introduction.
+  pass heading=false to leave out the heading and introduction. The heading
+  follows the page's language; the formalizations themselves are in English.
 {% endcomment %}
 {% assign lean_items = site.data.lean_formalizations.items | sort: "published_at" | reverse %}
 {% assign lean_lang = page.lang | default: site.active_lang | default: site.default_lang %}
@@ -30,10 +31,10 @@
   <a class="lean-list__item" href="{{ item.url | relative_url }}">
     <span class="lean-list__top">
       <span class="lean-list__title">{{ item.title }}</span>
-      <span class="lean-list__status lean-list__status--{{ item.status }}">{% if lean_lang == "en" %}{{ item.status_en }}{% else %}{{ item.status_es }}{% endif %}</span>
+      <span class="lean-list__status lean-list__status--{{ item.status }}">{{ item.status_en }}</span>
     </span>
     {% if item.summary and item.summary != "" %}<span class="lean-list__summary">{{ item.summary }}</span>{% endif %}
-    <span class="lean-list__meta">{% if item.article and item.article != "" %}{{ item.article }} · {% endif %}{% if item.arxiv and item.arxiv != "" %}{{ item.arxiv }} · {% endif %}v{{ item.version }} · {{ item.published_at | date: "%d/%m/%Y" }} · Lean 4 · Mathlib</span>
+    <span class="lean-list__meta">{% if item.article and item.article != "" %}{{ item.article }} · {% endif %}{% if item.arxiv and item.arxiv != "" %}{{ item.arxiv }} · {% endif %}v{{ item.version }} · {{ item.published_at | date: "%-d %b %Y" }} · Lean 4 · Mathlib</span>
   </a>
   {% endfor %}
 </div>

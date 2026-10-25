@@ -1,0 +1,1136 @@
+{
+ "schema": "proofline.lean-manifest.v1",
+ "content_sha256": "968371919d78c301130eca573ef51749671dd632da34ed4b84a39d4aee5b283e",
+ "files": [
+  {
+   "path": "aron-berner-v1.zip",
+   "sha256": "607af9eef3a6dbc8e65444337a375e7e3d1f866952bbfeaee933d000c9221bdc",
+   "bytes": 60788
+  },
+  {
+   "path": "docs/-verso-docs.json",
+   "sha256": "a8af2b568bf1b28618667c0e12684b2dfde21cbe01dc5922a25bf953d8200aa9",
+   "bytes": 401333
+  },
+  {
+   "path": "docs/-verso-search/README.txt",
+   "sha256": "c2592e93a155651c869ea357d9b4c8bbd28920eb841b6a7c984841fd5fe9993a",
+   "bytes": 4716
+  },
+  {
+   "path": "docs/-verso-search/domain-display.css",
+   "sha256": "70a88a17f590dc105d7505a27b031e70addf1cc9cc71b846c6c4c672a03a1f09",
+   "bytes": 209
+  },
+  {
+   "path": "docs/-verso-search/domain-mappers.d.ts",
+   "sha256": "b347aa85cd1497191ce7e7166ef113e7c4c83f79345a6a4f7816a2155a5f7665",
+   "bytes": 120
+  },
+  {
+   "path": "docs/-verso-search/domain-mappers.js",
+   "sha256": "3c8137610af70f25d31bad3c53095e5bbf67ece50f0ccda46480088c90930f0f",
+   "bytes": 1040
+  },
+  {
+   "path": "docs/-verso-search/elasticlunr.min.js",
+   "sha256": "e528591249f3f4f2f091f59113b51453d2fe7d062b856f62caca135e4a57d7a0",
+   "bytes": 68650
+  },
+  {
+   "path": "docs/-verso-search/fuzzysort.d.ts",
+   "sha256": "7c3f3de27ad6eb8ab420f1aade753483e1a597820ff7b5d80fa210e1c6f7c4e5",
+   "bytes": 2845
+  },
+  {
+   "path": "docs/-verso-search/fuzzysort.min.js",
+   "sha256": "6be6f5eeab6b0e22fab168c589daa7b9f910104c3afb939e7cd700893ccff13a",
+   "bytes": 6657
+  },
+  {
+   "path": "docs/-verso-search/jsconfig.json",
+   "sha256": "6ae5ab90515f1ad5d923aca1616366dc67a1961b78c0285d02e4182791df7796",
+   "bytes": 233
+  },
+  {
+   "path": "docs/-verso-search/licenses.md",
+   "sha256": "437e3dad49ac48ebfeabcaaf4c020b6580b13690b24ca0c5b31e4f3c797b0e43",
+   "bytes": 2274
+  },
+  {
+   "path": "docs/-verso-search/search-box.css",
+   "sha256": "f7c742f4b6439d1f4b027a4da1f22994939d7b34f5af6e2a260fc03497003a5e",
+   "bytes": 7610
+  },
+  {
+   "path": "docs/-verso-search/search-box.js",
+   "sha256": "1874b68fbb4290930b70206d8cc0ba37fad528d106f5af28f2a65d0a60804c12",
+   "bytes": 53133
+  },
+  {
+   "path": "docs/-verso-search/search-config.js",
+   "sha256": "a6a40563e2b23f62dc52c54a3d51d7b35b3eb2cb937745d7115a843a1737e59e",
+   "bytes": 35
+  },
+  {
+   "path": "docs/-verso-search/search-highlight.css",
+   "sha256": "b99e8b97d255b99dd1b56320227d0ce44a947e87696d424200082911df8fc8fc",
+   "bytes": 1905
+  },
+  {
+   "path": "docs/-verso-search/search-highlight.js",
+   "sha256": "395e1db010df24f40b1aebe4bd7269d7962d5f85bff50a0b970527d5d15d8011",
+   "bytes": 13959
+  },
+  {
+   "path": "docs/-verso-search/search-init.js",
+   "sha256": "28e7288c0e71766c843fc7454613496e322578771b28e691a4a0b60f4b0313b1",
+   "bytes": 2707
+  },
+  {
+   "path": "docs/-verso-search/search-page.css",
+   "sha256": "6a1bd3425d469a7149ecef343ca9b339a765efcefca694787f7d57899ca40912",
+   "bytes": 4625
+  },
+  {
+   "path": "docs/-verso-search/search-page.js",
+   "sha256": "73a444f09a313e7fde46fdbbdf359261eced7ba3e77f8ea5192f3a0219e794ff",
+   "bytes": 17919
+  },
+  {
+   "path": "docs/-verso-search/searchIndex.js",
+   "sha256": "11e43cb3f4e34c2ea5e74b5bba8defd9b425aa31ff973a557589030d28098fad",
+   "bytes": 322647
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_1.224096bcd9f7a23b.js",
+   "sha256": "30cdfce87e56eea0bea2380440e1a8ef21a7ea5a55bf511fa672ac310702f276",
+   "bytes": 424
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_101.224096bcd9f7a23b.js",
+   "sha256": "1a65001e28235a72dfa703fcc1b4e0020313c790ab5f239f4d3e36480a42db7f",
+   "bytes": 362
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_103.224096bcd9f7a23b.js",
+   "sha256": "745b71bc32608f3f1d220e9bcc8b2937a0895da98c46db24eedab091e474934c",
+   "bytes": 437
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_104.224096bcd9f7a23b.js",
+   "sha256": "50311786ddd5c1463a47ac9b692a20ff42366f29073f4e70039032822e2c12e7",
+   "bytes": 321
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_107.224096bcd9f7a23b.js",
+   "sha256": "67f8c55611db723d8d185f9014dff77a0ce4ccf8e5aee2a174b18f5b27d000a9",
+   "bytes": 281
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_108.224096bcd9f7a23b.js",
+   "sha256": "d6a6cf4b8fe2f3a3a84c049a5d50fc0743eb5bcf2507838e362024b99cf0600f",
+   "bytes": 336
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_109.224096bcd9f7a23b.js",
+   "sha256": "ae2b03082ac3d87eda6e9f4f33a64d044f90d32f4b9aa063966ddbaf71c16888",
+   "bytes": 319
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_113.224096bcd9f7a23b.js",
+   "sha256": "b4cb5e530c8d966a4ee55440b84658c90fe5707808b9791c1428bffba4e2606a",
+   "bytes": 371
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_114.224096bcd9f7a23b.js",
+   "sha256": "1c8abab1dbe47a9416fb6735f2f1bb98a30a539a92d4c56ddea16ad48d85e2f1",
+   "bytes": 608
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_115.224096bcd9f7a23b.js",
+   "sha256": "cc901fdfdbbf6bca1d0e79b0880b5ee16b3622f9aad053e92ca271bd0c2eb7c5",
+   "bytes": 313
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_116.224096bcd9f7a23b.js",
+   "sha256": "48839550858b5278f4ac9be528231bcef23669d181ffb6b6566c8df86def777a",
+   "bytes": 668
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_118.224096bcd9f7a23b.js",
+   "sha256": "3293c8f1e0b89f86cf295d3dcef010880bbe5e3ea5558b6474e52a18ff623753",
+   "bytes": 894
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_121.224096bcd9f7a23b.js",
+   "sha256": "68c3b10691c5b99f982f85edb9d148846433596413ec0c7022706f6d544702b8",
+   "bytes": 461
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_122.224096bcd9f7a23b.js",
+   "sha256": "58a5956d31c71bca3bc699a4594f61685213b9b6f1e729cefe6b0b40e81151e9",
+   "bytes": 1004
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_123.224096bcd9f7a23b.js",
+   "sha256": "22bc7ebb5dcdbfd674334c435499865c6b7f7f199d00d32362e62cf4dd9bbb3b",
+   "bytes": 656
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_125.224096bcd9f7a23b.js",
+   "sha256": "8ca2db52c259e293807036e8b6cd258e1577593daa29cdffa41632dab48e46a3",
+   "bytes": 280
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_126.224096bcd9f7a23b.js",
+   "sha256": "d5f774f2d0df931e00c8ed8df103381a3353e7d852295a2fc307dc58545e493e",
+   "bytes": 330
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_129.224096bcd9f7a23b.js",
+   "sha256": "9bab5892d2b914af2703f95b8b48a3b735e35f077c3eb752a7dd6fa48703de77",
+   "bytes": 285
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_138.224096bcd9f7a23b.js",
+   "sha256": "684a679c379ed94580f6aed2bf9296d1b72b2ce4f8f6a9478f2a224be55b0914",
+   "bytes": 387
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_139.224096bcd9f7a23b.js",
+   "sha256": "8e7b6866d67a190ca6aa56e5df0d6ebcea6e793ff71fa46c43d18bc2004d1992",
+   "bytes": 290
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_143.224096bcd9f7a23b.js",
+   "sha256": "fa189ab8ef81a06849465256a16eeffa8a31e35668c9f771bb4458b24a729ca5",
+   "bytes": 356
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_144.224096bcd9f7a23b.js",
+   "sha256": "6530722dddd3129814353fe6c84416672b5559f2bde3a02000df6faab250e59e",
+   "bytes": 312
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_147.224096bcd9f7a23b.js",
+   "sha256": "fdf16cef0090967d06cc29d6bfefdd4fc8e86f94a27b8fdd5fd44eac5412d031",
+   "bytes": 267
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_148.224096bcd9f7a23b.js",
+   "sha256": "909eeab22bd5ca8a9936d27b2b6a79c19f7c8f0fbb342ef4c61264669e5cee65",
+   "bytes": 540
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_151.224096bcd9f7a23b.js",
+   "sha256": "e4b87be5fce05f0ee304eb2677aee2af59ce526defe0165b507b7b77bef50c10",
+   "bytes": 293
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_152.224096bcd9f7a23b.js",
+   "sha256": "2c735c7aa9f59f80d4a4eab7cc3b84102649bce5f5f2e018f444e5d1d4c39345",
+   "bytes": 266
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_153.224096bcd9f7a23b.js",
+   "sha256": "d3a80d7322c6673684d9853ad5280fe9af91015447825dd1667dda9fc6281a67",
+   "bytes": 645
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_154.224096bcd9f7a23b.js",
+   "sha256": "71b4860307f940d13f350c8b0e4377742db68bbc062629aa5c5bc55651b1c71f",
+   "bytes": 321
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_155.224096bcd9f7a23b.js",
+   "sha256": "bfa1d64afba27ededd47d77a4e533a29f51e2386da955eb517e5d866365a230b",
+   "bytes": 328
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_158.224096bcd9f7a23b.js",
+   "sha256": "67efc2f0b216ac6da07fc6a35d70c302feb4b762db3cf0961f024005c821da10",
+   "bytes": 1086
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_16.224096bcd9f7a23b.js",
+   "sha256": "3c2bf538bce1aa0d444c3dbd7a9dd758c2c5387452e15bdafbd3ffbbbcb4a6f9",
+   "bytes": 667
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_163.224096bcd9f7a23b.js",
+   "sha256": "5046c131eb8fe9a4a19fcb17e6e807aeb7f02f2f51c4dcaaa4cf1a1e093e1659",
+   "bytes": 405
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_164.224096bcd9f7a23b.js",
+   "sha256": "dda012a19e882426c9d9cb40c8dd2e26d7c22dfa252e67b2bb13b59b1796b640",
+   "bytes": 267
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_165.224096bcd9f7a23b.js",
+   "sha256": "8962b9422add552d4b899e6f7d72b6ff5b33e93b0028180f9859be63a90b25e0",
+   "bytes": 267
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_167.224096bcd9f7a23b.js",
+   "sha256": "983987aa572b06c35922c46299472af840c391410ce3c9a98e5f73ef716649c3",
+   "bytes": 326
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_169.224096bcd9f7a23b.js",
+   "sha256": "231bdf42710b985fb246bcd3c4be2a5967368d0ca6e6475ab837840fd0cb827b",
+   "bytes": 332
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_172.224096bcd9f7a23b.js",
+   "sha256": "f3d37243d9625780b6ea0ac01bea9b0d13c2e50178a70cc92a91bd3be1a5a3cb",
+   "bytes": 355
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_174.224096bcd9f7a23b.js",
+   "sha256": "6c1d14e7745b1e4d4da48ebdc9f5dc29d18ca29b26537a2d02f7446cd67edb1d",
+   "bytes": 361
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_175.224096bcd9f7a23b.js",
+   "sha256": "6d773a1d2206691c4e0894e807dd99b3860df31c8e295757146f2d8eccd3c637",
+   "bytes": 351
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_176.224096bcd9f7a23b.js",
+   "sha256": "1f65a2287d8e3cb2c3a658399ac05d1550452d6aed2576c21847e80acc47be4b",
+   "bytes": 1009
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_178.224096bcd9f7a23b.js",
+   "sha256": "1a123c5a261ae7aa842acb9dea6209ba758d9571d95e749d1fbf503d397c9400",
+   "bytes": 814
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_184.224096bcd9f7a23b.js",
+   "sha256": "394ca6ea8b71870bc38a139fc3335d9bd9efbdce51e592bb06f9c60a9e5cbb87",
+   "bytes": 480
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_189.224096bcd9f7a23b.js",
+   "sha256": "c58ba9406913d6d69b7ed6755f449e6540cd9596ea379894d5bc4e8b008c35df",
+   "bytes": 340
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_19.224096bcd9f7a23b.js",
+   "sha256": "b28d35ba94e2c99ed72f7e20f322f0b6af047978cadac1737f60fbe885f14948",
+   "bytes": 596
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_190.224096bcd9f7a23b.js",
+   "sha256": "5b7767d24e6ee53fe39eb5ae05cec91e86e525edb5babc15f379e79fc35e1f43",
+   "bytes": 965
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_192.224096bcd9f7a23b.js",
+   "sha256": "806a7d1140aef5fb7c5ab88bff02db792400b31a8c1976d4743c9d1bfca4b038",
+   "bytes": 524
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_193.224096bcd9f7a23b.js",
+   "sha256": "a69a42fa9920d6416155842fd7c8f0ec9568da9c4618affad666215a3513b95e",
+   "bytes": 583
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_196.224096bcd9f7a23b.js",
+   "sha256": "3caf768bc25ddd3a122a97568eb2187f492d7d4b4a75766eca73ef260fb9ec1c",
+   "bytes": 397
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_197.224096bcd9f7a23b.js",
+   "sha256": "895aeaa3fabdafc219856de297f3a04fbe999fd187577a8f4031e9ddaadbeddc",
+   "bytes": 601
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_2.224096bcd9f7a23b.js",
+   "sha256": "f6991fb26a1f075ef9cee29688e315e010a6eb0f9f18915fe4ed1f10c666d76c",
+   "bytes": 349
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_20.224096bcd9f7a23b.js",
+   "sha256": "f64f9f3f1a306526f3a970682af77fd0e9d695a6978267394e7f46a5dd1ea014",
+   "bytes": 325
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_200.224096bcd9f7a23b.js",
+   "sha256": "f1879573280bd7b4c67b50b38a3456606a2c1ef534b110b05ba2bf7300a282f3",
+   "bytes": 364
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_201.224096bcd9f7a23b.js",
+   "sha256": "deaed8a259e31c5bbc68f878863f7ab16e5dc582f30761c8b11916770e02f0c3",
+   "bytes": 386
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_203.224096bcd9f7a23b.js",
+   "sha256": "aff4959369bbceb8b188164536a3bb71e27e8f9ad38c5ba30961a729d54f8e5d",
+   "bytes": 291
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_207.224096bcd9f7a23b.js",
+   "sha256": "2ed328145aaedfdd6fe280c802cf627aefb053b9deaa7bb9a2a3df59f50eb689",
+   "bytes": 814
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_208.224096bcd9f7a23b.js",
+   "sha256": "7752120e4556a8321887914a2da10726e333fe2673a4f307db05beb0a8928b07",
+   "bytes": 335
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_210.224096bcd9f7a23b.js",
+   "sha256": "5d0894ce65e32526adfa93eb4f2cf4332fca42805879be5b59058d58a3a5a17f",
+   "bytes": 728
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_211.224096bcd9f7a23b.js",
+   "sha256": "2be5ef809442e0910a8d764e1a5c87810afb63b17e700eff0551c57122f4c51e",
+   "bytes": 705
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_212.224096bcd9f7a23b.js",
+   "sha256": "b6112d3b02e53487ddcace59ba50dee06ca452f3bc42e51b16264309b5728ec4",
+   "bytes": 1537
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_216.224096bcd9f7a23b.js",
+   "sha256": "63a7047b14f0c60c0491345714cdf098188ec0c2d9e8ab4f73c3008f93c30df5",
+   "bytes": 327
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_219.224096bcd9f7a23b.js",
+   "sha256": "f7e2c8d4b3e09d4827e5f4667d2cc8744389aaf545197851ee0701cb14417c21",
+   "bytes": 353
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_22.224096bcd9f7a23b.js",
+   "sha256": "4f657ebb03095e5170dd6c45f2e6b925ee10495b3b4f943e7e6e5b7e4b1b5cb3",
+   "bytes": 653
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_222.224096bcd9f7a23b.js",
+   "sha256": "6e21b46ecaddb73edb79af1358638b8de1c5fa26dc8b0953e9f463cb85b9a5de",
+   "bytes": 873
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_224.224096bcd9f7a23b.js",
+   "sha256": "9b4b420d5587d081ffd744e52d45779011f4b329bcc3982eb5f9a6e5dbe8726a",
+   "bytes": 720
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_23.224096bcd9f7a23b.js",
+   "sha256": "9c9bf95559ceafef7cc27c6993399e7251579294507be80283a60469f65e18b3",
+   "bytes": 284
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_230.224096bcd9f7a23b.js",
+   "sha256": "643361c01ee4101449113e3ea19c245acbcb3524cc7078e0d9539bf4ab6d09fe",
+   "bytes": 610
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_231.224096bcd9f7a23b.js",
+   "sha256": "1ae29c147c12bdf790672c6eb3978be79bf33f1ef5b257f1903d8683b1bff37d",
+   "bytes": 278
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_233.224096bcd9f7a23b.js",
+   "sha256": "c54a04a0b6b09cbcb3882ac407b9484db505d809ba65a161476b87fc7f63abf1",
+   "bytes": 312
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_235.224096bcd9f7a23b.js",
+   "sha256": "3ff88b4bfd97610f3934a5ccd2432634c4fae2d8d57eaeecc9c06ce1d0dfc3a7",
+   "bytes": 423
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_236.224096bcd9f7a23b.js",
+   "sha256": "680dbafb436def1e42ee73a970b63fba856fe356927102935eb9e14b802f7592",
+   "bytes": 345
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_239.224096bcd9f7a23b.js",
+   "sha256": "7b2a572196956f6cadede82f307ad73ca92a92784354fabcfc44a29c898eb7d3",
+   "bytes": 357
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_24.224096bcd9f7a23b.js",
+   "sha256": "d5d03d5af1c8c9c0e27017a53b5a3e32451bc69cc2db65745238e7e4ee30cd67",
+   "bytes": 2299
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_240.224096bcd9f7a23b.js",
+   "sha256": "71e843e343f323ee6e85fbb86eb2d392a0f924da3ce5795a9c3bdd7118c309e5",
+   "bytes": 459
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_242.224096bcd9f7a23b.js",
+   "sha256": "6fd860810ed674e684453a5c09c8724e5676691db376ac92ea15cc4652839abc",
+   "bytes": 1207
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_243.224096bcd9f7a23b.js",
+   "sha256": "9a04d1917b02514086149be3c4b61f455d6d356986bb037de70e9002ad8f6e98",
+   "bytes": 308
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_25.224096bcd9f7a23b.js",
+   "sha256": "ef74e4ff277f4c59337503b2260d594144ff25adc90df124df11a3c1944dccd2",
+   "bytes": 370
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_252.224096bcd9f7a23b.js",
+   "sha256": "54315b6946b96dada1b4705b8dcb6c025221aa8bfde727f07ed72f547076e7f2",
+   "bytes": 1334
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_254.224096bcd9f7a23b.js",
+   "sha256": "7310e25b8b25f6c5f4ec802515dfaee3624cf00755dfdcd43c2041d78f60ccc0",
+   "bytes": 288
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_255.224096bcd9f7a23b.js",
+   "sha256": "839e1fafaac37ed9bb1474020fca947fee54a8ec7793961870211f655d620a2a",
+   "bytes": 445
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_26.224096bcd9f7a23b.js",
+   "sha256": "aa296cd8153716b1b089b470f67db583ffb52b90fd320820195369332ef1938f",
+   "bytes": 383
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_27.224096bcd9f7a23b.js",
+   "sha256": "63d1815af7b5b9dd1b66b99f5cf86c3ec3a366cb1afe7ed6b2108162cb919873",
+   "bytes": 920
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_29.224096bcd9f7a23b.js",
+   "sha256": "893481d40897e182e869fb81810df8cfc6251dae41ec1d86cdacfe2c932a8a2c",
+   "bytes": 608
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_35.224096bcd9f7a23b.js",
+   "sha256": "df527ce1eb6e4a5506192cfdd083e7b64f0302068734b8e675854c75ad645005",
+   "bytes": 294
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_39.224096bcd9f7a23b.js",
+   "sha256": "44e6aabf2cb72bd5f4638d9f0347e94eb7cbb0d84ba92d7fcef80a0d0dbea4e7",
+   "bytes": 383
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_40.224096bcd9f7a23b.js",
+   "sha256": "f9c509d51177e5b46791676e9039a0910a18d85ac6b7127f273f9dd2228728e6",
+   "bytes": 793
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_41.224096bcd9f7a23b.js",
+   "sha256": "5b3b07a26e1867460c68eeca42d6d665c0ac1669efb5c0055c5904c268a81992",
+   "bytes": 411
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_42.224096bcd9f7a23b.js",
+   "sha256": "9d551dd0bede02c683451b18daa68f90ee7e98a3f18f96c7a02c51c3ada8d82f",
+   "bytes": 596
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_43.224096bcd9f7a23b.js",
+   "sha256": "9d5f1db602c917ed8a94413c405cf3002c29d0d1257a801d214e5fd227fc2e3a",
+   "bytes": 293
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_44.224096bcd9f7a23b.js",
+   "sha256": "51dd7b9c32e08ac54d8890620ce257e35a2ac4f505175972ebd067173e12846a",
+   "bytes": 376
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_47.224096bcd9f7a23b.js",
+   "sha256": "f5ecaa6b18c0d44be3c591785ab99ff018b1b4c2759396dd34df982a732afc69",
+   "bytes": 313
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_48.224096bcd9f7a23b.js",
+   "sha256": "a2f0d16145b2dcd7f51bea1ce79473145ddb14b8d7e6a8a9c286c7f20626e5ca",
+   "bytes": 631
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_49.224096bcd9f7a23b.js",
+   "sha256": "93f3527e7b367a47331cb0ac35bc9f1105c16905705c10ef582ea21f1a06463e",
+   "bytes": 614
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_5.224096bcd9f7a23b.js",
+   "sha256": "3a14afd24e6870028728aa47457dba0eba64f1011e711fe64fae3c57f40e55c3",
+   "bytes": 369
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_50.224096bcd9f7a23b.js",
+   "sha256": "cedd0238c091e6502de4e41f8edda4acb11030faa24904d1730048d7b4240ede",
+   "bytes": 319
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_51.224096bcd9f7a23b.js",
+   "sha256": "3236197dede1b49e4227727c7fd8c6a7a81d6dead6f3fe8e3714d6ccb407554f",
+   "bytes": 443
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_58.224096bcd9f7a23b.js",
+   "sha256": "abde6bf7518d30919be242fadb62a728da128ea82f9ac22fb8e78eccb638a6dd",
+   "bytes": 765
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_61.224096bcd9f7a23b.js",
+   "sha256": "a58e6d81b55f1a463fd0012216e93f22dda89225c66df249ba22a3dcdb38c80d",
+   "bytes": 439
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_63.224096bcd9f7a23b.js",
+   "sha256": "c08cf8f2e029532dea002b8a01e100ff1df8b93fe246f804ded00bf71f09ce07",
+   "bytes": 613
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_68.224096bcd9f7a23b.js",
+   "sha256": "47d9a33dfc2433058c579f418c50dbdc25bee897bbd309a1a617b4b70a98222a",
+   "bytes": 662
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_70.224096bcd9f7a23b.js",
+   "sha256": "4bcc3a15437037d95c04a74a4c63cb66e315c3c6830c49592fc03d465733981b",
+   "bytes": 397
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_75.224096bcd9f7a23b.js",
+   "sha256": "1842fe7b5805cfdd1d480fa27ebb3efd7a0aecc4e54435e001fad32faef91c96",
+   "bytes": 305
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_80.224096bcd9f7a23b.js",
+   "sha256": "38f7f3793dabfd075bb428bc93f3ea18400e6a5035a54ccfc3e6c4c67dddaf1f",
+   "bytes": 329
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_82.224096bcd9f7a23b.js",
+   "sha256": "836460080de199f9ad2225f8462fe8bcf02605bb71638c925312d677581a7d2d",
+   "bytes": 645
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_92.224096bcd9f7a23b.js",
+   "sha256": "62d6db75c243f2d9654176327fa80cdf9e465012f05cd3772877aac63509e1cc",
+   "bytes": 1112
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_93.224096bcd9f7a23b.js",
+   "sha256": "32f0542d9e6c81053684936f96532f93f2abcb57df0c98d75a43f7de89a75af8",
+   "bytes": 324
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_98.224096bcd9f7a23b.js",
+   "sha256": "09fccfaeaed382fa0dc6c58322f04075ce2073a6459f02bd878d26ff783a66a0",
+   "bytes": 451
+  },
+  {
+   "path": "docs/-verso-search/searchIndex_99.224096bcd9f7a23b.js",
+   "sha256": "bc09f829a1357f14354ad047bcdeca800ee6ce2d07a538c8ac161316b9e2dcb3",
+   "bytes": 303
+  },
+  {
+   "path": "docs/-verso-search/unicode-input-component.min.js",
+   "sha256": "0cf9c3edf26f05ccbb149a6ab62333a457633e572fd38b08992dfea24ba097be",
+   "bytes": 3542
+  },
+  {
+   "path": "docs/-verso-search/unicode-input.min.js",
+   "sha256": "8dbd631b1c13ee172752e22a261cab83b0669caee718bb4a8fc2118e8aa1eaa0",
+   "bytes": 38316
+  },
+  {
+   "path": "docs/LindenstraussPolynomials/Alpha/index.html",
+   "sha256": "56d18f055062f1e74e409e502aaf55a0e8e77a641c515423fc795a6a4c9cc44f",
+   "bytes": 458171
+  },
+  {
+   "path": "docs/LindenstraussPolynomials/Basic/index.html",
+   "sha256": "2b5539e023e736bb776cfccc0dc914258ec7e1c7698552bc7b26d962325ac418",
+   "bytes": 1955484
+  },
+  {
+   "path": "docs/LindenstraussPolynomials/Chain/index.html",
+   "sha256": "740eab196ac38519c1cbe4a72e96ebf4ca0cbd90e804e57671e8a3086053848e",
+   "bytes": 8498534
+  },
+  {
+   "path": "docs/LindenstraussPolynomials/Compositions/index.html",
+   "sha256": "de7aa0992895bdfca6c65ab3e1defe1d98f0e3dacc2206814e328b68a94c8136",
+   "bytes": 4834051
+  },
+  {
+   "path": "docs/LindenstraussPolynomials/Construction/index.html",
+   "sha256": "b23591db97c0f346e6735189b24935a4138792699de596645de32c19ae919d5a",
+   "bytes": 3495886
+  },
+  {
+   "path": "docs/LindenstraussPolynomials/Core/index.html",
+   "sha256": "9d928cff597bb53683470af93db1bafbfb5b2de9d4a32bd38b553192561ff68b",
+   "bytes": 5648530
+  },
+  {
+   "path": "docs/LindenstraussPolynomials/DavieGamelin/index.html",
+   "sha256": "21b6e2ca8d0305699bb0daaa397c85cfac2761c086d7672fe460ace460d07a98",
+   "bytes": 9829548
+  },
+  {
+   "path": "docs/LindenstraussPolynomials/Deficit/index.html",
+   "sha256": "3a9b3200894b0dd2d08b45df6d85a383a118a1f1dc9f165a0d5f96187a0fe13a",
+   "bytes": 3365114
+  },
+  {
+   "path": "docs/LindenstraussPolynomials/Extension/index.html",
+   "sha256": "ea062ee89275b40fffed8700e67c76cdd1aa90be0bc0e2f23f7edb6686eaa2bb",
+   "bytes": 1086437
+  },
+  {
+   "path": "docs/LindenstraussPolynomials/Geometry/index.html",
+   "sha256": "1f52ed4f57e3d8cf35f09c11c22bb158117e30d179a6492881f152b67e54c917",
+   "bytes": 23100051
+  },
+  {
+   "path": "docs/LindenstraussPolynomials/LemmaK/index.html",
+   "sha256": "166bb27c07e80e71d1ba4ade62b598f5fc8b1d872ab31fbcf1eae8ef300d3f06",
+   "bytes": 2225947
+  },
+  {
+   "path": "docs/LindenstraussPolynomials/Limit/index.html",
+   "sha256": "91fd1ff3f6a25c09566675b599e4386415dc5fd46e30143ac52b2b453b85b79c",
+   "bytes": 1683425
+  },
+  {
+   "path": "docs/LindenstraussPolynomials/Polarization/index.html",
+   "sha256": "252358a717485403b11eb666b757d23628007ab83209a91c3f4c326efc26b77a",
+   "bytes": 5413297
+  },
+  {
+   "path": "docs/LindenstraussPolynomials/Substitution/index.html",
+   "sha256": "ca14fb53920d63fb0a89c03175d0a33cfa574e766c76254da293cfd1fd93f136",
+   "bytes": 2256682
+  },
+  {
+   "path": "docs/LindenstraussPolynomials/Theorems/index.html",
+   "sha256": "9f44355cf4e87d4443378462f0a7d969e1f1ae07a8bcd8b48c8238a24aae6ba7",
+   "bytes": 3536752
+  },
+  {
+   "path": "docs/LindenstraussPolynomials/Ultra/index.html",
+   "sha256": "fd97dad1996663e4ca71306be997add7b6f3ee0e4e8a560c481d7a7e38af30ce",
+   "bytes": 1209832
+  },
+  {
+   "path": "docs/LindenstraussPolynomials/index.html",
+   "sha256": "95fbf748b1fea5f8058cafa3eca5b7af2b1b4fb039b11b84bd6d5ef7076208c5",
+   "bytes": 47936
+  },
+  {
+   "path": "docs/copy-button.js",
+   "sha256": "e40a6f2e9bacfb43f30cfb02ca3eebde4171dd2f3468e7c02cdc5958308db509",
+   "bytes": 2469
+  },
+  {
+   "path": "docs/index.html",
+   "sha256": "93fcc7fc8f25014496d51b8209f177d779bdbc133f5bb0ad28f42f777e94fcd8",
+   "bytes": 47835
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_AMS-Regular.ttf",
+   "sha256": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13",
+   "bytes": 63632
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_AMS-Regular.woff",
+   "sha256": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251",
+   "bytes": 33516
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_AMS-Regular.woff2",
+   "sha256": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308",
+   "bytes": 28076
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Caligraphic-Bold.ttf",
+   "sha256": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268",
+   "bytes": 12368
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Caligraphic-Bold.woff",
+   "sha256": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed",
+   "bytes": 7716
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Caligraphic-Bold.woff2",
+   "sha256": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c",
+   "bytes": 6912
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Caligraphic-Regular.ttf",
+   "sha256": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7",
+   "bytes": 12344
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Caligraphic-Regular.woff",
+   "sha256": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c",
+   "bytes": 7656
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Caligraphic-Regular.woff2",
+   "sha256": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b",
+   "bytes": 6908
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Fraktur-Bold.ttf",
+   "sha256": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1",
+   "bytes": 19584
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Fraktur-Bold.woff",
+   "sha256": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb",
+   "bytes": 13296
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Fraktur-Bold.woff2",
+   "sha256": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f",
+   "bytes": 11348
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Fraktur-Regular.ttf",
+   "sha256": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3",
+   "bytes": 19572
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Fraktur-Regular.woff",
+   "sha256": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463",
+   "bytes": 13208
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Fraktur-Regular.woff2",
+   "sha256": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc",
+   "bytes": 11316
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Main-Bold.ttf",
+   "sha256": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8",
+   "bytes": 51336
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Main-Bold.woff",
+   "sha256": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822",
+   "bytes": 29912
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Main-Bold.woff2",
+   "sha256": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021",
+   "bytes": 25324
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Main-BoldItalic.ttf",
+   "sha256": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f",
+   "bytes": 32968
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Main-BoldItalic.woff",
+   "sha256": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c",
+   "bytes": 19412
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Main-BoldItalic.woff2",
+   "sha256": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b",
+   "bytes": 16780
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Main-Italic.ttf",
+   "sha256": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a",
+   "bytes": 33580
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Main-Italic.woff",
+   "sha256": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf",
+   "bytes": 19676
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Main-Italic.woff2",
+   "sha256": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267",
+   "bytes": 16988
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Main-Regular.ttf",
+   "sha256": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830",
+   "bytes": 53580
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Main-Regular.woff",
+   "sha256": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc",
+   "bytes": 30772
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Main-Regular.woff2",
+   "sha256": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866",
+   "bytes": 26272
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Math-BoldItalic.ttf",
+   "sha256": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5",
+   "bytes": 31196
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Math-BoldItalic.woff",
+   "sha256": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e",
+   "bytes": 18668
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Math-BoldItalic.woff2",
+   "sha256": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1",
+   "bytes": 16400
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Math-Italic.ttf",
+   "sha256": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a",
+   "bytes": 31308
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Math-Italic.woff",
+   "sha256": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571",
+   "bytes": 18748
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Math-Italic.woff2",
+   "sha256": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264",
+   "bytes": 16440
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_SansSerif-Bold.ttf",
+   "sha256": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0",
+   "bytes": 24504
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_SansSerif-Bold.woff",
+   "sha256": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba",
+   "bytes": 14408
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_SansSerif-Bold.woff2",
+   "sha256": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62",
+   "bytes": 12216
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_SansSerif-Italic.ttf",
+   "sha256": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083",
+   "bytes": 22364
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_SansSerif-Italic.woff",
+   "sha256": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2",
+   "bytes": 14112
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_SansSerif-Italic.woff2",
+   "sha256": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a",
+   "bytes": 12028
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_SansSerif-Regular.ttf",
+   "sha256": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad",
+   "bytes": 19436
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_SansSerif-Regular.woff",
+   "sha256": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605",
+   "bytes": 12316
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_SansSerif-Regular.woff2",
+   "sha256": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342",
+   "bytes": 10344
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Script-Regular.ttf",
+   "sha256": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67",
+   "bytes": 16648
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Script-Regular.woff",
+   "sha256": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a",
+   "bytes": 10588
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Script-Regular.woff2",
+   "sha256": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b",
+   "bytes": 9644
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Size1-Regular.ttf",
+   "sha256": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b",
+   "bytes": 12228
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Size1-Regular.woff",
+   "sha256": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9",
+   "bytes": 6496
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Size1-Regular.woff2",
+   "sha256": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe",
+   "bytes": 5468
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Size2-Regular.ttf",
+   "sha256": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b",
+   "bytes": 11508
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Size2-Regular.woff",
+   "sha256": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d",
+   "bytes": 6188
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Size2-Regular.woff2",
+   "sha256": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd",
+   "bytes": 5208
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Size3-Regular.ttf",
+   "sha256": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082",
+   "bytes": 7588
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Size3-Regular.woff",
+   "sha256": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949",
+   "bytes": 4420
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Size3-Regular.woff2",
+   "sha256": "73d591271b1604960cb10bb90fee021670af7297017e0e98480b332d11f51995",
+   "bytes": 3624
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Size4-Regular.ttf",
+   "sha256": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877",
+   "bytes": 10364
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Size4-Regular.woff",
+   "sha256": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58",
+   "bytes": 5980
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Size4-Regular.woff2",
+   "sha256": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0",
+   "bytes": 4928
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Typewriter-Regular.ttf",
+   "sha256": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa",
+   "bytes": 27556
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Typewriter-Regular.woff",
+   "sha256": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7",
+   "bytes": 16028
+  },
+  {
+   "path": "docs/katex/fonts/KaTeX_Typewriter-Regular.woff2",
+   "sha256": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b",
+   "bytes": 13568
+  },
+  {
+   "path": "docs/katex/katex.css",
+   "sha256": "19095127357ed6d29fe0a63a6b000c913a89f7f1963b765dd3715e97c9852e75",
+   "bytes": 23352
+  },
+  {
+   "path": "docs/katex/katex.js",
+   "sha256": "e8d885505949f3a5f4abdd5dd0d53696bd1371ad26ffbf4f310dcd77c8cdae89",
+   "bytes": 276701
+  },
+  {
+   "path": "docs/katex/math.js",
+   "sha256": "13d9988cff8c2d27cc1a3c96454b482d30314e2b9ace27047f1e063ab30240dd",
+   "bytes": 370
+  },
+  {
+   "path": "docs/literate-theme.css",
+   "sha256": "d9d3f599047401d1818ece3b6db8efdb38a86ecd614fbcd325ee29dece83b533",
+   "bytes": 2662
+  },
+  {
+   "path": "docs/literate.css",
+   "sha256": "353ec6de3321f0da8901302c4891ca42b1065e97f71e73f2a3ff188a1abe808f",
+   "bytes": 19025
+  },
+  {
+   "path": "docs/marked.js",
+   "sha256": "9785d31590936a0fe99ed8c642456dd27c1b7812ac51b5172855d3825918e675",
+   "bytes": 42135
+  },
+  {
+   "path": "docs/popper.js",
+   "sha256": "c212f4b505a86352aed62b24a8f16f999f821ecbe6456c7f3c8a04bc87968782",
+   "bytes": 20122
+  },
+  {
+   "path": "docs/search/index.html",
+   "sha256": "c8afa47b83639900d06da7b393ce23b83f7f506d415105d17e1ee8838ff42ad9",
+   "bytes": 2028
+  },
+  {
+   "path": "docs/tippy-border.css",
+   "sha256": "bd2dc7de7b0177047251280a8331b7d97ed750ea00004e69981fc7de517da995",
+   "bytes": 1031
+  },
+  {
+   "path": "docs/tippy.js",
+   "sha256": "3f0fe70eb26ccf28f6887a192e29d38dd7ef7c2f079a73304ad42ddc7bed37de",
+   "bytes": 25717
+  },
+  {
+   "path": "docs/verso-overlay.css",
+   "sha256": "cfcf82776b714ac987d72d3b2b4ba7d6d81b1609064d72f546d3ff1f7f6b5e10",
+   "bytes": 14392
+  },
+  {
+   "path": "docs/verso-overlay.js",
+   "sha256": "7cb69d62d04e18e50784c876ddc6c6f731a5b0ba51ee5f1552ccbdc972e758ac",
+   "bytes": 7244
+  },
+  {
+   "path": "docs/verso-vars.css",
+   "sha256": "f689714e7ac0d3be3c0db6919b4d34ed685db392f83be06ac2b79454bcde6e01",
+   "bytes": 5234
+  },
+  {
+   "path": "docs/xref.json",
+   "sha256": "d1311ce44dd01aab7c36111a06a4618018b08c35287b1a3cc2d8201fa4ce3a44",
+   "bytes": 71565
+  },
+  {
+   "path": "formalization.json",
+   "sha256": "a8b21d6b0f6cbf0d69b7574bbaefd40edba2fc8867be56e81c905a8459d0fcb0",
+   "bytes": 500571
+  },
+  {
+   "path": "verification.json",
+   "sha256": "3c4165bf206e2fe32b579f939439535e97484784ffa6c24bf97778a2e57113ce",
+   "bytes": 9923
+  },
+  {
+   "path": "viewer/lean-viewer.css",
+   "sha256": "1ad028cdeb00275e046ddc3648f2cfe2a0f4e79243030264bde435a514606e61",
+   "bytes": 29333
+  },
+  {
+   "path": "viewer/lean-viewer.js",
+   "sha256": "3dc509283d5f4e187d055d86d478759204d6c5193c5a8a989f9f48c5d69831e2",
+   "bytes": 58219
+  }
+ ]
+}

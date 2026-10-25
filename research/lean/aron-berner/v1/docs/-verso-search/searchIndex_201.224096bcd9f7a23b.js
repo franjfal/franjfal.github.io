@@ -1,0 +1,1 @@
+window.docContents[201].resolve({"/LindenstraussPolynomials/Core/#LindenstraussPolynomials___norm_diagExtV_le":{"contents":"The Davie–Gamelin bound for the vector-valued extension:\n‖P̃(z)‖ ≤ ‖P‖ for ‖z‖ ≤ 1. \n\n","context":"","header":"LindenstraussPolynomials.norm_diagExtV_le","id":"/LindenstraussPolynomials/Core/#LindenstraussPolynomials___norm_diagExtV_le"}});

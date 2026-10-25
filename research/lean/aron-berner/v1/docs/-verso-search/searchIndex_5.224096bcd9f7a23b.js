@@ -1,0 +1,1 @@
+window.docContents[5].resolve({"/LindenstraussPolynomials/Substitution/#LindenstraussPolynomials___map_convex_expand":{"contents":"A((1-t)x + tw, …) = ∑_s (1-t)^{|s|} t^{n-|s|} A(s.piecewise x w). \n\n","context":"","header":"LindenstraussPolynomials.map_convex_expand","id":"/LindenstraussPolynomials/Substitution/#LindenstraussPolynomials___map_convex_expand"}});

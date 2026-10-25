@@ -1,0 +1,1 @@
+window.docContents[25].resolve({"/LindenstraussPolynomials/DavieGamelin/#LindenstraussPolynomials___dual_norm_le_of_re_lt":{"contents":"A bound on the unit ball bounds the norm of a functional. \n\n","context":"","header":"LindenstraussPolynomials.dual_norm_le_of_re_lt","id":"/LindenstraussPolynomials/DavieGamelin/#LindenstraussPolynomials___dual_norm_le_of_re_lt"}});

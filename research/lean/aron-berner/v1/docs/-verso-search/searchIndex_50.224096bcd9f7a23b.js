@@ -1,0 +1,1 @@
+window.docContents[50].resolve({"/LindenstraussPolynomials/Deficit/#LindenstraussPolynomials___deficit_identity":{"contents":"The exact identity eq:vdeficit. \n\n","context":"","header":"LindenstraussPolynomials.deficit_identity","id":"/LindenstraussPolynomials/Deficit/#LindenstraussPolynomials___deficit_identity"}});

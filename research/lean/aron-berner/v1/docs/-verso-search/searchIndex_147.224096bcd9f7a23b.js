@@ -1,0 +1,1 @@
+window.docContents[147].resolve({"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___seqf":{"contents":"f_k. \n\n","context":"","header":"LindenstraussPolynomials.seqf","id":"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___seqf"}});

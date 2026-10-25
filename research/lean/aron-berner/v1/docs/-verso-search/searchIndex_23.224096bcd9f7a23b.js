@@ -1,0 +1,1 @@
+window.docContents[23].resolve({"/LindenstraussPolynomials/Deficit/#LindenstraussPolynomials___defc_insert":{"contents":"eq:vinsert. \n\n","context":"","header":"LindenstraussPolynomials.defc_insert","id":"/LindenstraussPolynomials/Deficit/#LindenstraussPolynomials___defc_insert"}});

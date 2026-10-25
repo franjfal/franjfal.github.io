@@ -1,0 +1,1 @@
+window.docContents[239].resolve({"/LindenstraussPolynomials/Substitution/#LindenstraussPolynomials___exists_poly_re":{"contents":"t ↦ Re A(S(t)y, …) is a real polynomial of degree at most n. \n\n","context":"","header":"LindenstraussPolynomials.exists_poly_re","id":"/LindenstraussPolynomials/Substitution/#LindenstraussPolynomials___exists_poly_re"}});

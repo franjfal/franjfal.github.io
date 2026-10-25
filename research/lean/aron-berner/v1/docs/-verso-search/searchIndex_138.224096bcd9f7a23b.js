@@ -1,0 +1,1 @@
+window.docContents[138].resolve({"/LindenstraussPolynomials/Extension/#LindenstraussPolynomials___abExt":{"contents":"The canonical (Aron–Berner) extension P̃ : X** → 𝕜 of a scalar polynomial P:\nP̃(z) = Ā(z,…,z) with A = Ǎ (eq:AB). \n\n","context":"","header":"LindenstraussPolynomials.abExt","id":"/LindenstraussPolynomials/Extension/#LindenstraussPolynomials___abExt"}});

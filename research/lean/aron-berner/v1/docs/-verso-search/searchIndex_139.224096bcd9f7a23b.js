@@ -1,0 +1,1 @@
+window.docContents[139].resolve({"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___pick":{"contents":"The choice made at a stage. \n\n","context":"","header":"LindenstraussPolynomials.pick","id":"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___pick"}});

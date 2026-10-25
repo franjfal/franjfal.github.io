@@ -1,0 +1,312 @@
+/*
+ * Proofline's layer over Verso's literate pages: a top bar in the website's
+ * style that leads back to the formalization, and a verification badge on
+ * every audited declaration. Everything here is static; the data comes from
+ * ../formalization.json, written when the formalization was verified.
+ */
+
+:root {
+    color-scheme: light;
+    /* The website's palette (minimal-mistakes, "contrast" skin). */
+    --pl-ink: #000000;
+    --pl-text: #000000;
+    --pl-nav: #333333;
+    --pl-muted: #5f6368;
+    --pl-line: #bfbfbf;
+    --pl-hairline: #e6e6e6;
+    --pl-paper: #ffffff;
+    --pl-wash: #f8f9f9;
+    --pl-link: #0000ff;
+    --pl-link-hover: #0000bf;
+    --pl-font: -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", Arial, sans-serif;
+    --pl-bar-height: 3.5rem;
+
+    /* Verso's own variables, so its pages read like the rest of the site. */
+    --verso-text-font-family: var(--pl-font);
+    --verso-structure-font-family: var(--pl-font);
+    --verso-text-color: var(--pl-text);
+    --verso-structure-color: var(--pl-ink);
+    --verso-background-color: var(--pl-paper);
+    --verso-surface-color: var(--pl-paper);
+    --verso-border-color: var(--pl-hairline);
+    --verso-link-color: var(--pl-link);
+    --verso-link-visited-color: #2626ff;
+    --verso-link-hover-bg: transparent;
+    --verso-current-bg: var(--pl-ink);
+    --verso-current-fg: #ffffff;
+    --verso-breadcrumb-color: var(--pl-ink);
+    --verso-code-box-background-color: #fafafa;
+    --verso-code-box-border-color: var(--pl-hairline);
+    --verso-prose-max-width: 46rem;
+    --pl-verified: #1a7f37;
+    --pl-verified-wash: #e8f5ec;
+    --pl-partial: #9a6700;
+    --pl-partial-wash: #fff6dd;
+    --pl-axioms: #8250df;
+    --pl-axioms-wash: #f3edff;
+    --pl-failed: #cf222e;
+    --pl-failed-wash: #ffebe9;
+}
+
+/* The website has no dark mode: whatever the reader's system prefers, the
+   documentation keeps the light palette Verso uses by default. */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --verso-muted-color: #6c757d;
+        --verso-breadcrumb-color: #495057;
+        --verso-blockquote-border-color: #dfe2e5;
+        --verso-blockquote-color: #6a737d;
+        --verso-inline-code-bg: #f0f2f4;
+        --verso-docstring-border-color: #ddd;
+        --verso-imports-summary-color: #586069;
+        --verso-output-color: #555;
+        --verso-copy-button-bg: #e9ecef;
+        --verso-copy-button-border: #d1d5db;
+        --verso-copy-button-color: #586069;
+        --verso-copy-button-hover-bg: #d1d5db;
+        --verso-copy-button-copied-color: #22863a;
+        --verso-hamburger-bg: #fff;
+        --verso-hamburger-border: #dee2e6;
+        --verso-hamburger-bar-color: #333;
+        --verso-code-hover-bg-color: #eeeeee;
+        --verso-tooltip-color: black;
+        --verso-tooltip-bg-color: #f3f3f1;
+        --verso-tooltip-border-color: #c8c8c4;
+        --verso-tooltip-separator-color: #ccc;
+        --verso-code-info-hover-bg-color: #cfe2ff;
+        --verso-info-indicator-color: #0066cc;
+        --verso-message-info-color: currentcolor;
+        --verso-tooltip-info-border-color: #cfe2ff;
+        --verso-code-warning-hover-bg-color: #fff3cd;
+        --verso-warning-indicator-color: #b8860b;
+        --verso-message-warning-color: currentcolor;
+        --verso-tooltip-warning-border-color: #fff3cd;
+        --verso-code-error-hover-bg-color: #f8d7da;
+        --verso-error-indicator-color: #dc3545;
+        --verso-message-error-color: #cc0000;
+        --verso-tooltip-error-border-color: #f8d7da;
+        --verso-tactic-state-color: black;
+        --verso-tactic-state-bg-color: white;
+        --verso-tactic-state-border-color: #888888;
+        --verso-selected-color: #def;
+    }
+    .hl.lean.popup { background-color: #f3f3f1 !important; color: #1f2328 !important; }
+    .hl.lean .hover-info.messages > code.error,
+    .hl.lean .hover-info.messages > code.warning,
+    .hl.lean .hover-info.messages > code.information { background-color: #ffffff !important; }
+}
+
+/* ------------------------------------------------------------------
+   Page frame: the site's bar on top, Verso's layout filling the rest.
+   Verso sizes its layout to the whole window; with a bar above it the
+   bottom of every page would be cut off. */
+
+html, body { background: var(--pl-paper); }
+body.pl-framed {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+}
+body.pl-framed > .layout { flex: 1 1 auto; min-height: 0; height: auto; }
+::selection { color: #fff; background: #000; }
+/* Verso hides its skip link 40px above the page, a little less than its height. */
+.skip-link { top: -4rem; }
+.skip-link:focus { top: 0; }
+
+.pl-sitebar {
+    flex: none;
+    position: relative;
+    z-index: 1002;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem 1.25rem;
+    min-height: var(--pl-bar-height);
+    padding: 0.5rem 1.5rem;
+    background: var(--pl-paper);
+    border-bottom: 1px solid var(--pl-line);
+    font-family: var(--pl-font);
+}
+.pl-sitebar a { color: var(--pl-nav); text-decoration: none; }
+.pl-sitebar a:hover { color: var(--pl-ink); text-decoration: underline; }
+.pl-sitebar .pl-site { flex: none; font-weight: 700; font-size: 1.1rem; color: var(--pl-nav); white-space: nowrap; }
+.pl-sitebar .pl-crumbs { display: flex; align-items: center; gap: 0.4rem; min-width: 0; flex: 0 1 auto; font-size: 0.85rem; color: var(--pl-muted); }
+.pl-sitebar .pl-crumbs a { color: var(--pl-nav); font-weight: 600; white-space: nowrap; }
+.pl-sitebar .pl-crumbs .pl-sep { color: var(--pl-line); }
+.pl-sitebar .pl-crumbs strong { color: var(--pl-muted); font-weight: 400; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.pl-sitebar .pl-spacer { flex: 1 1 0; }
+.pl-sitebar .pl-actions { display: flex; flex: none; align-items: center; gap: 0.6rem; }
+.pl-sitebar .pl-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--pl-ink);
+    border-radius: 4px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--pl-ink);
+    white-space: nowrap;
+}
+.pl-sitebar .pl-back:hover { background: var(--pl-ink); color: #fff; text-decoration: none; }
+.pl-sitebar .pl-arxiv { font-size: 0.82rem; font-weight: 700; color: #b31b1b; white-space: nowrap; }
+.pl-sitebar .pl-arxiv:hover { color: #7f1010; }
+
+/* ------------------------------------------------------------------
+   Verso's chrome in the site's style. */
+
+.sidebar { width: 17.5rem; background: var(--pl-paper); border-right: 1px solid var(--pl-hairline); }
+.sidebar-content { padding: 1.25rem 1rem 2rem; }
+.module-tree { font-family: var(--pl-font); font-size: 0.9rem; line-height: 1.4; }
+.module-tree .nav-title { font-size: 1rem; line-height: 1.3; padding: 0.35rem 0.6rem; margin-bottom: 0.5rem; }
+.module-tree .nav-title a { color: var(--pl-ink); }
+.module-tree .leaf { margin: 1px 0; padding: 0.3rem 0.6rem; border-radius: 4px; }
+.module-tree .leaf a, .module-tree summary a { color: var(--pl-nav); }
+.module-tree .leaf:hover { background: var(--pl-wash); }
+.module-tree .current, .module-tree .leaf.current:hover { background: var(--pl-ink); }
+.module-tree .current a, .module-tree .nav-title.current a { color: #fff; }
+.module-tree .nav-title.current { border-radius: 4px; }
+
+.title-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    padding: 0.6rem 1.5rem;
+    border-bottom-color: var(--pl-hairline);
+}
+.breadcrumbs { flex: 1 1 14rem; min-width: 0; font-family: var(--pl-font); font-size: 0.85rem; }
+.breadcrumbs a { color: var(--pl-link); padding: 0.15rem 0.35rem; }
+.breadcrumbs .current { color: var(--pl-ink); padding: 0.15rem 0.35rem; overflow-wrap: anywhere; }
+/* Verso floats the search box over the right end of the title bar; here it
+   takes its own place, so long titles never run under it. */
+.title-bar #search-wrapper { position: relative; inset: auto; padding: 0; width: auto; flex: 0 1 16rem; min-width: 11rem; align-items: stretch; --search-bar-width: 100%; }
+.title-bar #search-wrapper .combobox .cb_edit { width: 100%; border: 1px solid var(--pl-line); border-radius: 4px; font-family: var(--pl-font); padding: 0.35rem 0.6rem; }
+.title-bar #search-wrapper ul[role="listbox"] { width: min(28rem, calc(100vw - 2rem)); right: 0; border: 1px solid var(--pl-line); border-radius: 4px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12); }
+
+/* KaTeX's hidden MathML is absolutely positioned; without a positioned
+   scroll container it stretches the document and anchors scroll the bar away. */
+.code-content { position: relative; padding: 2rem clamp(1rem, 3.5vw, 3rem) 4rem; }
+.page-toc { position: relative; }
+.code-content > * { max-width: 62rem; }
+.page-toc { width: 14rem; border-left-color: var(--pl-hairline); font-family: var(--pl-font); }
+.page-toc a { color: var(--pl-muted); }
+.page-toc a:hover { color: var(--pl-link); }
+
+/* Prose: the module docstrings read like the site's pages. */
+.code-content > .verso-text.mod-doc,
+.code-content > .md-text.mod-doc { font-size: 1.05rem; line-height: 1.65; color: var(--pl-text); }
+.code-content > .verso-text.mod-doc h1,
+.code-content > .md-text.mod-doc h1 { font-size: 1.9rem; line-height: 1.2; margin-top: 0.5rem; border-bottom: 0; padding-bottom: 0; }
+.code-content > .verso-text.mod-doc h2,
+.code-content > .md-text.mod-doc h2 { font-size: 1.4rem; line-height: 1.25; margin-top: 1.75rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--pl-line); }
+.code-content > .verso-text.mod-doc h3,
+.code-content > .md-text.mod-doc h3 { font-size: 1.15rem; margin-top: 1.25rem; }
+.code-content > .verso-text.mod-doc a,
+.code-content > .md-text.mod-doc a { color: var(--pl-link); text-decoration: underline; }
+.code-content > .verso-text.mod-doc a:hover,
+.code-content > .md-text.mod-doc a:hover { color: var(--pl-link-hover); }
+.code-content .katex { font-size: 1.05em; }
+.code-content .katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.25rem 0; }
+
+.code-box { border-radius: 6px; padding: 0.9rem 1.2rem; font-size: 0.88rem; }
+.code-box .verso-text, .code-box .md-text { max-width: min(40em, 100%); }
+.imports-list { border-radius: 6px; background: var(--pl-paper); }
+
+/* ------------------------------------------------------------------
+   Proofline's additions. */
+
+.pl-inline {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.4rem;
+    margin: 0 0.5em;
+    vertical-align: 0.1em;
+    font-family: var(--pl-font);
+    font-size: 0.7rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    user-select: none;
+}
+.pl-inline [data-label]::after { content: attr(data-label); }
+.pl-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    font-family: var(--pl-font);
+    font-size: 0.74rem;
+    font-weight: 700;
+    white-space: nowrap;
+    border: 1px solid transparent;
+}
+.pl-inline .pl-status { font-size: inherit; padding: 0.05rem 0.45rem; }
+.pl-status::before { content: ""; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: currentColor; }
+.pl-status.verified { color: var(--pl-verified); background: var(--pl-verified-wash); border-color: #b7e0c3; }
+.pl-status.partial { color: var(--pl-partial); background: var(--pl-partial-wash); border-color: #f0d58c; }
+.pl-status.axioms { color: var(--pl-axioms); background: var(--pl-axioms-wash); border-color: #d8c7fb; }
+.pl-status.failed, .pl-status.untrusted { color: var(--pl-failed); background: var(--pl-failed-wash); border-color: #f5b5b0; }
+.pl-inline .pl-paper-ref { font-weight: 700; color: var(--pl-link); text-decoration: none; }
+.pl-inline .pl-paper-ref:hover { text-decoration: underline; }
+.pl-inline .pl-axioms { color: var(--pl-axioms); font-weight: 600; }
+
+:target { scroll-margin-top: 1.5rem; }
+
+.pl-banner {
+    margin: 0 0 1.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    background: var(--pl-wash);
+    box-shadow: 0 1px 1px rgba(189, 193, 196, 0.25);
+    border-left: 4px solid var(--pl-ink);
+    font-family: var(--pl-font);
+    font-size: 0.85rem;
+    color: #3d4144;
+}
+.pl-banner.old { border-left-color: var(--pl-partial); background: var(--pl-partial-wash); }
+.pl-banner a { color: var(--pl-link); margin-left: 0.25rem; }
+
+/* ------------------------------------------------------------------
+   Smaller screens. */
+
+@media (max-width: 1100px) {
+    .sidebar { width: 15rem; }
+    .pl-sitebar .pl-crumbs strong { display: none; }
+    .pl-sitebar .pl-crumbs .pl-sep:last-of-type { display: none; }
+}
+
+@media (max-width: 768px) {
+    .pl-sitebar { padding: 0.45rem 0.9rem; gap: 0.4rem 0.75rem; }
+    .pl-sitebar .pl-crumbs { display: none; }
+    .pl-sitebar .pl-site { font-size: 1rem; }
+    .pl-sitebar .pl-back { padding: 0.25rem 0.6rem; }
+    .pl-sitebar .pl-back-text { display: none; }
+
+    /* Verso's menu opens below the site's bar instead of under it. */
+    .hamburger { position: absolute; top: calc(var(--pl-bar-height) + 0.55rem); left: 0.75rem; padding: 0.35rem; box-shadow: none; border-color: var(--pl-line); }
+    .hamburger span { width: 18px; margin: 3px 0; }
+    .sidebar { top: var(--pl-bar-height); height: calc(100dvh - var(--pl-bar-height)); width: min(18rem, 85vw); left: max(-18rem, -85vw); }
+    .sidebar-content { padding-top: 3.25rem; } /* room for the menu's close button */
+    .title-bar { padding: 0.55rem 0.9rem 0.55rem 3.4rem; min-height: 3rem; }
+    .title-bar #search-wrapper { flex: 1 1 100%; }
+    /* Only the current module, on one line: the menu shows where it sits. */
+    .breadcrumbs li:not(:last-child) { display: none; }
+    .breadcrumbs li { min-width: 0; }
+    .breadcrumbs .current { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .code-content { padding: 1.25rem 0.9rem 3rem; }
+    .code-content > .verso-text.mod-doc,
+    .code-content > .md-text.mod-doc { font-size: 1rem; }
+    .code-content > .verso-text.mod-doc h1,
+    .code-content > .md-text.mod-doc h1 { font-size: 1.5rem; }
+    .code-content > .verso-text.mod-doc h2,
+    .code-content > .md-text.mod-doc h2 { font-size: 1.25rem; }
+    .code-box { padding: 0.75rem 0.85rem; font-size: 0.8rem; margin-left: -0.25rem; margin-right: -0.25rem; }
+    .copy-button { opacity: 1; }
+}
+
+@media (max-width: 420px) {
+    .pl-sitebar .pl-arxiv { display: none; }
+}

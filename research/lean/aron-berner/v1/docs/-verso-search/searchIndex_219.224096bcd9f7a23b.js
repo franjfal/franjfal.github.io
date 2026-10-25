@@ -1,0 +1,1 @@
+window.docContents[219].resolve({"/LindenstraussPolynomials/Polarization/#LindenstraussPolynomials___map_diag_sum_smul":{"contents":"Expansion of A (∑ cⱼ vⱼ, …, ∑ cⱼ vⱼ). \n\n","context":"","header":"LindenstraussPolynomials.map_diag_sum_smul","id":"/LindenstraussPolynomials/Polarization/#LindenstraussPolynomials___map_diag_sum_smul"}});

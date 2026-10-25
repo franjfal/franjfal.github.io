@@ -1,0 +1,1 @@
+window.docContents[109].resolve({"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___Good":{"contents":"Requirements on the choice made for P with tolerance δ. \n\n","context":"","header":"LindenstraussPolynomials.Good","id":"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___Good"}});

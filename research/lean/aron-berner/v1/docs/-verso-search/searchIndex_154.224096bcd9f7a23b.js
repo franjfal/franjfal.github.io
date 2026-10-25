@@ -1,0 +1,1 @@
+window.docContents[154].resolve({"/LindenstraussPolynomials/Geometry/#LindenstraussPolynomials___apply_zv":{"contents":"a(z₀,…,z_d) = (∏ fᵢ(x)) a(u₀,…,u_{d-1},x). \n\n","context":"","header":"LindenstraussPolynomials.apply_zv","id":"/LindenstraussPolynomials/Geometry/#LindenstraussPolynomials___apply_zv"}});

@@ -1,0 +1,1 @@
+window.docContents[75].resolve({"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___one_le_seqM":{"contents":"M_k ≥ 1 for every k. \n\n","context":"","header":"LindenstraussPolynomials.one_le_seqM","id":"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___one_le_seqM"}});

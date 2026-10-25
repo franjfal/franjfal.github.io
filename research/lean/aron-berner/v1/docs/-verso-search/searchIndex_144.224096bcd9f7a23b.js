@@ -1,0 +1,1 @@
+window.docContents[144].resolve({"/LindenstraussPolynomials/Geometry/#LindenstraussPolynomials___dConst":{"contents":"D_n = (1/n!) ∑_{r=1}^n C(n,r) r^n (eq:constants). \n\n","context":"","header":"LindenstraussPolynomials.dConst","id":"/LindenstraussPolynomials/Geometry/#LindenstraussPolynomials___dConst"}});

@@ -1,0 +1,1 @@
+window.docContents[47].resolve({"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___Choice":{"contents":"The data (x_k, f_k, y_k^*) chosen at a stage. \n\n","context":"","header":"LindenstraussPolynomials.Choice","id":"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___Choice"}});

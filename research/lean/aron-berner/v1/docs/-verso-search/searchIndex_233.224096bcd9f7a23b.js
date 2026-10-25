@@ -1,0 +1,1 @@
+window.docContents[233].resolve({"/LindenstraussPolynomials/Substitution/#LindenstraussPolynomials___betaW":{"contents":"Beta-type weights ∫₀¹ (1-t)^k t^{n-k} dt. \n\n","context":"","header":"LindenstraussPolynomials.betaW","id":"/LindenstraussPolynomials/Substitution/#LindenstraussPolynomials___betaW"}});

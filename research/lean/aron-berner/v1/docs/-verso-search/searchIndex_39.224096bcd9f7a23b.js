@@ -1,0 +1,1 @@
+window.docContents[39].resolve({"/LindenstraussPolynomials/Substitution/#LindenstraussPolynomials___Rop":{"contents":"The averaging operator R_{u,f} acting on symmetric forms: its diagonal is\nx ↦ ∫₀¹ P(S_{u,f}(t) x) dt (see diag_Rop). \n\n","context":"","header":"LindenstraussPolynomials.Rop","id":"/LindenstraussPolynomials/Substitution/#LindenstraussPolynomials___Rop"}});

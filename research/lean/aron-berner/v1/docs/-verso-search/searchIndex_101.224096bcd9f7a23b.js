@@ -1,0 +1,1 @@
+window.docContents[101].resolve({"/LindenstraussPolynomials/Extension/#LindenstraussPolynomials___abExtV_apply":{"contents":"The defining property P̃(z)(y*) = (y* ∘ P)~(z) of the vector-valued extension. \n\n","context":"","header":"LindenstraussPolynomials.abExtV_apply","id":"/LindenstraussPolynomials/Extension/#LindenstraussPolynomials___abExtV_apply"}});

@@ -1,0 +1,1 @@
+window.docContents[151].resolve({"/LindenstraussPolynomials/Deficit/#LindenstraussPolynomials___nextG":{"contents":"The modified functional g(w_k) y_k^*. \n\n","context":"","header":"LindenstraussPolynomials.nextG","id":"/LindenstraussPolynomials/Deficit/#LindenstraussPolynomials___nextG"}});

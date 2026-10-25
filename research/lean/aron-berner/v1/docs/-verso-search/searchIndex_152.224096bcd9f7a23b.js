@@ -1,0 +1,1 @@
+window.docContents[152].resolve({"/LindenstraussPolynomials/Ultra/#LindenstraussPolynomials___ulim":{"contents":"Limit along 𝒰. \n\n","context":"","header":"LindenstraussPolynomials.ulim","id":"/LindenstraussPolynomials/Ultra/#LindenstraussPolynomials___ulim"}});

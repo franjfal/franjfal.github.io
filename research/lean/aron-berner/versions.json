@@ -1,0 +1,23 @@
+{
+ "schema": "proofline.lean-versions.v1",
+ "slug": "aron-berner",
+ "latest": 1,
+ "versions": [
+  {
+   "version": 1,
+   "url": "/research/lean/aron-berner/v1/",
+   "published_at": "2026-10-25T20:57:11+00:00",
+   "status": "verified",
+   "note": "",
+   "arxiv": {
+    "id": "2610.18117v1",
+    "base": "2610.18117",
+    "version": "v1",
+    "label": "arXiv:2610.18117v1",
+    "url": "https://arxiv.org/abs/2610.18117v1",
+    "pdf": "https://arxiv.org/pdf/2610.18117v1"
+   },
+   "content_sha256": "968371919d78c301130eca573ef51749671dd632da34ed4b84a39d4aee5b283e"
+  }
+ ]
+}

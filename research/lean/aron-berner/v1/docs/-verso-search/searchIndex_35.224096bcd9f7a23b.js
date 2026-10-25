@@ -1,0 +1,1 @@
+window.docContents[35].resolve({"/LindenstraussPolynomials/Deficit/#LindenstraussPolynomials___defc":{"contents":"The deficit d_k^g(y) = M_k - Re g(P_k(y)). \n\n","context":"","header":"LindenstraussPolynomials.defc","id":"/LindenstraussPolynomials/Deficit/#LindenstraussPolynomials___defc"}});

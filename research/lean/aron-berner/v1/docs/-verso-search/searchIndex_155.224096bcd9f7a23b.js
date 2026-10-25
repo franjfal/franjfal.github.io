@@ -1,0 +1,1 @@
+window.docContents[155].resolve({"/LindenstraussPolynomials/Basic/#LindenstraussPolynomials___norm_diag_le":{"contents":"Homogeneity estimate ‖P x‖ ≤ ‖P‖ ‖x‖ ^ n. \n\n","context":"","header":"LindenstraussPolynomials.norm_diag_le","id":"/LindenstraussPolynomials/Basic/#LindenstraussPolynomials___norm_diag_le"}});

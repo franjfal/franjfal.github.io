@@ -1,0 +1,1 @@
+window.docContents[126].resolve({"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___diag_seqP_succ":{"contents":"The value of P_{k+1} in terms of P_k. \n\n","context":"","header":"LindenstraussPolynomials.diag_seqP_succ","id":"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___diag_seqP_succ"}});

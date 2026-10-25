@@ -1,0 +1,1 @@
+window.docContents[174].resolve({"/LindenstraussPolynomials/Polarization/#LindenstraussPolynomials___opNorm_le_of_ball":{"contents":"Passing from a bound on the unit ball to the operator norm. \n\n","context":"","header":"LindenstraussPolynomials.opNorm_le_of_ball","id":"/LindenstraussPolynomials/Polarization/#LindenstraussPolynomials___opNorm_le_of_ball"}});

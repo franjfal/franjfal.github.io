@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="../"><title>Density of polynomials whose Aron–Berner extensions attain their norms — Density of polynomials whose Aron–Berner extensions attain their norms</title><link rel="icon" href="data:,">
+    <meta name="description" content="A machine-checked proof, in Lean 4 with Mathlib, of the polynomial Lindenstrauss theorem: for every real or complex Banach space X and every n ≥ 1, the n-homogeneous polynomials whose Aron–Berner extensions attain their norms are dense, for scalar and for vector values.">
+    <script src="katex/katex.js"></script>
+    <script src="katex/math.js"></script>
+    <link rel="stylesheet" href="katex/katex.css">
+    <script src="popper.js"></script>
+    <script src="tippy.js"></script>
+    <script src="marked.js"></script>
+    <script>
+      
+window.onload = async () => {
+
+    // Don't show hovers inside of closed tactic states
+    function blockedByTactic(elem) {
+      let parent = elem.parentNode;
+      while (parent && "classList" in parent) {
+        if (parent.classList.contains("tactic")) {
+          const toggle = parent.querySelector(":scope > input.tactic-toggle");
+          if (toggle) {
+            return !toggle.checked;
+          }
+        }
+        parent = parent.parentNode;
+      }
+      return false;
+    }
+
+    // The innermost element under the pointer, used to show only the most specific hover
+    let hoverTarget = null;
+    document.addEventListener('mouseover', (e) => { hoverTarget = e.target; }, true);
+
+    // Visible tippy references; a tooltip is blocked while an unrelated one is visible
+    const visibleTippies = new Set();
+    function blockedByTippy(elem) {
+      for (const ref of visibleTippies) {
+        if (!ref.contains(elem) && !elem.contains(ref)) return true;
+      }
+      return false;
+    }
+
+    // Whether the element's tooltip would have content to show. Content nested in a
+    // collapsed tactic region is covered by the region's proof-state tooltip, whether or
+    // not a tippy instance is currently attached to it.
+    function showsContent(el) {
+      if (!el._tippy) return false;
+      if (el.classList.contains('tactic')) {
+        const toggle = el.querySelector(':scope > input.tactic-toggle');
+        return !!toggle && !toggle.checked;
+      }
+      return (!!el.querySelector('.hover-info') || 'versoHover' in el.dataset) &&
+        !blockedByTactic(el);
+    }
+
+    // The nearest enclosing element whose tooltip has content
+    function innermostShowable(el) {
+      while (el && el.nodeType === Node.ELEMENT_NODE) {
+        if (showsContent(el)) return el;
+        el = el.parentElement;
+      }
+      return null;
+    }
+
+    // Binding highlights via event delegation with cached lookups
+    const bindingCache = new Map(); // context+binding -> [token elements]
+    let highlightedTokens = [];
+    function getBindingTokens(context, binding) {
+      const key = context + "\0" + binding;
+      let tokens = bindingCache.get(key);
+      if (!tokens) {
+        tokens = [];
+        for (const example of document.querySelectorAll(".hl.lean")) {
+          if (example.dataset.leanContext == context) {
+            for (const tok of example.querySelectorAll(".token[data-binding=\"" + CSS.escape(binding) + "\"]")) {
+              tokens.push(tok);
+            }
+          }
+        }
+        bindingCache.set(key, tokens);
+      }
+      return tokens;
+    }
+    for (const container of document.querySelectorAll(".hl.lean")) {
+      container.addEventListener("mouseover", (event) => {
+        const c = event.target.closest(".token");
+        if (!c || !c.dataset.binding || c.dataset.binding === "" || !container.contains(c)) return;
+        if (blockedByTactic(c)) return;
+        const tokens = getBindingTokens(container.dataset.leanContext, c.dataset.binding);
+        for (const tok of tokens) {
+          tok.classList.add("binding-hl");
+        }
+        highlightedTokens = tokens;
+      });
+      container.addEventListener("mouseout", (event) => {
+        const c = event.target.closest(".token");
+        if (!c || !container.contains(c)) return;
+        for (const tok of highlightedTokens) {
+          tok.classList.remove("binding-hl");
+        }
+        highlightedTokens = [];
+      });
+    }
+    /* Render docstrings */
+    if ('undefined' !== typeof marked) {
+        for (const d of document.querySelectorAll("code.docstring, pre.docstring")) {
+            const str = d.innerText;
+            const html = marked.parse(str);
+            const rendered = document.createElement("div");
+            rendered.classList.add("docstring");
+            rendered.innerHTML = html;
+            d.parentNode.replaceChild(rendered, d);
+        }
+    }
+    // Add hovers
+    const versoDocData = await (fetch("-verso-docs.json").then((resp) => resp.json()));
+
+    function hideParentTooltips(element) {
+      let parent = element.parentElement;
+      while (parent) {
+        const tippyInstance = parent._tippy;
+        if (tippyInstance) {
+          tippyInstance.hide();
+        }
+        parent = parent.parentElement;
+      }
+    }
+
+    function hideDescendantTooltips(element) {
+      for (const ref of visibleTippies) {
+        if (ref !== element && element.contains(ref)) {
+          ref._tippy.hide();
+        }
+      }
+    }
+
+    // Renders the documentation for a hover ID from the doc table
+    function docHoverContent(hoverId) {
+      const info = document.createElement('span');
+      info.className = 'hover-info';
+      info.style.display = 'block';
+      const data = versoDocData[hoverId];
+      if (data) {
+        info.innerHTML = data;
+        /* Render docstrings - TODO server-side */
+        if ('undefined' !== typeof marked) {
+          for (const d of info.querySelectorAll('code.docstring, pre.docstring')) {
+            const str = d.innerText;
+            const html = marked.parse(str);
+            const rendered = document.createElement('div');
+            rendered.classList.add('docstring');
+            rendered.innerHTML = html;
+            d.parentNode.replaceChild(rendered, d);
+          }
+        }
+      } else {
+        info.innerHTML = 'Failed to load doc ID: ' + hoverId;
+      }
+      return info;
+    }
+
+
+
+
+    const defaultTippyProps = {
+      /* DEBUG -- remove the space: * /
+      onHide(any) { return false; },
+      trigger: "click",
+      // */
+      /* theme: "lean", */
+      maxWidth: "none",
+      appendTo: () => document.body,
+      interactive: true,
+      delay: [100, null],
+      /* ignoreAttributes: true, */
+      followCursor: 'initial',
+      onShow(inst) {
+        const ref = inst.reference;
+        if (ref.className == 'tactic') {
+          const toggle = ref.querySelector(":scope > input.tactic-toggle");
+          if (toggle && toggle.checked) {
+            return false;
+          }
+        } else if (ref.querySelector(".hover-info") || "versoHover" in ref.dataset) {
+          if (blockedByTactic(ref)) { return false };
+        } else { // Nothing to show here!
+          return false;
+        }
+        // Show only the most specific hover under the pointer
+        if (hoverTarget && ref.contains(hoverTarget) && innermostShowable(hoverTarget) !== ref) {
+          return false;
+        }
+        hideParentTooltips(ref);
+        hideDescendantTooltips(ref);
+        if (blockedByTippy(ref)) { return false; }
+      },
+      onShown(inst) { visibleTippies.add(inst.reference); },
+      onHidden(inst) { visibleTippies.delete(inst.reference); },
+      content (tgt) {
+        const content = document.createElement("span");
+        if (tgt.className == 'tactic') {
+          const state = tgt.querySelector(":scope > .tactic-state").cloneNode(true);
+          state.style.display = "block";
+          content.appendChild(state);
+          content.style.display = "block";
+          content.className = "hl lean popup";
+        } else {
+          content.className = "hl lean";
+          content.style.display = "block";
+          content.style.maxHeight = "300px";
+          content.style.overflowY = "auto";
+          content.style.overflowX = "hidden";
+          // Messages come from the inline hover-info; documentation comes from the doc
+          // table. An element with both (a message span sharing a documented token's
+          // extent) shows both in one tooltip.
+          const hoverId = tgt.dataset.versoHover;
+          const hoverInfo = tgt.querySelector(".hover-info");
+          if (hoverInfo) {
+            content.appendChild(hoverInfo.cloneNode(true));
+          }
+          if (hoverId) {
+            // TODO stop doing an implicit conversion from string to number here
+            content.appendChild(docHoverContent(hoverId));
+          }
+          if (hoverInfo && hoverId) {
+            content.classList.add('mixed');
+          }
+          const extraLinks = tgt.dataset['versoLinks'] || tgt.parentElement.dataset['versoLinks'];
+          if (extraLinks) {
+            try {
+              const extras = JSON.parse(extraLinks);
+              const links = document.createElement('ul');
+              links.className = 'extra-doc-links';
+              extras.forEach((l) => {
+                const li = document.createElement('li');
+                li.innerHTML = "<a href=\"" + l['href'] + "\" title=\"" + l.long + "\">" + l.short + "</a>";
+                links.appendChild(li);
+              });
+              content.appendChild(links);
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        }
+        return content;
+      }
+    };
+
+
+    document.querySelectorAll('.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'lean');
+    });
+    document.querySelectorAll('.hl.lean .has-info.warning').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'warning message');
+    });
+    document.querySelectorAll('.hl.lean .has-info.information').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'info message');
+    });
+    document.querySelectorAll('.hl.lean .has-info.error').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'error message');
+    });
+    document.querySelectorAll('.hl.lean .tactic').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'tactic');
+    });
+    // Skip tokens inside closed tactics — they interfere with tactic tippys
+    const closedTactics = new Set();
+    document.querySelectorAll('.hl.lean .tactic').forEach(tactic => {
+      const toggle = tactic.querySelector(':scope > input.tactic-toggle');
+      if (toggle && !toggle.checked) closedTactics.add(tactic);
+    });
+    function isInsideClosedTactic(el) {
+      const tactic = el.closest('.tactic');
+      return tactic && tactic !== el && closedTactics.has(tactic);
+    }
+
+    const tokenSelector = '.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .has-info, .hl.lean .tactic, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort';
+    tippy(Array.from(document.querySelectorAll(tokenSelector)).filter(el => !isInsideClosedTactic(el)), defaultTippyProps);
+
+    // Create/destroy token tippys when tactic checkbox toggles
+    const tacticTippySelector = '.const.token, .keyword.token, .literal.token, .option.token, .var.token, .typed.token, .has-info, .level-var, .level-const, .level-op, .sort';
+    document.querySelectorAll('.hl.lean .tactic').forEach(tactic => {
+      const toggle = tactic.querySelector(':scope > input.tactic-toggle');
+      if (toggle) toggle.addEventListener('change', () => {
+        if (toggle.checked) {
+          closedTactics.delete(tactic);
+          tactic.querySelectorAll(tacticTippySelector).forEach(el => {
+            if (!el._tippy) {
+              tippy(el, defaultTippyProps);
+            }
+          });
+        } else {
+          closedTactics.add(tactic);
+          tactic.querySelectorAll(tacticTippySelector).forEach(el => {
+            if (el._tippy) el._tippy.destroy();
+          });
+        }
+        // The toggle changes which element's tooltip belongs to the pointer's position,
+        // but the pointer stays put, so no hover event announces the change. Show the
+        // right tooltip once the click that flipped the toggle has hidden the old one.
+        setTimeout(() => {
+          if (hoverTarget && hoverTarget.isConnected) {
+            const showable = innermostShowable(hoverTarget);
+            if (showable && showable._tippy) showable._tippy.show();
+          }
+        }, 0);
+      });
+  });
+}
+</script>
+    <style>
+
+.hl.lean {
+  white-space: pre;
+  font-weight: normal;
+  font-style: normal;
+  font-size: inherit;
+}
+
+.hl.lean .keyword {
+  color: var(--verso-code-keyword-color,);
+  font-weight: var(--verso-code-keyword-weight, bold);
+  font-style: var(--verso-code-keyword-style, normal);
+  font-family: var(--verso-code-keyword-font-family,);
+}
+
+.hl.lean .const {
+  color: var(--verso-code-const-color,);
+  font-weight: var(--verso-code-const-weight, normal);
+  font-style: var(--verso-code-const-style, normal);
+  font-family: var(--verso-code-const-font-family,);
+}
+
+.hl.lean .var {
+  color: var(--verso-code-var-color,);
+  font-weight: var(--verso-code-var-weight, normal);
+  font-style: var(--verso-code-var-style, italic);
+  font-family: var(--verso-code-var-font-family,);
+
+  position: relative;
+}
+
+.hl.lean .literal, .hl.lean .unknown {
+  color: var(--verso-code-color,);
+  font-weight: normal;
+  font-style: normal;
+  font-family: var(--verso-code-font-family,);
+}
+
+/* These lexically-classified token kinds default to the `.unknown` appearance. The rule follows
+   `.const` so it wins for the `anon-ctor` tokens, which also carry the `const` class. */
+.hl.lean .anon-ctor,
+.hl.lean .number,
+.hl.lean .char,
+.hl.lean .comment,
+.hl.lean .punctuation,
+.hl.lean .delim,
+.hl.lean .wildcard {
+  color: var(--verso-code-color,);
+  font-weight: normal;
+  font-style: normal;
+  font-family: var(--verso-code-font-family,);
+}
+
+.hover-container {
+  width: 0;
+  height: 0;
+  position: relative;
+  display: inline;
+}
+
+.hl.lean a {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+
+.hl.lean a:hover {
+  text-decoration: currentcolor underline solid;
+}
+
+/* Links inside tooltips show their underline only when hovered. */
+.tippy-box .hl.lean a {
+  text-decoration: none;
+}
+
+.hl.lean .hover-info {
+  white-space: normal;
+}
+
+.hl.lean .token .hover-info {
+  display: none;
+  position: absolute;
+  color: var(--verso-tooltip-color, black);
+  background-color: var(--verso-tooltip-bg-color, #e5e5e5);
+  border: 1px solid var(--verso-tooltip-border-color, black);
+  padding: 0.5rem;
+  z-index: 300;
+}
+
+.hl.lean .hover-info.messages {
+  max-height: 10rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  padding: 0 0.5rem 0 0;
+  display: block;
+}
+
+.hl.lean .hover-info code {
+  white-space: pre-wrap;
+  background: none;
+}
+
+.hl.lean .hover-info code:not(.verso-message) {
+  color: var(--verso-tooltip-color, black);
+}
+
+.hl.lean .hover-info.messages > code {
+  padding: 0.5rem;
+  display: block;
+  width: fit-content;
+}
+
+.hl.lean .hover-info.messages > code:only-child {
+  margin: 0;
+}
+
+.hl.lean .hover-info.messages > code {
+  margin: 0.1rem;
+}
+
+.hl.lean .hover-info.messages > code:not(:first-child) {
+  margin-top: 0rem;
+}
+
+.hl.lean {
+}
+
+.hl.lean.block {
+  display: block;
+}
+
+.hl.lean.inline {
+  display: inline;
+  white-space: pre-wrap;
+}
+
+.hl.lean * {
+}
+
+.hl.lean .token {
+  transition: all 0.25s; /* Slight fade for highlights */
+}
+
+@media (hover: hover) {
+  /* Hovered content nested in a collapsed tactic region keeps its plain background: the
+     region's proof state is the tooltip that appears there, and its label is what
+     highlights. `:where` keeps the exclusion out of the specificity computation. */
+  .hl.lean .token.binding-hl,
+  .hl.lean :is(.literal, .token.typed, .token[data-verso-hover]):hover:not(:where(.tactic:has(> .tactic-toggle:not(:checked)) > label *)) {
+    background-color: var(--verso-code-hover-bg-color, #eeeeee);
+    border-radius: 2px;
+    transition: none;
+  }
+
+  /* Within a hovered message span, token hover backgrounds are removed so the span's own
+     hover background shows across the whole span. The exception is a hovered documented
+     token, which keeps its background because its tooltip is the one shown. */
+  .hl.lean .has-info:hover .token.binding-hl:not(:hover),
+  .hl.lean .has-info:hover .token.binding-hl:not([data-verso-hover]),
+  .hl.lean .has-info:hover .literal:hover:not([data-verso-hover]),
+  .hl.lean .has-info:hover .token.typed:hover:not([data-verso-hover]) {
+    background-color: transparent;
+  }
+}
+
+
+.hl.lean .has-info .token:not(.tactic-state):not(.tactic-state *), .hl.lean .has-info .inter-text:not(.tactic-state):not(.tactic-state *) {
+  text-decoration-style: wavy;
+  text-decoration-line: underline;
+  text-decoration-thickness: from-font;
+  text-decoration-skip-ink: none;
+}
+
+/*
+The underline color comes from the nearest enclosing message span: each severity's span rule
+sets `--verso--region-indicator-color`, which inherits, so a region nested inside one of
+another severity keeps its own indicator color.
+*/
+.hl.lean .has-info :not(.tactic-state):not(.tactic-state *) {
+  text-decoration-color: var(--verso--region-indicator-color);
+}
+
+.hl.lean .has-info .hover-info {
+  display: none;
+  position: absolute;
+  transform: translate(0.25rem, 0.3rem);
+  color: var(--verso-tooltip-color, black);
+  border: 1px solid var(--verso-tooltip-border-color, black);
+  padding: 0.5rem;
+  z-index: 400;
+  text-align: left;
+}
+
+.hl.lean .has-info.error {
+  --verso--region-indicator-color: var(--verso-error-indicator-color, #ff0000);
+  --verso--region-hover-color: var(--verso-code-error-hover-color, currentcolor);
+  --verso--region-hover-bg-color: var(--verso-code-error-hover-bg-color, #ffb3b3);
+  color: var(--verso-code-error-color, currentcolor);
+  background-color: var(--verso-code-error-bg-color, transparent);
+}
+
+/*
+The hover highlight follows the tooltip: a message span highlights only when its own tooltip
+is the one that appears. When a hovered nested message span, a hovered documented token, or
+a hovered collapsed tactic label shows its own tooltip instead, the message span does not
+highlight. A span nested in a collapsed tactic region likewise stays plain, because hovering
+it shows the region's proof state; `:where` keeps that exclusion out of the specificity
+computation.
+
+The hover colors come from `--verso--region-hover-color` and `--verso--region-hover-bg-color`,
+which each severity's span rule sets. This keeps the hover conditions in this one rule, and
+because the properties inherit, a region nested inside one of another severity keeps its own
+hover colors.
+*/
+@media (hover: hover) {
+  .hl.lean .has-info:hover:not(:has(.has-info:hover)):not(:has([data-verso-hover]:hover)):not(:has(.tactic > label:hover + .tactic-toggle:not(:checked))):not(:where(.tactic:has(> .tactic-toggle:not(:checked)) > label *)) {
+    color: var(--verso--region-hover-color, currentcolor);
+    background-color: var(--verso--region-hover-bg-color, transparent);
+  }
+}
+
+.hl.lean .hover-info.messages > code.error {
+  background-color: var(--verso-tooltip-error-bg-color, #e5e5e5);
+  border-left: 0.2rem solid var(--verso-tooltip-error-border-color, #ffb3b3);
+}
+
+/*
+A tooltip that shows only messages of the box's own severity leaves severity styling to the
+box itself. When messages of several severities share the tooltip, or a `mixed` tooltip
+combines messages with other content (such as documentation), each message keeps its
+severity accent to distinguish them.
+*/
+.tippy-box .hl.lean.mixed > .hover-info.messages {
+  margin-bottom: 0.5rem;
+}
+
+.tippy-box[data-theme~='error'] .hl.lean:not(.mixed) .hover-info.messages:not(:has(> code.warning)):not(:has(> code.information)) > code.error {
+  background: none;
+  border: none;
+}
+
+.error .verso-message, .error .verso-message .token, .error .verso-message label {
+  color: var(--verso-message-error-color, #cc0000);
+}
+
+.error .verso-message .case-label:has(input[type="checkbox"])::before {
+  background-color: var(--verso-message-error-color, #cc0000) !important;
+}
+
+.hl.lean .has-info.warning {
+  --verso--region-indicator-color: var(--verso-warning-indicator-color, #e7a71d);
+  --verso--region-hover-color: var(--verso-code-warning-hover-color, currentcolor);
+  --verso--region-hover-bg-color: var(--verso-code-warning-hover-bg-color, #ffd580);
+  color: var(--verso-code-warning-color, currentcolor);
+  background-color: var(--verso-code-warning-bg-color, transparent);
+}
+
+.hl.lean .hover-info.messages > code.warning {
+  background-color: var(--verso-tooltip-warning-bg-color, #e5e5e5);
+  border-left: 0.2rem solid var(--verso-tooltip-warning-border-color, #ffd580);
+}
+
+.lean-output {
+  border-left: 0.2em solid transparent;
+  padding: 0 0 0 0.5em;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.lean-output.error {
+  border-color: var(--verso-output-error-color, var(--verso-error-indicator-color, #ff0000));
+}
+
+.lean-output.information {
+  border-color: var(--verso-output-info-color, var(--verso-info-indicator-color, #4777ff));
+}
+
+.lean-output.warning {
+  border-color: var(--verso-output-warning-color, var(--verso-warning-indicator-color, #e7a71d));
+}
+
+.tippy-box[data-theme~='warning'] .hl.lean:not(.mixed) .hover-info.messages:not(:has(> code.error)):not(:has(> code.information)) > code.warning {
+  background: none;
+  border: none;
+}
+
+.warning .verso-message, .warning .verso-message .token, .warning .verso-message label {
+  color: var(--verso-message-warning-color, currentcolor);
+}
+
+.warning .verso-message .case-label:has(input[type="checkbox"])::before {
+  background-color: var(--verso-message-warning-color, currentcolor) !important;
+}
+
+
+.hl.lean .has-info.information {
+  --verso--region-indicator-color: var(--verso-info-indicator-color, #4777ff);
+  --verso--region-hover-color: var(--verso-code-info-hover-color, currentcolor);
+  --verso--region-hover-bg-color: var(--verso-code-info-hover-bg-color, #4777ff);
+  color: var(--verso-code-info-color, currentcolor);
+  background-color: var(--verso-code-info-bg-color, transparent);
+}
+
+
+.hl.lean .hover-info.messages > code.information {
+  background-color: var(--verso-tooltip-info-bg-color, #e5e5e5);
+  border-left: 0.2rem solid var(--verso-tooltip-info-border-color, #4777ff);
+}
+
+.tippy-box[data-theme~='info'] .hl.lean:not(.mixed) .hover-info.messages:not(:has(> code.error)):not(:has(> code.warning)) > code.information {
+  background: none;
+  border: none;
+}
+
+.information .verso-message, .information .verso-message .token, .information .verso-message label {
+  color: var(--verso-message-info-color, currentcolor);
+}
+
+.information .verso-message .case-label:has(input[type="checkbox"])::before {
+  background-color: var(--verso-message-info-color, currentcolor) !important;
+}
+
+.hl.lean div.docstring {
+  font-family: var(--verso-text-font-family, sans-serif);
+  white-space: normal;
+  max-width: calc(min(40rem, 90vw));
+  width: max-content;
+}
+
+.hl.lean div.docstring > :last-child {
+  margin-bottom: 0;
+}
+
+.hl.lean div.docstring > :first-child {
+  margin-top: 0;
+}
+
+.hl.lean .hover-info .sep {
+  display: block;
+  width: auto;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0;
+  height: 1px;
+  border-top: 1px solid var(--verso-tooltip-separator-color, #ccc);
+}
+
+.hl.lean code {
+  font-family: var(--verso-code-font-family);
+}
+
+.hl.lean .tactic-state {
+  display: none;
+  position: relative;
+  width: fit-content;
+  border: 1px solid var(--verso-tactic-state-border-color, #888888);
+  border-radius: 0.1rem;
+  padding: 0.5rem;
+  font-family: sans-serif;
+  color: var(--verso-tactic-state-color, black);
+  background-color: var(--verso-tactic-state-bg-color, white);
+}
+
+.hl.lean.popup .tactic-state {
+  position: static;
+  display: block;
+  width: auto;
+  border: none;
+  padding: 0.5rem;
+  font-family: sans-serif;
+  background-color: var(--verso-tactic-state-bg-color, white);
+}
+
+
+.hl.lean .tactic {
+  position: relative;
+  display: inline;
+  vertical-align: top;
+  /* Without these, mobile Safari will start making font sizes inconsistent when its text size adjustment feature is triggered.*/
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+.hl.lean .tactic:has(> .tactic-toggle:checked) {
+  display: inline-grid;
+  grid-template-columns: 1fr;
+}
+
+.hl.lean .tactic-toggle:checked ~ .tactic-state {
+  display: inline-block;
+  vertical-align: top;
+  grid-row: 2;
+  justify-self: start;
+}
+
+.hl.lean .tactic > label {
+  position: relative;
+  grid-row: 1;
+  display: inline;
+}
+
+@media (hover: hover) {
+  /* Highlight a region on hover only when its own toggle is unchecked, and only the innermost
+     hovered region: `label:hover` bubbles to ancestor labels, so suppress the highlight on a region
+     whose label contains a more deeply nested hovered tactic label. The region's proof state is the
+     tooltip for everything else in its label, so the label keeps its highlight while any of that
+     content is hovered. */
+  .hl.lean .tactic:has(> .tactic-toggle:not(:checked)) > label:hover:not(:has(.tactic > label:hover)) {
+    background-color: var(--verso-code-hover-bg-color, #eeeeee);
+  }
+}
+
+.hl.lean .tactic-toggle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  z-index: -10;
+}
+
+.hl.lean .tactic > label::after {
+  content: "";
+  border: 1px solid var(--verso-tactic-toggle-color, #bbbbbb);
+  /* These need to be em, not rem, to scale with the font */
+  border-radius: 1em;
+  height: 0.25em;
+  vertical-align: middle;
+  width: 0.6em;
+  margin-left: 0.1em;
+  margin-right: 0.1em;
+  display: inline-block;
+  transition: all 0.5s;
+}
+
+/*
+@media (hover: hover) {
+  .hl.lean .tactic > label:hover::after {
+    border: 1px solid #aaaaaa;
+    background-color: #aaaaaa;
+    transition: all 0.5s;
+  }
+}
+*/
+
+.hl.lean .tactic > label:has(+ .tactic-toggle:checked)::after {
+  border: 1px solid var(--verso-tactic-toggle-checked-color, #999999);
+  background-color: var(--verso-tactic-toggle-checked-color, #999999);
+  transition: all 0.5s;
+}
+
+.hl.lean .tactic-state .goal + .goal {
+  margin-top: 1.5em;
+}
+
+/*
+Some CSS frameworks customize details/summary in ways not compatible with Verso's output.
+*/
+
+.hl.lean details {
+  display: block !important;
+  margin: 0;
+}
+
+.hl.lean details summary {
+  display: list-item !important;
+  margin: 0;
+}
+
+.hl.lean details summary:focus {
+  outline: none;
+  outline-offset: none;
+  color: inherit;
+}
+
+.hl.lean ul > li {
+  margin-bottom: 0;
+}
+
+.hl.lean details summary::marker {
+  display: inline !important;
+}
+
+.hl.lean details > summary:first-of-type {
+  list-style-type: disclosure-closed;
+  list-style-position: inside;
+}
+
+.hl.lean details[open] > summary:first-of-type {
+  list-style-type: disclosure-open;
+}
+
+.hl.lean details summary::before, .hl.lean details summary::after {
+  content: "" !important;
+  background: none;
+  display: none;
+}
+
+.hl.lean .tactic-state summary {
+  /* These need to be em, not rem, to scale with the font */
+  margin-left: -0.5em;
+}
+
+.hl.lean .tactic-state details {
+  /* These need to be em, not rem, to scale with the font */
+  padding-left: 0.5em;
+}
+
+.hl.lean .case-label {
+  display: block;
+  position: relative;
+}
+
+.hl.lean .case-label input[type="checkbox"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  z-index: -10;
+}
+
+.hl.lean .case-label:has(input[type="checkbox"])::before {
+  display: inline-block;
+  background-color: currentcolor;
+  content: ' ';
+  transition: ease 0.2s;
+  margin-right: 0.7em;
+  clip-path: polygon(100% 0, 0 0, 50% 100%);
+  width: 0.6em;
+  height: 0.6em;
+  vertical-align: middle;
+}
+
+.hl.lean .case-label:has(input[type="checkbox"]:not(:checked))::before {
+  transform: rotate(-90deg);
+}
+
+.hl.lean .case-label:has(input[type="checkbox"]) {
+
+}
+
+.hl.lean .case-label:has(input[type="checkbox"]:checked) {
+
+}
+
+
+.hl.lean .labeled-case > :not(:first-child) {
+  max-height: 0px;
+  display: block;
+  overflow: hidden;
+  transition: max-height 0.1s ease-in;
+  /* These need to be em, not rem, to scale with the font */
+  margin-left: 0.5em;
+  margin-top: 0.1em;
+}
+
+.hl.lean .labeled-case:has(.case-label input[type="checkbox"]:checked) > :not(:first-child) {
+  max-height: 100%;
+}
+
+
+.hl.lean .goal-name::before {
+  font-style: normal;
+  content: "case ";
+}
+
+.hl.lean .goal-name {
+  font-style: italic;
+  font-family: var(--verso-code-font-family);
+  color: inherit;
+}
+
+.hl.lean .hypotheses {
+  display: table;
+}
+
+.hl.lean .hypothesis {
+  display: table-row;
+}
+
+.hl.lean .hypothesis > * {
+  display: table-cell;
+}
+
+
+.hl.lean .hypotheses .colon {
+  text-align: center;
+  /* This needs to be em, not rem, to scale with the font */
+  min-width: 1em;
+}
+
+.hl.lean .hypotheses .name {
+  text-align: right;
+}
+
+.hl.lean .hypotheses .name,
+.hl.lean .hypotheses .type,
+.hl.lean .conclusion .type {
+  font-family: var(--verso-code-font-family);
+}
+
+.tippy-box {
+  /* Without these, mobile Safari will start making font sizes inconsistent when its text size adjustment feature is triggered.*/
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/*
+Tippy's stylesheet paints each arrow's fill triangle with the arrow element's `color` (its
+placement-specific `::before` rules use `border-color: initial`, which is `currentcolor`),
+and its border extension paints the outline triangle with the box's border color. Setting
+`color` on the arrow therefore matches it to the tooltip background for every placement.
+*/
+.tippy-box[data-theme~='lean'] {
+  background-color: var(--verso-tooltip-bg-color, #e5e5e5);
+  color: var(--verso-tooltip-color, black);
+  border: 1px solid var(--verso-tooltip-border-color, black);
+}
+.tippy-box[data-theme~='lean'] > .tippy-arrow {
+  color: var(--verso-tooltip-bg-color, #e5e5e5);
+}
+
+.tippy-box[data-theme~='message'][data-placement^='top'] > .tippy-arrow::before {
+  border-width: 11px 11px 0;
+}
+.tippy-box[data-theme~='message'][data-placement^='top'] > .tippy-arrow::after {
+  bottom: -11px;
+  border-width: 11px 11px 0;
+}
+.tippy-box[data-theme~='message'][data-placement^='bottom'] > .tippy-arrow::before {
+  border-width: 0 11px 11px;
+}
+.tippy-box[data-theme~='message'][data-placement^='bottom'] > .tippy-arrow::after {
+  top: -11px;
+  border-width: 0 11px 11px;
+}
+.tippy-box[data-theme~='message'][data-placement^='left'] > .tippy-arrow::before {
+  border-width: 11px 0 11px 11px;
+}
+.tippy-box[data-theme~='message'][data-placement^='left'] > .tippy-arrow::after {
+  right: -11px;
+  border-width: 11px 0 11px 11px;
+}
+
+.tippy-box[data-theme~='message'][data-placement^='right'] > .tippy-arrow::before {
+  border-width: 11px 11px 11px 0;
+}
+.tippy-box[data-theme~='message'][data-placement^='right'] > .tippy-arrow::after {
+  left: -11px;
+  border-width: 11px 11px 11px 0;
+}
+
+
+
+.tippy-box[data-theme~='warning'] {
+  background-color: var(--verso-tooltip-warning-bg-color, #e5e5e5);
+  color: var(--verso-tooltip-warning-color, black);
+  border: 3px solid var(--verso-tooltip-warning-border-color, #ffd580);
+}
+.tippy-box[data-theme~='warning'] > .tippy-arrow {
+  color: var(--verso-tooltip-warning-bg-color, #e5e5e5);
+}
+
+.tippy-box[data-theme~='error'] {
+  background-color: var(--verso-tooltip-error-bg-color, #e5e5e5);
+  color: var(--verso-tooltip-error-color, black);
+  border: 3px solid var(--verso-tooltip-error-border-color, #ffb3b3);
+}
+.tippy-box[data-theme~='error'] > .tippy-arrow {
+  color: var(--verso-tooltip-error-bg-color, #e5e5e5);
+}
+
+.tippy-box[data-theme~='info'] {
+  background-color: var(--verso-tooltip-info-bg-color, #e5e5e5);
+  color: var(--verso-tooltip-info-color, black);
+  border: 3px solid var(--verso-tooltip-info-border-color, #4777ff);
+}
+.tippy-box[data-theme~='info'] > .tippy-arrow {
+  color: var(--verso-tooltip-info-bg-color, #e5e5e5);
+}
+
+.tippy-box[data-theme~='tactic'] {
+  background-color: var(--verso-tactic-state-bg-color, white);
+  color: var(--verso-tactic-state-color, black);
+  border: 1px solid var(--verso-tactic-state-border-color, #888888);
+}
+.tippy-box[data-theme~='tactic'] > .tippy-arrow {
+  color: var(--verso-tactic-state-bg-color, white);
+}
+
+.extra-doc-links {
+  list-style-type: none;
+  margin-left: 0;
+  padding: 0;
+}
+
+.extra-doc-links > li {
+  display: inline-block;
+}
+
+.extra-doc-links > li:not(:last-child)::after {
+  content: '|';
+  display: inline-block;
+  margin: 0 0.25em;
+}
+
+.verso-message .trace {
+  display: block;
+}
+
+.verso-message .trace > summary::marker {
+  color: var(--verso-text-color, black);
+}
+
+.verso-message .trace-children {
+  margin: 0;
+  padding: 0;
+}
+
+.verso-message .trace-children > li {
+  list-style-type: none;
+  margin-left: 1.5em;
+}
+
+.verso-message .trace-children > li:not(:has(.trace)) {
+  margin-left: 0;
+}
+
+.verso-message .trace-class {
+  color: color-mix(in srgb, currentColor 70%, transparent);
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+}
+
+.verso-message .text {
+  white-space: pre-wrap;
+}
+
+</style><link rel="stylesheet" href="tippy-border.css">
+    <link rel="stylesheet" href="verso-vars.css">
+    <link rel="stylesheet" href="literate.css">
+    <link rel="stylesheet" href="literate-theme.css">
+    <script src="copy-button.js" defer="defer"></script>
+    <script defer="defer" src="-verso-search/elasticlunr.min.js"></script>
+    <script defer="defer" src="-verso-search/fuzzysort.min.js"></script>
+    <script defer="defer" src="-verso-search/searchIndex.js"></script>
+    <script defer="defer" src="-verso-search/search-config.js"></script>
+    <script type="module" src="-verso-search/search-init.js"></script>
+    <link rel="stylesheet" href="-verso-search/search-box.css">
+    <link rel="stylesheet" href="-verso-search/search-page.css">
+    <link rel="stylesheet" href="-verso-search/search-highlight.css">
+    <link rel="stylesheet" href="-verso-search/domain-display.css">
+    <script src="-verso-search/search-highlight.js" defer="defer"></script>
+    <link rel="stylesheet" href="verso-overlay.css">
+    <script src="verso-overlay.js" defer="defer"></script>
+    </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a><input type="checkbox" id="menu-toggle" class="menu-toggle" role="button" aria-label="Menu"><label for="menu-toggle" class="hamburger" aria-label="Toggle navigation"><span></span><span></span><span></span></label><div class="layout">
+      <aside class="sidebar"><div class="sidebar-content">
+          <nav class="module-tree" aria-label="Module navigation">
+            <div class="nav-title current">
+              <a href="LindenstraussPolynomials/" title="LindenstraussPolynomials" class="custom-title">Density of polynomials whose Aron–Berner extensions attain their norms</a></div>
+            <div class="leaf">
+              <a href="LindenstraussPolynomials/Alpha/" title="LindenstraussPolynomials.Alpha" class="custom-title">The step sizes</a></div>
+            <div class="leaf">
+              <a href="LindenstraussPolynomials/Basic/" title="LindenstraussPolynomials.Basic" class="custom-title">Homogeneous polynomials</a></div>
+            <div class="leaf">
+              <a href="LindenstraussPolynomials/Chain/" title="LindenstraussPolynomials.Chain" class="custom-title">Ordered compositions of substitutions</a></div>
+            <div class="leaf">
+              <a href="LindenstraussPolynomials/Compositions/" title="LindenstraussPolynomials.Compositions" class="custom-title">Control of ordered compositions</a></div>
+            <div class="leaf">
+              <a href="LindenstraussPolynomials/Construction/" title="LindenstraussPolynomials.Construction" class="custom-title">The perturbation scheme</a></div>
+            <div class="leaf">
+              <a href="LindenstraussPolynomials/Core/" title="LindenstraussPolynomials.Core" class="custom-title">The core of the proof</a></div>
+            <div class="leaf">
+              <a href="LindenstraussPolynomials/DavieGamelin/" title="LindenstraussPolynomials.DavieGamelin" class="custom-title">Norm preservation (Lemma lem:isometry)</a></div>
+            <div class="leaf">
+              <a href="LindenstraussPolynomials/Deficit/" title="LindenstraussPolynomials.Deficit" class="custom-title">Deficits</a></div>
+            <div class="leaf">
+              <a href="LindenstraussPolynomials/Extension/" title="LindenstraussPolynomials.Extension" class="custom-title">The canonical (Aron–Berner) extension</a></div>
+            <div class="leaf">
+              <a href="LindenstraussPolynomials/Geometry/" title="LindenstraussPolynomials.Geometry" class="custom-title">The geometric lemma (Lemma lem:geometry and Remark rem:real)</a></div>
+            <div class="leaf">
+              <a href="LindenstraussPolynomials/LemmaK/" title="LindenstraussPolynomials.LemmaK" class="custom-title">An estimate for nonnegative polynomials (Lemma lem:K)</a></div>
+            <div class="leaf">
+              <a href="LindenstraussPolynomials/Limit/" title="LindenstraussPolynomials.Limit" class="custom-title">The limit polynomial</a></div>
+            <div class="leaf">
+              <a href="LindenstraussPolynomials/Polarization/" title="LindenstraussPolynomials.Polarization" class="custom-title">Polarization</a></div>
+            <div class="leaf">
+              <a href="LindenstraussPolynomials/Substitution/" title="LindenstraussPolynomials.Substitution" class="custom-title">The substitutions and the averaging operators</a></div>
+            <div class="leaf">
+              <a href="LindenstraussPolynomials/Theorems/" title="LindenstraussPolynomials.Theorems" class="custom-title">Main results</a></div>
+            <div class="leaf">
+              <a href="LindenstraussPolynomials/Ultra/" title="LindenstraussPolynomials.Ultra" class="custom-title">Limits along an ultrafilter</a></div>
+            </nav>
+          </div>
+        </aside><main class="main-area" id="main-content"><header class="title-bar">
+          <ol class="breadcrumbs" aria-label="Breadcrumb">
+            <li>
+              <span class="current">Density of polynomials whose Aron–Berner extensions attain their norms</span></li>
+            </ol>
+          </header>
+        <div class="content-wrapper">
+          <section class="code-content" id="LindenstraussPolynomials">
+            <details class="imports-list"><summary>Imports</summary><div class="imports-code">
+                <code class="hl lean block" data-lean-context="lean"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Module.import-0">import</span><span class="inter-text"> </span><a href="LindenstraussPolynomials/Theorems/#LindenstraussPolynomials___Theorems" title="Module `LindenstraussPolynomials.Theorems`"><span class="module-name token" data-binding="module-name-LindenstraussPolynomials.Theorems">LindenstraussPolynomials.Theorems</span></a><span class="inter-text">
+</span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Module.import-41">import</span><span class="inter-text"> </span><a href="LindenstraussPolynomials/Geometry/#LindenstraussPolynomials___Geometry" title="Module `LindenstraussPolynomials.Geometry`"><span class="module-name token" data-binding="module-name-LindenstraussPolynomials.Geometry">LindenstraussPolynomials.Geometry</span></a><span class="inter-text">
+</span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Module.import-82">import</span><span class="inter-text"> </span><a href="LindenstraussPolynomials/LemmaK/#LindenstraussPolynomials___LemmaK" title="Module `LindenstraussPolynomials.LemmaK`"><span class="module-name token" data-binding="module-name-LindenstraussPolynomials.LemmaK">LindenstraussPolynomials.LemmaK</span></a></code></div>
+              </details><div class="verso-text mod-doc" id="mod-doc-LindenstraussPolynomials-1-0" style="--indent: 0">
+              <section>
+                <h1 id="Density-of-polynomials-whose-Aron___Berner-extensions-attain-their-norms">
+                  Density of polynomials whose Aron–Berner extensions attain their norms</h1>
+                <p>
+                  A Lean 4 formalization, with Mathlib, of the article <strong>Density of polynomials whose Aron–Berner extensions attain their norms</strong> by J. Falcó. Every result below is proved without <code>sorry</code> and depends only on the standard axioms <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>. The scalar field is any <code>RCLike</code> field, so each statement holds over <code class="math inline">\mathbb R</code> and over <code class="math inline">\mathbb C</code>.</p>
+                </section>
+              <section>
+                <h2 id="The-theorems">
+                  The theorems</h2>
+                <ul>
+                  <li>
+                    <p>
+                      Theorem <code>thm:main</code> (polynomial Lindenstrauss theorem): <code class="hl lean inline" data-lean-context="lean"><a href="LindenstraussPolynomials/Theorems/#LindenstraussPolynomials___polynomial_lindenstrauss" title="Definition of `LindenstraussPolynomials.polynomial_lindenstrauss`"><span class="const token" data-binding="const-LindenstraussPolynomials.polynomial_lindenstrauss" data-verso-hover="0">LindenstraussPolynomials.&shy;polynomial_lindenstrauss</span></a></code>, and its density form <code class="hl lean inline" data-lean-context="lean"><a href="LindenstraussPolynomials/Theorems/#LindenstraussPolynomials___polynomial_lindenstrauss_dense" title="Definition of `LindenstraussPolynomials.polynomial_lindenstrauss_dense`"><span class="const token" data-binding="const-LindenstraussPolynomials.polynomial_lindenstrauss_dense" data-verso-hover="1">LindenstraussPolynomials.&shy;polynomial_lindenstrauss_dense</span></a></code>.</p>
+                    </li>
+                  <li>
+                    <p>
+                      Theorem <code>thm:vector</code> (vector-valued version): <code class="hl lean inline" data-lean-context="lean"><a href="LindenstraussPolynomials/Theorems/#LindenstraussPolynomials___polynomial_lindenstrauss_vector" title="Definition of `LindenstraussPolynomials.polynomial_lindenstrauss_vector`"><span class="const token" data-binding="const-LindenstraussPolynomials.polynomial_lindenstrauss_vector" data-verso-hover="2">LindenstraussPolynomials.&shy;polynomial_lindenstrauss_vector</span></a></code>.</p>
+                    </li>
+                  <li>
+                    <p>
+                      Lemma <code>lem:isometry</code> (Davie–Gamelin): <code class="hl lean inline" data-lean-context="lean"><a href="LindenstraussPolynomials/Theorems/#LindenstraussPolynomials___polyNorm_abExt" title="Definition of `LindenstraussPolynomials.polyNorm_abExt`"><span class="const token" data-binding="const-LindenstraussPolynomials.polyNorm_abExt" data-verso-hover="3">LindenstraussPolynomials.&shy;polyNorm_abExt</span></a></code> and <code class="hl lean inline" data-lean-context="lean"><a href="LindenstraussPolynomials/Theorems/#LindenstraussPolynomials___polyNorm_abExtV" title="Definition of `LindenstraussPolynomials.polyNorm_abExtV`"><span class="const token" data-binding="const-LindenstraussPolynomials.polyNorm_abExtV" data-verso-hover="4">LindenstraussPolynomials.&shy;polyNorm_abExtV</span></a></code>.</p>
+                    </li>
+                  <li>
+                    <p>
+                      Lemma <code>lem:K</code>: <code class="hl lean inline" data-lean-context="lean"><a href="LindenstraussPolynomials/LemmaK/#LindenstraussPolynomials___lemmaK" title="Definition of `LindenstraussPolynomials.lemmaK`"><span class="const token" data-binding="const-LindenstraussPolynomials.lemmaK" data-verso-hover="5">LindenstraussPolynomials.&shy;lemmaK</span></a></code>.</p>
+                    </li>
+                  <li>
+                    <p>
+                      Lemma <code>lem:geometry</code> and Remark <code>rem:real</code>: <code class="hl lean inline" data-lean-context="lean"><a href="LindenstraussPolynomials/Geometry/#LindenstraussPolynomials___geometry_lemma" title="Definition of `LindenstraussPolynomials.geometry_lemma`"><span class="const token" data-binding="const-LindenstraussPolynomials.geometry_lemma" data-verso-hover="6">LindenstraussPolynomials.&shy;geometry_lemma</span></a></code> and <code class="hl lean inline" data-lean-context="lean"><a href="LindenstraussPolynomials/Geometry/#LindenstraussPolynomials___geometry_lemma_real" title="Definition of `LindenstraussPolynomials.geometry_lemma_real`"><span class="const token" data-binding="const-LindenstraussPolynomials.geometry_lemma_real" data-verso-hover="7">LindenstraussPolynomials.&shy;geometry_lemma_real</span></a></code>.</p>
+                    </li>
+                  </ul>
+                </section>
+              <section>
+                <h2 id="How-it-is-organized">
+                  How it is organized</h2>
+                <p>
+                  The modules follow the article: polynomials and their norms, polarization, the canonical extension and its norm preservation, the estimate for nonnegative polynomials, the substitutions and the geometric lemma, and then the perturbation scheme — step sizes, construction, limit, deficits, ordered compositions — and the passage to the bidual along an ultrafilter. As the final note of the article suggests, the formal proof follows the vector-valued scheme of Section 3 and obtains the scalar case by taking <code class="math inline">Y=\mathbb K</code>.</p>
+                </section>
+              <section>
+                <h2 id="Conventions">
+                  Conventions</h2>
+                <ul>
+                  <li>
+                    <p>
+                      A polynomial is a function <code class="math inline">P\colon X\to Y</code> with <code class="math inline">P(x)=L(x,\ldots,x)</code> for a continuous <code class="math inline">n</code>-linear <code class="math inline">L</code>.</p>
+                    </li>
+                  <li>
+                    <p>
+                      <code class="math inline">\|P\|</code> is the supremum of <code class="math inline">\|P(x)\|</code> over the closed unit ball.</p>
+                    </li>
+                  <li>
+                    <p>
+                      The canonical extension extends the last variable first, as in the article.</p>
+                    </li>
+                  </ul>
+                <p>
+                  The first formal proof was produced with the help of Aristotle (Harmonic) for Lean and Mathlib v4.28.0; it was ported to Lean and Mathlib v4.35.0 and reviewed against the article in Proofline.
+</p>
+                </section>
+              </div>
+            </section>
+          <nav class="page-toc" aria-label="Page table of contents">
+            <div class="page-toc-title">
+              On this page</div>
+            <ul>
+              <li class="toc-level-1">
+                <a href="LindenstraussPolynomials/#Density-of-polynomials-whose-Aron___Berner-extensions-attain-their-norms">Density of polynomials whose Aron–Berner extensions attain their norms</a></li>
+              <li class="toc-level-2">
+                <a href="LindenstraussPolynomials/#The-theorems">The theorems</a></li>
+              <li class="toc-level-2">
+                <a href="LindenstraussPolynomials/#How-it-is-organized">How it is organized</a></li>
+              <li class="toc-level-2">
+                <a href="LindenstraussPolynomials/#Conventions">Conventions</a></li>
+              </ul>
+            </nav>
+          </div>
+        </main></div>
+    </body>
+  </html>

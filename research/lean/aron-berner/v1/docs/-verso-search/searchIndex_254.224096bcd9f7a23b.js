@@ -1,0 +1,1 @@
+window.docContents[254].resolve({"/LindenstraussPolynomials/Ultra/#LindenstraussPolynomials______":{"contents":"The free ultrafilter used for the limits. \n\n","context":"","header":"LindenstraussPolynomials.𝒰","id":"/LindenstraussPolynomials/Ultra/#LindenstraussPolynomials______"}});

@@ -1,0 +1,1 @@
+window.docContents[108].resolve({"/LindenstraussPolynomials/Compositions/#LindenstraussPolynomials___defc_base":{"contents":"eq:vbase: d_k^{y_ℓ^*}(x_ℓ) ≤ 5 α_k² for k ≤ ℓ. \n\n","context":"","header":"LindenstraussPolynomials.defc_base","id":"/LindenstraussPolynomials/Compositions/#LindenstraussPolynomials___defc_base"}});

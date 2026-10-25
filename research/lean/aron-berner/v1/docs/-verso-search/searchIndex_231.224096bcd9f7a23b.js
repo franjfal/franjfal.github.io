@@ -1,0 +1,1 @@
+window.docContents[231].resolve({"/LindenstraussPolynomials/Extension/#LindenstraussPolynomials___Bidual":{"contents":"The bidual X**. \n\n","context":"","header":"LindenstraussPolynomials.Bidual","id":"/LindenstraussPolynomials/Extension/#LindenstraussPolynomials___Bidual"}});

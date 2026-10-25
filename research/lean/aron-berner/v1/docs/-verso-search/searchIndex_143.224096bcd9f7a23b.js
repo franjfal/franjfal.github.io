@@ -1,0 +1,1 @@
+window.docContents[143].resolve({"/LindenstraussPolynomials/Extension/#LindenstraussPolynomials___diagExt_inclusion":{"contents":"The canonical extension extends: Ā(Jx,…,Jx) = A(x,…,x). \n\n","context":"","header":"LindenstraussPolynomials.diagExt_inclusion","id":"/LindenstraussPolynomials/Extension/#LindenstraussPolynomials___diagExt_inclusion"}});

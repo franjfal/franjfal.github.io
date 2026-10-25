@@ -1,0 +1,1 @@
+window.docContents[236].resolve({"/LindenstraussPolynomials/Alpha/#LindenstraussPolynomials___sum_alpha_sq_le":{"contents":"∑_{h ≥ k} α_h² ≤ 2 α_k² (finite version of eq:tails). \n\n","context":"","header":"LindenstraussPolynomials.sum_alpha_sq_le","id":"/LindenstraussPolynomials/Alpha/#LindenstraussPolynomials___sum_alpha_sq_le"}});

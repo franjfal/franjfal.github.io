@@ -1,0 +1,1 @@
+window.docContents[107].resolve({"/LindenstraussPolynomials/Limit/#LindenstraussPolynomials___limQ":{"contents":"The limit Q of the sequence P_k. \n\n","context":"","header":"LindenstraussPolynomials.limQ","id":"/LindenstraussPolynomials/Limit/#LindenstraussPolynomials___limQ"}});

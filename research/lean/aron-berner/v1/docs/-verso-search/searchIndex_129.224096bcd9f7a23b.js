@@ -1,0 +1,1 @@
+window.docContents[129].resolve({"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___seqT":{"contents":"The choice at stage k. \n\n","context":"","header":"LindenstraussPolynomials.seqT","id":"/LindenstraussPolynomials/Construction/#LindenstraussPolynomials___seqT"}});

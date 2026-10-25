@@ -1,0 +1,1 @@
+window.docContents[200].resolve({"/LindenstraussPolynomials/Geometry/#LindenstraussPolynomials___alt_sum_card_pow":{"contents":"∑_F (-1)^{n-|F|} |F|^n = n! (finite polarization applied to t ↦ t^n). \n\n","context":"","header":"LindenstraussPolynomials.alt_sum_card_pow","id":"/LindenstraussPolynomials/Geometry/#LindenstraussPolynomials___alt_sum_card_pow"}});

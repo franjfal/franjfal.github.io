@@ -1,0 +1,1 @@
+window.docContents[80].resolve({"/LindenstraussPolynomials/Basic/#LindenstraussPolynomials___diag":{"contents":"The diagonal x ↦ A (x, …, x) of a multilinear map: the associated polynomial. \n\n","context":"","header":"LindenstraussPolynomials.diag","id":"/LindenstraussPolynomials/Basic/#LindenstraussPolynomials___diag"}});

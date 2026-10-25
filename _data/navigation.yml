@@ -3,6 +3,11 @@ main_es:
     url: /docencia/
   - title: "Investigación"
     url: /investigacion/
+    sublinks:
+      - title: "Investigación"
+        url: /investigacion/
+      - title: "Formalizaciones en Lean"
+        url: /research/lean/
   - title: "Libros"
     url: /Libros/MatExp/
     sublinks:
@@ -29,6 +34,11 @@ main_en:
     url: /teaching/
   - title: "Research"
     url: /research/
+    sublinks:
+      - title: "Research"
+        url: /research/
+      - title: "Lean formalizations"
+        url: /research/lean/
   - title: "Books"
     url: /books/experimental-mathematics/
     sublinks:

@@ -1,0 +1,1 @@
+window.docContents[216].resolve({"/LindenstraussPolynomials/Limit/#LindenstraussPolynomials___polyNorm_seq_diff":{"contents":"‖P_{k+N} - P_k‖ ≤ 2 α_k / (1-a). \n\n","context":"","header":"LindenstraussPolynomials.polyNorm_seq_diff","id":"/LindenstraussPolynomials/Limit/#LindenstraussPolynomials___polyNorm_seq_diff"}});

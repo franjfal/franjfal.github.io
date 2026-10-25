@@ -1,0 +1,1 @@
+window.docContents[104].resolve({"/LindenstraussPolynomials/Limit/#LindenstraussPolynomials___abs_polyNorm_limQ_sub":{"contents":"|M - M_k| ≤ 4 α_k. \n\n","context":"","header":"LindenstraussPolynomials.abs_polyNorm_limQ_sub","id":"/LindenstraussPolynomials/Limit/#LindenstraussPolynomials___abs_polyNorm_limQ_sub"}});
