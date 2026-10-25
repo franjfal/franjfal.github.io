@@ -22,6 +22,8 @@ Mi investigación se centra en el **análisis funcional y la geometría de los e
 2. J. Falcó, D. Isert. [Variational principles and applications to symmetric PDEs](https://arxiv.org/abs/2403.18467){:target="_blank"}. [_arXiv:2403.18467_](https://arxiv.org/abs/2403.18467){:style="text-decoration:none;color:black;" target="_blank"}, 2024.
 1. S. Dantas, J. Falcó, M. Jung, D. L. Rodríguez-Vidanes. [Linear structures in the set of non-norm-attaining operators on Banach spaces](https://arxiv.org/abs/2311.17426){:target="_blank"}. [_arXiv:2311.17426_](https://arxiv.org/abs/2311.17426){:style="text-decoration:none;color:black;" target="_blank"}, 2023.
 
+{% include lean/formalizations-list.html %}
+
 ## Artículos publicados
 
 {: reversed="reversed"}

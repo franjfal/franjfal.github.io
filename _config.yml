@@ -37,6 +37,9 @@ exclude_from_localization:
   - gap
   - pau
   - minimal-mistakes
+  # Lean formalizations published by Proofline: static files that are the same
+  # in every language, so they are built once and never duplicated under /en/.
+  - research/lean
 parallel_localization: false
 search: true
 remote_theme: mmistakes/minimal-mistakes
@@ -117,6 +120,18 @@ defaults:
       path: "pages"
     values:
       layout: single
+      classes: wide
+      author_profile: true
+      author: Javier Falcó
+      read_time: false
+      comments: false
+      share: false
+      related: false
+
+  # Lean formalizations exported by Proofline (research/lean/)
+  - scope:
+      path: "research/lean"
+    values:
       classes: wide
       author_profile: true
       author: Javier Falcó

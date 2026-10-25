@@ -1,0 +1,40 @@
+{% comment %}
+  The formalizations Proofline has published, newest first, from
+  _data/lean_formalizations.json (written by every export). Renders nothing
+  until the first one is published. Include it as lean/formalizations-list.html;
+  pass heading=false to leave out the heading and introduction.
+{% endcomment %}
+{% assign lean_items = site.data.lean_formalizations.items | sort: "published_at" | reverse %}
+{% assign lean_lang = page.lang | default: site.active_lang | default: site.default_lang %}
+{% if lean_items and lean_items.size > 0 %}
+<style>
+  .lean-list { display: grid; gap: 0.75rem; margin: 0.75em 0 1.5em; }
+  .lean-list__item { display: block; padding: 0.85rem 1rem; border: 1px solid #e2e2df; border-radius: 10px; color: inherit !important; text-decoration: none !important; transition: border-color .15s ease, box-shadow .15s ease; }
+  .lean-list__item:hover { border-color: #111; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+  .lean-list__top { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; }
+  .lean-list__title { font-weight: 700; color: #111; }
+  .lean-list__status { display: inline-flex; align-items: center; gap: .3rem; padding: .05rem .5rem; border-radius: 999px; font-size: .65em; font-weight: 700; white-space: nowrap; border: 1px solid; }
+  .lean-list__status::before { content: ""; width: .4rem; height: .4rem; border-radius: 50%; background: currentColor; }
+  .lean-list__status--verified { color: #1a7f37; background: #e8f5ec; border-color: #b7e0c3; }
+  .lean-list__status--partial { color: #9a6700; background: #fff6dd; border-color: #f0d58c; }
+  .lean-list__status--axioms { color: #8250df; background: #f3edff; border-color: #d8c7fb; }
+  .lean-list__summary { display: block; margin-top: .35rem; font-size: .8em; color: #444; }
+  .lean-list__meta { display: block; margin-top: .35rem; font-size: .7em; color: #6b7076; }
+</style>
+{% unless include.heading == false %}
+<h2 id="lean-formalizations">{% if lean_lang == "en" %}Lean formalizations{% else %}Formalizaciones en Lean{% endif %}</h2>
+<p>{% if lean_lang == "en" %}Results of my articles formalized in Lean 4 with Mathlib and verified by the proof assistant. Each page shows the statements, the Lean code with its proof states, and how it was verified.{% else %}Resultados de mis artículos formalizados en Lean 4 con Mathlib y verificados por el asistente de demostración. Cada página muestra los enunciados, el código Lean con sus estados de prueba y cómo se verificó.{% endif %}</p>
+{% endunless %}
+<div class="lean-list">
+  {% for item in lean_items %}
+  <a class="lean-list__item" href="{{ item.url | relative_url }}">
+    <span class="lean-list__top">
+      <span class="lean-list__title">{{ item.title }}</span>
+      <span class="lean-list__status lean-list__status--{{ item.status }}">{% if lean_lang == "en" %}{{ item.status_en }}{% else %}{{ item.status_es }}{% endif %}</span>
+    </span>
+    {% if item.summary and item.summary != "" %}<span class="lean-list__summary">{{ item.summary }}</span>{% endif %}
+    <span class="lean-list__meta">{% if item.article and item.article != "" %}{{ item.article }} · {% endif %}{% if item.arxiv and item.arxiv != "" %}{{ item.arxiv }} · {% endif %}v{{ item.version }} · {{ item.published_at | date: "%d/%m/%Y" }} · Lean 4 · Mathlib</span>
+  </a>
+  {% endfor %}
+</div>
+{% endif %}

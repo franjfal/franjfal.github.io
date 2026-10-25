@@ -1,0 +1,28 @@
+---
+layout: default
+---
+{% comment %}
+  A Lean formalization published by Proofline. The page only lays out results
+  Proofline computed and exported (formalization.json, Verso's documentation,
+  the Lean project): GitHub Pages never runs Lean. Each public version's
+  folder carries its own copy of the viewer, so an old version keeps looking
+  the way it was published.
+{% endcomment %}
+<link rel="stylesheet" href="{{ page.lean_base | append: 'viewer/lean-viewer.css' | relative_url }}">
+
+<div id="main" role="main">
+  {% include sidebar.html %}
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    {% if page.title %}<meta itemprop="headline" content="{{ page.title | strip_html | escape_once }}">{% endif %}
+    {% if page.lean_summary %}<meta itemprop="description" content="{{ page.lean_summary | strip_html | escape_once }}">{% endif %}
+    <div class="page__inner-wrap">
+      <section class="page__content" itemprop="text">
+        <div data-lean-viewer data-base="{{ page.lean_base | relative_url }}"></div>
+        {{ content }}
+      </section>
+    </div>
+  </article>
+</div>
+
+<script src="{{ page.lean_base | append: 'viewer/lean-viewer.js' | relative_url }}" defer></script>
