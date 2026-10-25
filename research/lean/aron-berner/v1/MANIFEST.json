@@ -1,6 +1,6 @@
 {
  "schema": "proofline.lean-manifest.v1",
- "content_sha256": "968371919d78c301130eca573ef51749671dd632da34ed4b84a39d4aee5b283e",
+ "content_sha256": "2d4974b30769cfcf9042b1f6662715032ad92b08ed0e91890fd84b1a7c417518",
  "files": [
   {
    "path": "aron-berner-v1.zip",
@@ -1094,13 +1094,13 @@
   },
   {
    "path": "docs/verso-overlay.css",
-   "sha256": "cfcf82776b714ac987d72d3b2b4ba7d6d81b1609064d72f546d3ff1f7f6b5e10",
-   "bytes": 14392
+   "sha256": "7b7deaa11efb69bc60fbbc7cc388f59328c93ff729ccd8f9ea3dd6ffe968c05f",
+   "bytes": 14567
   },
   {
    "path": "docs/verso-overlay.js",
-   "sha256": "7cb69d62d04e18e50784c876ddc6c6f731a5b0ba51ee5f1552ccbdc972e758ac",
-   "bytes": 7244
+   "sha256": "35eca6ff2df1d32b8056998877c426605782bab7a06d0ec80d883ae24b304a32",
+   "bytes": 8625
   },
   {
    "path": "docs/verso-vars.css",
@@ -1114,8 +1114,8 @@
   },
   {
    "path": "formalization.json",
-   "sha256": "a8b21d6b0f6cbf0d69b7574bbaefd40edba2fc8867be56e81c905a8459d0fcb0",
-   "bytes": 500571
+   "sha256": "bd0ae33e2a0b50914f5e75c27713e2d0024f728cca41d045624c551f0f0a50d9",
+   "bytes": 502007
   },
   {
    "path": "verification.json",
@@ -1124,13 +1124,13 @@
   },
   {
    "path": "viewer/lean-viewer.css",
-   "sha256": "1ad028cdeb00275e046ddc3648f2cfe2a0f4e79243030264bde435a514606e61",
-   "bytes": 29333
+   "sha256": "d05b3bf850d3f8b0d1c3f6476aea5001ad8e5933dfb71fef6a541a7c953b2c13",
+   "bytes": 29530
   },
   {
    "path": "viewer/lean-viewer.js",
-   "sha256": "3dc509283d5f4e187d055d86d478759204d6c5193c5a8a989f9f48c5d69831e2",
-   "bytes": 58219
+   "sha256": "3ac9ed515cce9009b64d005151fd8ee5a5d7085c5d7155fb414bf3bbe1b7d682",
+   "bytes": 60707
   }
  ]
 }

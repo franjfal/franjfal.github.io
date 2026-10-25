@@ -166,18 +166,34 @@
     return html;
   }
 
-  // The article's labels (lem:geometry) as the article numbers them (Lemma 2.4).
+  // The article's labels as the article calls them: lem:geometry is Lemma 2.4
+  // and eq:partial is (7), from its compiled .aux (`references`), or from the
+  // number recorded with a linked result when the .aux was not available.
   var LABELS = [];
 
-  function setLabels(statements) {
-    LABELS = (statements || []).filter(function (statement) { return statement.label && statement.number; }).map(function (statement) {
-      var label = statement.label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  function setLabels(statements, references) {
+    var names = {};
+    (statements || []).forEach(function (statement) {
+      if (statement.label && statement.number) names[statement.label] = statement.display + " " + statement.number;
+    });
+    Object.keys(references || {}).forEach(function (label) { names[label] = references[label]; });
+    // Longer labels first, so eq:vbase is never read as eq:v followed by "base".
+    LABELS = Object.keys(names).sort(function (a, b) { return b.length - a.length; }).map(function (label) {
+      var name = names[label];
+      var escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      var parts = /^(.*\S)\s+(\S+)$/.exec(name);
+      var word = parts && !/^\(/.test(name) ? parts[1] : "";
+      var number = word ? parts[2] : name.replace(/^\((.*)\)$/, "$1");
+      var edge = "(?![\\w:-])";
       return {
-        named: new RegExp("(?:\\b" + statement.display + "\\s+|" + statement.display + "~)(?:\\{lit\\})?`?" + label + "`?", "g"),
-        ref: new RegExp("\\\\(?:eq|c)?ref\\{" + label + "\\}", "g"),
-        bare: new RegExp("(?:\\{lit\\})?`" + label + "`|\\b" + label + "\\b", "g"),
-        display: statement.display + " " + statement.number,
-        number: statement.number
+        // "Lemma `lem:K`", "Lemma~\ref{lem:K}": the word is already there.
+        named: word ? new RegExp("\\b" + word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?:\\s+|~)(?:\\{lit\\})?`?(?:\\\\ref\\{" + escaped + "\\}|" + escaped + edge + ")`?", "g") : null,
+        eqref: new RegExp("\\\\eqref\\{" + escaped + "\\}", "g"),
+        ref: new RegExp("\\\\(?:c|C|auto)?ref\\{" + escaped + "\\}", "g"),
+        bare: new RegExp("(?:\\{lit\\})?`" + escaped + "`|(?<![\\w:-])" + escaped + edge, "g"),
+        equation: /^\(/.test(name),
+        name: name,
+        number: number
       };
     });
   }
@@ -185,9 +201,14 @@
   function relabel(text) {
     var out = String(text || "");
     LABELS.forEach(function (item) {
-      out = out.replace(item.named, item.display).replace(item.ref, item.number).replace(item.bare, item.display);
+      if (item.named) out = out.replace(item.named, item.name);
+      // An equation is marked first: the text often puts its label in
+      // parentheses already, as in "(eq:partial)" or "(eq:arens, eq:AB)".
+      out = out.replace(item.eqref, "(" + item.number + ")").replace(item.ref, item.number)
+        .replace(item.bare, item.equation ? "\ue001" + item.number + "\ue002" : item.name);
     });
-    return out;
+    out = out.replace(/\(\s*((?:\ue001[^\ue002]*\ue002[\s,;and–-]*)+)\)/g, function (_, inner) { return inner.trim(); });
+    return out.replace(/\ue001([^\ue002]*)\ue002/g, "($1)");
   }
 
   /** A statement's optional title as plain words: no braces, citations as [DG]. */
@@ -201,14 +222,29 @@
    * references as code.
    */
   function docToHtml(source) {
-    var html = escapeHtml(relabel(source || ""));
-    html = html.replace(/\$\$`([^`]*)`/g, function (_, math) { return "\\[" + math + "\\]"; });
-    html = html.replace(/\$`([^`]*)`/g, function (_, math) { return "\\(" + math + "\\)"; });
-    html = html.replace(/\{[a-z]+(?:\s[^}]*)?\}`([^`]*)`/g, "<code>$1</code>");
-    html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+    // Math and code are set aside first: an asterisk in X^{**} or y^*\circ P
+    // is TeX, not Markdown emphasis.
+    var kept = [];
+    var keep = function (html) { kept.push(html); return "\ue000" + (kept.length - 1) + "\ue000"; };
+    var text = relabel(source || "");
+    text = text.replace(/\$\$`([^`]*)`/g, function (_, math) { return keep("\\[" + escapeHtml(math) + "\\]"); });
+    text = text.replace(/\$`([^`]*)`/g, function (_, math) { return keep("\\(" + escapeHtml(math) + "\\)"); });
+    text = text.replace(/\{[a-z]+(?:\s[^}]*)?\}`([^`]*)`/g, function (_, code) { return keep("<code>" + escapeHtml(code) + "</code>"); });
+    text = text.replace(/`([^`]+)`/g, function (_, code) { return keep("<code>" + escapeHtml(code) + "</code>"); });
+    var html = escapeHtml(text);
     html = html.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-    html = html.replace(/(^|[^*])\*([^*\s][^*]*)\*/g, "$1<em>$2</em>");
-    return html.replace(/\n{2,}/g, "<br><br>");
+    html = html.replace(/(^|[^*\w])\*([^*\s][^*]*)\*/g, "$1<em>$2</em>");
+    html = html.split(/\n{2,}/).map(function (block) {
+      var lines = block.split("\n");
+      if (!lines.some(function (line) { return /^\s*[*-] /.test(line); })) return block;
+      var items = [];
+      lines.forEach(function (line) {
+        if (/^\s*[*-] /.test(line) || !items.length) items.push(line.replace(/^\s*[*-] /, ""));
+        else items[items.length - 1] += " " + line.trim();
+      });
+      return "<ul>" + items.map(function (item) { return "<li>" + item + "</li>"; }).join("") + "</ul>";
+    }).join("<br><br>").replace(/<br><br><ul>/g, "<ul>").replace(/<\/ul><br><br>/g, "</ul>");
+    return html.replace(/\ue000(\d+)\ue000/g, function (_, index) { return kept[Number(index)]; });
   }
 
   var MATHJAX_URL = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js";
@@ -273,7 +309,7 @@
     var byName = {};
     declarations.forEach(function (item) { byName[item.name] = item; });
     var statements = data.statements || [];
-    setLabels(statements);
+    setLabels(statements, data.references);
     root.innerHTML = "";
 
     // Header.

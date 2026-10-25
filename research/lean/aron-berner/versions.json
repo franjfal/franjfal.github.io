@@ -6,7 +6,7 @@
   {
    "version": 1,
    "url": "/research/lean/aron-berner/v1/",
-   "published_at": "2026-10-25T20:57:11+00:00",
+   "published_at": "2026-10-25T22:05:09+00:00",
    "status": "verified",
    "note": "",
    "arxiv": {
@@ -17,7 +17,7 @@
     "url": "https://arxiv.org/abs/2610.18117v1",
     "pdf": "https://arxiv.org/pdf/2610.18117v1"
    },
-   "content_sha256": "968371919d78c301130eca573ef51749671dd632da34ed4b84a39d4aee5b283e"
+   "content_sha256": "2d4974b30769cfcf9042b1f6662715032ad92b08ed0e91890fd84b1a7c417518"
   }
  ]
 }

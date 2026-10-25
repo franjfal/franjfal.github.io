@@ -231,6 +231,8 @@ body.pl-framed > .layout { flex: 1 1 auto; min-height: 0; height: auto; }
     user-select: none;
 }
 .pl-inline [data-label]::after { content: attr(data-label); }
+/* A label of the article shown as the article numbers it; the label is its title. */
+.pl-ref { white-space: nowrap; border-bottom: 1px dotted var(--pl-line); cursor: help; }
 .pl-status {
     display: inline-flex;
     align-items: center;

@@ -11,7 +11,7 @@ lean_base: "/research/lean/aron-berner/v1/"
 lean_summary: "A machine-checked proof, in Lean 4 with Mathlib, of the polynomial Lindenstrauss theorem: for every real or complex Banach space X and every n ≥ 1, the n-homogeneous polynomials whose Aron–Berner extensions attain their norms are dense, for scalar and for vector values."
 lean_status: "verified"
 lean_article: "Density of polynomials whose Aron–Berner extensions attain their norms"
-lean_published_at: "2026-10-25T20:57:11+00:00"
+lean_published_at: "2026-10-25T22:05:09+00:00"
 excerpt: "A machine-checked proof, in Lean 4 with Mathlib, of the polynomial Lindenstrauss theorem: for every real or complex Banach space X and every n ≥ 1, the n-homogeneous polynomials whose Aron–Berner exte"
 sitemap: false
 ---

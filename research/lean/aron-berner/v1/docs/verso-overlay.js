@@ -95,6 +95,29 @@
       content.insertBefore(banner, content.firstChild);
     }
 
+    // Labels in the prose (lem:K, eq:partial) as the article calls them:
+    // Lemma 2.3, (7). The label stays as the element's title.
+    var names = {};
+    (data.statements || []).forEach(function (statement) {
+      if (statement.label && statement.number) names[statement.label] = statement.display + " " + statement.number;
+    });
+    Object.keys(data.references || {}).forEach(function (label) { names[label] = data.references[label]; });
+    Array.prototype.forEach.call(document.querySelectorAll(".verso-text code:not(.math), .md-text code:not(.math)"), function (code) {
+      var label = code.textContent.trim();
+      var name = names[label];
+      if (!name || code.closest(".hl.lean")) return;
+      var before = "";
+      for (var node = code.previousSibling; node; node = node.previousSibling) before = node.textContent + before;
+      var shown = name;
+      var word = /^(.*\S)\s+(\S+)$/.exec(name);
+      var open = (before.match(/\(/g) || []).length > (before.match(/\)/g) || []).length;
+      if (name.charAt(0) === "(" && open) shown = name.slice(1, -1);
+      else if (word && name.charAt(0) !== "(" && new RegExp(word[1].replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "[\\s~]*$").test(before)) shown = word[2];
+      var reference = element("span", "pl-ref", shown);
+      reference.title = label;
+      code.parentNode.replaceChild(reference, code);
+    });
+
     // Verso names each declaration's anchor with a slug of its full name.
     var byAnchor = {};
     (data.declarations || []).forEach(function (declaration) { byAnchor[declaration.anchor || declaration.name] = declaration; });

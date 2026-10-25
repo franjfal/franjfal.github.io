@@ -309,6 +309,8 @@
 .lean-viewer .lnv-step-body h3 { margin: 0.35rem 0 0.35rem; font-size: 1rem; line-height: 1.35; font-weight: 700; }
 .lean-viewer .lnv-step-body h3 a { color: var(--lnv-ink); }
 .lean-viewer .lnv-step-intro { font-size: 0.88rem; line-height: 1.6; color: var(--lnv-text); max-width: 46rem; }
+.lean-viewer .lnv-step-intro ul, .lean-viewer .lnv-context ul { margin: 0.35rem 0 0.35rem 1.2rem; padding: 0; }
+.lean-viewer .lnv-step-intro li, .lean-viewer .lnv-context li { margin: 0.15rem 0; }
 .lean-viewer .lnv-step-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.75rem; margin-top: 0.5rem; }
 .lean-viewer .lnv-step-meta { font-size: 0.75rem; color: var(--lnv-muted); }
 .lean-viewer .lnv-step-link { font-size: 0.78rem; font-weight: 650; }
