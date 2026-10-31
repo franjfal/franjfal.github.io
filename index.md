@@ -9,19 +9,13 @@ excerpt: "Javier Falcó"
 classes: home-page
 ---
 
-<section class="home-hero">
-  <p class="home-kicker">Bienvenido a mi sitio web</p>
-  <h1 class="home-title">Francisco Javier Falcó Benavent</h1>
-  <p class="home-role">Profesor Titular · Departamento de Análisis Matemático · Universitat de València</p>
-  <p class="home-lead">Soy profesor del departamento de análisis matemático de la Universidad de Valencia desde el año 2017. Además de impartir asignaturas de análisis matemático en diferentes grados, imparto cursos de divulgación científica a través del servicio de extensión universitaria de la Universidad de Valencia.</p>
-  <p class="home-lead">Mi investigación se centra en el análisis funcional y la geometría de los espacios de Banach, donde he realizado aportaciones en diferentes campos.</p>
-  <ul class="home-tags">
-    <li>Análisis funcional</li>
-    <li>Geometría de espacios de Banach</li>
-    <li>Formalización en Lean</li>
-    <li>Divulgación matemática</li>
-  </ul>
-</section>
+Bienvenido a mi sitio web.
+
+Mi nombre es **Francisco Javier Falcó Benavent**. Soy Profesor Titular del Departamento de Análisis Matemático de la Universidad de Valencia, donde trabajo desde el año 2017. Además de impartir asignaturas de análisis matemático en diferentes grados, imparto cursos de divulgación científica a través del servicio de extensión universitaria de la Universidad de Valencia.
+
+Mi investigación se centra en el **análisis funcional y la geometría de los espacios de Banach**, donde he realizado aportaciones en diferentes campos.
+
+## En esta web
 
 <nav class="home-cards" aria-label="Secciones principales">
   <a class="home-card" href="/docencia/">
@@ -46,60 +40,34 @@ classes: home-page
   </a>
 </nav>
 
-<h2 class="home-heading">Libros</h2>
+## Libros
 
-<p>Entre mis proyectos de divulgación destacan estos dos libros, que exploran ámbitos distintos pero complementarios.</p>
+Entre mis proyectos de divulgación destacan estos dos libros, que exploran ámbitos distintos pero complementarios.
 
 <div class="home-books">
-  <a class="home-book" href="https://artibrains.github.io/es/how-machines-think/index.html">
-    <img src="/assets/how_machines_learn_COVER-ES-640.webp" alt="Portada de Cerebros Artificiales" loading="lazy">
-    <span class="home-book__body">
-      <span class="home-book__title">Cerebros Artificiales</span>
-      <span class="home-book__subtitle">Cómo aprenden las máquinas a pensar</span>
-      <span class="home-book__text">Una introducción accesible a los fundamentos de la inteligencia artificial, con especial atención al funcionamiento de los chatbots y los modelos actuales.</span>
-      <span class="home-book__more">Ver el libro <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
-    </span>
-  </a>
-  <a class="home-book" href="/Libros/MatExp/">
-    <img src="/assets/MatExp/libro/PortadaMatExp.jpg" alt="Portada de Matemáticas Experimentales" loading="lazy">
-    <span class="home-book__body">
-      <span class="home-book__title">Matemáticas Experimentales</span>
-      <span class="home-book__subtitle">Actividades manipulativas para visualizar conceptos</span>
-      <span class="home-book__text">Una aproximación experimental y manipulativa a las matemáticas, orientada al descubrimiento y al aprendizaje activo.</span>
-      <span class="home-book__more">Ver el libro <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
-    </span>
-  </a>
+  <div class="home-book">
+    <a href="https://artibrains.github.io/es/how-machines-think/index.html"><img src="/assets/how_machines_learn_COVER-ES-640.webp" alt="Portada de Cerebros Artificiales" loading="lazy"></a>
+    <div>
+      <p class="home-book__title"><a href="https://artibrains.github.io/es/how-machines-think/index.html"><em>Cerebros Artificiales</em></a></p>
+      <p class="home-book__subtitle">Cómo aprenden las máquinas a pensar</p>
+      <p class="home-book__text">Una introducción accesible a los fundamentos de la inteligencia artificial, con especial atención al funcionamiento de los chatbots y los modelos actuales.</p>
+    </div>
+  </div>
+  <div class="home-book">
+    <a href="/Libros/MatExp/"><img src="/assets/MatExp/libro/PortadaMatExp.jpg" alt="Portada de Matemáticas Experimentales" loading="lazy"></a>
+    <div>
+      <p class="home-book__title"><a href="/Libros/MatExp/"><em>Matemáticas Experimentales</em></a></p>
+      <p class="home-book__subtitle">Actividades manipulativas para visualizar conceptos</p>
+      <p class="home-book__text">Una aproximación experimental y manipulativa a las matemáticas, orientada al descubrimiento y al aprendizaje activo.</p>
+    </div>
+  </div>
 </div>
 
-<h2 class="home-heading">Contacto</h2>
+## Contacto
 
 <div class="home-contact">
-  <div class="home-contact__item">
-    <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-    <div>
-      <span class="home-contact__label">Dirección</span>
-      Departamento de Análisis Matemático<br>C/ Dr. Moliner, 50<br>46100 Burjassot (Valencia)
-    </div>
-  </div>
-  <div class="home-contact__item">
-    <i class="fas fa-door-open" aria-hidden="true"></i>
-    <div>
-      <span class="home-contact__label">Despacho</span>
-      2.16, segunda planta<br>Edificio Jerónimo Muñoz
-    </div>
-  </div>
-  <div class="home-contact__item">
-    <i class="fas fa-envelope" aria-hidden="true"></i>
-    <div>
-      <span class="home-contact__label">Correo electrónico</span>
-      <a href="mailto:francisco.j.falco@uv.es">francisco.j.falco@uv.es</a>
-    </div>
-  </div>
-  <div class="home-contact__item">
-    <i class="fas fa-university" aria-hidden="true"></i>
-    <div>
-      <span class="home-contact__label">Página institucional</span>
-      <a href="https://www.uv.es/uvweb/universidad/es/ficha-persona-1285950309813.html?p2=falbe&amp;idA=true">Ficha en la UV</a>
-    </div>
-  </div>
+  <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i><strong>Dirección:</strong> Departamento de Análisis Matemático, C/ Dr. Moliner, 50, 46100 Burjassot (Valencia)</p>
+  <p><i class="fas fa-door-open" aria-hidden="true"></i><strong>Despacho:</strong> 2.16, segunda planta del Edificio Jerónimo Muñoz</p>
+  <p><i class="fas fa-envelope" aria-hidden="true"></i><strong>Correo electrónico:</strong> <a href="mailto:francisco.j.falco@uv.es">francisco.j.falco@uv.es</a></p>
+  <p><i class="fas fa-university" aria-hidden="true"></i><strong>Página institucional:</strong> <a href="https://www.uv.es/uvweb/universidad/es/ficha-persona-1285950309813.html?p2=falbe&amp;idA=true">ficha en la Universidad de Valencia</a></p>
 </div>
